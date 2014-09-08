@@ -380,7 +380,7 @@ namespace CommonMark.Parser
                             }
                         }
                     }
-                    break;
+
                 case 2:
                     while (true)
                     {
@@ -402,7 +402,7 @@ namespace CommonMark.Parser
                             }
                         }
                     }
-                    break;
+
                 case 3:
                     while (true)
                     {
@@ -472,7 +472,7 @@ namespace CommonMark.Parser
                             }
                         }
                     }
-                    break;
+
                 default:
                     goto done;
             }

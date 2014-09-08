@@ -12,7 +12,7 @@ namespace CommonMark
         /// <summary>
         /// Writes a warning to the Debug window.
         /// </summary>
-        /// <param name="format">The message with optional formatting placeholders.</param>
+        /// <param name="message">The message with optional formatting placeholders.</param>
         /// <param name="args">The arguments for the formatting placeholders.</param>
         [System.Diagnostics.Conditional("DEBUG")]
         public static void Warning(string message, params object[] args)
