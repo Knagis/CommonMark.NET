@@ -3,7 +3,7 @@ CommonMark.NET
 
 Implementation of [CommonMark] [1] specification in C#.
 
-This is a port of the reference implementation in C, available on [GitHub] [2], the current version 
+This is a port of the reference implementation in C, available on [GitHub] [2]. The current version 
 passes all tests available in the specification version 2cf0750a7a. The implementation follows the
 same approach - the source is parsed into a syntax tree that can be used to add custom processing if
 the application needs it and then formatted into HTML.
