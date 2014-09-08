@@ -10,6 +10,8 @@ namespace CommonMark.Parser
     /// </summary>
     internal static class Scanner
     {
+        private const RegexOptions useCompilation = RegexOptions.None;
+
         private const string scheme = "coap|doi|javascript|aaa|aaas|about|acap|cap|cid|crid|data|dav|dict|dns|file|ftp|geo|go|gopher|h323|http|https|iax|icap|im|imap|info|ipp|iris|iris.beep|iris.xpc|iris.xpcs|iris.lwz|ldap|mailto|mid|msrp|msrps|mtqp|mupdate|news|nfs|ni|nih|nntp|opaquelocktoken|pop|pres|rtsp|service|session|shttp|sieve|sip|sips|sms|snmp|soap.beep|soap.beeps|tag|tel|telnet|tftp|thismessage|tn3270|tip|tv|urn|vemmi|ws|wss|xcon|xcon-userid|xmlrpc.beep|xmlrpc.beeps|xmpp|z39.50r|z39.50s|adiumxtra|afp|afs|aim|apt|attachment|aw|beshare|bitcoin|bolo|callto|chrome|chrome-extension|com-eventbrite-attendee|content|cvs|dlna-playsingle|dlna-playcontainer|dtn|dvb|ed2k|facetime|feed|finger|fish|gg|git|gizmoproject|gtalk|hcp|icon|ipn|irc|irc6|ircs|itms|jar|jms|keyparc|lastfm|ldaps|magnet|maps|market|message|mms|ms-help|msnim|mumble|mvn|notes|oid|palm|paparazzi|platform|proxy|psyc|query|res|resource|rmi|rsync|rtmp|secondlife|sftp|sgn|skype|smb|soldat|spotify|ssh|steam|svn|teamspeak|things|udp|unreal|ut2004|ventrilo|view-source|webcal|wtai|wyciwyg|xfire|xri|ymsgr";
         private const string blocktagname = "(article|header|aside|hgroup|iframe|blockquote|hr|body|li|map|button|object|canvas|ol|caption|output|col|p|colgroup|pre|dd|progress|div|section|dl|table|td|dt|tbody|embed|textarea|fieldset|tfoot|figcaption|th|figure|thead|footer|footer|tr|form|ul|h1|h2|h3|h4|h5|h6|video|script|style)";
 
@@ -34,28 +36,28 @@ namespace CommonMark.Parser
         private const string declaration = "\\![A-Z]+\\s+[^>\\x00]*>";
         private const string htmltag = "(" + opentag + ")|(" + closetag + ")|(" + htmlcomment + ")|(" + processinginstruction + ")|(" + declaration + ")|(" + cdata + ")";
 
-        private static readonly Regex autolink_uri = new Regex("(" + scheme + "):[^<>\\x00-\\x20]*>", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex autolink_email = new Regex("[a-zA-Z0-9.!#$%&'\\*+/=?^_`{|}~-]+[@][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?([.][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[>]", RegexOptions.Compiled);
-        private static readonly Regex htmltagregex = new Regex(htmltag, RegexOptions.Compiled);
-        private static readonly Regex html_block_tag1 = new Regex("</" + blocktagname + "(\\s|>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex html_block_tag2 = new Regex("<" + blocktagname + "(\\s|[/>])", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex html_block_tag3 = new Regex("<[!?]", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex spacechars = new Regex(@"[\s]*", RegexOptions.Compiled);
-        private static readonly Regex setext_header_line1 = new Regex("[=]+[ ]*$", RegexOptions.Compiled);
-        private static readonly Regex setext_header_line2 = new Regex("[-]+[ ]*$", RegexOptions.Compiled);
-        private static readonly Regex hrule1 = new Regex(@"([\*][ ]*){3,}[\s]*$", RegexOptions.Compiled);
-        private static readonly Regex hrule2 = new Regex(@"([_][ ]*){3,}[\s]*$", RegexOptions.Compiled);
-        private static readonly Regex hrule3 = new Regex(@"([-][ ]*){3,}[\s]*$", RegexOptions.Compiled);
-        private static readonly Regex link_url1 = new Regex("[ \\n]*[<]([^<>\\n\\x00]|(" + escaped_char + ")|[\\\\])*[>]", RegexOptions.Compiled);
-        private static readonly Regex link_url2 = new Regex("[ \\n]*((" + reg_char + ")+|(" + escaped_char + ")|(" + in_parens_nosp + "))*", RegexOptions.Compiled);
-        private static readonly Regex link_title1 = new Regex("[\"]((" + escaped_char + ")|[^\"\\x00])*[\"]", RegexOptions.Compiled);
-        private static readonly Regex link_title2 = new Regex("[']((" + escaped_char + ")|[^'\\x00])*[']", RegexOptions.Compiled);
-        private static readonly Regex link_title3 = new Regex("[\\(]((" + escaped_char + ")|[^\\)\\x00])*[\\)]", RegexOptions.Compiled);
-        private static readonly Regex atx_header_start = new Regex("[#]{1,6}([ ]+|[\\n])", RegexOptions.Compiled);
-        private static readonly Regex entity = new Regex("[&]([#]([Xx][A-Fa-f0-9]{1,8}|[0-9]{1,8})|[A-Za-z][A-Za-z0-9]{1,31})[;]", RegexOptions.Compiled);
-        private static readonly Regex open_code_fence1 = new Regex(@"([`]{3,})(?=[^`\n\x00]*$)", RegexOptions.Compiled);
-        private static readonly Regex open_code_fence2 = new Regex(@"([~]{3,})(?=[^~\n\x00]*$)", RegexOptions.Compiled);
-        private static readonly Regex close_code_fence = new Regex(@"([`]{3,}|[~]{3,})(?:\s*)$", RegexOptions.Compiled);
+        private static readonly Regex autolink_uri = new Regex("(" + scheme + "):[^<>\\x00-\\x20]*>", useCompilation | RegexOptions.IgnoreCase);
+        private static readonly Regex autolink_email = new Regex("[a-zA-Z0-9.!#$%&'\\*+/=?^_`{|}~-]+[@][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?([.][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[>]", useCompilation);
+        private static readonly Regex htmltagregex = new Regex(htmltag, useCompilation);
+        private static readonly Regex html_block_tag1 = new Regex("</" + blocktagname + "(\\s|>)", useCompilation | RegexOptions.IgnoreCase);
+        private static readonly Regex html_block_tag2 = new Regex("<" + blocktagname + "(\\s|[/>])", useCompilation | RegexOptions.IgnoreCase);
+        private static readonly Regex html_block_tag3 = new Regex("<[!?]", useCompilation | RegexOptions.IgnoreCase);
+        private static readonly Regex spacechars = new Regex(@"[\s]*", useCompilation);
+        private static readonly Regex setext_header_line1 = new Regex("[=]+[ ]*$", useCompilation);
+        private static readonly Regex setext_header_line2 = new Regex("[-]+[ ]*$", useCompilation);
+        private static readonly Regex hrule1 = new Regex(@"([\*][ ]*){3,}[\s]*$", useCompilation);
+        private static readonly Regex hrule2 = new Regex(@"([_][ ]*){3,}[\s]*$", useCompilation);
+        private static readonly Regex hrule3 = new Regex(@"([-][ ]*){3,}[\s]*$", useCompilation);
+        private static readonly Regex link_url1 = new Regex("[ \\n]*[<]([^<>\\n\\x00]|(" + escaped_char + ")|[\\\\])*[>]", useCompilation);
+        private static readonly Regex link_url2 = new Regex("[ \\n]*((" + reg_char + ")+|(" + escaped_char + ")|(" + in_parens_nosp + "))*", useCompilation);
+        private static readonly Regex link_title1 = new Regex("[\"]((" + escaped_char + ")|[^\"\\x00])*[\"]", useCompilation);
+        private static readonly Regex link_title2 = new Regex("[']((" + escaped_char + ")|[^'\\x00])*[']", useCompilation);
+        private static readonly Regex link_title3 = new Regex("[\\(]((" + escaped_char + ")|[^\\)\\x00])*[\\)]", useCompilation);
+        private static readonly Regex atx_header_start = new Regex("[#]{1,6}([ ]+|[\\n])", useCompilation);
+        private static readonly Regex entity = new Regex("[&]([#]([Xx][A-Fa-f0-9]{1,8}|[0-9]{1,8})|[A-Za-z][A-Za-z0-9]{1,31})[;]", useCompilation);
+        private static readonly Regex open_code_fence1 = new Regex(@"([`]{3,})(?=[^`\n\x00]*$)", useCompilation);
+        private static readonly Regex open_code_fence2 = new Regex(@"([~]{3,})(?=[^~\n\x00]*$)", useCompilation);
+        private static readonly Regex close_code_fence = new Regex(@"([`]{3,}|[~]{3,})(?:\s*)$", useCompilation);
 
         private static int MatchRegex(string s, int pos, params Regex[] regexes)
         {
