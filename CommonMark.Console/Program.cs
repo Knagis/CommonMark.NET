@@ -32,8 +32,7 @@ namespace CommonMark
                     if (string.Equals(args[i], "--version", StringComparison.OrdinalIgnoreCase))
                     {
                         Console.WriteLine("CommonMark.NET {0}", CommonMarkConverter.AssemblyVersion);
-                        Console.WriteLine(" - CommonMark converter (c) 2014 John MacFarlane");
-                        Console.WriteLine(" - .NET port (c) 2014 Kārlis Gaņģis");
+                        Console.WriteLine(" - (c) 2014 Kārlis Gaņģis");
                         return 0;
                     }
                     else if ((string.Equals(args[i], "--help", StringComparison.OrdinalIgnoreCase)) ||
