@@ -10,8 +10,8 @@ namespace CommonMark.Formatter
     {
         /// <summary>
         /// Escapes special HTML characters.
-        /// Orig: escape_html(inp, preserve_entities)
         /// </summary>
+        /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
         private static string EscapeHtml(string inp, bool preserveEntities)
         {
             int pos = 0;
@@ -66,28 +66,25 @@ namespace CommonMark.Formatter
 
         /// <summary>
         /// Adds a newline if the writer does not currently end with a newline.
-        /// Orig: cr
         /// </summary>
+        /// <remarks>Orig: cr</remarks>
         private static void EnsureNewlineEnding(HtmlTextWriter writer)
         {
             if (!writer.EndsWithNewline)
                 writer.WriteLine();
         }
 
-        // Convert a block list to HTML.  Returns 0 on success, and sets result.
         /// <summary>
-        /// Orig: blocks_to_html
+        /// Convert a block list to HTML.  Returns 0 on success, and sets result.
         /// </summary>
+        /// <remarks><remarks>Orig: blocks_to_html</remarks></remarks>
         public static void BlocksToHtml(System.IO.TextWriter writer, Block b, bool tight)
         {
             using (var wrapper = new HtmlTextWriter(writer))
                 BlocksToHtmlInner(wrapper, b, tight);
         }
 
-        // Convert a block list to HTML.  Returns 0 on success, and sets result.
-        /// <summary>
-        /// Orig: 
-        /// </summary>
+        /// <remarks>Orig: blocks_to_html_inner</remarks>
         private static void BlocksToHtmlInner(HtmlTextWriter writer, Block b, bool tight)
         {
             string tag;
@@ -195,8 +192,8 @@ namespace CommonMark.Formatter
 
         // Convert an inline list to HTML.  Returns 0 on success, and sets result.
         /// <summary>
-        /// Orig: inlines_to_html
         /// </summary>
+        /// <remarks>Orig: inlines_to_html</remarks>
         public static void InlinesToHtml(HtmlTextWriter writer, Inline ils)
         {
             while (ils != null)
