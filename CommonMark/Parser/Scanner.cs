@@ -34,14 +34,19 @@ namespace CommonMark.Parser
         private const string processinginstruction = "\\?(([^?>\\x00]+)|([?][^>\\x00]))*\\?>";
         private const string cdata = "\\!\\[CDATA\\[(([^\\]\\x00]+)|(\\][^\\]\\x00])|(\\]\\][^>\\x00]))*\\]\\]>";
         private const string declaration = "\\![A-Z]+\\s+[^>\\x00]*>";
-        private const string htmltag = "(" + opentag + ")|(" + closetag + ")|(" + htmlcomment + ")|(" + processinginstruction + ")|(" + declaration + ")|(" + cdata + ")";
+
+        // The closetag of the htmltag regex is simple enough to easily convert to manual tests.
+        // Note - Initial testing showed that there is no benefit of separating the parts of the expression into multiple expressions
+        // so the focus for this regex should be to converting parts of the expression completely to C# code.
+        private static readonly Regex htmlTagRegex = new Regex("(" + opentag + ")|(" + processinginstruction + ")|(" + htmlcomment + ")|(" + cdata + ")|(" + declaration + ")", useCompilation);
+        //private const string htmltag = "(" + opentag + ")|(" + closetag + ")|(" + htmlcomment + ")|(" + processinginstruction + ")|(" + declaration + ")|(" + cdata + ")";
+        //private static readonly Regex htmltagregex = new Regex(htmltag, useCompilation);
 
         // this Regex had significant impact to performance for some typical documents so it was replaced with custom implementation
         //private const string scheme = "coap|doi|javascript|aaa|aaas|about|acap|cap|cid|crid|data|dav|dict|dns|file|ftp|geo|go|gopher|h323|http|https|iax|icap|im|imap|info|ipp|iris|iris.beep|iris.xpc|iris.xpcs|iris.lwz|ldap|mailto|mid|msrp|msrps|mtqp|mupdate|news|nfs|ni|nih|nntp|opaquelocktoken|pop|pres|rtsp|service|session|shttp|sieve|sip|sips|sms|snmp|soap.beep|soap.beeps|tag|tel|telnet|tftp|thismessage|tn3270|tip|tv|urn|vemmi|ws|wss|xcon|xcon-userid|xmlrpc.beep|xmlrpc.beeps|xmpp|z39.50r|z39.50s|adiumxtra|afp|afs|aim|apt|attachment|aw|beshare|bitcoin|bolo|callto|chrome|chrome-extension|com-eventbrite-attendee|content|cvs|dlna-playsingle|dlna-playcontainer|dtn|dvb|ed2k|facetime|feed|finger|fish|gg|git|gizmoproject|gtalk|hcp|icon|ipn|irc|irc6|ircs|itms|jar|jms|keyparc|lastfm|ldaps|magnet|maps|market|message|mms|ms-help|msnim|mumble|mvn|notes|oid|palm|paparazzi|platform|proxy|psyc|query|res|resource|rmi|rsync|rtmp|secondlife|sftp|sgn|skype|smb|soldat|spotify|ssh|steam|svn|teamspeak|things|udp|unreal|ut2004|ventrilo|view-source|webcal|wtai|wyciwyg|xfire|xri|ymsgr";
         //private static readonly Regex autolink_uri = new Regex("(" + scheme + "):[^<>\\x00-\\x20]*>", useCompilation | RegexOptions.IgnoreCase);
 
         private static readonly Regex autolink_email = new Regex("[a-zA-Z0-9.!#$%&'\\*+/=?^_`{|}~-]+[@][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?([.][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[>]", useCompilation);
-        private static readonly Regex htmltagregex = new Regex(htmltag, useCompilation);
         private static readonly Regex html_block_tag1 = new Regex("</" + blocktagname + "(\\s|>)", useCompilation | RegexOptions.IgnoreCase);
         private static readonly Regex html_block_tag2 = new Regex("<" + blocktagname + "(\\s|[/>])", useCompilation | RegexOptions.IgnoreCase);
         private static readonly Regex html_block_tag3 = new Regex("<[!?]", useCompilation | RegexOptions.IgnoreCase);
@@ -141,7 +146,46 @@ namespace CommonMark.Parser
               htmltag { return (p - start); }
               .? { return 0; }
             */
-            return MatchRegex(s, pos, htmltagregex);
+
+            if (pos >= s.Length)
+                return 0;
+
+            var firstChar = s[pos];
+
+            if (firstChar == '/')
+            {
+                if (pos + 2 >= s.Length)
+                    return 0;
+
+                var nextChar = char.ToUpperInvariant(s[pos + 1]);
+                if (nextChar < 'A' || nextChar > 'Z')
+                    return 0;
+
+                var tagNameEnded = false;
+                for (var i = pos + 2; i < s.Length; i++)
+                {
+                    nextChar = char.ToUpperInvariant(s[i]);
+                    if (nextChar == '>')
+                        return i - pos + 1;
+
+                    if (char.IsWhiteSpace(nextChar))
+                    {
+                        tagNameEnded = true;
+                        continue;
+                    }
+
+                    if (tagNameEnded || nextChar < 'A' || nextChar > 'Z')
+                        return 0;
+                }
+
+                return 0;
+            }
+
+            firstChar = char.ToUpperInvariant(firstChar);
+            if (firstChar != '!' && firstChar != '?' && (firstChar < 'A' || firstChar > 'Z'))
+                return 0;
+
+            return MatchRegex(s, pos, htmlTagRegex);
         }
 
         /// <summary>
