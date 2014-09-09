@@ -50,9 +50,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Sample.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="Sample.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
