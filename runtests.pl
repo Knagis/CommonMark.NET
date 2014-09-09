@@ -38,6 +38,8 @@ sub tidy
     } elsif (/<\/pre/) {
       $inpre = 0;
     }
+    # remove \r to allow mixing linux/windows newlines
+	s/\r//;
     if ($inpre) {
       print $outfh $_;
     } else {
@@ -80,9 +82,6 @@ sub dotest
   $actual = &tidy($actual);
   $actual =~ s/\&#39;/'/g;
 
-  # remove \r to allow mixing linux/windows newlines 
-  $actual =~ s/\r//g;
-  $html =~ s/\r//g;
   my $expectedLength = length($html);
   my $actualLength = length($actual);
   if ($actual eq $html) {

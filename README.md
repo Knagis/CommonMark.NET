@@ -30,7 +30,7 @@ The project includes a slightly modified version of `runtests.pl` since the orig
 The main change is that it now ignores differences in newlines (`\n` and `\r\n` will be considered as equal).
 
 Note that if you run the `runtests.pl` script on a Windows machine it will incorrectly determine that
-5 tests have failed - if the same test is run manually by specifying both input and output files
+4 tests have failed - if the same test is run manually by specifying both input and output files
 (instead of using STDIN and STDOUT) it will provide the correct result.
 
 [1]: http://commonmark.org/
