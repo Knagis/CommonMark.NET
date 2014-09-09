@@ -10,9 +10,9 @@ namespace CommonMark.Formatter
     {
         /// <summary>
         /// Escapes special HTML characters.
-        /// Orig: escape_html
+        /// Orig: escape_html(inp, preserve_entities)
         /// </summary>
-        private static string EscapeHTML(string inp, bool preserve_entities)
+        private static string EscapeHTML(string inp, bool preserveEntities)
         {
             int pos = 0;
             int match;
@@ -38,7 +38,7 @@ namespace CommonMark.Formatter
                         pos += 4;
                         break;
                     case '&':
-                        if (preserve_entities && 0 != (match = Scanner.scan_entity(s, pos)))
+                        if (preserveEntities && 0 != (match = Scanner.scan_entity(s, pos)))
                         {
                             pos += match;
                         }
@@ -75,6 +75,9 @@ namespace CommonMark.Formatter
         }
 
         // Convert a block list to HTML.  Returns 0 on success, and sets result.
+        /// <summary>
+        /// Orig: blocks_to_html
+        /// </summary>
         public static void BlocksToHTML(System.IO.TextWriter writer, Block b, bool tight)
         {
             using (var wrapper = new HtmlTextWriter(writer))
@@ -82,6 +85,9 @@ namespace CommonMark.Formatter
         }
 
         // Convert a block list to HTML.  Returns 0 on success, and sets result.
+        /// <summary>
+        /// Orig: 
+        /// </summary>
         private static void BlocksToHTMLInner(HtmlTextWriter writer, Block b, bool tight)
         {
             string tag;
