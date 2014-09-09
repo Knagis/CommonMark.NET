@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{EC5FFA77
 	ProjectSection(SolutionItems) = preProject
 		runtests.pl = runtests.pl
 		spec.txt = spec.txt
+		README.md = README.md
+		LICENSE.md = LICENSE.md
 	EndProjectSection
 EndProject
 Global
