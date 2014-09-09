@@ -160,7 +160,7 @@ namespace CommonMark
                 }
                 else
                 {
-                    HtmlPrinter.blocks_to_html(target, document, false);
+                    HtmlPrinter.BlocksToHtml(target, document, false);
                 }
             }
             catch (CommonMarkException)
