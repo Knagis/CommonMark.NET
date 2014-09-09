@@ -77,7 +77,7 @@ namespace CommonMark.Formatter
         /// <summary>
         /// Convert a block list to HTML.  Returns 0 on success, and sets result.
         /// </summary>
-        /// <remarks><remarks>Orig: blocks_to_html</remarks></remarks>
+        /// <remarks>Orig: blocks_to_html</remarks>
         public static void BlocksToHtml(System.IO.TextWriter writer, Block b, bool tight)
         {
             using (var wrapper = new HtmlTextWriter(writer))
