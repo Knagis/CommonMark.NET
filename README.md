@@ -24,6 +24,15 @@ var result = CommonMark.CommonMarkConverter.Convert("**Hello world!**");
 
 **Important:** The converter [does not include any HTML sanitizing][XSS].
 
+## Compatibility
+
+The library uses no references except for `System` - it has no external dependencies. It is cross compiled to
+both .NET 2.0 and .NET 4.0 Portable Class Library that targets .NET Framework 4.0, Silverlight 5, Windows 8,
+Windows Phone 8.1, Windows Phone Silverlight 8, Xamarin.Android and Xamarin.iOS.
+
+For working with the source code you will need Visual Studio 2013.3. Note that Express for Windows is the
+only free edition that supports PCL projects.
+
 ## Running tests
 
 The project includes a slightly modified version of `runtests.pl` since the original did not work on Windows.
