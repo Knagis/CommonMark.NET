@@ -44,16 +44,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonMark\CommonMark.csproj">
-      <Project>{0fd4b1dd-45a8-4f02-beb0-5881cd512573}</Project>
-      <Name>CommonMark</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Sample.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonMark\CommonMark.Base.csproj">
+      <Project>{0fd4b1dd-45a8-4f02-beb0-5881cd512573}</Project>
+      <Name>CommonMark.Base</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

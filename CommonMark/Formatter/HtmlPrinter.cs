@@ -159,7 +159,7 @@ namespace CommonMark.Formatter
                         writer.Write("<pre><code");
                         if (b.attributes.fenced_code_data.info.Length > 0)
                         {
-                            var info_words = escape_html(b.attributes.fenced_code_data.info, true).Split(new[] { ' ' }, 2);
+                            var info_words = escape_html(b.attributes.fenced_code_data.info, true).Split(new[] { ' ' });
                             writer.Write(" class=\"language-" + info_words[0] + "\"");
                         }
                         writer.Write(">");

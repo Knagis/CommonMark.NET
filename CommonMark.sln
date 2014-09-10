@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark", "CommonMark\CommonMark.csproj", "{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.Base", "CommonMark\CommonMark.Base.csproj", "{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.Console", "CommonMark.Console\CommonMark.Console.csproj", "{83F44787-27A2-4C18-97E2-497437C8EF75}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{EC5FFA77-658F-4D2F-A5CE-5F1BD44F3FC0}"
 	ProjectSection(SolutionItems) = preProject
+		LICENSE.md = LICENSE.md
+		README.md = README.md
 		runtests.pl = runtests.pl
 		spec.txt = spec.txt
-		README.md = README.md
-		LICENSE.md = LICENSE.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.NET20", "CommonMark\CommonMark.NET20.csproj", "{075E7F00-F1C0-49AA-808D-8B15F1A82DDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{83F44787-27A2-4C18-97E2-497437C8EF75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83F44787-27A2-4C18-97E2-497437C8EF75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83F44787-27A2-4C18-97E2-497437C8EF75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{075E7F00-F1C0-49AA-808D-8B15F1A82DDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{075E7F00-F1C0-49AA-808D-8B15F1A82DDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{075E7F00-F1C0-49AA-808D-8B15F1A82DDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{075E7F00-F1C0-49AA-808D-8B15F1A82DDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

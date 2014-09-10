@@ -5,7 +5,14 @@ using System.Text;
 
 namespace CommonMark
 {
-    [Serializable]
+    ////[Serializable]
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// The exception does not specify [Serializable] attribute as most exceptions do because the library is created
+    /// as portable and it is not supported there.
+    /// </remarks>
     public class CommonMarkException : Exception
     {
         /// <summary>
@@ -34,19 +41,19 @@ namespace CommonMark
             this.BlockElement = block;
         }
 
-        protected CommonMarkException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context)
-            : base(info, context) 
-        {
-            this.BlockElement = (Block)info.GetValue("BlockElement", typeof(Block));
-            this.InlineElement = (Inline)info.GetValue("InlineElement", typeof(Block));
-        }
-        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-            info.AddValue("BlockElement", this.BlockElement);
-            info.AddValue("InlineElement", this.InlineElement);
-        }
+        ////protected CommonMarkException(
+        ////  System.Runtime.Serialization.SerializationInfo info,
+        ////  System.Runtime.Serialization.StreamingContext context)
+        ////    : base(info, context) 
+        ////{
+        ////    this.BlockElement = (Block)info.GetValue("BlockElement", typeof(Block));
+        ////    this.InlineElement = (Inline)info.GetValue("InlineElement", typeof(Block));
+        ////}
+        ////public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+        ////{
+        ////    base.GetObjectData(info, context);
+        ////    info.AddValue("BlockElement", this.BlockElement);
+        ////    info.AddValue("InlineElement", this.InlineElement);
+        ////}
     }
 }

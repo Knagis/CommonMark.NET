@@ -20,7 +20,9 @@ namespace CommonMark
         {
             get
             {
-                return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                var assembly = typeof(CommonMarkConverter).Assembly.FullName;
+                var aName = new System.Reflection.AssemblyName(assembly);
+                return aName.Version;
             }
         }
 

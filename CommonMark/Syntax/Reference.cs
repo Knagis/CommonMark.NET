@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonMark
+namespace CommonMark.Syntax
 {
     public class Reference
     {
