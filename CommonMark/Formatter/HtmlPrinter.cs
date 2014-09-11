@@ -90,103 +90,103 @@ namespace CommonMark.Formatter
             string tag;
             while (b != null)
             {
-                switch (b.tag)
+                switch (b.Tag)
                 {
-                    case BlockTag.document:
-                        BlocksToHtmlInner(writer, b.children, false);
+                    case BlockTag.Document:
+                        BlocksToHtmlInner(writer, b.FirstChild, false);
                         break;
 
-                    case BlockTag.paragraph:
+                    case BlockTag.Paragraph:
                         if (tight)
                         {
-                            InlinesToHtml(writer, b.inline_content);
+                            InlinesToHtml(writer, b.InlineContent);
                         }
                         else
                         {
                             EnsureNewlineEnding(writer);
                             writer.Write("<p>");
-                            InlinesToHtml(writer, b.inline_content);
+                            InlinesToHtml(writer, b.InlineContent);
                             writer.WriteLine("</p>");
                         }
                         break;
 
-                    case BlockTag.block_quote:
+                    case BlockTag.BlockQuote:
                         EnsureNewlineEnding(writer);
                         writer.WriteLine("<blockquote>");
-                        BlocksToHtmlInner(writer, b.children, false);
+                        BlocksToHtmlInner(writer, b.FirstChild, false);
                         writer.WriteLine("</blockquote>");
                         break;
 
-                    case BlockTag.list_item:
+                    case BlockTag.ListItem:
                         EnsureNewlineEnding(writer);
                         writer.Write("<li>");
                         using (var sb = new System.IO.StringWriter())
                         using (var sbw = new HtmlTextWriter(sb))
                         {
-                            BlocksToHtmlInner(sbw, b.children, tight);
+                            BlocksToHtmlInner(sbw, b.FirstChild, tight);
                             sbw.Flush();
                             writer.Write(sb.ToString().TrimEnd());
                         }
                         writer.WriteLine("</li>");
                         break;
 
-                    case BlockTag.list:
+                    case BlockTag.List:
                         // make sure a list starts at the beginning of the line:
                         EnsureNewlineEnding(writer);
-                        var data = b.attributes.list_data;
+                        var data = b.Attributes.ListData;
                         tag = data.ListType == ListType.Bullet ? "ul" : "ol";
                         writer.Write("<" + tag);
-                        if (data.start != 1)
-                            writer.Write(" start=\"" + data.start.ToString(System.Globalization.CultureInfo.InvariantCulture) + "\"");
+                        if (data.Start != 1)
+                            writer.Write(" start=\"" + data.Start.ToString(System.Globalization.CultureInfo.InvariantCulture) + "\"");
                         writer.WriteLine(">");
-                        BlocksToHtmlInner(writer, b.children, data.tight);
+                        BlocksToHtmlInner(writer, b.FirstChild, data.IsTight);
                         writer.WriteLine("</" + tag + ">");
                         break;
 
-                    case BlockTag.atx_header:
-                    case BlockTag.setext_header:
-                        tag = "h" + b.attributes.header_level.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    case BlockTag.AtxHeader:
+                    case BlockTag.SETextHeader:
+                        tag = "h" + b.Attributes.HeaderLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
                         EnsureNewlineEnding(writer);
                         writer.Write("<" + tag + ">");
-                        InlinesToHtml(writer, b.inline_content);
+                        InlinesToHtml(writer, b.InlineContent);
                         writer.WriteLine("</" + tag + ">");
                         break;
 
-                    case BlockTag.indented_code:
+                    case BlockTag.IndentedCode:
                         EnsureNewlineEnding(writer);
                         writer.Write("<pre><code>");
-                        writer.Write(EscapeHtml(b.string_content, false));
+                        writer.Write(EscapeHtml(b.StringContent, false));
                         writer.WriteLine("</code></pre>");
                         break;
 
-                    case BlockTag.fenced_code:
+                    case BlockTag.FencedCode:
                         EnsureNewlineEnding(writer);
                         writer.Write("<pre><code");
-                        if (b.attributes.fenced_code_data.info.Length > 0)
+                        if (b.Attributes.FencedCodeData.Info.Length > 0)
                         {
-                            string[] info_words = EscapeHtml(b.attributes.fenced_code_data.info, true).Split(new[] { ' ' });
+                            string[] info_words = EscapeHtml(b.Attributes.FencedCodeData.Info, true).Split(new[] { ' ' });
                             writer.Write(" class=\"language-" + info_words[0] + "\"");
                         }
                         writer.Write(">");
-                        writer.Write(EscapeHtml(b.string_content, false));
+                        writer.Write(EscapeHtml(b.StringContent, false));
                         writer.WriteLine("</code></pre>");
                         break;
 
-                    case BlockTag.html_block:
-                        writer.Write(b.string_content);
+                    case BlockTag.HtmlBlock:
+                        writer.Write(b.StringContent);
                         break;
 
-                    case BlockTag.hrule:
+                    case BlockTag.HorizontalRuler:
                         writer.WriteLine("<hr />");
                         break;
 
-                    case BlockTag.reference_def:
+                    case BlockTag.ReferenceDefinition:
                         break;
 
                     default:
-                        throw new CommonMarkException("Block type " + b.tag + " is not supported.", b);
+                        throw new CommonMarkException("Block type " + b.Tag + " is not supported.", b);
                 }
-                b = b.next;
+                b = b.Next;
             }
         }
 
@@ -198,80 +198,80 @@ namespace CommonMark.Formatter
         {
             while (ils != null)
             {
-                switch (ils.tag)
+                switch (ils.Tag)
                 {
-                    case InlineTag.str:
-                        writer.Write(EscapeHtml(ils.content.Literal, false));
+                    case InlineTag.String:
+                        writer.Write(EscapeHtml(ils.Content.Literal, false));
                         break;
 
-                    case InlineTag.linebreak:
+                    case InlineTag.LineBreak:
                         writer.WriteLine("<br />");
                         break;
 
-                    case InlineTag.softbreak:
+                    case InlineTag.SoftBreak:
                         writer.WriteLine();
                         break;
 
-                    case InlineTag.code:
+                    case InlineTag.Code:
                         writer.Write("<code>");
-                        writer.Write(EscapeHtml(ils.content.Literal, false));
+                        writer.Write(EscapeHtml(ils.Content.Literal, false));
                         writer.Write("</code>");
                         break;
 
-                    case InlineTag.raw_html:
-                    case InlineTag.entity:
-                        writer.Write(ils.content.Literal);
+                    case InlineTag.RawHtml:
+                    case InlineTag.Entity:
+                        writer.Write(ils.Content.Literal);
                         break;
 
-                    case InlineTag.link:
+                    case InlineTag.Link:
                         string mbtitle;
-                        if (ils.content.linkable.title.Length > 0)
-                            mbtitle = " title=\"" + EscapeHtml(ils.content.linkable.title, true) + "\"";
+                        if (ils.Content.Linkable.Title.Length > 0)
+                            mbtitle = " title=\"" + EscapeHtml(ils.Content.Linkable.Title, true) + "\"";
                         else
                             mbtitle = "";
 
-                        writer.Write("<a href=\"{0}\"{1}>", EscapeHtml(ils.content.linkable.url, true), mbtitle);
-                        InlinesToHtml(writer, ils.content.linkable.label);
+                        writer.Write("<a href=\"{0}\"{1}>", EscapeHtml(ils.Content.Linkable.Url, true), mbtitle);
+                        InlinesToHtml(writer, ils.Content.Linkable.Label);
                         writer.Write("</a>");
                         break;
 
-                    case InlineTag.image:
+                    case InlineTag.Image:
                         writer.Write("<img src=\"");
-                        writer.Write(EscapeHtml(ils.content.linkable.url, true));
+                        writer.Write(EscapeHtml(ils.Content.Linkable.Url, true));
                         writer.Write("\" alt=\"");
                         using (var sb = new System.IO.StringWriter())
                         using (var sbw = new HtmlTextWriter(sb))
                         {
-                            InlinesToHtml(sbw, ils.content.linkable.label);
+                            InlinesToHtml(sbw, ils.Content.Linkable.Label);
                             sbw.Flush();
                             writer.Write(EscapeHtml(sb.ToString(), false));
                         }
                         writer.Write("\"");
-                        if (ils.content.linkable.title.Length > 0)
+                        if (ils.Content.Linkable.Title.Length > 0)
                         {
                             writer.Write(" title=\"");
-                            writer.Write(EscapeHtml(ils.content.linkable.title, true));
+                            writer.Write(EscapeHtml(ils.Content.Linkable.Title, true));
                             writer.Write("\"");
                         }
                         writer.Write(" />");
                         break;
 
-                    case InlineTag.strong:
+                    case InlineTag.Strong:
                         writer.Write("<strong>");
-                        InlinesToHtml(writer, ils.content.inlines);
+                        InlinesToHtml(writer, ils.Content.Inlines);
                         writer.Write("</strong>");
                         break;
 
-                    case InlineTag.emph:
+                    case InlineTag.Emphasis:
                         writer.Write("<em>");
-                        InlinesToHtml(writer, ils.content.inlines);
+                        InlinesToHtml(writer, ils.Content.Inlines);
                         writer.Write("</em>");
                         break;
 
                     default:
-                        throw new CommonMarkException("Inline type " + ils.tag + " is not supported.", ils);
+                        throw new CommonMarkException("Inline type " + ils.Tag + " is not supported.", ils);
                 }
-                ils = ils.next;
+                ils = ils.Next;
             }
         }
 

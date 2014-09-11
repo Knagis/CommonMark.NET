@@ -6,9 +6,15 @@ namespace CommonMark.Syntax
 {
     public class FencedCodeData
     {
-        public int fence_length;
-        public int fence_offset;
-        public char fence_char;
-        public string info;
+        /// <remarks>Original: fence_length</remarks>
+        public int FenceLength { get; set; }
+
+        /// <remarks>Original: fence_offset</remarks>
+        public int FenceOffset { get; set; }
+
+        /// <remarks>Original: fence_char</remarks>
+        public char FenceChar { get; set; }
+
+        public string Info { get; set; }
     }
 }

@@ -6,15 +6,27 @@ namespace CommonMark.Syntax
 {
     public enum InlineTag
     {
-        str,
-        softbreak,
-        linebreak,
-        code,
-        raw_html,
-        entity,
-        emph,
-        strong,
-        link,
-        image
+        /// <remarks>Original: str</remarks>
+        String,
+
+        SoftBreak,
+
+        LineBreak,
+
+        Code,
+
+        /// <remarks>Original: raw_html</remarks>
+        RawHtml,
+
+        Entity,
+
+        /// <remarks>Original: emph</remarks>
+        Emphasis,
+
+        Strong,
+
+        Link,
+
+        Image
     }
 }

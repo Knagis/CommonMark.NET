@@ -74,20 +74,20 @@ namespace CommonMark.Parser
         private static Inline make_linkable(InlineTag t, Inline label, string url, string title)
         {
             Inline e = new Inline();
-            e.tag = t;
-            e.content.linkable.label = label;
-            e.content.linkable.url = url;
-            e.content.linkable.title = title;
-            e.next = null;
+            e.Tag = t;
+            e.Content.Linkable.Label = label;
+            e.Content.Linkable.Url = url;
+            e.Content.Linkable.Title = title;
+            e.Next = null;
             return e;
         }
 
         private static Inline make_inlines(InlineTag t, Inline contents)
         {
             Inline e = new Inline();
-            e.tag = t;
-            e.content.inlines = contents;
-            e.next = null;
+            e.Tag = t;
+            e.Content.Inlines = contents;
+            e.Next = null;
             return e;
         }
 
@@ -96,9 +96,9 @@ namespace CommonMark.Parser
         private static Inline make_literal(InlineTag t, string s)
         {
             Inline e = new Inline();
-            e.tag = t;
-            e.content.Literal = s;
-            e.next = null;
+            e.Tag = t;
+            e.Content.Literal = s;
+            e.Next = null;
             return e;
         }
 
@@ -106,22 +106,22 @@ namespace CommonMark.Parser
         private static Inline make_simple(InlineTag t)
         {
             Inline e = new Inline();
-            e.tag = t;
-            e.next = null;
+            e.Tag = t;
+            e.Next = null;
             return e;
         }
 
         // Macros for creating various kinds of inlines.
-        private static Inline make_str(string s) { return make_literal(InlineTag.str, s); }
-        private static Inline make_code(string s) { return make_literal(InlineTag.code, s); }
-        private static Inline make_raw_html(string s) { return make_literal(InlineTag.raw_html, s); }
-        private static Inline make_entity(string s) { return make_literal(InlineTag.entity, s); }
-        private static Inline make_linebreak() { return make_simple(InlineTag.linebreak); }
-        private static Inline make_softbreak() { return make_simple(InlineTag.softbreak); }
-        private static Inline make_link(Inline label, string url, string title) { return make_linkable(InlineTag.link, label, url, title); }
-        private static Inline make_image(Inline alt, string url, string title) { return make_linkable(InlineTag.image, alt, url, title); }
-        private static Inline make_emph(Inline contents) { return make_inlines(InlineTag.emph, contents); }
-        private static Inline make_strong(Inline contents) { return make_inlines(InlineTag.strong, contents); }
+        private static Inline make_str(string s) { return make_literal(InlineTag.String, s); }
+        private static Inline make_code(string s) { return make_literal(InlineTag.Code, s); }
+        private static Inline make_raw_html(string s) { return make_literal(InlineTag.RawHtml, s); }
+        private static Inline make_entity(string s) { return make_literal(InlineTag.Entity, s); }
+        private static Inline make_linebreak() { return make_simple(InlineTag.LineBreak); }
+        private static Inline make_softbreak() { return make_simple(InlineTag.SoftBreak); }
+        private static Inline make_link(Inline label, string url, string title) { return make_linkable(InlineTag.Link, label, url, title); }
+        private static Inline make_image(Inline alt, string url, string title) { return make_linkable(InlineTag.Image, alt, url, title); }
+        private static Inline make_emph(Inline contents) { return make_inlines(InlineTag.Emphasis, contents); }
+        private static Inline make_strong(Inline contents) { return make_inlines(InlineTag.Strong, contents); }
 
         // Append inline list b to the end of inline list a.
         // Return pointer to head of new list.
@@ -132,11 +132,11 @@ namespace CommonMark.Parser
                 return b;
             }
             Inline cur = a;
-            while (cur.next != null)
+            while (cur.Next != null)
             {
-                cur = cur.next;
+                cur = cur.Next;
             }
-            cur.next = b;
+            cur.Next = b;
             return a;
         }
 
@@ -366,10 +366,10 @@ namespace CommonMark.Parser
                         if (numdelims >= 1 && can_close)
                         {
                             subj.Position += 1;
-                            first_head.tag = InlineTag.emph;
-                            first_head.content.Literal = null;
-                            first_head.content.inlines = first_head.next;
-                            first_head.next = null;
+                            first_head.Tag = InlineTag.Emphasis;
+                            first_head.Content.Literal = null;
+                            first_head.Content.Inlines = first_head.Next;
+                            first_head.Next = null;
                             goto done;
                         }
                         else
@@ -388,10 +388,10 @@ namespace CommonMark.Parser
                         if (numdelims >= 2 && can_close)
                         {
                             subj.Position += 2;
-                            first_head.tag = InlineTag.strong;
-                            first_head.content.Literal = null;
-                            first_head.content.inlines = first_head.next;
-                            first_head.next = null;
+                            first_head.Tag = InlineTag.Strong;
+                            first_head.Content.Literal = null;
+                            first_head.Content.Inlines = first_head.Next;
+                            first_head.Next = null;
                             goto done;
                         }
                         else
@@ -432,30 +432,30 @@ namespace CommonMark.Parser
                             subj.Position += numdelims;
                             if (first_close != null)
                             {
-                                first_head.tag = first_close_delims == 1 ? InlineTag.strong : InlineTag.emph;
-                                first_head.content.Literal = null;
-                                first_head.content.inlines =
-                                  make_inlines(first_close_delims == 1 ? InlineTag.emph : InlineTag.strong,
-                                               first_head.next);
+                                first_head.Tag = first_close_delims == 1 ? InlineTag.Strong : InlineTag.Emphasis;
+                                first_head.Content.Literal = null;
+                                first_head.Content.Inlines =
+                                  make_inlines(first_close_delims == 1 ? InlineTag.Emphasis : InlineTag.Strong,
+                                               first_head.Next);
 
-                                il = first_head.next;
-                                while (il.next != null && il.next != first_close)
+                                il = first_head.Next;
+                                while (il.Next != null && il.Next != first_close)
                                 {
-                                    il = il.next;
+                                    il = il.Next;
                                 }
-                                il.next = null;
+                                il.Next = null;
 
-                                first_head.content.inlines.next = first_close.next;
+                                first_head.Content.Inlines.Next = first_close.Next;
 
-                                il = first_head.content.inlines;
-                                while (il.next != null && il.next != last)
+                                il = first_head.Content.Inlines;
+                                while (il.Next != null && il.Next != last)
                                 {
-                                    il = il.next;
+                                    il = il.Next;
                                 }
-                                il.next = null;
+                                il.Next = null;
 
-                                first_close.next = null;
-                                first_head.next = null;
+                                first_close.Next = null;
+                                first_head.Next = null;
                                 goto done;
                             }
                             else
@@ -554,58 +554,66 @@ namespace CommonMark.Parser
             return result;
         }
 
-        // Destructively unescape a string: remove backslashes before punctuation chars.
-        public static void unescape(ref string url)
+        /// <summary>
+        /// Destructively unescape a string: remove backslashes before punctuation or symbol characters.
+        /// </summary>
+        /// <param name="url">The string data that will be changed by unescaping any punctuation or symbol characters.</param>
+        public static string Unescape(string url)
         {
             // remove backslashes before punctuation chars:
             int searchpos = 0;
-            while ((searchpos = BString.bstrchrp(url, '\\', searchpos)) != -1)
+            char c;
+            while ((searchpos = url.IndexOf('\\', searchpos)) != -1)
             {
-                var c = BString.bchar(url, searchpos + 1);
-                if (c != null && (char.IsPunctuation(c.Value) || char.IsSymbol(c.Value)))
+                searchpos++;
+                if (url.Length == searchpos)
+                    break;
+
+                c = url[searchpos];
+                if (c != char.MinValue && (char.IsPunctuation(c) || char.IsSymbol(c)))
                 {
-                    url = url.Remove(searchpos, 1);
-                }
-                else
-                {
-                    searchpos++;
+                    url = url.Remove(searchpos - 1, 1);
                 }
             }
+
+            return url;
         }
 
-        // Clean a URL: remove surrounding whitespace and surrounding <>,
-        // and remove \ that escape punctuation.
-        private static void clean_url(ref string url)
+        /// <summary>
+        /// Clean a URL: remove surrounding whitespace and surrounding &lt; &gt; and remove \ that escape punctuation and other symbols.
+        /// </summary>
+        /// <remarks>Original: clean_url(ref string)</remarks>
+        private static string CleanUrl(string url)
         {
             if (url.Length == 0)
-                return;
+                return url;
 
             // remove surrounding <> if any:
-            url = url.Trim(); ;
+            url = url.Trim();
+
             if (url[0] == '<' && url[url.Length - 1] == '>')
-            {
                 url = url.Substring(1, url.Length - 2);
-            }
-            unescape(ref url);
+
+            return Unescape(url);
         }
 
-        // Clean a title: remove surrounding quotes and remove \ that escape punctuation.
-        static void clean_title(ref string title)
+        /// <summary>
+        /// Clean a title: remove surrounding quotes and remove \ that escape punctuation.
+        /// </summary>
+        /// <remarks>Original: clean_title(ref string)</remarks>
+        private static string CleanTitle(string title)
         {
             // remove surrounding quotes if any:
             int titlelength = title.Length;
             if (titlelength == 0)
-                return;
+                return title;
 
             var a = title[0];
-            var b = title[title.Length - 1];
-            if ((a == '\'' && b == '\'') ||
-                (a == '(' && b == ')') ||
-                (a == '"' && b == '"'))
-            {
-                title = title.Substring(1, title.Length - 2);
-            }
-            unescape(ref title);
+            var b = title[titlelength - 1];
+            if ((a == '\'' && b == '\'') || (a == '(' && b == ')') || (a == '"' && b == '"'))
+                title = title.Substring(1, titlelength - 2);
+
+            return Unescape(title);
         }
 
         // Parse an autolink or HTML tag.
@@ -763,9 +771,9 @@ namespace CommonMark.Parser
                     {
                         subj.Position = endall + 1;
                         url = BString.bmidstr(subj.Buffer, starturl, endurl - starturl);
-                        clean_url(ref url);
+                        url = CleanUrl(url);
                         title = BString.bmidstr(subj.Buffer, starttitle, endtitle - starttitle);
-                        clean_title(ref title);
+                        title = CleanTitle(title);
                         lab = parse_inlines(rawlabel, null);
                         return make_link(lab, url, title);
                     }
@@ -912,9 +920,9 @@ namespace CommonMark.Parser
                     if (peek_char(subj) == '[')
                     {
                         inew = handle_left_bracket(subj);
-                        if (inew != null && inew.tag == InlineTag.link)
+                        if (inew != null && inew.Tag == InlineTag.Link)
                         {
-                            inew.tag = InlineTag.image;
+                            inew.Tag = InlineTag.Image;
                         }
                         else
                         {
@@ -1018,7 +1026,7 @@ namespace CommonMark.Parser
             if (matchlen > 0)
             {
                 url = BString.bmidstr(subj.Buffer, subj.Position, matchlen);
-                clean_url(ref url);
+                url = CleanUrl(url);
                 subj.Position += matchlen;
             }
             else
@@ -1032,7 +1040,7 @@ namespace CommonMark.Parser
             if (matchlen > 0)
             {
                 title = BString.bmidstr(subj.Buffer, subj.Position, matchlen);
-                clean_title(ref title);
+                title = CleanTitle(title);
                 subj.Position += matchlen;
             }
             else

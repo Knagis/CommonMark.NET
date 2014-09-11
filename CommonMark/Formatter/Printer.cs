@@ -50,72 +50,72 @@ namespace CommonMark.Formatter
                 {
                     writer.Write(' ');
                 }
-                switch (b.tag)
+                switch (b.Tag)
                 {
-                    case BlockTag.document:
+                    case BlockTag.Document:
                         writer.WriteLine("document");
-                        print_blocks(writer, b.children, indent + 2);
+                        print_blocks(writer, b.FirstChild, indent + 2);
                         break;
-                    case BlockTag.block_quote:
+                    case BlockTag.BlockQuote:
                         writer.WriteLine("block_quote");
-                        print_blocks(writer, b.children, indent + 2);
+                        print_blocks(writer, b.FirstChild, indent + 2);
                         break;
-                    case BlockTag.list_item:
-                        data = b.attributes.list_data;
+                    case BlockTag.ListItem:
+                        data = b.Attributes.ListData;
                         writer.WriteLine("list_item");
-                        print_blocks(writer, b.children, indent + 2);
+                        print_blocks(writer, b.FirstChild, indent + 2);
                         break;
-                    case BlockTag.list:
-                        data = b.attributes.list_data;
+                    case BlockTag.List:
+                        data = b.Attributes.ListData;
                         if (data.ListType == ListType.Ordered)
                         {
                             writer.WriteLine("list (type=ordered tight={0} start={1} delim={2})",
-                                 data.tight,
-                                 data.start,
-                                 data.delimiter);
+                                 data.IsTight,
+                                 data.Start,
+                                 data.Delimiter);
                         }
                         else
                         {
                             writer.WriteLine("list (type=bullet tight={0} bullet_char={1})",
-                                 data.tight,
+                                 data.IsTight,
                                  data.BulletChar);
                         }
-                        print_blocks(writer, b.children, indent + 2);
+                        print_blocks(writer, b.FirstChild, indent + 2);
                         break;
-                    case BlockTag.atx_header:
-                        writer.WriteLine("atx_header (level={0})", b.attributes.header_level);
-                        print_inlines(writer, b.inline_content, indent + 2);
+                    case BlockTag.AtxHeader:
+                        writer.WriteLine("atx_header (level={0})", b.Attributes.HeaderLevel);
+                        print_inlines(writer, b.InlineContent, indent + 2);
                         break;
-                    case BlockTag.setext_header:
-                        writer.WriteLine("setext_header (level={0})", b.attributes.header_level);
-                        print_inlines(writer, b.inline_content, indent + 2);
+                    case BlockTag.SETextHeader:
+                        writer.WriteLine("setext_header (level={0})", b.Attributes.HeaderLevel);
+                        print_inlines(writer, b.InlineContent, indent + 2);
                         break;
-                    case BlockTag.paragraph:
+                    case BlockTag.Paragraph:
                         writer.WriteLine("paragraph");
-                        print_inlines(writer, b.inline_content, indent + 2);
+                        print_inlines(writer, b.InlineContent, indent + 2);
                         break;
-                    case BlockTag.hrule:
+                    case BlockTag.HorizontalRuler:
                         writer.WriteLine("hrule");
                         break;
-                    case BlockTag.indented_code:
-                        writer.WriteLine("indented_code {0}", format_str(b.string_content));
+                    case BlockTag.IndentedCode:
+                        writer.WriteLine("indented_code {0}", format_str(b.StringContent));
                         break;
-                    case BlockTag.fenced_code:
+                    case BlockTag.FencedCode:
                         writer.WriteLine("fenced_code length={0} info={1} {2}",
-                               b.attributes.fenced_code_data.fence_length,
-                               format_str(b.attributes.fenced_code_data.info),
-                               format_str(b.string_content));
+                               b.Attributes.FencedCodeData.FenceLength,
+                               format_str(b.Attributes.FencedCodeData.Info),
+                               format_str(b.StringContent));
                         break;
-                    case BlockTag.html_block:
-                        writer.WriteLine("html_block {0}", format_str(b.string_content));
+                    case BlockTag.HtmlBlock:
+                        writer.WriteLine("html_block {0}", format_str(b.StringContent));
                         break;
-                    case BlockTag.reference_def:
+                    case BlockTag.ReferenceDefinition:
                         writer.WriteLine("reference_def");
                         break;
                     default:
-                        throw new CommonMarkException("Block type " + b.tag + " is not supported.", b);
+                        throw new CommonMarkException("Block type " + b.Tag + " is not supported.", b);
                 }
-                b = b.next;
+                b = b.Next;
             }
         }
 
@@ -136,48 +136,48 @@ namespace CommonMark.Formatter
                 {
                     writer.Write(' ');
                 }
-                switch (ils.tag)
+                switch (ils.Tag)
                 {
-                    case InlineTag.str:
-                        writer.WriteLine("str {0}", format_str(ils.content.Literal));
+                    case InlineTag.String:
+                        writer.WriteLine("str {0}", format_str(ils.Content.Literal));
                         break;
-                    case InlineTag.linebreak:
+                    case InlineTag.LineBreak:
                         writer.WriteLine("linebreak");
                         break;
-                    case InlineTag.softbreak:
+                    case InlineTag.SoftBreak:
                         writer.WriteLine("softbreak");
                         break;
-                    case InlineTag.code:
-                        writer.WriteLine("code {0}", format_str(ils.content.Literal));
+                    case InlineTag.Code:
+                        writer.WriteLine("code {0}", format_str(ils.Content.Literal));
                         break;
-                    case InlineTag.raw_html:
-                        writer.WriteLine("html {0}", format_str(ils.content.Literal));
+                    case InlineTag.RawHtml:
+                        writer.WriteLine("html {0}", format_str(ils.Content.Literal));
                         break;
-                    case InlineTag.entity:
-                        writer.WriteLine("entity {0}", format_str(ils.content.Literal));
+                    case InlineTag.Entity:
+                        writer.WriteLine("entity {0}", format_str(ils.Content.Literal));
                         break;
-                    case InlineTag.link:
+                    case InlineTag.Link:
                         writer.WriteLine("link url={0} title={1}",
-                               format_str(ils.content.linkable.url),
-                               format_str(ils.content.linkable.title));
-                        print_inlines(writer, ils.content.linkable.label, indent + 2);
+                               format_str(ils.Content.Linkable.Url),
+                               format_str(ils.Content.Linkable.Title));
+                        print_inlines(writer, ils.Content.Linkable.Label, indent + 2);
                         break;
-                    case InlineTag.image:
+                    case InlineTag.Image:
                         writer.WriteLine("image url={0} title={1}",
-                               format_str(ils.content.linkable.url),
-                               format_str(ils.content.linkable.title));
-                        print_inlines(writer, ils.content.linkable.label, indent + 2);
+                               format_str(ils.Content.Linkable.Url),
+                               format_str(ils.Content.Linkable.Title));
+                        print_inlines(writer, ils.Content.Linkable.Label, indent + 2);
                         break;
-                    case InlineTag.strong:
+                    case InlineTag.Strong:
                         writer.WriteLine("strong");
-                        print_inlines(writer, ils.content.linkable.label, indent + 2);
+                        print_inlines(writer, ils.Content.Linkable.Label, indent + 2);
                         break;
-                    case InlineTag.emph:
+                    case InlineTag.Emphasis:
                         writer.WriteLine("emph");
-                        print_inlines(writer, ils.content.linkable.label, indent + 2);
+                        print_inlines(writer, ils.Content.Linkable.Label, indent + 2);
                         break;
                 }
-                ils = ils.next;
+                ils = ils.Next;
             }
         }
     }

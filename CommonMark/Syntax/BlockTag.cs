@@ -6,17 +6,36 @@ namespace CommonMark.Syntax
 {
     public enum BlockTag
     {
-        document,
-        block_quote,
-        list,
-        list_item,
-        fenced_code,
-        indented_code,
-        html_block,
-        paragraph,
-        atx_header,
-        setext_header,
-        hrule,
-        reference_def
+        Document,
+
+        /// <remarks>Original: block_quote</remarks>
+        BlockQuote,
+
+        List,
+
+        /// <remarks>Original: list_item</remarks>
+        ListItem,
+
+        /// <remarks>Original: fenced_code</remarks>
+        FencedCode,
+
+        /// <remarks>Original: indented_code</remarks>
+        IndentedCode,
+
+        /// <remarks>Original: html_block</remarks>
+        HtmlBlock,
+
+        Paragraph,
+
+        /// <remarks>Original: atx_header</remarks>
+        AtxHeader,
+
+        /// <remarks>Original: setext_header</remarks>
+        SETextHeader,
+
+        HorizontalRuler,
+
+        /// <remarks>Original: reference_def</remarks>
+        ReferenceDefinition
     }
 }

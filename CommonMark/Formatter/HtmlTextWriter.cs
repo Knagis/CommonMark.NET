@@ -16,8 +16,10 @@ namespace CommonMark.Formatter
         public HtmlTextWriter(System.IO.TextWriter inner)
         {
             this._inner = inner;
-            this.NewLine = inner.NewLine;
-            this._windowsNewLine = inner.NewLine == "\r\n";
+
+            var nl = inner.NewLine;
+            this.CoreNewLine = nl.ToCharArray();
+            this._windowsNewLine = nl == "\r\n";
         }
 
         public override void Write(char value)

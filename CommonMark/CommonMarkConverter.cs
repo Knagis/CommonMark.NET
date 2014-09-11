@@ -66,10 +66,10 @@ namespace CommonMark
 
             try
             {
-                while (cur != cur.top)
+                while (cur != cur.Top)
                 {
                     BlockMethods.finalize(cur, linenum);
-                    cur = cur.parent;
+                    cur = cur.Parent;
                 }
             }
             catch (CommonMarkException)
@@ -81,7 +81,7 @@ namespace CommonMark
                 throw new CommonMarkException("An error occured while finalizing open containers.", cur, ex);
             }
 
-            if (cur != cur.top)
+            if (cur != cur.Top)
                 throw new CommonMarkException("Unable to finalize open containers.", cur);
 
             try
@@ -113,12 +113,12 @@ namespace CommonMark
             if (document == null)
                 throw new ArgumentNullException("document");
 
-            if (document.tag != Syntax.BlockTag.document)
+            if (document.Tag != Syntax.BlockTag.Document)
                 throw new ArgumentException("The block element passed to this method must represent a top level document.", "document");
 
             try
             {
-                BlockMethods.process_inlines(document, document.attributes.refmap);
+                BlockMethods.process_inlines(document, document.Attributes.ReferenceMap);
             }
             catch(CommonMarkException)
             {
@@ -148,7 +148,7 @@ namespace CommonMark
             if (target == null)
                 throw new ArgumentNullException("target");
 
-            if (document.tag != Syntax.BlockTag.document)
+            if (document.Tag != Syntax.BlockTag.Document)
                 throw new ArgumentException("The block element passed to this method must represent a top level document.", "document");
 
             if (settings == null)

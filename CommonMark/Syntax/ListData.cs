@@ -6,12 +6,20 @@ namespace CommonMark.Syntax
 {
     public class ListData
     {
-        public ListType ListType;
-        public int marker_offset;
-        public int padding;
-        public int start;
-        public ListDelimiter delimiter;
-        public char BulletChar;
-        public bool tight;
+        public ListType ListType { get; set; }
+
+        /// <remarks>Original: marker_offset</remarks>
+        public int MarkerOffset { get; set; }
+
+        public int Padding { get; set; }
+
+        public int Start { get; set; }
+
+        public ListDelimiter Delimiter { get; set; }
+
+        public char BulletChar { get; set; }
+
+        /// <remarks>Original: tight</remarks>
+        public bool IsTight { get; set; }
     }
 }

@@ -6,8 +6,8 @@ namespace CommonMark.Syntax
 {
     public class InlineContentLinkable
     {
-        public Inline label;
-        public string url;
-        public string title;
+        public Inline Label { get; set; }
+        public string Url { get; set; }
+        public string Title { get; set; }
     }
 }

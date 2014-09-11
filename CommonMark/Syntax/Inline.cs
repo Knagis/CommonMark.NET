@@ -6,8 +6,11 @@ namespace CommonMark.Syntax
 {
     public class Inline
     {
-        public InlineTag tag;
-        public InlineContent content = new InlineContent();
-        public Inline next;
+        public InlineTag Tag { get; set; }
+
+        private readonly InlineContent _content = new InlineContent();
+        public InlineContent Content { get { return this._content; } }
+
+        public Inline Next { get; set; }
     }
 }

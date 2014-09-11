@@ -12,30 +12,30 @@ namespace CommonMark.Parser
         private static Block make_block(BlockTag tag, int start_line, int start_column)
         {
             Block e = new Block();
-            e.tag = tag;
-            e.open = true;
-            e.last_line_blank = false;
-            e.start_line = start_line;
-            e.start_column = start_column;
-            e.end_line = start_line;
-            e.children = null;
-            e.last_child = null;
-            e.parent = null;
-            e.top = null;
-            e.attributes.refmap = null;
-            e.string_content = string.Empty;
-            e.inline_content = null;
-            e.next = null;
-            e.prev = null;
+            e.Tag = tag;
+            e.IsOpen = true;
+            e.IsLastLineBlank = false;
+            e.StartLine = start_line;
+            e.StartColumn = start_column;
+            e.EndLine = start_line;
+            e.FirstChild = null;
+            e.LastChild = null;
+            e.Parent = null;
+            e.Top = null;
+            e.Attributes.ReferenceMap = null;
+            e.StringContent = string.Empty;
+            e.InlineContent = null;
+            e.Next = null;
+            e.Previous = null;
             return e;
         }
 
         // Create a root document block.
         public static Block make_document()
         {
-            Block e = make_block(BlockTag.document, 1, 1);
-            e.attributes.refmap = new Dictionary<string, Reference>();
-            e.top = e;
+            Block e = make_block(BlockTag.Document, 1, 1);
+            e.Attributes.ReferenceMap = new Dictionary<string, Reference>();
+            e.Top = e;
             return e;
         }
 
@@ -63,18 +63,18 @@ namespace CommonMark.Parser
 
         private static bool can_contain(BlockTag parent_type, BlockTag child_type)
         {
-            return (parent_type == BlockTag.document ||
-                     parent_type == BlockTag.block_quote ||
-                     parent_type == BlockTag.list_item ||
-                     (parent_type == BlockTag.list && child_type == BlockTag.list_item));
+            return (parent_type == BlockTag.Document ||
+                     parent_type == BlockTag.BlockQuote ||
+                     parent_type == BlockTag.ListItem ||
+                     (parent_type == BlockTag.List && child_type == BlockTag.ListItem));
         }
 
         private static bool accepts_lines(BlockTag block_type)
         {
-            return (block_type == BlockTag.paragraph ||
-                    block_type == BlockTag.atx_header ||
-                    block_type == BlockTag.indented_code ||
-                    block_type == BlockTag.fenced_code);
+            return (block_type == BlockTag.Paragraph ||
+                    block_type == BlockTag.AtxHeader ||
+                    block_type == BlockTag.IndentedCode ||
+                    block_type == BlockTag.FencedCode);
         }
 
 
@@ -87,21 +87,22 @@ namespace CommonMark.Parser
             else
                 s = BString.bmidstr(ln, offset, len);
 
-            if (!block.open)
-                throw new CommonMarkException(string.Format("Attempted to add line '{0}' to closed container ({1}).", ln, block.tag));
+            if (!block.IsOpen)
+                throw new CommonMarkException(string.Format("Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
 
-            block.string_content += s;
+            block.StringContent += s;
         }
 
-        private static void remove_trailing_blank_lines(ref string ln)
+        /// <remarks>Original: remove_trailing_blank_lines(ref string)</remarks>
+        private static string RemoveTrailingBlankLines(string ln, bool keepLastNewline)
         {
             string tofind = " \t\r\n";
-            int pos;
             // find last nonspace:
-            pos = BString.bninchrr(ln, ln.Length - 1, tofind);
+            var pos = BString.bninchrr(ln, ln.Length - 1, tofind);
             if (pos == -1)
-            { // all spaces
-                ln = "";
+            { 
+                // all spaces
+                return string.Empty;
             }
             else
             {
@@ -109,21 +110,26 @@ namespace CommonMark.Parser
                 pos = BString.bstrchrp(ln, '\n', pos);
                 if (pos != -1)
                 {
-                    ln = ln.Remove(pos, ln.Length - pos);
+                    if (keepLastNewline)
+                        pos++;
+
+                    return ln.Remove(pos, ln.Length - pos);
                 }
             }
+
+            return ln;
         }
         // Check to see if a block ends with a blank line, descending
         // if needed into lists and sublists.
         static bool ends_with_blank_line(Block block)
         {
-            if (block.last_line_blank)
+            if (block.IsLastLineBlank)
             {
                 return true;
             }
-            if ((block.tag == BlockTag.list || block.tag == BlockTag.list_item) && block.last_child != null)
+            if ((block.Tag == BlockTag.List || block.Tag == BlockTag.ListItem) && block.LastChild != null)
             {
-                return ends_with_blank_line(block.last_child);
+                return ends_with_blank_line(block.LastChild);
             }
             else
             {
@@ -135,21 +141,21 @@ namespace CommonMark.Parser
         private static void break_out_of_lists(ref Block bptr, int line_number)
         {
             Block container = bptr;
-            Block b = container.top;
+            Block b = container.Top;
             // find first containing list:
-            while (b != null && b.tag != BlockTag.list)
+            while (b != null && b.Tag != BlockTag.List)
             {
-                b = b.last_child;
+                b = b.LastChild;
             }
             if (b != null)
             {
                 while (container != null && container != b)
                 {
                     finalize(container, line_number);
-                    container = container.parent;
+                    container = container.Parent;
                 }
                 finalize(b, line_number);
-                bptr = b.parent;
+                bptr = b.Parent;
             }
         }
 
@@ -164,83 +170,82 @@ namespace CommonMark.Parser
             if (b == null)
                 throw new ArgumentNullException("b");
 
-            if (!b.open)
+            if (!b.IsOpen)
             {
                 // don't do anything if the block is already closed
                 return; 
             }
 
-            b.open = false;
-            if (line_number > b.start_line)
+            b.IsOpen = false;
+            if (line_number > b.StartLine)
             {
-                b.end_line = line_number - 1;
+                b.EndLine = line_number - 1;
             }
             else
             {
-                b.end_line = line_number;
+                b.EndLine = line_number;
             }
 
-            switch (b.tag)
+            switch (b.Tag)
             {
 
-                case BlockTag.paragraph:
+                case BlockTag.Paragraph:
                     pos = 0;
-                    while (BString.bchar(b.string_content, 0) == '[' &&
-                           0 != (pos = InlineMethods.parse_reference(b.string_content,
-                                                  b.top.attributes.refmap)))
+                    while (BString.bchar(b.StringContent, 0) == '[' &&
+                           0 != (pos = InlineMethods.parse_reference(b.StringContent,
+                                                  b.Top.Attributes.ReferenceMap)))
                     {
-                        b.string_content = b.string_content.Remove(0, pos);
+                        b.StringContent = b.StringContent.Remove(0, pos);
                     }
-                    if (is_blank(b.string_content, 0))
+                    if (is_blank(b.StringContent, 0))
                     {
-                        b.tag = BlockTag.reference_def;
+                        b.Tag = BlockTag.ReferenceDefinition;
                     }
                     break;
 
-                case BlockTag.indented_code:
-                    remove_trailing_blank_lines(ref b.string_content);
-                    b.string_content += "\n";
+                case BlockTag.IndentedCode:
+                    b.StringContent = RemoveTrailingBlankLines(b.StringContent, true);
                     break;
 
-                case BlockTag.fenced_code:
+                case BlockTag.FencedCode:
                     // first line of contents becomes info
-                    firstlinelen = BString.bstrchr(b.string_content, '\n');
-                    b.attributes.fenced_code_data.info = BString.bmidstr(b.string_content, 0, firstlinelen);
-                    b.string_content = b.string_content.Remove(0, firstlinelen + 1); // +1 for \n
-                    b.attributes.fenced_code_data.info = b.attributes.fenced_code_data.info.Trim();
-                    InlineMethods.unescape(ref b.attributes.fenced_code_data.info);
+                    firstlinelen = BString.bstrchr(b.StringContent, '\n');
+                    b.Attributes.FencedCodeData.Info = BString.bmidstr(b.StringContent, 0, firstlinelen);
+                    b.StringContent = b.StringContent.Remove(0, firstlinelen + 1); // +1 for \n
+                    b.Attributes.FencedCodeData.Info = b.Attributes.FencedCodeData.Info.Trim();
+                    b.Attributes.FencedCodeData.Info = InlineMethods.Unescape(b.Attributes.FencedCodeData.Info);
                     break;
 
-                case BlockTag.list: // determine tight/loose status
-                    b.attributes.list_data.tight = true; // tight by default
-                    item = b.children;
+                case BlockTag.List: // determine tight/loose status
+                    b.Attributes.ListData.IsTight = true; // tight by default
+                    item = b.FirstChild;
 
                     while (item != null)
                     {
                         // check for non-final non-empty list item ending with blank line:
-                        if (item.last_line_blank && item.next != null)
+                        if (item.IsLastLineBlank && item.Next != null)
                         {
-                            b.attributes.list_data.tight = false;
+                            b.Attributes.ListData.IsTight = false;
                             break;
                         }
                         // recurse into children of list item, to see if there are
                         // spaces between them:
-                        subitem = item.children;
+                        subitem = item.FirstChild;
                         while (subitem != null)
                         {
                             if (ends_with_blank_line(subitem) &&
-                                (item.next != null || subitem.next != null))
+                                (item.Next != null || subitem.Next != null))
                             {
-                                b.attributes.list_data.tight = false;
+                                b.Attributes.ListData.IsTight = false;
                                 break;
                             }
-                            subitem = subitem.next;
+                            subitem = subitem.Next;
                         }
-                        if (!(b.attributes.list_data.tight))
+                        if (!(b.Attributes.ListData.IsTight))
                         {
                             break;
                         }
-                        item = item.next;
+                        item = item.Next;
                     }
 
                     break;
@@ -255,30 +260,30 @@ namespace CommonMark.Parser
         {
             // if 'parent' isn't the kind of block that can accept this child,
             // then back up til we hit a block that can.
-            while (!can_contain(parent.tag, block_type))
+            while (!can_contain(parent.Tag, block_type))
             {
                 finalize(parent, start_line);
-                parent = parent.parent;
+                parent = parent.Parent;
             }
 
             if (parent == null)
                 throw new ArgumentNullException("parent");
 
             Block child = make_block(block_type, start_line, start_column);
-            child.parent = parent;
-            child.top = parent.top;
+            child.Parent = parent;
+            child.Top = parent.Top;
 
-            if (parent.last_child != null)
+            if (parent.LastChild != null)
             {
-                parent.last_child.next = child;
-                child.prev = parent.last_child;
+                parent.LastChild.Next = child;
+                child.Previous = parent.LastChild;
             }
             else
             {
-                parent.children = child;
-                child.prev = null;
+                parent.FirstChild = child;
+                child.Previous = null;
             }
-            parent.last_child = child;
+            parent.LastChild = child;
             return child;
         }
 
@@ -287,40 +292,43 @@ namespace CommonMark.Parser
         // string content into inline content where appropriate.
         public static void process_inlines(Block cur, Dictionary<string, Reference> refmap)
         {
-            switch (cur.tag)
+            switch (cur.Tag)
             {
 
-                case BlockTag.paragraph:
-                case BlockTag.atx_header:
-                case BlockTag.setext_header:
-                    if (cur.string_content == null)
+                case BlockTag.Paragraph:
+                case BlockTag.AtxHeader:
+                case BlockTag.SETextHeader:
+                    if (cur.StringContent == null)
                         throw new CommonMarkException("The block does not contain string content.", cur);
 
-                    cur.inline_content = InlineMethods.parse_inlines(cur.string_content, refmap);
-                    cur.string_content = null;
+                    cur.InlineContent = InlineMethods.parse_inlines(cur.StringContent, refmap);
+                    cur.StringContent = null;
                     break;
 
                 default:
                     break;
             }
 
-            Block child = cur.children;
+            Block child = cur.FirstChild;
             while (child != null)
             {
                 process_inlines(child, refmap);
-                child = child.next;
+                child = child.Next;
             }
         }
 
-        // Attempts to parse a list item marker (bullet or enumerated).
-        // On success, returns length of the marker, and populates
-        // data with the details.  On failure, returns 0.
-        static int parse_list_marker(string ln, int pos, ref ListData dataptr)
+        /// <summary>
+        /// Attempts to parse a list item marker (bullet or enumerated).
+        /// On success, returns length of the marker, and populates
+        /// data with the details.  On failure, returns 0.
+        /// </summary>
+        /// <remarks>Original: int parse_list_marker(string ln, int pos, ref ListData dataptr)</remarks>
+        private static int ParseListMarker(string ln, int pos, out ListData data)
         {
             char? c;
             int startpos;
             int start = 1;
-            ListData data;
+            data = null;
 
             startpos = pos;
             c = BString.bchar(ln, pos);
@@ -328,17 +336,16 @@ namespace CommonMark.Parser
             if ((c == '*' || c == '-' || c == '+') && 0 == Scanner.scan_hrule(ln, pos))
             {
                 pos++;
-                if (pos == ln.Length || !char.IsWhiteSpace(BString.bchar(ln, pos).Value))
-                {
+                if (pos == ln.Length || !char.IsWhiteSpace(ln[pos]))
                     return 0;
-                }
+
                 data = new ListData();
-                data.marker_offset = 0; // will be adjusted later
+                data.MarkerOffset = 0; // will be adjusted later
                 data.ListType = ListType.Bullet;
                 data.BulletChar = c.Value;
-                data.start = 1;
-                data.delimiter = ListDelimiter.Period;
-                data.tight = false;
+                data.Start = 1;
+                data.Delimiter = ListDelimiter.Period;
+                data.IsTight = false;
             }
             else if (c != null && char.IsDigit(c.Value))
             {
@@ -365,12 +372,12 @@ namespace CommonMark.Parser
                         return 0;
 
                     data = new ListData();
-                    data.marker_offset = 0; // will be adjusted later
+                    data.MarkerOffset = 0; // will be adjusted later
                     data.ListType = ListType.Ordered;
                     data.BulletChar = '\0';
-                    data.start = start;
-                    data.delimiter = (c == '.' ? ListDelimiter.Period : ListDelimiter.Parenthesis);
-                    data.tight = false;
+                    data.Start = start;
+                    data.Delimiter = (c == '.' ? ListDelimiter.Period : ListDelimiter.Parenthesis);
+                    data.IsTight = false;
                 }
                 else
                 {
@@ -383,7 +390,6 @@ namespace CommonMark.Parser
                 return 0;
             }
 
-            dataptr = data;
             return (pos - startpos);
         }
 
@@ -391,7 +397,7 @@ namespace CommonMark.Parser
         private static bool lists_match(ListData list_data, ListData item_data)
         {
             return (list_data.ListType == item_data.ListType &&
-                    list_data.delimiter == item_data.delimiter &&
+                    list_data.Delimiter == item_data.Delimiter &&
                 // list_data.marker_offset == item_data.marker_offset &&
                     list_data.BulletChar == item_data.BulletChar);
         }
@@ -409,7 +415,7 @@ namespace CommonMark.Parser
             int matched = 0;
             int lev = 0;
             int i;
-            ListData data = null;
+            ListData data;
             bool all_matched = true;
             Block container;
             Block cur = curptr;
@@ -421,14 +427,14 @@ namespace CommonMark.Parser
             ln = Utilities.Untabify(ln);
 
             // container starts at the document root.
-            container = cur.top;
+            container = cur.Top;
 
             // for each containing block, try to parse the associated line start.
             // bail out on failure:  container will point to the last matching block.
 
-            while (container.last_child != null && container.last_child.open)
+            while (container.LastChild != null && container.LastChild.IsOpen)
             {
-                container = container.last_child;
+                container = container.LastChild;
 
                 first_nonspace = offset;
                 while (BString.bchar(ln, first_nonspace) == ' ')
@@ -437,7 +443,7 @@ namespace CommonMark.Parser
                 indent = first_nonspace - offset;
                 blank = BString.bchar(ln, first_nonspace) == '\n';
 
-                if (container.tag == BlockTag.block_quote)
+                if (container.Tag == BlockTag.BlockQuote)
                 {
 
                     matched = (indent <= 3 && BString.bchar(ln, first_nonspace) == '>') ? 1 : 0;
@@ -453,14 +459,14 @@ namespace CommonMark.Parser
                     }
 
                 }
-                else if (container.tag == BlockTag.list_item)
+                else if (container.Tag == BlockTag.ListItem)
                 {
 
-                    if (indent >= container.attributes.list_data.marker_offset +
-                        container.attributes.list_data.padding)
+                    if (indent >= container.Attributes.ListData.MarkerOffset +
+                        container.Attributes.ListData.Padding)
                     {
-                        offset += container.attributes.list_data.marker_offset +
-                          container.attributes.list_data.padding;
+                        offset += container.Attributes.ListData.MarkerOffset +
+                          container.Attributes.ListData.Padding;
                     }
                     else if (blank)
                     {
@@ -472,7 +478,7 @@ namespace CommonMark.Parser
                     }
 
                 }
-                else if (container.tag == BlockTag.indented_code)
+                else if (container.Tag == BlockTag.IndentedCode)
                 {
 
                     if (indent >= CODE_INDENT)
@@ -489,19 +495,19 @@ namespace CommonMark.Parser
                     }
 
                 }
-                else if (container.tag == BlockTag.atx_header ||
-                         container.tag == BlockTag.setext_header)
+                else if (container.Tag == BlockTag.AtxHeader ||
+                         container.Tag == BlockTag.SETextHeader)
                 {
 
                     // a header can never contain more than one line
                     all_matched = false;
 
                 }
-                else if (container.tag == BlockTag.fenced_code)
+                else if (container.Tag == BlockTag.FencedCode)
                 {
 
                     // skip optional spaces of fence offset
-                    i = container.attributes.fenced_code_data.fence_offset;
+                    i = container.Attributes.FencedCodeData.FenceOffset;
                     while (i > 0 && BString.bchar(ln, offset) == ' ')
                     {
                         offset++;
@@ -509,7 +515,7 @@ namespace CommonMark.Parser
                     }
 
                 }
-                else if (container.tag == BlockTag.html_block)
+                else if (container.Tag == BlockTag.HtmlBlock)
                 {
 
                     if (blank)
@@ -518,12 +524,12 @@ namespace CommonMark.Parser
                     }
 
                 }
-                else if (container.tag == BlockTag.paragraph)
+                else if (container.Tag == BlockTag.Paragraph)
                 {
 
                     if (blank)
                     {
-                        container.last_line_blank = true;
+                        container.IsLastLineBlank = true;
                         all_matched = false;
                     }
 
@@ -531,7 +537,7 @@ namespace CommonMark.Parser
 
                 if (!all_matched)
                 {
-                    container = container.parent;  // back up to last matching block
+                    container = container.Parent;  // back up to last matching block
                     break;
                 }
             }
@@ -539,14 +545,14 @@ namespace CommonMark.Parser
             last_matched_container = container;
 
             // check to see if we've hit 2nd blank line, break out of list:
-            if (blank && container.last_line_blank)
+            if (blank && container.IsLastLineBlank)
             {
                 break_out_of_lists(ref container, line_number);
             }
 
             // unless last matched container is code block, try new container starts:
-            while (container.tag != BlockTag.fenced_code && container.tag != BlockTag.indented_code &&
-                   container.tag != BlockTag.html_block)
+            while (container.Tag != BlockTag.FencedCode && container.Tag != BlockTag.IndentedCode &&
+                   container.Tag != BlockTag.HtmlBlock)
             {
 
                 first_nonspace = offset;
@@ -559,10 +565,10 @@ namespace CommonMark.Parser
                 if (indent >= CODE_INDENT)
                 {
 
-                    if (cur.tag != BlockTag.paragraph && !blank)
+                    if (cur.Tag != BlockTag.Paragraph && !blank)
                     {
                         offset += CODE_INDENT;
-                        container = add_child(container, BlockTag.indented_code, line_number, offset + 1);
+                        container = add_child(container, BlockTag.IndentedCode, line_number, offset + 1);
                     }
                     else
                     { // indent > 4 in lazy line
@@ -579,14 +585,14 @@ namespace CommonMark.Parser
                     {
                         offset++;
                     }
-                    container = add_child(container, BlockTag.block_quote, line_number, offset + 1);
+                    container = add_child(container, BlockTag.BlockQuote, line_number, offset + 1);
 
                 }
                 else if (0 != (matched = Scanner.scan_atx_header_start(ln, first_nonspace)))
                 {
 
                     offset = first_nonspace + matched;
-                    container = add_child(container, BlockTag.atx_header, line_number, offset + 1);
+                    container = add_child(container, BlockTag.AtxHeader, line_number, offset + 1);
                     int hashpos = BString.bstrchrp(ln, '#', first_nonspace);
 
                     if (hashpos == -1)
@@ -598,51 +604,51 @@ namespace CommonMark.Parser
                         level++;
                         hashpos++;
                     }
-                    container.attributes.header_level = level;
+                    container.Attributes.HeaderLevel = level;
 
                 }
                 else if (0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace)))
                 {
 
-                    container = add_child(container, BlockTag.fenced_code, line_number, first_nonspace + 1);
-                    container.attributes.fenced_code_data.fence_char = ln[first_nonspace];
-                    container.attributes.fenced_code_data.fence_length = matched;
-                    container.attributes.fenced_code_data.fence_offset = first_nonspace - offset;
+                    container = add_child(container, BlockTag.FencedCode, line_number, first_nonspace + 1);
+                    container.Attributes.FencedCodeData.FenceChar = ln[first_nonspace];
+                    container.Attributes.FencedCodeData.FenceLength = matched;
+                    container.Attributes.FencedCodeData.FenceOffset = first_nonspace - offset;
                     offset = first_nonspace + matched;
 
                 }
                 else if (0 != (matched = Scanner.scan_html_block_tag(ln, first_nonspace)))
                 {
 
-                    container = add_child(container, BlockTag.html_block, line_number,
+                    container = add_child(container, BlockTag.HtmlBlock, line_number,
                                         first_nonspace + 1);
                     // note, we don't adjust offset because the tag is part of the text
 
                 }
-                else if (container.tag == BlockTag.paragraph &&
+                else if (container.Tag == BlockTag.Paragraph &&
                         0 != (lev = Scanner.scan_setext_header_line(ln, first_nonspace)) &&
                     // check that there is only one line in the paragraph:
-                         BString.bstrrchrp(container.string_content, '\n',
-                                   container.string_content.Length - 2) == -1)
+                         BString.bstrrchrp(container.StringContent, '\n',
+                                   container.StringContent.Length - 2) == -1)
                 {
 
-                    container.tag = BlockTag.setext_header;
-                    container.attributes.header_level = lev;
+                    container.Tag = BlockTag.SETextHeader;
+                    container.Attributes.HeaderLevel = lev;
                     offset = ln.Length - 1;
 
                 }
-                else if (!(container.tag == BlockTag.paragraph && !all_matched) &&
+                else if (!(container.Tag == BlockTag.Paragraph && !all_matched) &&
                          0 != (matched = Scanner.scan_hrule(ln, first_nonspace)))
                 {
 
                     // it's only now that we know the line is not part of a setext header:
-                    container = add_child(container, BlockTag.hrule, line_number, first_nonspace + 1);
+                    container = add_child(container, BlockTag.HorizontalRuler, line_number, first_nonspace + 1);
                     finalize(container, line_number);
-                    container = container.parent;
+                    container = container.Parent;
                     offset = ln.Length - 1;
 
                 }
-                else if (0 != (matched = parse_list_marker(ln, first_nonspace, ref data)))
+                else if (0 != (matched = ParseListMarker(ln, first_nonspace, out data)))
                 {
 
                     // compute padding:
@@ -655,7 +661,7 @@ namespace CommonMark.Parser
                     // i = number of spaces after marker, up to 5
                     if (i >= 5 || i < 1 || BString.bchar(ln, offset) == '\n')
                     {
-                        data.padding = matched + 1;
+                        data.Padding = matched + 1;
                         if (i > 0)
                         {
                             offset += 1;
@@ -663,34 +669,34 @@ namespace CommonMark.Parser
                     }
                     else
                     {
-                        data.padding = matched + i;
+                        data.Padding = matched + i;
                         offset += i;
                     }
 
                     // check container; if it's a list, see if this list item
                     // can continue the list; otherwise, create a list container.
 
-                    data.marker_offset = indent;
+                    data.MarkerOffset = indent;
 
-                    if (container.tag != BlockTag.list ||
-                        !lists_match(container.attributes.list_data, data))
+                    if (container.Tag != BlockTag.List ||
+                        !lists_match(container.Attributes.ListData, data))
                     {
-                        container = add_child(container, BlockTag.list, line_number,
+                        container = add_child(container, BlockTag.List, line_number,
                       first_nonspace + 1);
-                        container.attributes.list_data = data;
+                        container.Attributes.ListData = data;
                     }
 
                     // add the list item
-                    container = add_child(container, BlockTag.list_item, line_number,
+                    container = add_child(container, BlockTag.ListItem, line_number,
                         first_nonspace + 1);
-                    container.attributes.list_data = data;
+                    container.Attributes.ListData = data;
                 }
                 else
                 {
                     break;
                 }
 
-                if (accepts_lines(container.tag))
+                if (accepts_lines(container.Tag))
                 {
                     // if it's a line container, it can't contain other containers
                     break;
@@ -713,25 +719,25 @@ namespace CommonMark.Parser
             // and we don't count blanks in fenced code for purposes of tight/loose
             // lists or breaking out of lists.  we also don't set last_line_blank
             // on an empty list item.
-            container.last_line_blank = (blank &&
-                                          container.tag != BlockTag.block_quote &&
-                                          container.tag != BlockTag.fenced_code &&
-                                          !(container.tag == BlockTag.list_item &&
-                                            container.children == null &&
-                                            container.start_line == line_number));
+            container.IsLastLineBlank = (blank &&
+                                          container.Tag != BlockTag.BlockQuote &&
+                                          container.Tag != BlockTag.FencedCode &&
+                                          !(container.Tag == BlockTag.ListItem &&
+                                            container.FirstChild == null &&
+                                            container.StartLine == line_number));
 
             Block cont = container;
-            while (cont.parent != null)
+            while (cont.Parent != null)
             {
-                cont.parent.last_line_blank = false;
-                cont = cont.parent;
+                cont.Parent.IsLastLineBlank = false;
+                cont = cont.Parent;
             }
 
             if (cur != last_matched_container &&
                 container == last_matched_container &&
                 !blank &&
-                cur.tag == BlockTag.paragraph &&
-                cur.string_content.Length > 0)
+                cur.Tag == BlockTag.Paragraph &&
+                cur.StringContent.Length > 0)
             {
 
                 add_line(cur, ln, offset);
@@ -745,31 +751,31 @@ namespace CommonMark.Parser
                 {
 
                     finalize(cur, line_number);
-                    cur = cur.parent;
+                    cur = cur.Parent;
 
                     if (cur == null)
-                        throw new CommonMarkException("Cannot finalize container block. Last matched container tag = " + last_matched_container.tag);
+                        throw new CommonMarkException("Cannot finalize container block. Last matched container tag = " + last_matched_container.Tag);
 
                 }
 
-                if (container.tag == BlockTag.indented_code)
+                if (container.Tag == BlockTag.IndentedCode)
                 {
 
                     add_line(container, ln, offset);
 
                 }
-                else if (container.tag == BlockTag.fenced_code)
+                else if (container.Tag == BlockTag.FencedCode)
                 {
 
                     matched = (indent <= 3
-                      && BString.bchar(ln, first_nonspace) == container.attributes.fenced_code_data.fence_char)
-                      && (0 != Scanner.scan_close_code_fence(ln, first_nonspace, container.attributes.fenced_code_data.fence_length))
+                      && BString.bchar(ln, first_nonspace) == container.Attributes.FencedCodeData.FenceChar)
+                      && (0 != Scanner.scan_close_code_fence(ln, first_nonspace, container.Attributes.FencedCodeData.FenceLength))
                       ? 1 : 0;
                     if (matched != 0)
                     {
                         // if closing fence, don't add line to container; instead, close it:
                         finalize(container, line_number);
-                        container = container.parent; // back up to parent
+                        container = container.Parent; // back up to parent
                     }
                     else
                     {
@@ -777,7 +783,7 @@ namespace CommonMark.Parser
                     }
 
                 }
-                else if (container.tag == BlockTag.html_block)
+                else if (container.Tag == BlockTag.HtmlBlock)
                 {
 
                     add_line(container, ln, offset);
@@ -789,7 +795,7 @@ namespace CommonMark.Parser
                     // ??? do nothing
 
                 }
-                else if (container.tag == BlockTag.atx_header)
+                else if (container.Tag == BlockTag.AtxHeader)
                 {
 
                     // chop off trailing ###s...use a scanner?
@@ -811,27 +817,27 @@ namespace CommonMark.Parser
                     ln = ln.Remove(p + 1, numhashes);
                     add_line(container, ln, first_nonspace);
                     finalize(container, line_number);
-                    container = container.parent;
+                    container = container.Parent;
 
                 }
-                else if (accepts_lines(container.tag))
+                else if (accepts_lines(container.Tag))
                 {
 
                     add_line(container, ln, first_nonspace);
 
                 }
-                else if (container.tag != BlockTag.hrule && container.tag != BlockTag.setext_header)
+                else if (container.Tag != BlockTag.HorizontalRuler && container.Tag != BlockTag.SETextHeader)
                 {
 
                     // create paragraph container for line
-                    container = add_child(container, BlockTag.paragraph, line_number, first_nonspace + 1);
+                    container = add_child(container, BlockTag.Paragraph, line_number, first_nonspace + 1);
                     add_line(container, ln, first_nonspace);
 
                 }
                 else
                 {
 
-                    Utilities.Warning("Line {0} with container type {1} did not match any condition:\n\"{2}\"", line_number, container.tag, ln);
+                    Utilities.Warning("Line {0} with container type {1} did not match any condition:\n\"{2}\"", line_number, container.Tag, ln);
 
                 }
 

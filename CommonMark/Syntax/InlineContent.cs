@@ -6,8 +6,11 @@ namespace CommonMark.Syntax
 {
     public class InlineContent
     {
-        public string Literal;
-        public Inline inlines;
-        public InlineContentLinkable linkable = new InlineContentLinkable();
+        public string Literal { get; set; }
+
+        public Inline Inlines { get; set; }
+
+        private readonly InlineContentLinkable _linkable = new InlineContentLinkable();
+        public InlineContentLinkable Linkable { get { return this._linkable; } }
     }
 }

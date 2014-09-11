@@ -24,7 +24,8 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile></DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -61,7 +62,7 @@
     <Compile Include="Syntax\InlineTag.cs" />
     <Compile Include="Syntax\ListData.cs" />
     <Compile Include="Formatter\Printer.cs" />
-    <Compile Include="Syntax\ListDataDelimeter.cs" />
+    <Compile Include="Syntax\ListDelimeter.cs" />
     <Compile Include="Syntax\ListType.cs" />
     <Compile Include="Syntax\Reference.cs" />
     <Compile Include="Parser\Scanner.cs" />
