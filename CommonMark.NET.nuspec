@@ -1,25 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
-    <metadata>
-        <id>CommonMark.NET</id>
-        <version>0.1.0-beta</version>
-        <title>CommonMark.NET</title>
-        <authors>Knagis</authors>
-        <licenseUrl>https://raw.githubusercontent.com/Knagis/CommonMark.NET/master/LICENSE.md</licenseUrl>
-        <projectUrl>https://github.com/Knagis/CommonMark.NET/</projectUrl>
-        <iconUrl>https://raw.githubusercontent.com/dcurtis/markdown-mark/master/png/32x20.png</iconUrl>
-        <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Library for converting Markdown documents to HTML according to the CommonMark specification.</description>
-        <releaseNotes>Initial public release. 
-Fully compatible to the current CommonMark specification.
-API subject to change.</releaseNotes>
-        <copyright>Copyright © Kārlis Gaņģis 2014</copyright>
-        <tags>CommonMark Markdown</tags>
-    </metadata>
-    <files>
-        <file src="CommonMark\bin\v2.0\Release\CommonMark.*" target="lib\net20\" />
-        <file src="CommonMark\bin\v3.5\Release\CommonMark.*" target="lib\net35-client\" />
-        <file src="CommonMark\bin\v4.0\Release\CommonMark.*" target="lib\net40-client\" />
-        <file src="CommonMark\bin\portable\Release\CommonMark.*" target="lib\portable-net40+sl50+wp80+win+wpa81+MonoAndroid10+MonoTouch10\" />
-    </files>
+  <metadata>
+    <id>CommonMark.NET</id>
+    <version>0.1.0-beta</version>
+    <title>CommonMark.NET</title>
+    <authors>Knagis</authors>
+    <licenseUrl>https://raw.githubusercontent.com/Knagis/CommonMark.NET/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/Knagis/CommonMark.NET/</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/dcurtis/markdown-mark/master/png/32x20.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Library for converting Markdown documents to HTML according to the CommonMark specification.</description>
+    <releaseNotes>
+      Initial public release.
+      Fully compatible to the current CommonMark specification.
+      API subject to change.
+    </releaseNotes>
+    <copyright>Copyright © Kārlis Gaņģis 2014</copyright>
+    <tags>CommonMark Markdown</tags>
+  </metadata>
+  <files>
+    <file src="LICENSE.md" target="\" />
+    <file src="CommonMark\bin\v2.0\Release\CommonMark.*" target="lib\net20\" />
+    <file src="CommonMark\bin\v3.5\Release\CommonMark.*" target="lib\net35-client\" />
+    <file src="CommonMark\bin\v4.0\Release\CommonMark.*" target="lib\net40-client\" />
+    <file src="CommonMark\bin\portable\Release\CommonMark.*" target="lib\portable-net40+sl50+wp80+win+wpa81+MonoAndroid10+MonoTouch10\" />
+  </files>
 </package>
