@@ -1,10 +1,8 @@
 # CommonMark.NET
 
-Implementation of [CommonMark] [1] specification in C#.
+Implementation of [CommonMark] [1] specification in C# for converting Markdown documents to HTML.
 
-This is a port of the reference implementation in C, available on [jgm/stdm repo] [2]. The implementation keeps the
-same approach - the source is parsed into a syntax tree that can be used to add custom processing if the 
-application needs it and then formatted into HTML.
+The current version of the library is also [available on NuGet] [nuget].
 
 ## Usage
 
@@ -33,6 +31,12 @@ Windows Phone 8.1, Windows Phone Silverlight 8, Xamarin.Android and Xamarin.iOS.
 For working with the source code you will need Visual Studio 2013.3. Note that Express for Windows is the
 only free edition that supports PCL projects.
 
+## References
+
+This is a port of the reference implementation in C, available on [jgm/stdm repo] [2]. The implementation keeps the
+same approach - the source is parsed into a syntax tree that can be used to add custom processing if the 
+application needs it and then formatted into HTML.
+
 ## Running tests
 
 The project includes a slightly modified version of `runtests.pl` since the original did not work on Windows.
@@ -45,3 +49,4 @@ Note that if you run the `runtests.pl` script on a Windows machine it will incor
 [1]: http://commonmark.org/
 [2]: https://github.com/jgm/stmd/commit/2cf0750a7a507eded4cf3c9a48fd1f924d0ce538
 [XSS]: http://talk.commonmark.org/t/cross-site-scripting-issue-in-standard-markdown-example-at-try-standardmarkdown-com/55
+[nuget]: https://www.nuget.org/packages/CommonMark.NET/
