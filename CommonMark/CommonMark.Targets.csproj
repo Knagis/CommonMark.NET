@@ -5,9 +5,10 @@
 	<BaseIntermediateOutputPath>obj\$(BuildMode)\</BaseIntermediateOutputPath>
 	<TargetFrameworkVersion Condition=" '$(TargetFrameworkVersionEx)' != '' ">$(TargetFrameworkVersionEx)</TargetFrameworkVersion>
 	<TargetFrameworkProfile Condition=" '$(BuildMode)' != 'portable' "></TargetFrameworkProfile>
+	<TargetFrameworkProfile Condition=" '$(TargetFrameworkProfileEx)' != '' ">$(TargetFrameworkProfileEx)</TargetFrameworkProfile>
 	<DocumentationFile Condition=" '$(DocumentationFile)' != ''">$(OutputPath)\CommonMark.xml</DocumentationFile>
   </PropertyGroup>
 
   <Import Condition=" '$(BuildMode)' == 'portable' " Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <Import Condition=" '$(BuildMode)' == 'v2.0' " Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Condition=" '$(BuildMode)' != 'portable' " Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
