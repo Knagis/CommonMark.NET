@@ -8,6 +8,8 @@ namespace CommonMark.Formatter
 {
     internal static class HtmlPrinter
     {
+        private static readonly char[] EscapeHtmlCharacters = new[] { '&', '<', '>', '\"' };
+
         /// <summary>
         /// Escapes special HTML characters.
         /// </summary>
@@ -15,53 +17,43 @@ namespace CommonMark.Formatter
         private static string EscapeHtml(string inp, bool preserveEntities)
         {
             int pos = 0;
+            int lastPos = 0;
             int match;
-            char c;
-            string escapable = "&<>\"";
-            string ent;
-            string s = inp;
-            while ((pos = BString.binchr(s, pos, escapable)) != -1)
+
+            StringBuilder result = null;
+            while ((pos = inp.IndexOfAny(EscapeHtmlCharacters, lastPos)) != -1)
             {
-                c = s[pos];
-                switch (c)
+                if (result == null)
+                    result = new StringBuilder(inp.Length + 10);
+
+                result.Append(inp, lastPos, pos - lastPos);
+                lastPos = pos + 1;
+
+                switch (inp[pos])
                 {
                     case '<':
-                        s = s.Remove(pos, 1);
-                        ent = "&lt;";
-                        BString.binsert(ref s, pos, ent, ' ');
-                        pos += 4;
+                        result.Append("&lt;");
                         break;
                     case '>':
-                        s = s.Remove(pos, 1);
-                        ent = "&gt;";
-                        BString.binsert(ref s, pos, ent, ' ');
-                        pos += 4;
+                        result.Append("&gt;");
                         break;
                     case '&':
-                        if (preserveEntities && 0 != (match = Scanner.scan_entity(s, pos)))
-                        {
-                            pos += match;
-                        }
+                        if (preserveEntities && 0 != (match = Scanner.scan_entity(inp, pos)))
+                            result.Append('&');
                         else
-                        {
-                            s = s.Remove(pos, 1);
-                            ent = "&amp;";
-                            BString.binsert(ref s, pos, ent, ' ');
-                            pos += 5;
-                        }
+                            result.Append("&amp;");
                         break;
                     case '"':
-                        s = s.Remove(pos, 1);
-                        ent = "&quot;";
-                        BString.binsert(ref s, pos, ent, ' ');
-                        pos += 6;
+                        result.Append("&quot;");
                         break;
-                    default:
-                        s = s.Remove(pos, 1);
-                        throw new CommonMarkException(string.Format("Unexpected character '{0}' ({1}). Source string: '{2}', position {3}", c, (int)c, inp, pos));
                 }
             }
-            return s;
+
+            if (result == null)
+                return inp;
+
+            result.Append(inp, lastPos, inp.Length - lastPos);
+            return result.ToString();
         }
 
         /// <summary>
