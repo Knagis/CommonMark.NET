@@ -40,7 +40,7 @@ following results:
      CommonMark.NET 0.1.0     50 ms   82%     (first public release)
        MarkdownSharp 1.13     50 ms   82%     (might not conform to CommonMark specification)
          MarkdownDeep 1.5      7 ms   12%     (might not conform to CommonMark specification)
-    CommonMarkSharp 0.0.2  14128 ms   23 047%
+    CommonMarkSharp 0.0.2  14128 ms   23047%
                  Baseline     61 ms   100%    (used to compare results on different machines)
 
 This benchmark is very simple and tests the processing of the CommonMark specification document itself (a 
