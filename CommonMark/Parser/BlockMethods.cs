@@ -617,7 +617,7 @@ namespace CommonMark.Parser
                     offset = first_nonspace + matched;
 
                 }
-                else if (0 != (matched = Scanner.scan_html_block_tag(ln, first_nonspace)))
+                else if (Scanner.scan_html_block_tag(ln, first_nonspace))
                 {
 
                     container = add_child(container, BlockTag.HtmlBlock, line_number,

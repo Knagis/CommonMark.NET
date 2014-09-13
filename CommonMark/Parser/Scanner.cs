@@ -12,8 +12,11 @@ namespace CommonMark.Parser
     {
         private const RegexOptions useCompilation = RegexOptions.None;
 
+        /// <summary>
+        /// List of valid schemes of an URL. The array must be sorted.
+        /// </summary>
         private static readonly string[] schemeArray = new[] { "aaa", "aaas", "about", "acap", "adiumxtra", "afp", "afs", "aim", "apt", "attachment", "aw", "beshare", "bitcoin", "bolo", "callto", "cap", "chrome", "chrome-extension", "cid", "coap", "com-eventbrite-attendee", "content", "crid", "cvs", "data", "dav", "dict", "dlna-playcontainer", "dlna-playsingle", "dns", "doi", "dtn", "dvb", "ed2k", "facetime", "feed", "file", "finger", "fish", "ftp", "geo", "gg", "git", "gizmoproject", "go", "gopher", "gtalk", "h323", "hcp", "http", "https", "iax", "icap", "icon", "im", "imap", "info", "ipn", "ipp", "irc", "irc6", "ircs", "iris", "iris.beep", "iris.lwz", "iris.xpc", "iris.xpcs", "itms", "jar", "javascript", "jms", "keyparc", "lastfm", "ldap", "ldaps", "magnet", "mailto", "maps", "market", "message", "mid", "mms", "ms-help", "msnim", "msrp", "msrps", "mtqp", "mumble", "mupdate", "mvn", "news", "nfs", "ni", "nih", "nntp", "notes", "oid", "opaquelocktoken", "palm", "paparazzi", "platform", "pop", "pres", "proxy", "psyc", "query", "res", "resource", "rmi", "rsync", "rtmp", "rtsp", "secondlife", "service", "session", "sftp", "sgn", "shttp", "sieve", "sip", "sips", "skype", "smb", "sms", "snmp", "soap.beep", "soap.beeps", "soldat", "spotify", "ssh", "steam", "svn", "tag", "teamspeak", "tel", "telnet", "tftp", "things", "thismessage", "tip", "tn3270", "tv", "udp", "unreal", "urn", "ut2004", "vemmi", "ventrilo", "view-source", "webcal", "ws", "wss", "wtai", "wyciwyg", "xcon", "xcon-userid", "xfire", "xmlrpc.beep", "xmlrpc.beeps", "xmpp", "xri", "ymsgr", "z39.50r", "z39.50s" };
-        private const string blocktagname = "(article|header|aside|hgroup|iframe|blockquote|hr|body|li|map|button|object|canvas|ol|caption|output|col|p|colgroup|pre|dd|progress|div|section|dl|table|td|dt|tbody|embed|textarea|fieldset|tfoot|figcaption|th|figure|thead|footer|footer|tr|form|ul|h1|h2|h3|h4|h5|h6|video|script|style)";
+        private static readonly string[] blockTagNames = new[] { "article", "aside", "blockquote", "body", "button", "canvas", "caption", "col", "colgroup", "dd", "div", "dl", "dt", "embed", "fieldset", "figcaption", "figure", "footer", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "hgroup", "hr", "iframe", "li", "map", "object", "ol", "output", "p", "pre", "progress", "script", "section", "style", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "tr", "ul", "video" };
 
         private const string escapable = "[!\"#$%&\'\\(\\)*+,.\\/:;<=>?@\\[\\\\\\]^_`{|}~-]";
         private const string escaped_char = "\\\\" + escapable;
@@ -30,9 +33,6 @@ namespace CommonMark.Parser
         //private static readonly Regex hrule3 = new Regex(@"^([-][ ]*){3,}[\s]*$", useCompilation);
 
         private static readonly Regex autolink_email = new Regex("^[a-zA-Z0-9.!#$%&'\\*+/=?^_`{|}~-]+[@][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?([.][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[>]", useCompilation);
-        private static readonly Regex html_block_tag1 = new Regex("^</" + blocktagname + "(\\s|>)", useCompilation | RegexOptions.IgnoreCase);
-        private static readonly Regex html_block_tag2 = new Regex("^<" + blocktagname + "(\\s|[/>])", useCompilation | RegexOptions.IgnoreCase);
-        private static readonly Regex html_block_tag3 = new Regex("^<[!?]", useCompilation | RegexOptions.IgnoreCase);
         private static readonly Regex spacechars = new Regex(@"^[\s]*", useCompilation);
         private static readonly Regex setext_header_line1 = new Regex("^[=]+[ ]*$", useCompilation);
         private static readonly Regex setext_header_line2 = new Regex("^[-]+[ ]*$", useCompilation);
@@ -118,9 +118,9 @@ namespace CommonMark.Parser
         }
 
         /// <summary>
-        /// Try to match an HTML block tag including first &lt;, returning num of chars matched.
+        /// Try to match an HTML block tag including first &lt;.
         /// </summary>
-        public static int scan_html_block_tag(string s, int pos)
+        public static bool scan_html_block_tag(string s, int pos)
         {
             /*!re2c
               [<] [/] blocktagname (spacechar | [>])  { return (p - start); }
@@ -128,7 +128,35 @@ namespace CommonMark.Parser
               [<] [!?] { return (p - start); }
               .? { return 0; }
             */
-            return MatchRegex(s, pos, html_block_tag1, html_block_tag2, html_block_tag3);
+
+            if (pos + 1 >= s.Length)
+                return false;
+
+            if (s[pos] != '<')
+                return false;
+
+            var i = pos + 1;
+            var nextChar = s[i];
+            if (nextChar == '!' || nextChar == '?')
+                return true;
+
+            var slashAtBeginning = nextChar == '/';
+            if (slashAtBeginning)
+                nextChar = s[++i];
+
+            var j = 0;
+            var tagname = new char[10];
+            while (char.IsLetter(nextChar) && j <= 10 && ++i < s.Length)
+            {
+                tagname[j++] = nextChar;
+                nextChar = s[i];
+            }
+
+            var scheme = new string(tagname, 0, j).ToLowerInvariant();
+            if (Array.BinarySearch(blockTagNames, scheme) < 0)
+                return false;
+
+            return nextChar == '>' || (!slashAtBeginning && nextChar == '/') || char.IsWhiteSpace(nextChar);
         }
 
         /// <summary>
