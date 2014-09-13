@@ -12,6 +12,9 @@ namespace CommonMark.Parser
         /// <summary>
         /// Moves along the given string as long as the current character is a whitespace.
         /// </summary>
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         internal static bool MatchWhitespaces(string data, ref char currentCharacter, ref int currentPosition, int lastPosition)
         {
             var matched = false;
@@ -26,6 +29,9 @@ namespace CommonMark.Parser
         /// <summary>
         /// Moves along the given string as long as the current character is a ASCII letter.
         /// </summary>
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         internal static bool MatchAsciiLetter(string data, ref char currentCharacter, ref int currentPosition, int lastPosition)
         {
             var matched = false;
@@ -42,6 +48,9 @@ namespace CommonMark.Parser
         /// <summary>
         /// Moves along the given string as long as the current character is a ASCII letter or digit.
         /// </summary>
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         internal static bool MatchAsciiLetterOrDigit(string data, ref char currentCharacter, ref int currentPosition, int lastPosition)
         {
             var matched = false;
@@ -59,6 +68,9 @@ namespace CommonMark.Parser
         /// <summary>
         /// Moves along the given string as long as the current character is a ASCII letter or digit or one of the given additional characters.
         /// </summary>
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         internal static bool MatchAsciiLetterOrDigit(string data, ref char currentCharacter, ref int currentPosition, int lastPosition, char valid1, char valid2, char valid3, char valid4)
         {
             var matched = false;
@@ -80,6 +92,9 @@ namespace CommonMark.Parser
         /// <summary>
         /// Moves along the given string as long as the current character is a ASCII letter or one of the given additional characters.
         /// </summary>
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         internal static bool MatchAsciiLetter(string data, ref char currentCharacter, ref int currentPosition, int lastPosition, char valid1, char valid2)
         {
             var matched = false;
@@ -96,6 +111,9 @@ namespace CommonMark.Parser
             return matched;
         }
 
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         internal static bool MatchAnythingExcept(string data, ref char currentCharacter, ref int currentPosition, int lastPosition, char invalid1)
         {
             var matched = false;
@@ -107,6 +125,9 @@ namespace CommonMark.Parser
             return matched;
         }
 
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         internal static bool MatchAnythingExcept(string data, ref char currentCharacter, ref int currentPosition, int lastPosition, char invalid1, char invalid2)
         {
             var matched = false;
@@ -119,6 +140,9 @@ namespace CommonMark.Parser
             return matched;
         }
 
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         internal static bool MatchAnythingExceptWhitespaces(string data, ref char currentCharacter, ref int currentPosition, int lastPosition,
             char invalid1, char invalid2, char invalid3, char invalid4, char invalid5, char invalid6)
         {

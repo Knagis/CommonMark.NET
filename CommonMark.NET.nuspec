@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
     <id>CommonMark.NET</id>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <title>CommonMark.NET</title>
     <authors>Knagis</authors>
     <licenseUrl>https://raw.githubusercontent.com/Knagis/CommonMark.NET/master/LICENSE.md</licenseUrl>
@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Library for converting Markdown documents to HTML according to the CommonMark specification.</description>
     <releaseNotes>
-      Performance improvements (~50% improvement for the sample data).
+      Performance improvements (~75% improvement for the sample data since 0.1.0).
     </releaseNotes>
     <copyright>Copyright © Kārlis Gaņģis 2014</copyright>
     <tags>CommonMark Markdown</tags>
@@ -21,6 +21,7 @@
     <file src="CommonMark\bin\v2.0\Release\CommonMark.*" target="lib\net20\" />
     <file src="CommonMark\bin\v3.5\Release\CommonMark.*" target="lib\net35-client\" />
     <file src="CommonMark\bin\v4.0\Release\CommonMark.*" target="lib\net40-client\" />
+    <file src="CommonMark\bin\v4.5\Release\CommonMark.*" target="lib\net45\" />
     <file src="CommonMark\bin\portable\Release\CommonMark.*" target="lib\portable-net40+sl50+wp80+win+wpa81+MonoAndroid10+MonoTouch10\" />
   </files>
 </package>

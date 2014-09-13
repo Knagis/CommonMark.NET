@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.NET35", "CommonM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.NET40", "CommonMark\CommonMark.NET40.csproj", "{0176CB03-177C-464A-A155-089595E77520}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.NET45", "CommonMark\CommonMark.NET45.csproj", "{40AB0D9C-9464-45B2-AC79-72A566FA1371}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{0176CB03-177C-464A-A155-089595E77520}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0176CB03-177C-464A-A155-089595E77520}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0176CB03-177C-464A-A155-089595E77520}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40AB0D9C-9464-45B2-AC79-72A566FA1371}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40AB0D9C-9464-45B2-AC79-72A566FA1371}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40AB0D9C-9464-45B2-AC79-72A566FA1371}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40AB0D9C-9464-45B2-AC79-72A566FA1371}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

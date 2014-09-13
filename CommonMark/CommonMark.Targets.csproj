@@ -7,6 +7,7 @@
 	<TargetFrameworkProfile Condition=" '$(BuildMode)' != 'portable' "></TargetFrameworkProfile>
 	<TargetFrameworkProfile Condition=" '$(TargetFrameworkProfileEx)' != '' ">$(TargetFrameworkProfileEx)</TargetFrameworkProfile>
 	<DocumentationFile Condition=" '$(DocumentationFile)' != ''">$(OutputPath)\CommonMark.xml</DocumentationFile>
+    <DefineConstants>$(DefineConstants);$(BuildMode.Replace('.', '_'));$(DefineConstantsEx)</DefineConstants>
   </PropertyGroup>
 
   <Import Condition=" '$(BuildMode)' == 'portable' " Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

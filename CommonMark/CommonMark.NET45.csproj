@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <BuildMode>v4.5</BuildMode>
+    <TargetFrameworkVersionEx>v4.5</TargetFrameworkVersionEx>
+    <ProjectGuid>{40AB0D9C-9464-45B2-AC79-72A566FA1371}</ProjectGuid>
+    <DefineConstantsEx>OptimizeFor45</DefineConstantsEx>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <Import Project="CommonMark.Base.csproj" />
+</Project>
