@@ -42,8 +42,6 @@ namespace CommonMark.Parser
         private static readonly Regex link_title3 = new Regex("^[\\(]((" + escaped_char + ")|[^\\)\\x00])*[\\)]", useCompilation);
         private static readonly Regex atx_header_start = new Regex("^[#]{1,6}([ ]+|[\\n])", useCompilation);
         private static readonly Regex entity = new Regex("^[&]([#]([Xx][A-Fa-f0-9]{1,8}|[0-9]{1,8})|[A-Za-z][A-Za-z0-9]{1,31})[;]", useCompilation);
-        private static readonly Regex open_code_fence1 = new Regex(@"^([`]{3,})(?=[^`\n\x00]*$)", useCompilation);
-        private static readonly Regex open_code_fence2 = new Regex(@"^([~]{3,})(?=[^~\n\x00]*$)", useCompilation);
         private static readonly Regex close_code_fence = new Regex(@"^([`]{3,}|[~]{3,})(?:\s*)$", useCompilation);
 
         private static int MatchRegex(string s, int pos, params Regex[] regexes)
@@ -286,7 +284,7 @@ namespace CommonMark.Parser
         }
 
         /// <summary>
-        /// Scan an opening code fence.
+        /// Scan an opening code fence. Returns the number of characters forming the fence.
         /// </summary>
         public static int scan_open_code_fence(string s, int pos)
         {
@@ -296,7 +294,41 @@ namespace CommonMark.Parser
               .?                        { return 0; }
             */
 
-            return MatchRegex(s, pos, open_code_fence1, open_code_fence2);
+            if (pos + 3 >= s.Length)
+                return 0;
+
+            var fchar = s[pos];
+            if (fchar != '`' && fchar != '~')
+                return 0;
+
+            var cnt = 1;
+            var fenceDone = false;
+            char c;
+            for (var i = pos + 1; i < s.Length; i++)
+            {
+                c = s[i];
+
+                if (c == fchar)
+                {
+                    if (fenceDone)
+                        return 0;
+
+                    cnt++;
+                    continue;
+                }
+
+                fenceDone = true;
+                if (cnt < 3)
+                    return 0;
+
+                if (c == '\n')
+                    return cnt;
+            }
+
+            if (cnt < 3)
+                return 0;
+
+            return cnt;
         }
 
         /// <summary>
