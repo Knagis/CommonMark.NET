@@ -90,6 +90,27 @@ namespace CommonMark.Parser
         }
 
         /// <summary>
+        /// Moves along the given string as long as the current character is a ASCII letter or digit or one of the given additional characters.
+        /// </summary>
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
+        internal static bool MatchAsciiLetterOrDigit(string data, ref char currentCharacter, ref int currentPosition, int lastPosition, char valid1)
+        {
+            var matched = false;
+            while ((currentCharacter == valid1
+                    || (currentCharacter >= 'a' && currentCharacter <= 'z')
+                    || (currentCharacter >= 'A' && currentCharacter <= 'Z')
+                    || (currentCharacter >= '0' && currentCharacter <= '9'))
+                  && currentPosition < lastPosition)
+            {
+                currentCharacter = data[++currentPosition];
+                matched = true;
+            }
+            return matched;
+        }
+
+        /// <summary>
         /// Moves along the given string as long as the current character is a ASCII letter or one of the given additional characters.
         /// </summary>
 #if OptimizeFor45
