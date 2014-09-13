@@ -333,7 +333,7 @@ namespace CommonMark.Parser
             startpos = pos;
             c = BString.bchar(ln, pos);
 
-            if ((c == '*' || c == '-' || c == '+') && 0 == Scanner.scan_hrule(ln, pos))
+            if ((c == '*' || c == '-' || c == '+' || c == '•') && 0 == Scanner.scan_hrule(ln, pos))
             {
                 pos++;
                 if (pos == ln.Length || !char.IsWhiteSpace(ln[pos]))
