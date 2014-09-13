@@ -33,8 +33,6 @@ namespace CommonMark.Parser
         //private static readonly Regex hrule3 = new Regex(@"^([-][ ]*){3,}[\s]*$", useCompilation);
 
         private static readonly Regex autolink_email = new Regex("^[a-zA-Z0-9.!#$%&'\\*+/=?^_`{|}~-]+[@][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?([.][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[>]", useCompilation);
-        private static readonly Regex setext_header_line1 = new Regex("^[=]+[ ]*$", useCompilation);
-        private static readonly Regex setext_header_line2 = new Regex("^[-]+[ ]*$", useCompilation);
         private static readonly Regex link_url1 = new Regex("^[ \\n]*[<]([^<>\\n\\x00]|(" + escaped_char + ")|[\\\\])*[>]", useCompilation);
         private static readonly Regex link_url2 = new Regex("^[ \\n]*((" + reg_char + ")+|(" + escaped_char + ")|(" + in_parens_nosp + "))*", useCompilation);
         private static readonly Regex link_title1 = new Regex("^[\"]((" + escaped_char + ")|[^\"\\x00])*[\"]", useCompilation);
@@ -272,13 +270,34 @@ namespace CommonMark.Parser
               [-]+ [ ]* [\n] { return 2; }
               .? { return 0; }
             */
-            if (MatchRegex(s, pos, setext_header_line1) > 0)
-                return 1;
 
-            if (MatchRegex(s, pos, setext_header_line2) > 0)
-                return 2;
+            if (pos >= s.Length)
+                return 0;
 
-            return 0;
+            var c1 = s[pos];
+
+            if (c1 != '=' && c1 != '-')
+                return 0;
+
+            char c;
+            var fin = false;
+            for (var i = pos + 1; i < s.Length; i++ )
+            {
+                c = s[i];
+                if (c == c1 && !fin)
+                    continue;
+
+                fin = true;
+                if (c == ' ')
+                    continue;
+
+                if (c == '\n')
+                    break;
+
+                return 0;
+            }
+
+            return c1 == '=' ? 1 : 2;
         }
 
         /// <summary>
