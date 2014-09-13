@@ -18,13 +18,8 @@ namespace CommonMark.Parser
         private static readonly string[] schemeArray = new[] { "aaa", "aaas", "about", "acap", "adiumxtra", "afp", "afs", "aim", "apt", "attachment", "aw", "beshare", "bitcoin", "bolo", "callto", "cap", "chrome", "chrome-extension", "cid", "coap", "com-eventbrite-attendee", "content", "crid", "cvs", "data", "dav", "dict", "dlna-playcontainer", "dlna-playsingle", "dns", "doi", "dtn", "dvb", "ed2k", "facetime", "feed", "file", "finger", "fish", "ftp", "geo", "gg", "git", "gizmoproject", "go", "gopher", "gtalk", "h323", "hcp", "http", "https", "iax", "icap", "icon", "im", "imap", "info", "ipn", "ipp", "irc", "irc6", "ircs", "iris", "iris.beep", "iris.lwz", "iris.xpc", "iris.xpcs", "itms", "jar", "javascript", "jms", "keyparc", "lastfm", "ldap", "ldaps", "magnet", "mailto", "maps", "market", "message", "mid", "mms", "ms-help", "msnim", "msrp", "msrps", "mtqp", "mumble", "mupdate", "mvn", "news", "nfs", "ni", "nih", "nntp", "notes", "oid", "opaquelocktoken", "palm", "paparazzi", "platform", "pop", "pres", "proxy", "psyc", "query", "res", "resource", "rmi", "rsync", "rtmp", "rtsp", "secondlife", "service", "session", "sftp", "sgn", "shttp", "sieve", "sip", "sips", "skype", "smb", "sms", "snmp", "soap.beep", "soap.beeps", "soldat", "spotify", "ssh", "steam", "svn", "tag", "teamspeak", "tel", "telnet", "tftp", "things", "thismessage", "tip", "tn3270", "tv", "udp", "unreal", "urn", "ut2004", "vemmi", "ventrilo", "view-source", "webcal", "ws", "wss", "wtai", "wyciwyg", "xcon", "xcon-userid", "xfire", "xmlrpc.beep", "xmlrpc.beeps", "xmpp", "xri", "ymsgr", "z39.50r", "z39.50s" };
         private static readonly string[] blockTagNames = new[] { "article", "aside", "blockquote", "body", "button", "canvas", "caption", "col", "colgroup", "dd", "div", "dl", "dt", "embed", "fieldset", "figcaption", "figure", "footer", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "hgroup", "hr", "iframe", "li", "map", "object", "ol", "output", "p", "pre", "progress", "script", "section", "style", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "tr", "ul", "video" };
 
-        private const string escapable = "[!\"#$%&\'\\(\\)*+,.\\/:;<=>?@\\[\\\\\\]^_`{|}~-]";
-        private const string escaped_char = "\\\\" + escapable;
 
         private static readonly Regex autolink_email = new Regex("^[a-zA-Z0-9.!#$%&'\\*+/=?^_`{|}~-]+[@][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?([.][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[>]", useCompilation);
-        private static readonly Regex link_title1 = new Regex("^[\"]((" + escaped_char + ")|[^\"\\x00])*[\"]", useCompilation);
-        private static readonly Regex link_title2 = new Regex("^[']((" + escaped_char + ")|[^'\\x00])*[']", useCompilation);
-        private static readonly Regex link_title3 = new Regex("^[\\(]((" + escaped_char + ")|[^\\)\\x00])*[\\)]", useCompilation);
         private static readonly Regex close_code_fence = new Regex(@"^([`]{3,}|[~]{3,})(?:\s*)$", useCompilation);
 
         private static int MatchRegex(string s, int pos, params Regex[] regexes)
@@ -220,7 +215,28 @@ namespace CommonMark.Parser
               [(] (escaped_char|[^)\x00])* [)]  { return (p - start); }
               .? { return 0; }
             */
-            return MatchRegex(s, pos, link_title1, link_title2, link_title3);
+
+            if (pos + 2 >= s.Length)
+                return 0;
+
+            var c1 = s[pos];
+            if (c1 != '"' && c1 != '\'' && c1 != '(')
+                return 0;
+
+            if (c1 == '(') c1 = ')';
+
+            char c;
+            bool nextEscaped = false;
+            for (var i = pos + 1; i < s.Length; i++)
+            {
+                c = s[i];
+                if (c == c1 && !nextEscaped)
+                    return i - pos + 1;
+
+                nextEscaped = !nextEscaped && c == '\\';
+            }
+
+            return 0;
         }
 
         /// <summary>
