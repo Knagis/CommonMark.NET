@@ -22,6 +22,42 @@ namespace CommonMark.Formatter
             this._windowsNewLine = nl == "\r\n";
         }
 
+        public override void Write(string value)
+        {
+            if (value == null || value.Length == 0)
+                return;
+
+            if (this._windowsNewLine)
+            {
+                var lastPos = 0;
+                var lastC = this._last;
+                int pos = 0;
+                var charArray = value.ToCharArray();
+
+                while (-1 != (pos = value.IndexOf('\n', pos)))
+                {
+                    lastC = pos == 0 ? this._last : value[pos - 1];
+
+                    if (lastC != '\r')
+                    {
+                        this._inner.Write(charArray, lastPos, pos - lastPos);
+                        this._inner.Write('\r');
+                        lastPos = pos;
+                    }
+
+                    pos++;
+                }
+
+                this._inner.Write(charArray, lastPos, value.Length - lastPos);
+            }
+            else
+            {
+                this._inner.Write(value);
+            }
+
+            this._last = value[value.Length - 1];
+        }
+
         public override void Write(char value)
         {
             if (this._windowsNewLine && _last != '\r' && value == '\n')
