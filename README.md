@@ -36,13 +36,14 @@ only free edition that supports PCL projects.
 Using a [simple tool][3] to compare the performance of various Markdown implementations for .NET yields the
 following results:
 
-     CommonMark.NET 0.1.2     15 ms   23%     (current release for this library)
-     CommonMark.NET 0.1.1     27 ms   41%
-     CommonMark.NET 0.1.0     56 ms   83%     (first public release)
-       MarkdownSharp 1.13     56 ms   83%     (might not conform to CommonMark specification)
-         MarkdownDeep 1.5      8 ms   11%     (might not conform to CommonMark specification)
-    CommonMarkSharp 0.1.0    276 ms   409%
-                 Baseline     67 ms   100%    (used to compare results on different machines)
+     CommonMark.NET 0.1.3      7 ms   11%     (current release for this library)
+     CommonMark.NET 0.1.2     15 ms   23%
+     CommonMark.NET 0.1.1     27 ms   42%
+     CommonMark.NET 0.1.0     56 ms   84%     (first public release)
+       MarkdownSharp 1.13     55 ms   84%     (might not conform to CommonMark specification)
+         MarkdownDeep 1.5      7 ms   11%     (might not conform to CommonMark specification)
+    CommonMarkSharp 0.1.1     91 ms   140%
+                 Baseline     65 ms   100%    (used to compare results on different machines)
 
 This benchmark is very simple and tests the processing of the CommonMark specification document itself (a 
 175 KB file). The results are provided just for a high-level comparison.
