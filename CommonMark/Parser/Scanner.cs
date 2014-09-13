@@ -33,7 +33,6 @@ namespace CommonMark.Parser
         //private static readonly Regex hrule3 = new Regex(@"^([-][ ]*){3,}[\s]*$", useCompilation);
 
         private static readonly Regex autolink_email = new Regex("^[a-zA-Z0-9.!#$%&'\\*+/=?^_`{|}~-]+[@][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?([.][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[>]", useCompilation);
-        private static readonly Regex spacechars = new Regex(@"^[\s]*", useCompilation);
         private static readonly Regex setext_header_line1 = new Regex("^[=]+[ ]*$", useCompilation);
         private static readonly Regex setext_header_line2 = new Regex("^[-]+[ ]*$", useCompilation);
         private static readonly Regex link_url1 = new Regex("^[ \\n]*[<]([^<>\\n\\x00]|(" + escaped_char + ")|[\\\\])*[>]", useCompilation);
@@ -200,7 +199,16 @@ namespace CommonMark.Parser
               [ \t\n]* { return (p - start); }
               . { return 0; }
             */
-            return MatchRegex(s, pos, spacechars);
+            if (pos >= s.Length)
+                return 0;
+
+            for (var i = pos; i < s.Length; i++)
+            {
+                if (!char.IsWhiteSpace(s[i]))
+                    return i - pos;
+            }
+
+            return s.Length - pos;
         }
         
         /// <summary>
