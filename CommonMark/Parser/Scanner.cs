@@ -40,7 +40,6 @@ namespace CommonMark.Parser
         private static readonly Regex link_title1 = new Regex("^[\"]((" + escaped_char + ")|[^\"\\x00])*[\"]", useCompilation);
         private static readonly Regex link_title2 = new Regex("^[']((" + escaped_char + ")|[^'\\x00])*[']", useCompilation);
         private static readonly Regex link_title3 = new Regex("^[\\(]((" + escaped_char + ")|[^\\)\\x00])*[\\)]", useCompilation);
-        private static readonly Regex atx_header_start = new Regex("^[#]{1,6}([ ]+|[\\n])", useCompilation);
         private static readonly Regex entity = new Regex("^[&]([#]([Xx][A-Fa-f0-9]{1,8}|[0-9]{1,8})|[A-Za-z][A-Za-z0-9]{1,31})[;]", useCompilation);
         private static readonly Regex close_code_fence = new Regex(@"^([`]{3,}|[~]{3,})(?:\s*)$", useCompilation);
 
@@ -212,13 +211,54 @@ namespace CommonMark.Parser
         /// <summary>
         /// Match ATX header start.
         /// </summary>
-        public static int scan_atx_header_start(string s, int pos)
+        public static int scan_atx_header_start(string s, int pos, out int headerLevel)
         {
             /*!re2c
               [#]{1,6} ([ ]+|[\n])  { return (p - start); }
               .? { return 0; }
             */
-            return MatchRegex(s, pos, atx_header_start);
+
+            headerLevel = 1;
+            if (pos + 1 >= s.Length)
+                return 0;
+
+            if (s[pos] != '#')
+                return 0;
+
+            bool spaceExists = false;
+            char c;
+            for (var i = pos + 1; i < s.Length; i++ )
+            {
+                c = s[i];
+                
+                if (c == '#')
+                {
+                    if (headerLevel == 6)
+                        return 0;
+
+                    if (spaceExists)
+                        return i - pos;
+                    else
+                        headerLevel++;
+                }
+                else if (c == ' ')
+                {
+                    spaceExists = true;
+                }
+                else if (c == '\n')
+                {
+                    return i - pos + 1;
+                }
+                else
+                {
+                    return spaceExists ? i - pos : 0;                        
+                }
+            }
+
+            if (spaceExists)
+                return s.Length - pos;
+            
+            return 0;
         }
 
         /// <summary>
