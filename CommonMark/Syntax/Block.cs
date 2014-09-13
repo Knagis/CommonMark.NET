@@ -13,7 +13,6 @@ namespace CommonMark.Syntax
             this.StartLine = startLine;
             this.EndLine = startLine;
             this.StartColumn = startColumn;
-            this.StringContent = string.Empty;
             this.IsOpen = true;
         }
 

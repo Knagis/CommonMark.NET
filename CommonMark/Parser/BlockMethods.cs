@@ -66,7 +66,11 @@ namespace CommonMark.Parser
             if (!block.IsOpen)
                 throw new CommonMarkException(string.Format("Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
 
-            block.StringContent += s;
+            var curSC = block.StringContent;
+            if (curSC == null)
+                block.StringContent = s;
+            else
+                block.StringContent = curSC + s;
         }
 
         /// <remarks>Original: remove_trailing_blank_lines(ref string)</remarks>
