@@ -20,12 +20,8 @@ namespace CommonMark.Parser
 
         private const string escapable = "[!\"#$%&\'\\(\\)*+,.\\/:;<=>?@\\[\\\\\\]^_`{|}~-]";
         private const string escaped_char = "\\\\" + escapable;
-        private const string reg_char = "[^\\\\\\()\\x00-\\x20]";
-        private const string in_parens_nosp = "[(]((" + reg_char + ")|(" + escaped_char + "))*[)]";
 
         private static readonly Regex autolink_email = new Regex("^[a-zA-Z0-9.!#$%&'\\*+/=?^_`{|}~-]+[@][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?([.][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[>]", useCompilation);
-        private static readonly Regex link_url1 = new Regex("^[ \\n]*[<]([^<>\\n\\x00]|(" + escaped_char + ")|[\\\\])*[>]", useCompilation);
-        private static readonly Regex link_url2 = new Regex("^[ \\n]*((" + reg_char + ")+|(" + escaped_char + ")|(" + in_parens_nosp + "))*", useCompilation);
         private static readonly Regex link_title1 = new Regex("^[\"]((" + escaped_char + ")|[^\"\\x00])*[\"]", useCompilation);
         private static readonly Regex link_title2 = new Regex("^[']((" + escaped_char + ")|[^'\\x00])*[']", useCompilation);
         private static readonly Regex link_title3 = new Regex("^[\\(]((" + escaped_char + ")|[^\\)\\x00])*[\\)]", useCompilation);
@@ -156,7 +152,59 @@ namespace CommonMark.Parser
               [ \n]* (reg_char+ | escaped_char | in_parens_nosp)* { return (p - start); }
               .? { return 0; }
             */
-            return MatchRegex(s, pos, link_url1, link_url2);
+
+            if (pos + 1 >= s.Length)
+                return 0;
+
+            var i = pos;
+            var c = s[i];
+            var nextEscaped = false;
+            var lastPos = s.Length - 1;
+            // move past any whitespaces
+            ScannerCharacterMatcher.MatchWhitespaces(s, ref c, ref i, lastPos);
+
+            if (c == '<')
+            {
+                if (i == lastPos) return 0;
+                c = s[++i];
+                while (i <= lastPos)
+                {
+                    if (c == '\n') return 0;
+                    if (c == '<' && !nextEscaped) return 0;
+                    if (c == '>' && !nextEscaped) return i - pos + 1;
+                    if (i == lastPos) return 0;
+                    nextEscaped = !nextEscaped && c == '\\';
+                    c = s[++i];
+                }
+                return 0;
+            }
+
+            bool openParens = false;
+            while (i <= lastPos)
+            {
+                if (c == '(' && !nextEscaped)
+                {
+                    if (openParens)
+                        return 0;
+                    openParens = true;
+                }
+                if (c == ')' && !nextEscaped)
+                {
+                    if (!openParens)
+                        return i - pos;
+                    openParens = false;
+                }
+                if (c <= 0x20)
+                    return openParens ? 0 : i - pos;
+                
+                if (i == lastPos)
+                    return openParens ? 0 : i - pos + 1;
+
+                nextEscaped = !nextEscaped && c == '\\';
+                c = s[++i];
+            }
+
+            return 0;
         }
 
         /// <summary>
