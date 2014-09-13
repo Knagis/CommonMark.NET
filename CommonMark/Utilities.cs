@@ -38,23 +38,29 @@ namespace CommonMark
                 return s;
 
             int step;
-            var sb = new StringBuilder(s.Length);
+            StringBuilder sb = null;
             int realPos = 0;
-            foreach (var c in s)
+            int lastPos = 0;
+            int pos;
+
+            while (-1 != (pos = s.IndexOf('\t', lastPos)))
             {
-                if (c == '\t')
-                {
-                    step = tabSize - (realPos % tabSize);
-                    realPos += step;
-                    sb.Append(' ', step);
-                }
-                else
-                {
-                    realPos++;
-                    sb.Append(c);
-                }
+                realPos += pos - lastPos;
+
+                if (sb == null)
+                    sb = new StringBuilder(s.Length + 12);
+
+                step = tabSize - (realPos % tabSize);
+                realPos += step;
+                sb.Append(s, lastPos, pos - lastPos);
+                sb.Append(' ', step);
+                lastPos = pos + 1;
             }
 
+            if (sb == null)
+                return s;
+
+            sb.Append(s, lastPos, s.Length - lastPos);
             return sb.ToString();
         }
     }
