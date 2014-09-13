@@ -9,31 +9,10 @@ namespace CommonMark.Parser
     {
         private const int CODE_INDENT = 4;
 
-        private static Block make_block(BlockTag tag, int start_line, int start_column)
-        {
-            Block e = new Block();
-            e.Tag = tag;
-            e.IsOpen = true;
-            e.IsLastLineBlank = false;
-            e.StartLine = start_line;
-            e.StartColumn = start_column;
-            e.EndLine = start_line;
-            e.FirstChild = null;
-            e.LastChild = null;
-            e.Parent = null;
-            e.Top = null;
-            e.Attributes.ReferenceMap = null;
-            e.StringContent = string.Empty;
-            e.InlineContent = null;
-            e.Next = null;
-            e.Previous = null;
-            return e;
-        }
-
         // Create a root document block.
         public static Block make_document()
         {
-            Block e = make_block(BlockTag.Document, 1, 1);
+            Block e = new Block(BlockTag.Document, 1, 1);
             e.Attributes.ReferenceMap = new Dictionary<string, Reference>();
             e.Top = e;
             return e;
@@ -42,22 +21,19 @@ namespace CommonMark.Parser
         // Returns true if line has only space characters, else false.
         private static bool is_blank(string s, int offset)
         {
-            char? c;
-            while (null != (c = BString.bchar(s, offset)))
+            char c;
+            while (offset < s.Length)
             {
+                c = s[offset];
                 if (c == '\n')
-                {
                     return true;
-                }
-                else if (c == ' ')
-                {
-                    offset++;
-                }
-                else
-                {
+
+                if (c != ' ')
                     return false;
-                }
+
+                offset++;
             }
+
             return true;
         }
 
@@ -85,7 +61,7 @@ namespace CommonMark.Parser
             if (len < 0)
                 s = string.Empty;
             else
-                s = BString.bmidstr(ln, offset, len);
+                s = ln.Substring(offset, len);
 
             if (!block.IsOpen)
                 throw new CommonMarkException(string.Format("Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
@@ -269,7 +245,7 @@ namespace CommonMark.Parser
             if (parent == null)
                 throw new ArgumentNullException("parent");
 
-            Block child = make_block(block_type, start_line, start_column);
+            Block child = new Block(block_type, start_line, start_column);
             child.Parent = parent;
             child.Top = parent.Top;
 
@@ -588,23 +564,12 @@ namespace CommonMark.Parser
                     container = add_child(container, BlockTag.BlockQuote, line_number, offset + 1);
 
                 }
-                else if (0 != (matched = Scanner.scan_atx_header_start(ln, first_nonspace)))
+                else if (0 != (matched = Scanner.scan_atx_header_start(ln, first_nonspace, out i)))
                 {
 
                     offset = first_nonspace + matched;
                     container = add_child(container, BlockTag.AtxHeader, line_number, offset + 1);
-                    int hashpos = BString.bstrchrp(ln, '#', first_nonspace);
-
-                    if (hashpos == -1)
-                        throw new CommonMarkException("ATX header parsing with regular expression returned incorrect results.", curptr);
-
-                    int level = 0;
-                    while (BString.bchar(ln, hashpos) == '#')
-                    {
-                        level++;
-                        hashpos++;
-                    }
-                    container.Attributes.HeaderLevel = level;
+                    container.Attributes.HeaderLevel = i;
 
                 }
                 else if (0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace)))

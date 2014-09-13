@@ -7,6 +7,16 @@ namespace CommonMark.Syntax
 {
     public class Block
     {
+        public Block(BlockTag tag, int startLine, int startColumn)
+        {
+            this.Tag = tag;
+            this.StartLine = startLine;
+            this.EndLine = startLine;
+            this.StartColumn = startColumn;
+            this.StringContent = string.Empty;
+            this.IsOpen = true;
+        }
+
         public BlockTag Tag { get; set; }
 
         /// <remarks>Original: start_line</remarks>
