@@ -648,8 +648,7 @@ namespace CommonMark.Parser
             matchlen = Scanner.scan_html_tag(subj.Buffer, subj.Position);
             if (matchlen > 0)
             {
-                contents = BString.bmidstr(subj.Buffer, subj.Position, matchlen);
-                BString.binsertch(ref contents, 0, 1, '<');
+                contents = BString.bmidstr(subj.Buffer, subj.Position - 1, matchlen + 1);
                 subj.Position += matchlen;
                 return make_raw_html(contents);
             }
