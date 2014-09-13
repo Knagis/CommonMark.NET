@@ -23,22 +23,12 @@ namespace CommonMark.Parser
         private const string reg_char = "[^\\\\\\()\\x00-\\x20]";
         private const string in_parens_nosp = "[(]((" + reg_char + ")|(" + escaped_char + "))*[)]";
 
-        // this Regex had significant impact to performance for some typical documents so it was replaced with custom implementation
-        //private const string scheme = "coap|doi|javascript|aaa|aaas|about|acap|cap|cid|crid|data|dav|dict|dns|file|ftp|geo|go|gopher|h323|http|https|iax|icap|im|imap|info|ipp|iris|iris.beep|iris.xpc|iris.xpcs|iris.lwz|ldap|mailto|mid|msrp|msrps|mtqp|mupdate|news|nfs|ni|nih|nntp|opaquelocktoken|pop|pres|rtsp|service|session|shttp|sieve|sip|sips|sms|snmp|soap.beep|soap.beeps|tag|tel|telnet|tftp|thismessage|tn3270|tip|tv|urn|vemmi|ws|wss|xcon|xcon-userid|xmlrpc.beep|xmlrpc.beeps|xmpp|z39.50r|z39.50s|adiumxtra|afp|afs|aim|apt|attachment|aw|beshare|bitcoin|bolo|callto|chrome|chrome-extension|com-eventbrite-attendee|content|cvs|dlna-playsingle|dlna-playcontainer|dtn|dvb|ed2k|facetime|feed|finger|fish|gg|git|gizmoproject|gtalk|hcp|icon|ipn|irc|irc6|ircs|itms|jar|jms|keyparc|lastfm|ldaps|magnet|maps|market|message|mms|ms-help|msnim|mumble|mvn|notes|oid|palm|paparazzi|platform|proxy|psyc|query|res|resource|rmi|rsync|rtmp|secondlife|sftp|sgn|skype|smb|soldat|spotify|ssh|steam|svn|teamspeak|things|udp|unreal|ut2004|ventrilo|view-source|webcal|wtai|wyciwyg|xfire|xri|ymsgr";
-        //private static readonly Regex autolink_uri = new Regex("(" + scheme + "):[^<>\\x00-\\x20]*>", useCompilation | RegexOptions.IgnoreCase);
-
-        // these Regex-es were called for every line and resulted in 10% of spec.txt conversion at the time of conversion.
-        //private static readonly Regex hrule1 = new Regex(@"^([\*][ ]*){3,}[\s]*$", useCompilation);
-        //private static readonly Regex hrule2 = new Regex(@"^([_][ ]*){3,}[\s]*$", useCompilation);
-        //private static readonly Regex hrule3 = new Regex(@"^([-][ ]*){3,}[\s]*$", useCompilation);
-
         private static readonly Regex autolink_email = new Regex("^[a-zA-Z0-9.!#$%&'\\*+/=?^_`{|}~-]+[@][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?([.][a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[>]", useCompilation);
         private static readonly Regex link_url1 = new Regex("^[ \\n]*[<]([^<>\\n\\x00]|(" + escaped_char + ")|[\\\\])*[>]", useCompilation);
         private static readonly Regex link_url2 = new Regex("^[ \\n]*((" + reg_char + ")+|(" + escaped_char + ")|(" + in_parens_nosp + "))*", useCompilation);
         private static readonly Regex link_title1 = new Regex("^[\"]((" + escaped_char + ")|[^\"\\x00])*[\"]", useCompilation);
         private static readonly Regex link_title2 = new Regex("^[']((" + escaped_char + ")|[^'\\x00])*[']", useCompilation);
         private static readonly Regex link_title3 = new Regex("^[\\(]((" + escaped_char + ")|[^\\)\\x00])*[\\)]", useCompilation);
-        private static readonly Regex entity = new Regex("^[&]([#]([Xx][A-Fa-f0-9]{1,8}|[0-9]{1,8})|[A-Za-z][A-Za-z0-9]{1,31})[;]", useCompilation);
         private static readonly Regex close_code_fence = new Regex(@"^([`]{3,}|[~]{3,})(?:\s*)$", useCompilation);
 
         private static int MatchRegex(string s, int pos, params Regex[] regexes)
@@ -422,7 +412,86 @@ namespace CommonMark.Parser
                  { return (p - start); }
               .? { return 0; }
             */
-            return MatchRegex(s, pos, entity);
+
+            if (pos + 3 >= s.Length)
+                return 0;
+
+            if (s[pos] != '&')
+                return 0;
+
+            char c;
+            int i;
+            int counter = 0;
+            if (s[pos + 1] == '#')
+            {
+                c = s[pos + 2];
+                if (c == 'x' || c == 'X')
+                {
+                    // expect 1-8 hex digits starting from pos+3
+                    for (i = pos + 3; i < s.Length; i++)
+                    {
+                        c = char.ToUpperInvariant(s[i]);
+                        if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F'))
+                        {
+                            if (++counter == 9)
+                                return 0;
+
+                            continue;
+                        }
+
+                        if (c == ';')
+                            return counter == 0 ? 0 : i - pos + 1;
+
+                        return 0;
+                    }
+                }
+                else
+                {
+                    // expect 1-8 digits starting from pos+2
+                    for (i = pos + 2; i < s.Length; i++)
+                    {
+                        c = s[i];
+                        if (c >= '0' && c <= '9')
+                        {
+                            if (++counter == 9)
+                                return 0;
+
+                            continue;
+                        }
+
+                        if (c == ';')
+                            return counter == 0 ? 0 : i - pos + 1;
+
+                        return 0;
+                    }
+                }
+            }
+            else
+            {
+                // expect a letter and 1-31 letters or digits
+                c = char.ToUpperInvariant(s[pos + 1]);
+                if (c < 'A' || c > 'Z')
+                    return 0;
+
+                for (i = pos + 2; i < s.Length; i++)
+                {
+                    c = char.ToUpperInvariant(s[i]);
+                    if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z'))
+                    {
+                        if (++counter == 32)
+                            return 0;
+
+                        continue;
+                    }
+
+                    if (c == ';')
+                        return counter == 0 ? 0 : i - pos + 1;
+
+                    return 0;
+                }
+            }
+
+            return 0;
         }
     }
 }
