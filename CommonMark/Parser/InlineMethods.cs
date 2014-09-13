@@ -78,7 +78,6 @@ namespace CommonMark.Parser
             e.Content.Linkable.Label = label;
             e.Content.Linkable.Url = url;
             e.Content.Linkable.Title = title;
-            e.Next = null;
             return e;
         }
 
@@ -87,7 +86,6 @@ namespace CommonMark.Parser
             Inline e = new Inline();
             e.Tag = t;
             e.Content.Inlines = contents;
-            e.Next = null;
             return e;
         }
 
@@ -98,7 +96,6 @@ namespace CommonMark.Parser
             Inline e = new Inline();
             e.Tag = t;
             e.Content.Literal = s;
-            e.Next = null;
             return e;
         }
 
@@ -107,7 +104,6 @@ namespace CommonMark.Parser
         {
             Inline e = new Inline();
             e.Tag = t;
-            e.Next = null;
             return e;
         }
 
@@ -131,12 +127,8 @@ namespace CommonMark.Parser
             {  // null acts like an empty list
                 return b;
             }
-            Inline cur = a;
-            while (cur.Next != null)
-            {
-                cur = cur.Next;
-            }
-            cur.Next = b;
+
+            a.LastSibling.Next = b;
             return a;
         }
 
