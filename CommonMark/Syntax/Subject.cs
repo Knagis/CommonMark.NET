@@ -21,8 +21,6 @@ namespace CommonMark.Syntax
 
         public Dictionary<string, Reference> ReferenceMap;
 
-        //public Dictionary<int, Inline> Memory = new Dictionary<int,Inline>();
-
         private string DebugToString()
         {
             if (this.Position > this.Buffer.Length)

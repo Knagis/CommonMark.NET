@@ -328,8 +328,11 @@ namespace CommonMark.Parser
             Inline il;
             Inline first = null;
             Inline first_close = null;
+            Inline backtrackTarget = null;
+            int backtrackPosition = 0;
             int first_close_delims = 0;
             int numdelims;
+            char otherC = c == '_' ? '*' : '_';
 
             numdelims = scan_delims(subj, c, ref can_open, ref can_close);
             subj.Position += numdelims;
@@ -359,10 +362,25 @@ namespace CommonMark.Parser
                         }
                         else
                         {
+                            if (backtrackTarget == null && peek_char(subj) == otherC)
+                            {
+                                backtrackTarget = last;
+                                backtrackPosition = subj.Position;
+                            }
+
                             if ((last.Next = parse_inline(subj)) == null)
+                            {
+                                if (backtrackTarget != null)
+                                {
+                                    backtrackTarget.Next = null;
+                                    subj.Position = backtrackPosition;
+                                }
                                 return first;
+                            }
                             else
+                            {
                                 last = last.Next.LastSibling;
+                            }
                         }
                     }
 
@@ -382,10 +400,25 @@ namespace CommonMark.Parser
                         }
                         else
                         {
+                            if (backtrackTarget == null && peek_char(subj) == otherC)
+                            {
+                                backtrackTarget = last;
+                                backtrackPosition = subj.Position;
+                            }
+
                             if ((last.Next = parse_inline(subj)) == null)
+                            {
+                                if (backtrackTarget != null)
+                                {
+                                    backtrackTarget.Next = null;
+                                    subj.Position = backtrackPosition;
+                                }
                                 return first;
+                            }
                             else
+                            {
                                 last = last.Next.LastSibling;
+                            }
                         }
                     }
 
@@ -453,10 +486,25 @@ namespace CommonMark.Parser
                         }
                         else
                         {
+                            if (backtrackTarget == null && peek_char(subj) == otherC)
+                            {
+                                backtrackTarget = last;
+                                backtrackPosition = subj.Position;
+                            }
+
                             if ((last.Next = parse_inline(subj)) == null)
+                            {
+                                if (backtrackTarget != null)
+                                {
+                                    backtrackTarget.Next = null;
+                                    subj.Position = backtrackPosition;
+                                }
                                 return first;
+                            }
                             else
+                            {
                                 last = last.Next.LastSibling;
+                            }
                         }
                     }
 
