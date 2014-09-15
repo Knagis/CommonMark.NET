@@ -11,6 +11,9 @@ namespace CommonMark
     /// </summary>
     internal static class BString
     {
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         public static char? bchar(string data, int pos)
         {
             if (data.Length <= pos)
