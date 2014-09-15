@@ -294,7 +294,7 @@ namespace CommonMark.Parser
 
         // Scan ***, **, or * and return number scanned, or 0.
         // Don't advance position.
-        static int scan_delims(Subject subj, char c, ref bool can_open, ref bool can_close)
+        static int scan_delims(Subject subj, char c, out bool can_open, out bool can_close)
         {
             int numdelims = 0;
             char? char_before, char_after;
@@ -306,211 +306,95 @@ namespace CommonMark.Parser
                 numdelims++;
                 advance(subj);
             }
+            
             char_after = peek_char(subj);
             can_open = numdelims > 0 && numdelims <= 3 && char_after != null && !char.IsWhiteSpace(char_after.Value);
             can_close = numdelims > 0 && numdelims <= 3 && char_before != null && !char.IsWhiteSpace(char_before.Value);
+            
             if (c == '_')
             {
                 can_open = can_open && (char_before == null || !char.IsLetterOrDigit(char_before.Value));
                 can_close = can_close && (char_after == null || !char.IsLetterOrDigit(char_after.Value));
             }
-            subj.Position = startpos;
+
             return numdelims;
         }
 
-        // Parse strong/emph or a fallback.
-        // Assumes the subject has '_' or '*' at the current position.
-        private static Inline handle_strong_emph(Subject subj, char c)
+        private static Inline HandleEmphasis(Subject subj, char c)
         {
             bool can_open = false, can_close = false;
-            Inline last;
-            Inline inew;
-            Inline il;
-            Inline first = null;
-            Inline first_close = null;
-            Inline backtrackTarget = null;
-            int backtrackPosition = 0;
-            int first_close_delims = 0;
-            int numdelims;
-            char otherC = c == '_' ? '*' : '_';
+            var numdelims = scan_delims(subj, c, out can_open, out can_close);
 
-            numdelims = scan_delims(subj, c, ref can_open, ref can_close);
-            subj.Position += numdelims;
-
-            first = make_str(BString.bmidstr(subj.Buffer, subj.Position - numdelims, numdelims));
-
-            if (!can_open || numdelims == 0)
-                return first;
-
-            last = first.LastSibling;
-
-            switch (numdelims)
+            if (can_close)
             {
-                case 1:
-                    while (true)
-                    {
-                        numdelims = scan_delims(subj, c, ref can_open, ref can_close);
-                        if (numdelims >= 1 && can_close)
-                        {
-                            subj.Position += 1;
-                            first.Tag = InlineTag.Emphasis;
-                            first.Content.Literal = null;
-                            first.Content.Inlines = first.Next;
-                            first.Next = null;
+                // walk the stack and find a matching opener, if there is one
+                var istack = subj.EmphasisStack;
+                while (true)
+                {
+                    if (istack == null)
+                        goto cannotClose;
 
-                            return first;
-                        }
-                        else
-                        {
-                            if (backtrackTarget == null && peek_char(subj) == otherC)
-                            {
-                                backtrackTarget = last;
-                                backtrackPosition = subj.Position;
-                            }
+                    // the only combination that is not processed is **foo*
+                    if ((istack.DelimeterCount != 2 || numdelims != 1) && istack.Delimeter == c)
+                        break;
 
-                            if ((last.Next = parse_inline(subj)) == null)
-                            {
-                                if (backtrackTarget != null)
-                                {
-                                    backtrackTarget.Next = null;
-                                    subj.Position = backtrackPosition;
-                                }
-                                return first;
-                            }
-                            else
-                            {
-                                last = last.Next.LastSibling;
-                            }
-                        }
-                    }
+                    istack = istack.Previous;
+                }
 
-                case 2:
-                    while (true)
-                    {
-                        numdelims = scan_delims(subj, c, ref can_open, ref can_close);
-                        if (numdelims >= 2 && can_close)
-                        {
-                            subj.Position += 2;
-                            first.Tag = InlineTag.Strong;
-                            first.Content.Literal = null;
-                            first.Content.Inlines = first.Next;
-                            first.Next = null;
+                // calculate the actual number of delimeters used from this closer
+                var useDelims = istack.DelimeterCount;
+                if (useDelims == 3) useDelims = numdelims == 3 ? 1 : numdelims;
+                else if (useDelims > numdelims) useDelims = 1;
 
-                            return first;
-                        }
-                        else
-                        {
-                            if (backtrackTarget == null && peek_char(subj) == otherC)
-                            {
-                                backtrackTarget = last;
-                                backtrackPosition = subj.Position;
-                            }
+                if (istack.DelimeterCount == useDelims)
+                {
+                    // the opener is completely used up - remove the stack entry and reuse the inline element
+                    var inl = istack.StartingInline;
+                    inl.Tag = useDelims == 1 ? InlineTag.Emphasis : InlineTag.Strong;
+                    inl.Content.Literal = null;
+                    inl.Content.Inlines = inl.Next;
+                    inl.Next = null;
 
-                            if ((last.Next = parse_inline(subj)) == null)
-                            {
-                                if (backtrackTarget != null)
-                                {
-                                    backtrackTarget.Next = null;
-                                    subj.Position = backtrackPosition;
-                                }
-                                return first;
-                            }
-                            else
-                            {
-                                last = last.Next.LastSibling;
-                            }
-                        }
-                    }
+                    subj.EmphasisStack = istack.Previous;
+                    istack.Previous = null;
+                    subj.LastInline = inl;
+                }
+                else
+                {
+                    // the opener will only partially be used - stack entry remains (truncated) and a new inline is added.
+                    var inl = istack.StartingInline;
+                    istack.DelimeterCount -= useDelims;
+                    inl.Content.Literal = istack.StartingInline.Content.Literal.Substring(0, istack.DelimeterCount);
 
-                case 3:
-                    while (true)
-                    {
-                        numdelims = scan_delims(subj, c, ref can_open, ref can_close);
-                        if (can_close && numdelims >= 1 && numdelims <= 3 &&
-                            numdelims != first_close_delims)
-                        {
-                            inew = make_str(BString.bmidstr(subj.Buffer, subj.Position, numdelims));
-                            append_inlines(last, inew);
-                            last = inew;
+                    var emph = useDelims == 1 ? make_emph(inl.Next) : make_strong(inl.Next);
+                    inl.Next = emph;
+                    subj.LastInline = emph;
+                }
 
-                            if (first_close_delims == 1 && numdelims > 2)
-                            {
-                                numdelims = 2;
-                            }
-                            else if (first_close_delims == 2)
-                            {
-                                numdelims = 1;
-                            }
-                            else if (numdelims == 3)
-                            {
-                                // If we opened with ***, we interpret it as ** followed by *
-                                // giving us <strong><em>
-                                numdelims = 1;
-                            }
+                // if the closer was not fully used, move back a char or two and try again.
+                if (useDelims < numdelims)
+                {
+                    subj.Position = subj.Position - numdelims + useDelims;
+                    return HandleEmphasis(subj, c);
+                }
 
-                            subj.Position += numdelims;
-                            if (first_close != null)
-                            {
-                                first.Tag = first_close_delims == 1 ? InlineTag.Strong : InlineTag.Emphasis;
-                                first.Content.Literal = null;
-                                first.Content.Inlines =
-                                  make_inlines(first_close_delims == 1 ? InlineTag.Emphasis : InlineTag.Strong,
-                                               first.Next);
-
-                                il = first.Next;
-                                while (il.Next != null && il.Next != first_close)
-                                {
-                                    il = il.Next;
-                                }
-                                il.Next = null;
-
-                                first.Content.Inlines.Next = first_close.Next;
-
-                                il = first.Content.Inlines;
-                                while (il.Next != null && il.Next != last)
-                                {
-                                    il = il.Next;
-                                }
-                                il.Next = null;
-
-                                first_close.Next = null;
-                                first.Next = null;
-
-                                return first;
-                            }
-                            else
-                            {
-                                first_close = last;
-                                first_close_delims = numdelims;
-                            }
-                        }
-                        else
-                        {
-                            if (backtrackTarget == null && peek_char(subj) == otherC)
-                            {
-                                backtrackTarget = last;
-                                backtrackPosition = subj.Position;
-                            }
-
-                            if ((last.Next = parse_inline(subj)) == null)
-                            {
-                                if (backtrackTarget != null)
-                                {
-                                    backtrackTarget.Next = null;
-                                    subj.Position = backtrackPosition;
-                                }
-                                return first;
-                            }
-                            else
-                            {
-                                last = last.Next.LastSibling;
-                            }
-                        }
-                    }
-
+                return make_str(string.Empty);
             }
 
-            return first;
+            cannotClose:
+            var inlText = make_str(BString.bmidstr(subj.Buffer, subj.Position - numdelims, numdelims));
+            
+            if (can_open)
+            {
+                var istack = new InlineStack();
+                istack.DelimeterCount = numdelims;
+                istack.Delimeter = c;
+                istack.StartingInline = inlText;
+                istack.Previous = subj.EmphasisStack;
+                subj.EmphasisStack = istack;
+            }
+
+            return inlText;
         }
 
         // Parse backslash-escape or just a backslash, returning an inline.
@@ -887,7 +771,6 @@ namespace CommonMark.Parser
         public static Inline parse_inlines_while(Subject subj)
         {
             Inline first = null;
-            Inline last = null;
             Inline cur;
             while (!is_eof(subj))
             {
@@ -895,12 +778,12 @@ namespace CommonMark.Parser
                 if (first == null)
                 {
                     first = cur;
-                    last = cur.LastSibling;
+                    subj.LastInline = cur.LastSibling;
                 }
                 else
                 {
-                    last.Next = cur;
-                    last = cur.LastSibling;
+                    subj.LastInline.Next = cur;
+                    subj.LastInline = cur.LastSibling;
                 }
             }
 
@@ -939,18 +822,10 @@ namespace CommonMark.Parser
                     inew = handle_pointy_brace(subj);
                     break;
                 case '_':
-                    if (subj.Position > 0 && (char.IsLetterOrDigit(BString.bchar(subj.Buffer, subj.Position - 1).Value) ||
-                                          BString.bchar(subj.Buffer, subj.Position - 1) == '_'))
-                    {
-                        inew = make_str(take_one(subj));
-                    }
-                    else
-                    {
-                        inew = handle_strong_emph(subj, '_');
-                    }
+                    inew = HandleEmphasis(subj, '_');
                     break;
                 case '*':
-                    inew = handle_strong_emph(subj, '*');
+                    inew = HandleEmphasis(subj, '*');
                     break;
                 case '[':
                     inew = handle_left_bracket(subj);

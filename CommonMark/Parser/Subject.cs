@@ -1,11 +1,10 @@
-﻿using System;
+﻿using CommonMark.Syntax;
 using System.Collections.Generic;
-using System.Text;
 
-namespace CommonMark.Syntax
+namespace CommonMark.Parser
 {
     [System.Diagnostics.DebuggerDisplay("{DebugToString()}")]
-    internal class Subject
+    internal sealed class Subject
     {
         /// <summary>
         /// Gets or sets the whole buffer this instance is created over.
@@ -18,6 +17,16 @@ namespace CommonMark.Syntax
         public int Position;
 
         public int LabelNestingLevel;
+
+        /// <summary>
+        /// The last top-level inline parsed from this subject.
+        /// </summary>
+        public Inline LastInline;
+
+        /// <summary>
+        /// The current stack of possible emphasis openers. Can be <c>null</c>.
+        /// </summary>
+        public InlineStack EmphasisStack;
 
         public Dictionary<string, Reference> ReferenceMap;
 
