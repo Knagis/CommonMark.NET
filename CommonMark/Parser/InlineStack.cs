@@ -11,9 +11,9 @@ namespace CommonMark.Parser
     internal sealed class InlineStack
     {
         /// <summary>
-        /// Previous entry in the stack. <c>null</c> if this is the last one.
+        /// Next entry in the stack. <c>null</c> if this is the last one.
         /// </summary>
-        public InlineStack Previous;
+        public InlineStack Next;
 
         /// <summary>
         /// The at-the-moment text inline that could be transformed into the opener.
