@@ -4,6 +4,7 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
+    [System.Diagnostics.DebuggerDisplay("{DebugToString()}")]
     internal class Subject
     {
         /// <summary>
@@ -19,5 +20,15 @@ namespace CommonMark.Syntax
         public int LabelNestingLevel;
 
         public Dictionary<string, Reference> ReferenceMap;
+
+        //public Dictionary<int, Inline> Memory = new Dictionary<int,Inline>();
+
+        private string DebugToString()
+        {
+            if (this.Position > this.Buffer.Length)
+                return this.Buffer;
+
+            return this.Buffer.Insert(this.Position, "⁞");
+        }
     }
 }

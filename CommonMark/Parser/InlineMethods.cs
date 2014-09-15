@@ -89,7 +89,6 @@ namespace CommonMark.Parser
             return e;
         }
 
-
         // Create an inline with a literal string value.
         private static Inline make_literal(InlineTag t, string s)
         {
@@ -167,7 +166,6 @@ namespace CommonMark.Parser
         {
             subj.Position += 1;
         }
-
 
         // Take characters while a predicate holds, and return a string.
         private static string take_while(Subject subj, Predicate<char> predicate)
@@ -325,29 +323,23 @@ namespace CommonMark.Parser
         private static Inline handle_strong_emph(Subject subj, char c)
         {
             bool can_open = false, can_close = false;
-            Inline result = null;
             Inline last;
             Inline inew;
             Inline il;
-            Inline first_head = null;
+            Inline first = null;
             Inline first_close = null;
             int first_close_delims = 0;
             int numdelims;
 
-            last = null;
-
             numdelims = scan_delims(subj, c, ref can_open, ref can_close);
             subj.Position += numdelims;
 
-            inew = make_str(BString.bmidstr(subj.Buffer, subj.Position - numdelims, numdelims));
-            last = inew;
-            first_head = inew;
-            result = inew;
+            first = make_str(BString.bmidstr(subj.Buffer, subj.Position - numdelims, numdelims));
 
             if (!can_open || numdelims == 0)
-            {
-                goto done;
-            }
+                return first;
+
+            last = first.LastSibling;
 
             switch (numdelims)
             {
@@ -358,18 +350,19 @@ namespace CommonMark.Parser
                         if (numdelims >= 1 && can_close)
                         {
                             subj.Position += 1;
-                            first_head.Tag = InlineTag.Emphasis;
-                            first_head.Content.Literal = null;
-                            first_head.Content.Inlines = first_head.Next;
-                            first_head.Next = null;
-                            goto done;
+                            first.Tag = InlineTag.Emphasis;
+                            first.Content.Literal = null;
+                            first.Content.Inlines = first.Next;
+                            first.Next = null;
+
+                            return first;
                         }
                         else
                         {
-                            if (!parse_inline(subj, ref last))
-                            {
-                                goto done;
-                            }
+                            if ((last.Next = parse_inline(subj)) == null)
+                                return first;
+                            else
+                                last = last.Next.LastSibling;
                         }
                     }
 
@@ -380,18 +373,19 @@ namespace CommonMark.Parser
                         if (numdelims >= 2 && can_close)
                         {
                             subj.Position += 2;
-                            first_head.Tag = InlineTag.Strong;
-                            first_head.Content.Literal = null;
-                            first_head.Content.Inlines = first_head.Next;
-                            first_head.Next = null;
-                            goto done;
+                            first.Tag = InlineTag.Strong;
+                            first.Content.Literal = null;
+                            first.Content.Inlines = first.Next;
+                            first.Next = null;
+
+                            return first;
                         }
                         else
                         {
-                            if (!parse_inline(subj, ref last))
-                            {
-                                goto done;
-                            }
+                            if ((last.Next = parse_inline(subj)) == null)
+                                return first;
+                            else
+                                last = last.Next.LastSibling;
                         }
                     }
 
@@ -424,22 +418,22 @@ namespace CommonMark.Parser
                             subj.Position += numdelims;
                             if (first_close != null)
                             {
-                                first_head.Tag = first_close_delims == 1 ? InlineTag.Strong : InlineTag.Emphasis;
-                                first_head.Content.Literal = null;
-                                first_head.Content.Inlines =
+                                first.Tag = first_close_delims == 1 ? InlineTag.Strong : InlineTag.Emphasis;
+                                first.Content.Literal = null;
+                                first.Content.Inlines =
                                   make_inlines(first_close_delims == 1 ? InlineTag.Emphasis : InlineTag.Strong,
-                                               first_head.Next);
+                                               first.Next);
 
-                                il = first_head.Next;
+                                il = first.Next;
                                 while (il.Next != null && il.Next != first_close)
                                 {
                                     il = il.Next;
                                 }
                                 il.Next = null;
 
-                                first_head.Content.Inlines.Next = first_close.Next;
+                                first.Content.Inlines.Next = first_close.Next;
 
-                                il = first_head.Content.Inlines;
+                                il = first.Content.Inlines;
                                 while (il.Next != null && il.Next != last)
                                 {
                                     il = il.Next;
@@ -447,8 +441,9 @@ namespace CommonMark.Parser
                                 il.Next = null;
 
                                 first_close.Next = null;
-                                first_head.Next = null;
-                                goto done;
+                                first.Next = null;
+
+                                return first;
                             }
                             else
                             {
@@ -458,19 +453,16 @@ namespace CommonMark.Parser
                         }
                         else
                         {
-                            if (!parse_inline(subj, ref last))
-                            {
-                                goto done;
-                            }
+                            if ((last.Next = parse_inline(subj)) == null)
+                                return first;
+                            else
+                                last = last.Next.LastSibling;
                         }
                     }
 
-                default:
-                    goto done;
             }
 
-        done:
-            return result;
+            return first;
         }
 
         // Parse backslash-escape or just a backslash, returning an inline.
@@ -843,25 +835,34 @@ namespace CommonMark.Parser
             }
         }
 
-        private static bool not_eof(Subject subj)
-        {
-            return !is_eof(subj);
-        }
-
         // Parse inlines while a predicate is satisfied.  Return inlines.
-        public static Inline parse_inlines_while(Subject subj, Predicate<Subject> predicate)
+        public static Inline parse_inlines_while(Subject subj)
         {
+            Inline first = null;
             Inline last = null;
-            while (predicate(subj) && parse_inline(subj, ref last))
+            Inline cur;
+            while (!is_eof(subj))
             {
+                cur = parse_inline(subj);
+                if (first == null)
+                {
+                    first = cur;
+                    last = cur.LastSibling;
+                }
+                else
+                {
+                    last.Next = cur;
+                    last = cur.LastSibling;
+                }
             }
-            return last;
+
+            return first;
         }
 
         // Parse an inline, advancing subject, and add it to last element.
         // Adjust tail to point to new last element of list.
         // Return 0 if no inline can be parsed, 1 otherwise.
-        public static bool parse_inline(Subject subj, ref Inline last)
+        public static Inline parse_inline(Subject subj)
         {
             Inline inew = null;
             string contents;
@@ -870,7 +871,7 @@ namespace CommonMark.Parser
             int endpos;
             c = peek_char(subj);
             if (c == null)
-                return false;
+                return null;
 
             switch (c)
             {
@@ -953,21 +954,14 @@ namespace CommonMark.Parser
                     inew = make_str(contents);
                     break;
             }
-            if (last == null)
-            {
-                last = inew;
-            }
-            else
-            {
-                append_inlines(last, inew);
-            }
-            return true;
+
+            return inew;
         }
 
         public static Inline parse_inlines(string input, Dictionary<string, Reference> refmap)
         {
             Subject subj = make_subject(input, refmap);
-            return parse_inlines_while(subj, not_eof);
+            return parse_inlines_while(subj);
         }
 
         // Parse zero or more space characters, including at most one newline.
