@@ -328,8 +328,7 @@ namespace CommonMark.Parser
             if (can_close)
             {
                 // walk the stack and find a matching opener, if there is one
-                var istack = subj.EmphasisStackFirst;
-                InlineStack istackPrevious = null;
+                var istack = subj.EmphasisStack;
                 while (true)
                 {
                     if (istack == null)
@@ -339,8 +338,7 @@ namespace CommonMark.Parser
                     if ((istack.DelimeterCount != 2 || numdelims != 1) && istack.Delimeter == c)
                         break;
 
-                    istackPrevious = istack;
-                    istack = istack.Next;
+                    istack = istack.Previous;
                 }
 
                 // calculate the actual number of delimeters used from this closer
@@ -357,12 +355,9 @@ namespace CommonMark.Parser
                     inl.Content.Inlines = inl.Next;
                     inl.Next = null;
 
+                    subj.EmphasisStack = istack.Previous;
+                    istack.Previous = null;
                     subj.LastInline = inl;
-                    subj.EmphasisStackLast = istackPrevious;
-                    if (istackPrevious == null)
-                        subj.EmphasisStackFirst = null;
-                    else
-                        istackPrevious.Next = null;
                 }
                 else
                 {
@@ -395,16 +390,8 @@ namespace CommonMark.Parser
                 istack.DelimeterCount = numdelims;
                 istack.Delimeter = c;
                 istack.StartingInline = inlText;
-
-                if (subj.EmphasisStackLast == null)
-                {
-                    subj.EmphasisStackFirst = subj.EmphasisStackLast = istack;
-                }
-                else
-                {
-                    subj.EmphasisStackLast.Next = istack;
-                    subj.EmphasisStackLast = istack;
-                }
+                istack.Previous = subj.EmphasisStack;
+                subj.EmphasisStack = istack;
             }
 
             return inlText;

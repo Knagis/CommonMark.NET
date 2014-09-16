@@ -24,14 +24,9 @@ namespace CommonMark.Parser
         public Inline LastInline;
 
         /// <summary>
-        /// The first item for the current stack of possible emphasis openers. Can be <c>null</c>.
+        /// The current stack of possible emphasis openers. Can be <c>null</c>.
         /// </summary>
-        public InlineStack EmphasisStackFirst;
-
-        /// <summary>
-        /// The last item for the current stack of possible emphasis openers. Can be <c>null</c>.
-        /// </summary>
-        public InlineStack EmphasisStackLast;
+        public InlineStack EmphasisStack;
 
         public Dictionary<string, Reference> ReferenceMap;
 
