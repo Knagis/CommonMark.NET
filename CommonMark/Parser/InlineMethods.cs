@@ -7,41 +7,22 @@ namespace CommonMark.Parser
 {
     internal static class InlineMethods
     {
-
-        // normalize reference:  collapse internal whitespace to single space,
-        // remove leading/trailing whitespace, case fold
-        static string normalize_reference(string s)
+        /// <summary>
+        /// Collapses internal whitespace to single space, removes leading/trailing whitespace, folds case.
+        /// </summary>
+        private static string NormalizeReference(string s)
         {
-            string normalized = s == null ? string.Empty : s.ToLower();
-            int pos = 0;
-            int startpos;
-            char? c;
-            while (null != (c = BString.bchar(normalized, pos)))
-            {
-                if (char.IsWhiteSpace(c.Value))
-                {
-                    startpos = pos;
-                    // skip til next non-space
-                    pos++;
-                    while (char.IsWhiteSpace(BString.bchar(s, pos).Value))
-                    {
-                        pos++;
-                    }
-                    normalized = normalized.Remove(startpos, pos - startpos);
-                    BString.binsertch(ref normalized, startpos, 1, ' ');
-                    pos = startpos + 1;
-                }
-                pos++;
-            }
-            return normalized.Trim();
-        }
+            if (s == null || s.Length == 0)
+                return string.Empty;
 
+            return NormalizeWhitespace(s.ToUpperInvariant());
+        }
 
         // Returns reference if refmap contains a reference with matching
         // label, otherwise null.
         public static Reference lookup_reference(Dictionary<string, Reference> refmap, string lab)
         {
-            string label = normalize_reference(lab);
+            string label = NormalizeReference(lab);
             if (refmap == null)
             {
                 return null;
@@ -56,7 +37,7 @@ namespace CommonMark.Parser
         public static Reference make_reference(string label, string url, string title)
         {
             Reference r = new Reference();
-            r.Label = normalize_reference(label);
+            r.Label = NormalizeReference(label);
             r.Url = url;
             r.Title = title;
             return r;
