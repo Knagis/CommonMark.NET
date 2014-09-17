@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
     <id>CommonMark.NET</id>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <title>CommonMark.NET</title>
     <authors>Knagis</authors>
     <licenseUrl>https://raw.githubusercontent.com/Knagis/CommonMark.NET/master/LICENSE.md</licenseUrl>
@@ -11,8 +11,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Library for converting Markdown documents to HTML according to the CommonMark specification. Optimized for maximum performance.</description>
     <releaseNotes>
-      Emphasis (**foo**) parsing completely rewritten to properly handle nested scenarios (like *_*_) that the specification describes but does not contain tests for.
-      Performance kept as fast as MarkdownDeep (which is the fastest alternative).
+      Small fixes and performance improvements.
+      Performance now slightly better than MarkdownDeep (which is the fastest alternative).
     </releaseNotes>
     <copyright>Copyright © Kārlis Gaņģis 2014</copyright>
     <tags>CommonMark Markdown</tags>
