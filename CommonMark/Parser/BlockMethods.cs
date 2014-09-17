@@ -87,7 +87,7 @@ namespace CommonMark.Parser
             else
             {
                 // find next newline after it
-                pos = BString.bstrchrp(ln, '\n', pos);
+                pos = ln.IndexOf('\n', pos);
                 if (pos != -1)
                 {
                     if (keepLastNewline)
@@ -189,7 +189,7 @@ namespace CommonMark.Parser
 
                 case BlockTag.FencedCode:
                     // first line of contents becomes info
-                    firstlinelen = BString.bstrchr(b.StringContent, '\n');
+                    firstlinelen = b.StringContent.IndexOf('\n');
                     b.Attributes.FencedCodeData.Info = BString.bmidstr(b.StringContent, 0, firstlinelen);
                     b.StringContent = b.StringContent.Remove(0, firstlinelen + 1); // +1 for \n
                     b.Attributes.FencedCodeData.Info = b.Attributes.FencedCodeData.Info.Trim();
@@ -586,7 +586,7 @@ namespace CommonMark.Parser
                 else if (container.Tag == BlockTag.Paragraph 
                         && 0 != (lev = Scanner.scan_setext_header_line(ln, first_nonspace))
                         // check that there is only one line in the paragraph:
-                        && BString.bstrrchrp(container.StringContent, '\n', container.StringContent.Length - 2) == -1)
+                        && container.StringContent.LastIndexOf('\n', container.StringContent.Length - 2) == -1)
                 {
 
                     container.Tag = BlockTag.SETextHeader;

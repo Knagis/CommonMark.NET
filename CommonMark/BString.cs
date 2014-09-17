@@ -87,36 +87,6 @@ namespace CommonMark
         }
 
         /// <summary>
-        /// Search for the character c in b forwards from the position pos 
-        /// (inclusive).  Returns the position of the found character or -1 if 
-        /// it is not found.
-        /// </summary>
-        public static int bstrchrp(string b, char c, int pos)
-        {
-            return b.IndexOf(c, pos);
-        }
-
-        /// <summary>
-        /// Search for the character c in b backwards from the position pos in bstring 
-        /// (inclusive).  Returns the position of the found character or -1 if 
-        /// it is not found.
-        /// </summary>
-        public static int bstrrchrp(string b, char c, int pos)
-        {
-            return b.LastIndexOf(c, pos);
-        }
-
-        /// <summary>
-        /// Search for the character c in the bstring b forwards from the start of 
-        /// the bstring.  Returns the position of the found character or BSTR_ERR if 
-        /// it is not found.
-        /// </summary>
-        public static int bstrchr(string b, char c)
-        {
-            return b.IndexOf(c);
-        }
-
-        /// <summary>
         /// Create a bstring which is the substring of b starting from position left 
         /// and running for a length len (clamped by the end of the bstring b.)  If 
         /// there was no error, the value of this constructed bstring is returned 

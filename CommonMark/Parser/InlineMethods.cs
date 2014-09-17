@@ -137,8 +137,6 @@ namespace CommonMark.Parser
             Subject e = new Subject();
             // remove final whitespace
             e.Buffer = s == null ? string.Empty : s.TrimEnd();
-            e.Position = 0;
-            e.LabelNestingLevel = 0;
             e.ReferenceMap = refmap;
             return e;
         }
@@ -268,7 +266,7 @@ namespace CommonMark.Parser
             int startpos = subj.Position;
             int endpos = scan_to_closing_backticks(subj, ticklength);
             if (endpos == 0)
-            { 
+            {
                 // closing not found
                 subj.Position = startpos; // rewind to right after the opening ticks
                 return make_str(new string('`', ticklength));
@@ -296,11 +294,11 @@ namespace CommonMark.Parser
                 numdelims++;
                 advance(subj);
             }
-            
+
             char_after = peek_char(subj);
             can_open = numdelims > 0 && numdelims <= 3 && char_after != null && !char.IsWhiteSpace(char_after.Value);
             can_close = numdelims > 0 && numdelims <= 3 && char_before != null && !char.IsWhiteSpace(char_before.Value);
-            
+
             if (c == '_')
             {
                 can_open = can_open && (char_before == null || !char.IsLetterOrDigit(char_before.Value));
@@ -371,9 +369,9 @@ namespace CommonMark.Parser
                 return make_str(string.Empty);
             }
 
-            cannotClose:
+        cannotClose:
             var inlText = make_str(BString.bmidstr(subj.Buffer, subj.Position - numdelims, numdelims));
-            
+
             if (can_open)
             {
                 var istack = new InlineStack();
@@ -398,7 +396,7 @@ namespace CommonMark.Parser
             var nextChar = subj.Buffer[subj.Position];
 
             if (Utilities.IsAsciiSymbol(nextChar))
-            {  
+            {
                 // only ascii symbols and newline can be escaped
                 advance(subj);
                 return make_str(nextChar.ToString());
@@ -446,23 +444,23 @@ namespace CommonMark.Parser
 
             while (null != (c = peek_char(subj)))
             {
-                switch (c)
+                if (c == '&')
                 {
-                    case '&':
-                        inew = handle_entity(subj);
-                        break;
-                    default:
-                        searchpos = BString.bstrchrp(subj.Buffer, '&', subj.Position);
-                        if (searchpos == -1)
-                        {
-                            searchpos = subj.Buffer.Length;
-                        }
-                        inew = make_str(BString.bmidstr(subj.Buffer, subj.Position, searchpos - subj.Position));
-                        subj.Position = searchpos;
-                        break;
+                    inew = handle_entity(subj);
                 }
+                else
+                {
+                    searchpos = subj.Buffer.IndexOf('&', subj.Position);
+                    if (searchpos == -1)
+                        searchpos = subj.Buffer.Length;
+
+                    inew = make_str(BString.bmidstr(subj.Buffer, subj.Position, searchpos - subj.Position));
+                    subj.Position = searchpos;
+                }
+
                 result = append_inlines(result, inew);
             }
+
             return result;
         }
 
