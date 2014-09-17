@@ -40,7 +40,7 @@ namespace CommonMark.Parser
                 return 0;
 
             var potentialScheme = s.Substring(pos, colonpos - pos).ToLowerInvariant();
-            if (Array.BinarySearch(schemeArray, potentialScheme) < -1)
+            if (Array.BinarySearch(schemeArray, potentialScheme, StringComparer.Ordinal) < -1)
                 return 0;
 
             char c;
@@ -155,7 +155,7 @@ namespace CommonMark.Parser
             }
 
             var scheme = new string(tagname, 0, j).ToLowerInvariant();
-            if (Array.BinarySearch(blockTagNames, scheme) < 0)
+            if (Array.BinarySearch(blockTagNames, scheme, StringComparer.Ordinal) < 0)
                 return false;
 
             return nextChar == '>' || (!slashAtBeginning && nextChar == '/') || char.IsWhiteSpace(nextChar);
