@@ -208,47 +208,49 @@ namespace CommonMark.Parser
             return (subj.Position);
         }
 
-        // Destructively modify string, collapsing consecutive
-        // space and newline characters into a single space.
-        static void normalize_whitespace(ref string s)
+        /// <summary>
+        /// Collapses consecutive space and newline characters into a single space.
+        /// Additionaly removes leading and trailing spaces.
+        /// </summary>
+        private static string NormalizeWhitespace(string s)
         {
-            bool last_char_was_space = false;
-            int pos = 0;
-            char? c;
-            while (null != (c = BString.bchar(s, pos)))
+            bool pendingSpace = false;
+            bool foundNonSpace = false;
+
+            var sb = new StringBuilder(s.Length);
+            char c;
+            int cpos = 0;
+            for (var i = 0; i < s.Length; i++ )
             {
-                switch (c)
+                c = s[i];
+
+                if (c == ' ' || c == '\n')
                 {
-                    case ' ':
-                        if (last_char_was_space)
-                        {
-                            s = s.Remove(pos, 1);
-                        }
-                        else
-                        {
-                            pos++;
-                        }
-                        last_char_was_space = true;
-                        break;
-                    case '\n':
-                        if (last_char_was_space)
-                        {
-                            s = s.Remove(pos, 1);
-                        }
-                        else
-                        {
-                            s = s.Remove(pos, 1);
-                            BString.binsertch(ref s, pos, 1, ' ');
-                            pos++;
-                        }
-                        last_char_was_space = true;
-                        break;
-                    default:
-                        pos++;
-                        last_char_was_space = false;
-                        break;
+                    if (cpos < i)
+                        sb.Append(s, cpos, i - cpos);
+                    
+                    cpos = i + 1;
+                    if (pendingSpace)
+                        continue;
+                    if (foundNonSpace)
+                        pendingSpace = true;
+                }
+                else
+                {
+                    foundNonSpace = true;
+
+                    if (pendingSpace)
+                    {
+                        sb.Append(' ');
+                        pendingSpace = false;
+                    }
                 }
             }
+
+            if (cpos < s.Length)
+                sb.Append(s, cpos, s.Length - cpos);
+
+            return sb.ToString();
         }
 
         // Parse backtick code section or raw backticks, return an inline.
@@ -273,9 +275,8 @@ namespace CommonMark.Parser
             }
             else
             {
-                var result = BString.bmidstr(subj.Buffer, startpos, endpos - startpos - ticklength);
-                result = result.Trim();
-                normalize_whitespace(ref result);
+                var result = subj.Buffer.Substring(startpos, endpos - startpos - ticklength);
+                result = NormalizeWhitespace(result);
                 return make_code(result);
             }
         }
