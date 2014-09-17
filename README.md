@@ -26,7 +26,8 @@ var result = CommonMark.CommonMarkConverter.Convert("**Hello world!**");
 
 The library uses no references except for `System` - it has no external dependencies. It is cross compiled to
 both .NET 2.0 and .NET 4.0 Portable Class Library that targets .NET Framework 4.0, Silverlight 5, Windows 8,
-Windows Phone 8.1, Windows Phone Silverlight 8, Xamarin.Android and Xamarin.iOS.
+Windows Phone 8.1, Windows Phone Silverlight 8, Xamarin.Android and Xamarin.iOS. A special .NET 4.5 build is
+also created that hints certain optimizations to the framework that were not available in earlier versions.
 
 For working with the source code you will need Visual Studio 2013.3. Note that Express for Windows is the
 only free edition that supports PCL projects.
@@ -36,13 +37,14 @@ only free edition that supports PCL projects.
 Using a [simple tool][3] to compare the performance of various Markdown implementations for .NET yields the
 following results:
 
-     CommonMark.NET 0.2.0      7 ms   11%     (current release for this library)
+     CommonMark.NET 0.2.1      6 ms   10%     (current release for this library)
+     CommonMark.NET 0.2.0      7 ms   11%     
      CommonMark.NET 0.1.3      7 ms   11%     
      CommonMark.NET 0.1.2     15 ms   23%
      CommonMark.NET 0.1.1     27 ms   42%
      CommonMark.NET 0.1.0     56 ms   84%     (first public release)
 
-    CommonMarkSharp 0.2.2     31 ms   47%
+    CommonMarkSharp 0.3.2     30 ms   46%
        MarkdownSharp 1.13     55 ms   84%     (might not conform to CommonMark specification)
          MarkdownDeep 1.5      7 ms   11%     (might not conform to CommonMark specification)
                  Baseline     65 ms   100%    (used to compare results on different machines)
