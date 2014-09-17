@@ -305,64 +305,56 @@ namespace CommonMark.Parser
         /// <remarks>Original: int parse_list_marker(string ln, int pos, ref ListData dataptr)</remarks>
         private static int ParseListMarker(string ln, int pos, out ListData data)
         {
-            char? c;
+            char c;
             int startpos;
-            int start = 1;
             data = null;
+            var len = ln.Length;
 
             startpos = pos;
-            c = BString.bchar(ln, pos);
+            c = ln[pos];
 
-            if ((c == '*' || c == '-' || c == '+' || c == '•') && 0 == Scanner.scan_hrule(ln, pos))
+            if (c == '+' || c == '•' || ((c == '*' || c == '-') && 0 == Scanner.scan_hrule(ln, pos)))
             {
                 pos++;
-                if (pos == ln.Length || !char.IsWhiteSpace(ln[pos]))
+                if (pos == len || (ln[pos] != ' ' && ln[pos] != '\n'))
                     return 0;
 
                 data = new ListData();
                 data.MarkerOffset = 0; // will be adjusted later
                 data.ListType = ListType.Bullet;
-                data.BulletChar = c.Value;
+                data.BulletChar = c;
                 data.Start = 1;
                 data.Delimiter = ListDelimiter.Period;
                 data.IsTight = false;
             }
-            else if (c != null && char.IsDigit(c.Value))
+            else if (c >= '0' && c <= '9')
             {
 
+                int start = c - '0';
+
+                while (pos < len - 1)
+                {
+                    c = ln[++pos];
+                    if (c >= '0' && c <= '9')
+                        start = start * 10 + (c - '0');
+                    else
+                        break;
+                }
+
+                if (pos >= len - 1 || (c != '.' && c != ')'))
+                    return 0;
+
                 pos++;
-                while (char.IsDigit(BString.bchar(ln, pos).Value))
-                {
-                    pos++;
-                }
-
-                if (!int.TryParse(ln.Substring(startpos, pos - startpos), 
-                    System.Globalization.NumberStyles.Integer, 
-                    System.Globalization.CultureInfo.InvariantCulture, out start))
-                {
-                    // the only reasonable explanation why this case would occur is if the number is larger than int.MaxValue.
+                if (pos == len || ln[pos] != ' ')
                     return 0;
-                }
 
-                c = BString.bchar(ln, pos);
-                if (c == '.' || c == ')')
-                {
-                    pos++;
-                    if (!char.IsWhiteSpace(BString.bchar(ln, pos).Value))
-                        return 0;
-
-                    data = new ListData();
-                    data.MarkerOffset = 0; // will be adjusted later
-                    data.ListType = ListType.Ordered;
-                    data.BulletChar = '\0';
-                    data.Start = start;
-                    data.Delimiter = (c == '.' ? ListDelimiter.Period : ListDelimiter.Parenthesis);
-                    data.IsTight = false;
-                }
-                else
-                {
-                    return 0;
-                }
+                data = new ListData();
+                data.MarkerOffset = 0; // will be adjusted later
+                data.ListType = ListType.Ordered;
+                data.BulletChar = '\0';
+                data.Start = start;
+                data.Delimiter = (c == '.' ? ListDelimiter.Period : ListDelimiter.Parenthesis);
+                data.IsTight = false;
 
             }
             else
