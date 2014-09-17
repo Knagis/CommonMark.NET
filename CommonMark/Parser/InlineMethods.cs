@@ -143,11 +143,6 @@ namespace CommonMark.Parser
             return e;
         }
 
-        private static bool isbacktick(char c)
-        {
-            return (c == '`');
-        }
-
         // Return the next character in the subject, without advancing.
         // Return 0 if at the end of the subject.
         private static char? peek_char(Subject subj)
@@ -162,23 +157,12 @@ namespace CommonMark.Parser
         }
 
         // Advance the subject.  Doesn't check for eof.
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         private static void advance(Subject subj)
         {
             subj.Position += 1;
-        }
-
-        // Take characters while a predicate holds, and return a string.
-        private static string take_while(Subject subj, Predicate<char> predicate)
-        {
-            char? c;
-            int startpos = subj.Position;
-            int len = 0;
-            while (null != (c = peek_char(subj)) && predicate(c.Value))
-            {
-                advance(subj);
-                len++;
-            }
-            return BString.bmidstr(subj.Buffer, startpos, len);
         }
 
         // Take one character and return a string, or null if eof.
@@ -273,19 +257,25 @@ namespace CommonMark.Parser
         // Assumes that the subject has a backtick at the current position.
         static Inline handle_backticks(Subject subj)
         {
-            string openticks = take_while(subj, isbacktick);
-            string result;
-            int ticklength = openticks.Length;
+            int ticklength = 0;
+            var bl = subj.Buffer.Length;
+            while (subj.Position < bl && (subj.Buffer[subj.Position] == '`'))
+            {
+                ticklength++;
+                subj.Position++;
+            }
+
             int startpos = subj.Position;
             int endpos = scan_to_closing_backticks(subj, ticklength);
             if (endpos == 0)
-            { // not found
-                subj.Position = startpos; // rewind
-                return make_str(openticks);
+            { 
+                // closing not found
+                subj.Position = startpos; // rewind to right after the opening ticks
+                return make_str(new string('`', ticklength));
             }
             else
             {
-                result = BString.bmidstr(subj.Buffer, startpos, endpos - startpos - ticklength);
+                var result = BString.bmidstr(subj.Buffer, startpos, endpos - startpos - ticklength);
                 result = result.Trim();
                 normalize_whitespace(ref result);
                 return make_code(result);
@@ -401,13 +391,19 @@ namespace CommonMark.Parser
         private static Inline handle_backslash(Subject subj)
         {
             advance(subj);
-            char? nextchar = peek_char(subj);
-            if (nextchar != null && (char.IsPunctuation(nextchar.Value) || char.IsSymbol(nextchar.Value)))
-            {  // only ascii symbols and newline can be escaped
+
+            if (subj.Position >= subj.Buffer.Length)
+                return make_str("\\");
+
+            var nextChar = subj.Buffer[subj.Position];
+
+            if (Utilities.IsAsciiSymbol(nextChar))
+            {  
+                // only ascii symbols and newline can be escaped
                 advance(subj);
-                return make_str(nextchar.ToString());
+                return make_str(nextChar.ToString());
             }
-            else if (nextchar == '\n')
+            else if (nextChar == '\n')
             {
                 advance(subj);
                 return make_linebreak();
@@ -486,10 +482,8 @@ namespace CommonMark.Parser
                     break;
 
                 c = url[searchpos];
-                if (c != char.MinValue && (char.IsPunctuation(c) || char.IsSymbol(c)))
-                {
+                if (Utilities.IsAsciiSymbol(c))
                     url = url.Remove(searchpos - 1, 1);
-                }
             }
 
             return url;
