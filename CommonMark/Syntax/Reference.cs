@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
-    public class Reference
+    public sealed class Reference
     {
         /// <summary>
         /// Gets or sets the label (the key by which it is referenced in the mapping) of the reference.

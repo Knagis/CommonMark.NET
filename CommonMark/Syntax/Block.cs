@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
-    public class Block
+    public sealed class Block
     {
         public Block(BlockTag tag, int startLine, int startColumn)
         {

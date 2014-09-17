@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
-    public class BlockAttributes
+    public sealed class BlockAttributes
     {
         private ListData _listData = new ListData();
         /// <remarks>Original: list_data</remarks>

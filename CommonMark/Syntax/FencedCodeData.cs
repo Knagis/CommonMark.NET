@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
-    public class FencedCodeData
+    public sealed class FencedCodeData
     {
         /// <remarks>Original: fence_length</remarks>
         public int FenceLength { get; set; }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
-    public class ListData
+    public sealed class ListData
     {
         public ListType ListType { get; set; }
 

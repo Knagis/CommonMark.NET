@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
-    public class InlineContent
+    public sealed class InlineContent
     {
         public string Literal { get; set; }
 

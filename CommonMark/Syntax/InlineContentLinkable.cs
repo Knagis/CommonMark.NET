@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
-    public class InlineContentLinkable
+    public sealed class InlineContentLinkable
     {
         public Inline Label { get; set; }
         public string Url { get; set; }
