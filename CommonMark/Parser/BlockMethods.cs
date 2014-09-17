@@ -401,6 +401,7 @@ namespace CommonMark.Parser
             Block cur = curptr;
             bool blank = false;
             int first_nonspace;
+            char curChar;
             int indent;
 
             // detab input line
@@ -417,20 +418,19 @@ namespace CommonMark.Parser
                 container = container.LastChild;
 
                 first_nonspace = offset;
-                while (BString.bchar(ln, first_nonspace) == ' ')
+                while ((curChar = ln[first_nonspace]) == ' ')
                     first_nonspace++;
 
                 indent = first_nonspace - offset;
-                blank = BString.bchar(ln, first_nonspace) == '\n';
+                blank = curChar == '\n';
 
                 if (container.Tag == BlockTag.BlockQuote)
                 {
 
-                    matched = (indent <= 3 && BString.bchar(ln, first_nonspace) == '>') ? 1 : 0;
-                    if (matched != 0)
+                    if (indent <= 3 && curChar == '>')
                     {
                         offset = first_nonspace + 1;
-                        if (BString.bchar(ln, offset) == ' ')
+                        if (ln[offset] == ' ')
                             offset++;
                     }
                     else
@@ -442,11 +442,9 @@ namespace CommonMark.Parser
                 else if (container.Tag == BlockTag.ListItem)
                 {
 
-                    if (indent >= container.Attributes.ListData.MarkerOffset +
-                        container.Attributes.ListData.Padding)
+                    if (indent >= container.Attributes.ListData.MarkerOffset + container.Attributes.ListData.Padding)
                     {
-                        offset += container.Attributes.ListData.MarkerOffset +
-                          container.Attributes.ListData.Padding;
+                        offset += container.Attributes.ListData.MarkerOffset + container.Attributes.ListData.Padding;
                     }
                     else if (blank)
                     {
@@ -475,8 +473,7 @@ namespace CommonMark.Parser
                     }
 
                 }
-                else if (container.Tag == BlockTag.AtxHeader ||
-                         container.Tag == BlockTag.SETextHeader)
+                else if (container.Tag == BlockTag.AtxHeader || container.Tag == BlockTag.SETextHeader)
                 {
 
                     // a header can never contain more than one line
@@ -488,7 +485,7 @@ namespace CommonMark.Parser
 
                     // skip optional spaces of fence offset
                     i = container.Attributes.FencedCodeData.FenceOffset;
-                    while (i > 0 && BString.bchar(ln, offset) == ' ')
+                    while (i > 0 && ln[offset] == ' ')
                     {
                         offset++;
                         i--;
@@ -531,16 +528,17 @@ namespace CommonMark.Parser
             }
 
             // unless last matched container is code block, try new container starts:
-            while (container.Tag != BlockTag.FencedCode && container.Tag != BlockTag.IndentedCode &&
+            while (container.Tag != BlockTag.FencedCode && 
+                   container.Tag != BlockTag.IndentedCode &&
                    container.Tag != BlockTag.HtmlBlock)
             {
 
                 first_nonspace = offset;
-                while (BString.bchar(ln, first_nonspace) == ' ')
+                while ((curChar = ln[first_nonspace]) == ' ')
                     first_nonspace++;
 
                 indent = first_nonspace - offset;
-                blank = BString.bchar(ln, first_nonspace) == '\n';
+                blank = curChar == '\n';
 
                 if (indent >= CODE_INDENT)
                 {
@@ -551,20 +549,20 @@ namespace CommonMark.Parser
                         container = add_child(container, BlockTag.IndentedCode, line_number, offset + 1);
                     }
                     else
-                    { // indent > 4 in lazy line
+                    {
+                        // indent > 4 in lazy line
                         break;
                     }
 
                 }
-                else if (BString.bchar(ln, first_nonspace) == '>')
+                else if (curChar == '>')
                 {
 
                     offset = first_nonspace + 1;
                     // optional following character
-                    if (BString.bchar(ln, offset) == ' ')
-                    {
+                    if (ln[offset] == ' ')
                         offset++;
-                    }
+
                     container = add_child(container, BlockTag.BlockQuote, line_number, offset + 1);
 
                 }
@@ -580,7 +578,7 @@ namespace CommonMark.Parser
                 {
 
                     container = add_child(container, BlockTag.FencedCode, line_number, first_nonspace + 1);
-                    container.Attributes.FencedCodeData.FenceChar = ln[first_nonspace];
+                    container.Attributes.FencedCodeData.FenceChar = curChar;
                     container.Attributes.FencedCodeData.FenceLength = matched;
                     container.Attributes.FencedCodeData.FenceOffset = first_nonspace - offset;
                     offset = first_nonspace + matched;
@@ -589,16 +587,14 @@ namespace CommonMark.Parser
                 else if (Scanner.scan_html_block_tag(ln, first_nonspace))
                 {
 
-                    container = add_child(container, BlockTag.HtmlBlock, line_number,
-                                        first_nonspace + 1);
+                    container = add_child(container, BlockTag.HtmlBlock, line_number, first_nonspace + 1);
                     // note, we don't adjust offset because the tag is part of the text
 
                 }
-                else if (container.Tag == BlockTag.Paragraph &&
-                        0 != (lev = Scanner.scan_setext_header_line(ln, first_nonspace)) &&
-                    // check that there is only one line in the paragraph:
-                         BString.bstrrchrp(container.StringContent, '\n',
-                                   container.StringContent.Length - 2) == -1)
+                else if (container.Tag == BlockTag.Paragraph 
+                        && 0 != (lev = Scanner.scan_setext_header_line(ln, first_nonspace))
+                        // check that there is only one line in the paragraph:
+                        && BString.bstrrchrp(container.StringContent, '\n', container.StringContent.Length - 2) == -1)
                 {
 
                     container.Tag = BlockTag.SETextHeader;
@@ -606,8 +602,7 @@ namespace CommonMark.Parser
                     offset = ln.Length - 1;
 
                 }
-                else if (!(container.Tag == BlockTag.Paragraph && !all_matched) &&
-                         0 != (matched = Scanner.scan_hrule(ln, first_nonspace)))
+                else if (!(container.Tag == BlockTag.Paragraph && !all_matched) && 0 != (matched = Scanner.scan_hrule(ln, first_nonspace)))
                 {
 
                     // it's only now that we know the line is not part of a setext header:
@@ -623,12 +618,12 @@ namespace CommonMark.Parser
                     // compute padding:
                     offset = first_nonspace + matched;
                     i = 0;
-                    while (i <= 5 && BString.bchar(ln, offset + i) == ' ')
+                    while (i <= 5 && ln[offset + i] == ' ')
                     {
                         i++;
                     }
                     // i = number of spaces after marker, up to 5
-                    if (i >= 5 || i < 1 || BString.bchar(ln, offset) == '\n')
+                    if (i >= 5 || i < 1 || ln[offset] == '\n')
                     {
                         data.Padding = matched + 1;
                         if (i > 0)
@@ -647,17 +642,14 @@ namespace CommonMark.Parser
 
                     data.MarkerOffset = indent;
 
-                    if (container.Tag != BlockTag.List ||
-                        !lists_match(container.Attributes.ListData, data))
+                    if (container.Tag != BlockTag.List || !lists_match(container.Attributes.ListData, data))
                     {
-                        container = add_child(container, BlockTag.List, line_number,
-                      first_nonspace + 1);
+                        container = add_child(container, BlockTag.List, line_number, first_nonspace + 1);
                         container.Attributes.ListData = data;
                     }
 
                     // add the list item
-                    container = add_child(container, BlockTag.ListItem, line_number,
-                        first_nonspace + 1);
+                    container = add_child(container, BlockTag.ListItem, line_number, first_nonspace + 1);
                     container.Attributes.ListData = data;
                 }
                 else
@@ -676,13 +668,14 @@ namespace CommonMark.Parser
             // appropriate container.
 
             first_nonspace = offset;
-            while (BString.bchar(ln, first_nonspace) == ' ')
-            {
-                first_nonspace++;
-            }
+            if (offset >= ln.Length)
+                curChar = '\0';
+            else
+                while ((curChar = ln[first_nonspace]) == ' ')
+                    first_nonspace++;
 
             indent = first_nonspace - offset;
-            blank = BString.bchar(ln, first_nonspace) == '\n';
+            blank = curChar == '\n';
 
             // block quote lines are never blank as they start with >
             // and we don't count blanks in fenced code for purposes of tight/loose
@@ -737,7 +730,7 @@ namespace CommonMark.Parser
                 {
 
                     matched = (indent <= 3
-                      && BString.bchar(ln, first_nonspace) == container.Attributes.FencedCodeData.FenceChar)
+                      && curChar == container.Attributes.FencedCodeData.FenceChar)
                       && (0 != Scanner.scan_close_code_fence(ln, first_nonspace, container.Attributes.FencedCodeData.FenceLength))
                       ? 1 : 0;
                     if (matched != 0)
@@ -772,17 +765,18 @@ namespace CommonMark.Parser
                     int p = ln.Length - 1;
                     int numhashes = 0;
                     // if string ends in #s, remove these:
-                    while (p >= 0 && BString.bchar(ln, p) == '#')
+                    while (p >= 0 && ln[p] == '#')
                     {
                         p--;
                         numhashes++;
                     }
-                    if (p >= 0 && BString.bchar(ln, p) == '\\')
+                    if (p >= 0 && ln[p] == '\\')
                     {
                         // the last # was escaped, so we include it.
                         p++;
                         numhashes--;
                     }
+                    // TODO: find a way to not modify `ln`
                     ln = ln.Remove(p + 1, numhashes);
                     add_line(container, ln, first_nonspace);
                     finalize(container, line_number);
