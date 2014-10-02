@@ -167,26 +167,40 @@ namespace CommonMark.Parser
         static int scan_to_closing_backticks(Subject subj, int openticklength)
         {
             // read non backticks
-            char? c;
-            while (null != (c = peek_char(subj)) && c != '`')
+            var buf = subj.Buffer;
+            var len = buf.Length;
+            var cc = 0;
+            var pos = subj.Position;
+
+            for (var i = subj.Position; i < len; i++)
             {
-                advance(subj);
+                if (buf[i] == '`')
+                {
+                    cc++;
+                }
+                else
+                {
+                    if (cc == openticklength)
+                    {
+                        subj.Position = i;
+                        return i;
+                    }
+
+                    i = buf.IndexOf('`', i) - 1;
+                    if (i == -2)
+                        return 0;
+
+                    cc = 0;
+                }
             }
-            if (is_eof(subj))
+
+            if (cc == openticklength)
             {
-                return 0;  // did not find closing ticks, return 0
+                subj.Position = len;
+                return len;
             }
-            int numticks = 0;
-            while (peek_char(subj) == '`')
-            {
-                advance(subj);
-                numticks++;
-            }
-            if (numticks != openticklength)
-            {
-                return (scan_to_closing_backticks(subj, openticklength));
-            }
-            return (subj.Position);
+
+            return 0;
         }
 
         /// <summary>
