@@ -9,8 +9,8 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Gets or sets the label (the key by which it is referenced in the mapping) of the reference.
         /// </summary>
-        public string Label;
-        public string Url;
-        public string Title;
+        public string Label { get; set; }
+        public string Url { get; set; }
+        public string Title { get; set; }
     }
 }

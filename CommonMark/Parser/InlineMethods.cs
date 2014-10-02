@@ -95,7 +95,6 @@ namespace CommonMark.Parser
         private static Inline make_linebreak() { return make_simple(InlineTag.LineBreak); }
         private static Inline make_softbreak() { return make_simple(InlineTag.SoftBreak); }
         private static Inline make_link(Inline label, string url, string title) { return make_linkable(InlineTag.Link, label, url, title); }
-        private static Inline make_image(Inline alt, string url, string title) { return make_linkable(InlineTag.Image, alt, url, title); }
         private static Inline make_emph(Inline contents) { return make_inlines(InlineTag.Emphasis, contents); }
         private static Inline make_strong(Inline contents) { return make_inlines(InlineTag.Strong, contents); }
 

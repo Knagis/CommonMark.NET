@@ -22,26 +22,6 @@ namespace CommonMark
         }
 
         /// <summary>
-        /// Inserts the bstring s2 into s1 at position pos.  If the position pos is 
-        /// past the end of s1, then the character "fill" is appended as necessary to 
-        /// make up the gap between the end of s1 and pos.  The value BSTR_OK is 
-        /// returned if the operation is successful, otherwise BSTR_ERR is returned.
-        /// </summary>
-        public static void binsert (ref string s1, int pos, string s2, char fill)
-        {
-            while (s1.Length < pos)
-                s1 += fill;
-            s1 = s1.Insert(pos, s2);
-        }
-
-        public static void binsertch(ref string s, int pos, int len, char fill)
-        {
-            while (s.Length < pos)
-                s += fill;
-            s = s.Insert(pos, new string(fill, len));
-        }
-
-        /// <summary>
         /// Search for the first position in b0 starting from pos or after, in which 
         /// one of the characters in b1 is found.  This function has an execution 
         /// time of O(b0->slen + b1->slen).  If such a position does not exist in b0, 
