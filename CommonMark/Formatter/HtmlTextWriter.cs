@@ -12,6 +12,7 @@ namespace CommonMark.Formatter
         private System.IO.TextWriter _inner;
         private char _last = '\n';
         private bool _windowsNewLine;
+        private char[] _buffer = new char[256];
 
         public HtmlTextWriter(System.IO.TextWriter inner)
         {
@@ -32,7 +33,11 @@ namespace CommonMark.Formatter
                 var lastPos = 0;
                 var lastC = this._last;
                 int pos = 0;
-                var charArray = value.ToCharArray();
+
+                if (this._buffer.Length < value.Length)
+                    this._buffer = value.ToCharArray();
+                else
+                    value.CopyTo(0, this._buffer, 0, value.Length);
 
                 while (-1 != (pos = value.IndexOf('\n', pos)))
                 {
@@ -40,7 +45,7 @@ namespace CommonMark.Formatter
 
                     if (lastC != '\r')
                     {
-                        this._inner.Write(charArray, lastPos, pos - lastPos);
+                        this._inner.Write(this._buffer, lastPos, pos - lastPos);
                         this._inner.Write('\r');
                         lastPos = pos;
                     }
@@ -48,7 +53,7 @@ namespace CommonMark.Formatter
                     pos++;
                 }
 
-                this._inner.Write(charArray, lastPos, value.Length - lastPos);
+                this._inner.Write(this._buffer, lastPos, value.Length - lastPos);
             }
             else
             {
