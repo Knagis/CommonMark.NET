@@ -33,40 +33,6 @@ namespace CommonMark
         }
 
         /// <summary>
-        /// Search for the last position in b0 no greater than pos, in which none of 
-        /// the characters in b1 is found and return it.  This function has an 
-        /// execution time of O(b0->slen + b1->slen).  If such a position does not 
-        /// exist in b0, then -1 is returned.
-        /// </summary>
-        public static int bninchrr(string s, int pos, string invalidchars)
-        {
-            if (s == null)
-                return -1;
-
-            if (invalidchars == null || invalidchars.Length == 0)
-                return pos;
-
-            char c;
-            bool match;
-            for (var i = pos; i >= 0; i--)
-            {
-                c = s[i];
-                match = false;
-                for (var j = 0; j < invalidchars.Length; j++)
-                    if (c == invalidchars[j])
-                    {
-                        match = true;
-                        break;
-                    }
-
-                if (!match)
-                    return i;
-            }
-
-            return -1;
-        }
-
-        /// <summary>
         /// Create a bstring which is the substring of b starting from position left 
         /// and running for a length len (clamped by the end of the bstring b.)  If 
         /// there was no error, the value of this constructed bstring is returned 

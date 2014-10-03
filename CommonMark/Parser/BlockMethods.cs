@@ -37,6 +37,9 @@ namespace CommonMark.Parser
             return true;
         }
 
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         private static bool can_contain(BlockTag parent_type, BlockTag child_type)
         {
             return (parent_type == BlockTag.Document ||
@@ -45,6 +48,9 @@ namespace CommonMark.Parser
                      (parent_type == BlockTag.List && child_type == BlockTag.ListItem));
         }
 
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         private static bool accepts_lines(BlockTag block_type)
         {
             return (block_type == BlockTag.Paragraph ||
@@ -54,10 +60,10 @@ namespace CommonMark.Parser
         }
 
 
-        static void add_line(Block block, string ln, int offset)
+        static void add_line(Block block, string ln, int offset, int length = -1)
         {
             string s;
-            var len = ln.Length - offset;
+            var len = length == -1 ? ln.Length - offset : length;
             if (len < 0)
                 s = string.Empty;
             else
@@ -76,29 +82,35 @@ namespace CommonMark.Parser
         /// <remarks>Original: remove_trailing_blank_lines(ref string)</remarks>
         private static string RemoveTrailingBlankLines(string ln, bool keepLastNewline)
         {
-            string tofind = " \t\r\n";
-            // find last nonspace:
-            var pos = BString.bninchrr(ln, ln.Length - 1, tofind);
-            if (pos == -1)
-            { 
-                // all spaces
-                return string.Empty;
-            }
-            else
+            int pos = ln.Length - 1;
+            int lastNewLine = -1;
+            char c;
+            while (pos >= 0)
             {
-                // find next newline after it
-                pos = ln.IndexOf('\n', pos);
-                if (pos != -1)
-                {
-                    if (keepLastNewline)
-                        pos++;
+                c = ln[pos];
 
-                    return ln.Remove(pos, ln.Length - pos);
+                if (c == '\n')
+                {
+                    lastNewLine = pos;
                 }
+                else if (c != ' ')
+                {
+                    if (lastNewLine == -1)
+                        return ln;
+
+                    if (keepLastNewline)
+                        lastNewLine++;
+
+                    return ln.Substring(0, lastNewLine);
+                }
+
+                pos--;
             }
 
-            return ln;
+            // all spaces
+            return string.Empty;
         }
+
         // Check to see if a block ends with a blank line, descending
         // if needed into lists and sublists.
         static bool ends_with_blank_line(Block block)
@@ -190,10 +202,8 @@ namespace CommonMark.Parser
                 case BlockTag.FencedCode:
                     // first line of contents becomes info
                     firstlinelen = b.StringContent.IndexOf('\n');
-                    b.Attributes.FencedCodeData.Info = BString.bmidstr(b.StringContent, 0, firstlinelen);
-                    b.StringContent = b.StringContent.Remove(0, firstlinelen + 1); // +1 for \n
-                    b.Attributes.FencedCodeData.Info = b.Attributes.FencedCodeData.Info.Trim();
-                    b.Attributes.FencedCodeData.Info = InlineMethods.Unescape(b.Attributes.FencedCodeData.Info);
+                    b.Attributes.FencedCodeData.Info = InlineMethods.Unescape(b.StringContent.Substring(0, firstlinelen).Trim());
+                    b.StringContent = b.StringContent.Substring(firstlinelen + 1); // +1 for \n
                     break;
 
                 case BlockTag.List: // determine tight/loose status
@@ -263,6 +273,7 @@ namespace CommonMark.Parser
                 parent.FirstChild = child;
                 child.Previous = null;
             }
+
             parent.LastChild = child;
             return child;
         }
@@ -377,7 +388,7 @@ namespace CommonMark.Parser
         // Process one line at a time, modifying a block.
         // Returns 0 if successful.  curptr is changed to point to
         // the currently open block.
-        public static int incorporate_line(string ln, int line_number, ref Block curptr)
+        public static void incorporate_line(string ln, int line_number, ref Block curptr)
         {
             // the original C code terminates each code with '\n'. TextReader.ReadLine() does not do so - we need to add it manually.
             ln += "\n";
@@ -416,92 +427,87 @@ namespace CommonMark.Parser
                 indent = first_nonspace - offset;
                 blank = curChar == '\n';
 
-                if (container.Tag == BlockTag.BlockQuote)
+                switch (container.Tag)
                 {
+                    case BlockTag.BlockQuote:
+                        {
+                            if (indent <= 3 && curChar == '>')
+                            {
+                                offset = first_nonspace + 1;
+                                if (ln[offset] == ' ')
+                                    offset++;
+                            }
+                            else
+                            {
+                                all_matched = false;
+                            }
 
-                    if (indent <= 3 && curChar == '>')
-                    {
-                        offset = first_nonspace + 1;
-                        if (ln[offset] == ' ')
-                            offset++;
-                    }
-                    else
-                    {
-                        all_matched = false;
-                    }
+                            break;
+                        }
 
-                }
-                else if (container.Tag == BlockTag.ListItem)
-                {
+                    case BlockTag.ListItem:
+                        {
+                            if (indent >= container.Attributes.ListData.MarkerOffset + container.Attributes.ListData.Padding)
+                                offset += container.Attributes.ListData.MarkerOffset + container.Attributes.ListData.Padding;
+                            else if (blank)
+                                offset = first_nonspace;
+                            else
+                                all_matched = false;
 
-                    if (indent >= container.Attributes.ListData.MarkerOffset + container.Attributes.ListData.Padding)
-                    {
-                        offset += container.Attributes.ListData.MarkerOffset + container.Attributes.ListData.Padding;
-                    }
-                    else if (blank)
-                    {
-                        offset = first_nonspace;
-                    }
-                    else
-                    {
-                        all_matched = false;
-                    }
+                            break;
+                        }
 
-                }
-                else if (container.Tag == BlockTag.IndentedCode)
-                {
+                    case BlockTag.IndentedCode:
+                        {
+                            if (indent >= CODE_INDENT)
+                                offset += CODE_INDENT;
+                            else if (blank)
+                                offset = first_nonspace;
+                            else
+                                all_matched = false;
 
-                    if (indent >= CODE_INDENT)
-                    {
-                        offset += CODE_INDENT;
-                    }
-                    else if (blank)
-                    {
-                        offset = first_nonspace;
-                    }
-                    else
-                    {
-                        all_matched = false;
-                    }
+                            break;
+                        }
 
-                }
-                else if (container.Tag == BlockTag.AtxHeader || container.Tag == BlockTag.SETextHeader)
-                {
+                    case BlockTag.AtxHeader:
+                    case BlockTag.SETextHeader:
+                        {
+                            // a header can never contain more than one line
+                            all_matched = false;
+                            break;
+                        }
 
-                    // a header can never contain more than one line
-                    all_matched = false;
+                    case BlockTag.FencedCode:
+                        {
+                            // skip optional spaces of fence offset
+                            i = container.Attributes.FencedCodeData.FenceOffset;
+                            while (i > 0 && ln[offset] == ' ')
+                            {
+                                offset++;
+                                i--;
+                            }
 
-                }
-                else if (container.Tag == BlockTag.FencedCode)
-                {
+                            break;
+                        }
 
-                    // skip optional spaces of fence offset
-                    i = container.Attributes.FencedCodeData.FenceOffset;
-                    while (i > 0 && ln[offset] == ' ')
-                    {
-                        offset++;
-                        i--;
-                    }
+                    case BlockTag.HtmlBlock:
+                        {
+                            if (blank)
+                                all_matched = false;
 
-                }
-                else if (container.Tag == BlockTag.HtmlBlock)
-                {
+                            break;
+                        }
 
-                    if (blank)
-                    {
-                        all_matched = false;
-                    }
+                    case BlockTag.Paragraph:
+                        {
+                            if (blank)
+                            {
+                                container.IsLastLineBlank = true;
+                                all_matched = false;
+                            }
 
-                }
-                else if (container.Tag == BlockTag.Paragraph)
-                {
-
-                    if (blank)
-                    {
-                        container.IsLastLineBlank = true;
-                        all_matched = false;
-                    }
-
+                            break;
+                        }
                 }
 
                 if (!all_matched)
@@ -752,25 +758,21 @@ namespace CommonMark.Parser
                 else if (container.Tag == BlockTag.AtxHeader)
                 {
 
-                    // chop off trailing ###s...use a scanner?
-                    ln = ln.TrimEnd();
                     int p = ln.Length - 1;
-                    int numhashes = 0;
+
+                    // trim trailing spaces
+                    while (p >= 0 && (ln[p] == ' ' || ln[p] == '\n'))
+                        p--;
+
                     // if string ends in #s, remove these:
                     while (p >= 0 && ln[p] == '#')
-                    {
                         p--;
-                        numhashes++;
-                    }
+
+                    // the last # was escaped, so we include it.
                     if (p >= 0 && ln[p] == '\\')
-                    {
-                        // the last # was escaped, so we include it.
                         p++;
-                        numhashes--;
-                    }
-                    // TODO: find a way to not modify `ln`
-                    ln = ln.Remove(p + 1, numhashes);
-                    add_line(container, ln, first_nonspace);
+
+                    add_line(container, ln, first_nonspace, p - first_nonspace + 1);
                     finalize(container, line_number);
                     container = container.Parent;
 
@@ -798,8 +800,6 @@ namespace CommonMark.Parser
 
                 curptr = container;
             }
-
-            return 0;
         }
     }
 }

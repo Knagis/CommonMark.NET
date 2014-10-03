@@ -30,6 +30,7 @@ namespace CommonMark.Parser
 
         public Dictionary<string, Reference> ReferenceMap;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by [DebuggerDisplay]")]
         private string DebugToString()
         {
             if (this.Position > this.Buffer.Length)

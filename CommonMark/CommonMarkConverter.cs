@@ -61,7 +61,7 @@ namespace CommonMark
             }
             catch(Exception ex)
             {
-                throw new CommonMarkException("An error occured while parsing line " + linenum.ToString(CultureInfo.InvariantCulture), cur, ex);
+                throw new CommonMarkException("An error occurred while parsing line " + linenum.ToString(CultureInfo.InvariantCulture), cur, ex);
             }
 
             try
@@ -78,7 +78,7 @@ namespace CommonMark
             }
             catch (Exception ex)
             {
-                throw new CommonMarkException("An error occured while finalizing open containers.", cur, ex);
+                throw new CommonMarkException("An error occurred while finalizing open containers.", cur, ex);
             }
 
             if (cur != cur.Top)
@@ -175,7 +175,7 @@ namespace CommonMark
             }
             catch(Exception ex)
             {
-                throw new CommonMarkException("An error occured during formatting of the document.", ex);
+                throw new CommonMarkException("An error occurred during formatting of the document.", ex);
             }
         }
 

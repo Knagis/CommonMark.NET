@@ -149,21 +149,6 @@ namespace CommonMark.Parser
 #if OptimizeFor45
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        internal static bool MatchAnythingExcept(string data, ref char currentCharacter, ref int currentPosition, int lastPosition, char invalid1, char invalid2)
-        {
-            var matched = false;
-            while (currentCharacter != invalid1 && currentCharacter != invalid2 
-                && currentPosition < lastPosition)
-            {
-                currentCharacter = data[++currentPosition];
-                matched = true;
-            }
-            return matched;
-        }
-
-#if OptimizeFor45
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-#endif
         internal static bool MatchAnythingExceptWhitespaces(string data, ref char currentCharacter, ref int currentPosition, int lastPosition,
             char invalid1, char invalid2, char invalid3, char invalid4, char invalid5, char invalid6)
         {
