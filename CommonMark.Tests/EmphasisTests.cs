@@ -46,5 +46,23 @@ namespace CommonMark.Tests
             Helpers.LogValue("Actual", actual);
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        public void EmphasisWithCommas()
+        {
+            // See https://github.com/jgm/stmd/issues/51 for additional info
+
+            // Arrange
+            var commonMark = Helpers.Normalize("**foo, *bar*, abc**");
+            var expected = Helpers.Normalize("<p><strong>foo, <em>bar</em>, abc</strong></p>");
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
     }
 }
