@@ -348,7 +348,7 @@ namespace CommonMark.Parser
             }
 
         cannotClose:
-            var inlText = make_str(BString.bmidstr(subj.Buffer, subj.Position - numdelims, numdelims));
+            var inlText = make_str(subj.Buffer.Substring(subj.Position - numdelims, numdelims));
 
             if (can_open)
             {
@@ -399,7 +399,7 @@ namespace CommonMark.Parser
             match = Scanner.scan_entity(subj.Buffer, subj.Position);
             if (match > 0)
             {
-                result = make_entity(BString.bmidstr(subj.Buffer, subj.Position, match));
+                result = make_entity(subj.Buffer.Substring(subj.Position, match));
                 subj.Position += match;
             }
             else
@@ -432,7 +432,7 @@ namespace CommonMark.Parser
                     if (searchpos == -1)
                         searchpos = subj.Buffer.Length;
 
-                    inew = make_str(BString.bmidstr(subj.Buffer, subj.Position, searchpos - subj.Position));
+                    inew = make_str(subj.Buffer.Substring(subj.Position, searchpos - subj.Position));
                     subj.Position = searchpos;
                 }
 
@@ -515,7 +515,7 @@ namespace CommonMark.Parser
             matchlen = Scanner.scan_autolink_uri(subj.Buffer, subj.Position);
             if (matchlen > 0)
             {
-                contents = BString.bmidstr(subj.Buffer, subj.Position, matchlen - 1);
+                contents = subj.Buffer.Substring(subj.Position, matchlen - 1);
                 subj.Position += matchlen;
                 result = make_link(make_str_with_entities(contents), contents, "");
                 return result;
@@ -524,17 +524,16 @@ namespace CommonMark.Parser
             matchlen = Scanner.scan_autolink_email(subj.Buffer, subj.Position);
             if (matchlen > 0)
             {
-                contents = BString.bmidstr(subj.Buffer, subj.Position, matchlen - 1);
+                contents = subj.Buffer.Substring(subj.Position, matchlen - 1);
                 subj.Position += matchlen;
-                result = make_link(make_str_with_entities(contents),
-                                   "mailto:" + contents, "");
+                result = make_link(make_str_with_entities(contents), "mailto:" + contents, "");
                 return result;
             }
             // finally, try to match an html tag
             matchlen = Scanner.scan_html_tag(subj.Buffer, subj.Position);
             if (matchlen > 0)
             {
-                contents = BString.bmidstr(subj.Buffer, subj.Position - 1, matchlen + 1);
+                contents = subj.Buffer.Substring(subj.Position - 1, matchlen + 1);
                 subj.Position += matchlen;
                 return make_raw_html(contents);
             }
@@ -556,7 +555,6 @@ namespace CommonMark.Parser
         static bool link_label(Subject subj, ref string raw_label)
         {
             int nestlevel = 0;
-            Inline tmp = null;
             string raw;
             int startpos = subj.Position;
             if (subj.LabelNestingLevel > 0)
@@ -570,16 +568,18 @@ namespace CommonMark.Parser
                 return false;
             }
             advance(subj);  // advance past [
-            char? c;
-            while (null != (c = peek_char(subj)) && (c != ']' || nestlevel > 0))
+
+            var len = subj.Buffer.Length;
+            char c = '\0';
+            while (subj.Position < len && ((c = subj.Buffer[subj.Position]) != ']' || nestlevel > 0))
             {
                 switch (c)
                 {
                     case '`':
-                        tmp = handle_backticks(subj);
+                        handle_backticks(subj);
                         break;
                     case '<':
-                        tmp = handle_pointy_brace(subj);
+                        handle_pointy_brace(subj);
                         break;
                     case '[':  // nested []
                         nestlevel++;
@@ -591,21 +591,20 @@ namespace CommonMark.Parser
                         break;
                     case '\\':
                         advance(subj);
-                        if (char.IsPunctuation(peek_char(subj).Value))
-                        {
+                        if (char.IsPunctuation(subj.Buffer[subj.Position]))
                             advance(subj);
-                        }
                         break;
                     default:
                         advance(subj);
                         break;
                 }
             }
+
             if (c == ']')
             {
                 if (raw_label != null)
                 {
-                    raw = BString.bmidstr(subj.Buffer, startpos + 1, subj.Position - (startpos + 1));
+                    raw = subj.Buffer.Substring(startpos + 1, subj.Position - startpos - 1);
                     raw_label = raw;
                 }
                 subj.LabelNestingLevel = 0;
@@ -614,10 +613,9 @@ namespace CommonMark.Parser
             }
             else
             {
-                if (c == 0)
-                {
+                if (c == '\0')
                     subj.LabelNestingLevel = nestlevel;
-                }
+
                 subj.Position = startpos; // rewind
                 return false;
             }
@@ -655,9 +653,9 @@ namespace CommonMark.Parser
                     if (BString.bchar(subj.Buffer, endall) == ')')
                     {
                         subj.Position = endall + 1;
-                        url = BString.bmidstr(subj.Buffer, starturl, endurl - starturl);
+                        url = subj.Buffer.Substring(starturl, endurl - starturl);
                         url = CleanUrl(url);
-                        title = BString.bmidstr(subj.Buffer, starttitle, endtitle - starttitle);
+                        title = subj.Buffer.Substring(starttitle, endtitle - starttitle);
                         title = CleanTitle(title);
                         lab = parse_inlines(rawlabel, null);
                         return make_link(lab, url, title);
@@ -852,11 +850,15 @@ namespace CommonMark.Parser
         private static void spnl(Subject subj)
         {
             bool seen_newline = false;
-            while (peek_char(subj) == ' ' ||
-                   (!seen_newline &&
-                    (seen_newline = peek_char(subj) == '\n')))
+            var len = subj.Buffer.Length;
+            char c;
+            while (subj.Position < len)
             {
-                advance(subj);
+                c = subj.Buffer[subj.Position];
+                if (c == ' ' || (!seen_newline && (seen_newline = c == '\n')))
+                    advance(subj);
+                else
+                    return;
             }
         }
 
@@ -867,7 +869,7 @@ namespace CommonMark.Parser
         public static int ParseReference(string input, Dictionary<string, Reference> refmap)
         {
             Subject subj = make_subject(input, null);
-            string lab = "";
+            string lab = string.Empty;
             string url = null;
             string title = null;
             int matchlen = 0;
@@ -906,7 +908,7 @@ namespace CommonMark.Parser
             else
             {
                 subj.Position = beforetitle;
-                title = "";
+                title = string.Empty;
             }
 
             // parse final spaces and newline:

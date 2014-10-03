@@ -20,19 +20,5 @@ namespace CommonMark
                 return null;
             return data[pos];
         }
-
-        /// <summary>
-        /// Create a bstring which is the substring of b starting from position left 
-        /// and running for a length len (clamped by the end of the bstring b.)  If 
-        /// there was no error, the value of this constructed bstring is returned 
-        /// otherwise NULL is returned.
-        /// </summary>
-        public static string bmidstr(string b, int left, int len)
-        {
-            if (left + len >= b.Length)
-                return b.Substring(left);
-
-            return b.Substring(left, len);
-        }
     }
 }
