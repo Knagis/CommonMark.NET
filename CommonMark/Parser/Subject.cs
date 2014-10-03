@@ -6,10 +6,16 @@ namespace CommonMark.Parser
     [System.Diagnostics.DebuggerDisplay("{DebugToString()}")]
     internal sealed class Subject
     {
+        public Subject(string buffer, Dictionary<string, Reference> referenceMap)
+        {
+            this.Buffer = buffer;
+            this.ReferenceMap = referenceMap;
+        }
+
         /// <summary>
         /// Gets or sets the whole buffer this instance is created over.
         /// </summary>
-        public string Buffer;
+        public readonly string Buffer;
 
         /// <summary>
         /// Gets or sets the current position in the buffer.
@@ -28,7 +34,7 @@ namespace CommonMark.Parser
         /// </summary>
         public InlineStack EmphasisStack;
 
-        public Dictionary<string, Reference> ReferenceMap;
+        public readonly Dictionary<string, Reference> ReferenceMap;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by [DebuggerDisplay]")]
         private string DebugToString()

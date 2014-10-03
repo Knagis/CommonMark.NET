@@ -114,26 +114,22 @@ namespace CommonMark.Parser
         }
 
         // Make a 'subject' from an input string.
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         private static Subject make_subject(string s, Dictionary<string, Reference> refmap)
         {
-            Subject e = new Subject();
-            // remove final whitespace
-            e.Buffer = s == null ? string.Empty : s.TrimEnd();
-            e.ReferenceMap = refmap;
-            return e;
+            return new Subject(s == null ? string.Empty : s.TrimEnd(), refmap);
         }
 
         // Return the next character in the subject, without advancing.
         // Return 0 if at the end of the subject.
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
         private static char? peek_char(Subject subj)
         {
             return BString.bchar(subj.Buffer, subj.Position);
-        }
-
-        // Return true if there are more characters in the subject.
-        private static bool is_eof(Subject subj)
-        {
-            return (subj.Position >= subj.Buffer.Length);
         }
 
         // Advance the subject.  Doesn't check for eof.
@@ -741,29 +737,6 @@ namespace CommonMark.Parser
             }
         }
 
-        // Parse inlines while a predicate is satisfied.  Return inlines.
-        public static Inline parse_inlines_while(Subject subj)
-        {
-            Inline first = null;
-            Inline cur;
-            while (!is_eof(subj))
-            {
-                cur = parse_inline(subj);
-                if (first == null)
-                {
-                    first = cur;
-                    subj.LastInline = cur.LastSibling;
-                }
-                else
-                {
-                    subj.LastInline.Next = cur;
-                    subj.LastInline = cur.LastSibling;
-                }
-            }
-
-            return first;
-        }
-
         // Parse an inline, advancing subject, and add it to last element.
         // Adjust tail to point to new last element of list.
         // Return 0 if no inline can be parsed, 1 otherwise.
@@ -861,7 +834,24 @@ namespace CommonMark.Parser
         public static Inline parse_inlines(string input, Dictionary<string, Reference> refmap)
         {
             Subject subj = make_subject(input, refmap);
-            return parse_inlines_while(subj);
+
+            var len = subj.Buffer.Length;
+
+            if (len == 0)
+                return null;
+
+            var first = parse_inline(subj);
+            subj.LastInline = first.LastSibling;
+
+            Inline cur;
+            while (subj.Position < len)
+            {
+                cur = parse_inline(subj);
+                subj.LastInline.Next = cur;
+                subj.LastInline = cur.LastSibling;
+            }
+
+            return first;
         }
 
         // Parse zero or more space characters, including at most one newline.
