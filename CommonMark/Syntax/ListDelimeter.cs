@@ -6,7 +6,7 @@ namespace CommonMark.Syntax
 {
     public enum ListDelimiter
     {
-        Period,
+        Period = 0,
         Parenthesis
     }
 }

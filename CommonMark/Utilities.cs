@@ -18,7 +18,7 @@ namespace CommonMark
         public static void Warning(string message, params object[] args)
         {
             if (args != null && args.Length > 0)
-                message = string.Format(message, args);
+                message = string.Format(System.Globalization.CultureInfo.InvariantCulture, message, args);
 
             System.Diagnostics.Debug.WriteLine(message, "Warning");
         }

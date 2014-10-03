@@ -6,7 +6,7 @@ namespace CommonMark.Syntax
 {
     public enum ListType
     {
-        Bullet,
+        Bullet = 0,
         Ordered
     }
 }

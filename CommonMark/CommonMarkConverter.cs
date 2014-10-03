@@ -126,7 +126,7 @@ namespace CommonMark
             }
             catch(Exception ex)
             {
-                throw new CommonMarkException("An error occured during inline parsing.", ex);
+                throw new CommonMarkException("An error occurred during inline parsing.", ex);
             }
         }
 
@@ -211,7 +211,7 @@ namespace CommonMark
                 return null;
 
             using (var reader = new System.IO.StringReader(source))
-            using (var writer = new System.IO.StringWriter())
+            using (var writer = new System.IO.StringWriter(System.Globalization.CultureInfo.CurrentCulture))
             {
                 Convert(reader, writer, settings);
 

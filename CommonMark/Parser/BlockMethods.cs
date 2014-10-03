@@ -70,7 +70,7 @@ namespace CommonMark.Parser
                 s = ln.Substring(offset, len);
 
             if (!block.IsOpen)
-                throw new CommonMarkException(string.Format("Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
+                throw new CommonMarkException(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
 
             var curSC = block.StringContent;
             if (curSC == null)
@@ -184,7 +184,7 @@ namespace CommonMark.Parser
                 case BlockTag.Paragraph:
                     pos = 0;
                     while (BString.bchar(b.StringContent, 0) == '[' &&
-                           0 != (pos = InlineMethods.parse_reference(b.StringContent,
+                           0 != (pos = InlineMethods.ParseReference(b.StringContent,
                                                   b.Top.Attributes.ReferenceMap)))
                     {
                         b.StringContent = b.StringContent.Remove(0, pos);
@@ -331,12 +331,8 @@ namespace CommonMark.Parser
                     return 0;
 
                 data = new ListData();
-                data.MarkerOffset = 0; // will be adjusted later
-                data.ListType = ListType.Bullet;
                 data.BulletChar = c;
                 data.Start = 1;
-                data.Delimiter = ListDelimiter.Period;
-                data.IsTight = false;
             }
             else if (c >= '0' && c <= '9')
             {
@@ -360,12 +356,10 @@ namespace CommonMark.Parser
                     return 0;
 
                 data = new ListData();
-                data.MarkerOffset = 0; // will be adjusted later
                 data.ListType = ListType.Ordered;
                 data.BulletChar = '\0';
                 data.Start = start;
                 data.Delimiter = (c == '.' ? ListDelimiter.Period : ListDelimiter.Parenthesis);
-                data.IsTight = false;
 
             }
             else

@@ -24,11 +24,11 @@ namespace CommonMark.Parser
         // label, otherwise null.
         public static Reference lookup_reference(Dictionary<string, Reference> refmap, string lab)
         {
-            string label = NormalizeReference(lab);
             if (refmap == null)
-            {
                 return null;
-            }
+
+            string label = NormalizeReference(lab);
+
             Reference r;
             if (refmap.TryGetValue(label, out r))
                 return r;
@@ -718,23 +718,19 @@ namespace CommonMark.Parser
         static Inline handle_newline(Subject subj)
         {
             int nlpos = subj.Position;
+
             // skip over newline
             advance(subj);
+
             // skip spaces at beginning of line
-            while (peek_char(subj) == ' ')
-            {
+            var len = subj.Buffer.Length;
+            while (subj.Position < len && subj.Buffer[subj.Position] == ' ')
                 advance(subj);
-            }
-            if (nlpos > 1 &&
-                BString.bchar(subj.Buffer, nlpos - 1) == ' ' &&
-                BString.bchar(subj.Buffer, nlpos - 2) == ' ')
-            {
+
+            if (nlpos > 1 && subj.Buffer[nlpos - 1] == ' ' && subj.Buffer[nlpos - 2] == ' ')
                 return make_linebreak();
-            }
             else
-            {
                 return make_softbreak();
-            }
         }
 
         // Parse an inline, advancing subject, and add it to last element.
@@ -744,11 +740,9 @@ namespace CommonMark.Parser
         {
             Inline inew = null;
             string contents;
-            char? c;
             int endpos;
-            c = peek_char(subj);
-            if (c == null)
-                return null;
+
+            var c = subj.Buffer[subj.Position];
 
             switch (c)
             {
@@ -870,7 +864,7 @@ namespace CommonMark.Parser
         // Modify refmap if a reference is encountered.
         // Return 0 if no reference found, otherwise position of subject
         // after reference is parsed.
-        public static int parse_reference(string input, Dictionary<string, Reference> refmap)
+        public static int ParseReference(string input, Dictionary<string, Reference> refmap)
         {
             Subject subj = make_subject(input, null);
             string lab = "";
@@ -878,43 +872,34 @@ namespace CommonMark.Parser
             string title = null;
             int matchlen = 0;
             int beforetitle;
-            Reference inew = null;
-            int newpos;
 
             // parse label:
             if (!link_label(subj, ref lab))
-            {
                 return 0;
-            }
+
             // colon:
             if (peek_char(subj) == ':')
-            {
                 advance(subj);
-            }
             else
-            {
                 return 0;
-            }
+
             // parse link url:
             spnl(subj);
             matchlen = Scanner.scan_link_url(subj.Buffer, subj.Position);
-            if (matchlen > 0)
-            {
-                url = BString.bmidstr(subj.Buffer, subj.Position, matchlen);
-                url = CleanUrl(url);
-                subj.Position += matchlen;
-            }
-            else
-            {
+            if (matchlen == 0)
                 return 0;
-            }
+
+            url = subj.Buffer.Substring(subj.Position, matchlen);
+            url = CleanUrl(url);
+            subj.Position += matchlen;
+            
             // parse optional link_title
             beforetitle = subj.Position;
             spnl(subj);
             matchlen = Scanner.scan_link_title(subj.Buffer, subj.Position);
             if (matchlen > 0)
             {
-                title = BString.bmidstr(subj.Buffer, subj.Position, matchlen);
+                title = subj.Buffer.Substring(subj.Position, matchlen);
                 title = CleanTitle(title);
                 subj.Position += matchlen;
             }
@@ -923,25 +908,20 @@ namespace CommonMark.Parser
                 subj.Position = beforetitle;
                 title = "";
             }
+
             // parse final spaces and newline:
             while (peek_char(subj) == ' ')
-            {
                 advance(subj);
-            }
-            if (peek_char(subj) == '\n')
-            {
-                advance(subj);
-            }
-            else if (peek_char(subj) != null)
-            {
-                return 0;
-            }
-            // insert reference into refmap
-            inew = make_reference(lab, url, title);
-            add_reference(refmap, inew);
 
-            newpos = subj.Position;
-            return newpos;
+            if (peek_char(subj) == '\n')
+                advance(subj);
+            else if (peek_char(subj) != null)
+                return 0;
+
+            // insert reference into refmap
+            add_reference(refmap, make_reference(lab, url, title));
+
+            return subj.Position;
         }
     }
 }
