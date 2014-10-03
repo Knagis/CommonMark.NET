@@ -7,6 +7,8 @@ namespace CommonMark.Parser
 {
     internal static class InlineMethods
     {
+        private static readonly char[] SpecialCharacters = new[] { '\n', '\\', '`', '&', '_', '*', '[', ']', '<', '!' };
+
         /// <summary>
         /// Collapses internal whitespace to single space, removes leading/trailing whitespace, folds case.
         /// </summary>
@@ -141,21 +143,6 @@ namespace CommonMark.Parser
         private static void advance(Subject subj)
         {
             subj.Position += 1;
-        }
-
-        // Take one character and return a string, or null if eof.
-        private static string take_one(Subject subj)
-        {
-            int startpos = subj.Position;
-            if (is_eof(subj))
-            {
-                return null;
-            }
-            else
-            {
-                advance(subj);
-                return BString.bmidstr(subj.Buffer, startpos, 1);
-            }
         }
 
         // Try to process a backtick code span that began with a
@@ -784,7 +771,6 @@ namespace CommonMark.Parser
         {
             Inline inew = null;
             string contents;
-            string special_chars;
             char? c;
             int endpos;
             c = peek_char(subj);
@@ -836,31 +822,35 @@ namespace CommonMark.Parser
                         inew = make_str("!");
                     }
                     break;
+
                 default:
                     // we read until we hit a special character
-                    special_chars = "\n\\`&_*[]<!";
-                    endpos = BString.binchr(subj.Buffer, subj.Position, special_chars);
+                    endpos = subj.Buffer.IndexOfAny(SpecialCharacters, subj.Position);
+
                     if (endpos == subj.Position)
                     {
                         // current char is special: read a 1-character str
-                        contents = take_one(subj);
+                        contents = subj.Buffer[endpos].ToString();
+                        advance(subj);
                     }
                     else if (endpos == -1)
                     {
                         // special char not found, take whole rest of buffer:
                         endpos = subj.Buffer.Length;
-                        contents = BString.bmidstr(subj.Buffer, subj.Position, endpos - subj.Position);
+                        contents = subj.Buffer.Substring(subj.Position);
                         subj.Position = endpos;
                     }
                     else
                     {
                         // take buffer from subj.pos to endpos to str.
-                        contents = BString.bmidstr(subj.Buffer, subj.Position, endpos - subj.Position);
+                        contents = subj.Buffer.Substring(subj.Position, endpos - subj.Position);
+
                         subj.Position = endpos;
                         // if we're at a newline, strip trailing spaces.
                         if (peek_char(subj) == '\n')
                             contents = contents.TrimEnd();
                     }
+
                     inew = make_str(contents);
                     break;
             }

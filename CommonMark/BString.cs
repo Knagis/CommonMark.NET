@@ -22,17 +22,6 @@ namespace CommonMark
         }
 
         /// <summary>
-        /// Search for the first position in b0 starting from pos or after, in which 
-        /// one of the characters in b1 is found.  This function has an execution 
-        /// time of O(b0->slen + b1->slen).  If such a position does not exist in b0, 
-        /// then BSTR_ERR is returned.
-        /// </summary>
-        public static int binchr (string b0, int pos, string b1)
-        {
-            return b0.IndexOfAny(b1.ToCharArray(), pos);
-        }
-
-        /// <summary>
         /// Create a bstring which is the substring of b starting from position left 
         /// and running for a length len (clamped by the end of the bstring b.)  If 
         /// there was no error, the value of this constructed bstring is returned 
