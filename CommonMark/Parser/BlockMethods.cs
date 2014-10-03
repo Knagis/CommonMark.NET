@@ -384,9 +384,6 @@ namespace CommonMark.Parser
         // the currently open block.
         public static void incorporate_line(string ln, int line_number, ref Block curptr)
         {
-            // the original C code terminates each code with '\n'. TextReader.ReadLine() does not do so - we need to add it manually.
-            ln += "\n";
-
             Block last_matched_container;
             int offset = 0;
             int matched = 0;
@@ -400,9 +397,6 @@ namespace CommonMark.Parser
             int first_nonspace;
             char curChar;
             int indent;
-
-            // detab input line
-            ln = Utilities.Untabify(ln);
 
             // container starts at the document root.
             container = cur.Top;

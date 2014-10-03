@@ -45,9 +45,10 @@ namespace CommonMark
             int linenum = 1;
             try
             {
-                while (source.Peek() != -1)
+                var reader = new Parser.TabTextReader(source);
+                while (!reader.EndOfStream())
                 {
-                    BlockMethods.incorporate_line(source.ReadLine(), linenum, ref cur);
+                    BlockMethods.incorporate_line(reader.ReadLine(), linenum, ref cur);
                     linenum++;
                 }
             }

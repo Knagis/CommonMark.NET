@@ -23,47 +23,6 @@ namespace CommonMark
             System.Diagnostics.Debug.WriteLine(message, "Warning");
         }
 
-        /// <summary>
-        /// Converts TABs to spaces in the given string. Assumes that the string does not contain any newlines, or at most only a trailing newline.
-        /// </summary>
-        /// <param name="s">The source string.</param>
-        /// <param name="tabSize">The size of the TAB (default 4 spaces).</param>
-        /// <returns>A new string with TAB characters converted to spaces.</returns>
-        public static string Untabify(string s, int tabSize = 4)
-        {
-            if (tabSize < 1 || tabSize > 8)
-                throw new ArgumentOutOfRangeException("tabSize", "The value must be between 1 and 8 (inclusive).");
-
-            if (s == null || s.Length == 0)
-                return s;
-
-            int step;
-            StringBuilder sb = null;
-            int realPos = 0;
-            int lastPos = 0;
-            int pos;
-
-            while (-1 != (pos = s.IndexOf('\t', lastPos)))
-            {
-                realPos += pos - lastPos;
-
-                if (sb == null)
-                    sb = new StringBuilder(s.Length + 12);
-
-                step = tabSize - (realPos % tabSize);
-                realPos += step;
-                sb.Append(s, lastPos, pos - lastPos);
-                sb.Append(' ', step);
-                lastPos = pos + 1;
-            }
-
-            if (sb == null)
-                return s;
-
-            sb.Append(s, lastPos, s.Length - lastPos);
-            return sb.ToString();
-        }
-
 #if OptimizeFor45
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
