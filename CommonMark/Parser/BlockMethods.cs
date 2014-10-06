@@ -18,25 +18,6 @@ namespace CommonMark.Parser
             return e;
         }
 
-        // Returns true if line has only space characters, else false.
-        private static bool is_blank(string s, int offset)
-        {
-            char c;
-            while (offset < s.Length)
-            {
-                c = s[offset];
-                if (c == '\n')
-                    return true;
-
-                if (c != ' ')
-                    return false;
-
-                offset++;
-            }
-
-            return true;
-        }
-
 #if OptimizeFor45
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
@@ -62,53 +43,17 @@ namespace CommonMark.Parser
 
         static void add_line(Block block, string ln, int offset, int length = -1)
         {
-            string s;
-            var len = length == -1 ? ln.Length - offset : length;
-            if (len < 0)
-                s = string.Empty;
-            else
-                s = ln.Substring(offset, len);
-
             if (!block.IsOpen)
                 throw new CommonMarkException(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
 
+            var len = length == -1 ? ln.Length - offset : length;
+
             var curSC = block.StringContent;
             if (curSC == null)
-                block.StringContent = s;
-            else
-                block.StringContent = curSC + s;
-        }
+                block.StringContent = curSC = new StringContent();
 
-        /// <remarks>Original: remove_trailing_blank_lines(ref string)</remarks>
-        private static string RemoveTrailingBlankLines(string ln, bool keepLastNewline)
-        {
-            int pos = ln.Length - 1;
-            int lastNewLine = -1;
-            char c;
-            while (pos >= 0)
-            {
-                c = ln[pos];
-
-                if (c == '\n')
-                {
-                    lastNewLine = pos;
-                }
-                else if (c != ' ')
-                {
-                    if (lastNewLine == -1)
-                        return ln;
-
-                    if (keepLastNewline)
-                        lastNewLine++;
-
-                    return ln.Substring(0, lastNewLine);
-                }
-
-                pos--;
-            }
-
-            // all spaces
-            return string.Empty;
+            if (len > 0)
+                block.StringContent.Append(ln, offset, len);
         }
 
         // Check to see if a block ends with a blank line, descending
@@ -183,27 +128,22 @@ namespace CommonMark.Parser
 
                 case BlockTag.Paragraph:
                     pos = 0;
-                    while (BString.bchar(b.StringContent, 0) == '[' &&
-                           0 != (pos = InlineMethods.ParseReference(b.StringContent,
-                                                  b.Top.Attributes.ReferenceMap)))
-                    {
-                        b.StringContent = b.StringContent.Remove(0, pos);
-                    }
-                    if (is_blank(b.StringContent, 0))
-                    {
+                    while (b.StringContent.StartsWith('[') && 0 != (pos = InlineMethods.ParseReference(b.StringContent, b.Top.Attributes.ReferenceMap)))
+                        b.StringContent.TrimStart(pos);
+
+                    if (b.StringContent.IsFirstLineBlank())
                         b.Tag = BlockTag.ReferenceDefinition;
-                    }
+
                     break;
 
                 case BlockTag.IndentedCode:
-                    b.StringContent = RemoveTrailingBlankLines(b.StringContent, true);
+                    b.StringContent.RemoveTrailingBlankLines();
                     break;
 
                 case BlockTag.FencedCode:
                     // first line of contents becomes info
-                    firstlinelen = b.StringContent.IndexOf('\n');
-                    b.Attributes.FencedCodeData.Info = InlineMethods.Unescape(b.StringContent.Substring(0, firstlinelen).Trim());
-                    b.StringContent = b.StringContent.Substring(firstlinelen + 1); // +1 for \n
+                    firstlinelen = b.StringContent.IndexOf('\n') + 1;
+                    b.Attributes.FencedCodeData.Info = InlineMethods.Unescape(b.StringContent.TakeFromStart(firstlinelen, true).Trim());
                     break;
 
                 case BlockTag.List: // determine tight/loose status
@@ -292,7 +232,7 @@ namespace CommonMark.Parser
                     if (cur.StringContent == null)
                         throw new CommonMarkException("The block does not contain string content.", cur);
 
-                    cur.InlineContent = InlineMethods.parse_inlines(cur.StringContent, refmap);
+                    cur.InlineContent = InlineMethods.parse_inlines(cur.StringContent.ToString(), refmap);
                     cur.StringContent = null;
                     break;
 
@@ -368,6 +308,14 @@ namespace CommonMark.Parser
             }
 
             return (pos - startpos);
+        }
+
+        private static bool ContainsSingleLine(StringContent content)
+        {
+            if (content == null)
+                return true;
+            var i = content.IndexOf('\n');
+            return (i == -1 || i == content.Length - 1);
         }
 
         // Return 1 if list item belongs in list, else 0.
@@ -579,8 +527,7 @@ namespace CommonMark.Parser
                 }
                 else if (container.Tag == BlockTag.Paragraph 
                         && 0 != (lev = Scanner.scan_setext_header_line(ln, first_nonspace))
-                        // check that there is only one line in the paragraph:
-                        && container.StringContent.LastIndexOf('\n', container.StringContent.Length - 2) == -1)
+                        && ContainsSingleLine(container.StringContent))
                 {
 
                     container.Tag = BlockTag.SETextHeader;

@@ -43,8 +43,13 @@ namespace CommonMark.Syntax
 
         public Block Top { get; set; }
 
+        /// <summary>
+        /// Gets or sets the string content of this block. The content consists of multiple string parts to avoid string concatenation.
+        /// Note that some parts of the parser (for example, <see cref="Formatter.HtmlPrinter.EscapeHtml"/>) might assume that
+        /// the parts are not split within certain objects, so it is advised that the parts are split on newline.
+        /// </summary>
         /// <remarks>Original: string_content</remarks>
-        public string StringContent { get; set; }
+        public StringContent StringContent { get; set; }
 
         /// <remarks>Original: inline_content</remarks>
         public Inline InlineContent { get; set; }

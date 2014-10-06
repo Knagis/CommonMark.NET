@@ -396,7 +396,7 @@ namespace CommonMark.Parser
         {
             int match;
             Inline result;
-            match = Scanner.scan_entity(subj.Buffer, subj.Position);
+            match = Scanner.scan_entity(subj.Buffer, subj.Position, subj.Buffer.Length - subj.Position);
             if (match > 0)
             {
                 result = make_entity(subj.Buffer.Substring(subj.Position, match));
@@ -866,9 +866,9 @@ namespace CommonMark.Parser
         // Modify refmap if a reference is encountered.
         // Return 0 if no reference found, otherwise position of subject
         // after reference is parsed.
-        public static int ParseReference(string input, Dictionary<string, Reference> refmap)
+        public static int ParseReference(Syntax.StringContent input, Dictionary<string, Reference> refmap)
         {
-            Subject subj = make_subject(input, null);
+            Subject subj = make_subject(input.ToString(), null);
             string lab = string.Empty;
             string url = null;
             string title = null;

@@ -98,16 +98,16 @@ namespace CommonMark.Formatter
                         writer.WriteLine("hrule");
                         break;
                     case BlockTag.IndentedCode:
-                        writer.WriteLine("indented_code {0}", format_str(b.StringContent));
+                        writer.WriteLine("indented_code {0}", format_str(b.StringContent.ToString()));
                         break;
                     case BlockTag.FencedCode:
                         writer.WriteLine("fenced_code length={0} info={1} {2}",
                                b.Attributes.FencedCodeData.FenceLength,
                                format_str(b.Attributes.FencedCodeData.Info),
-                               format_str(b.StringContent));
+                               format_str(b.StringContent.ToString()));
                         break;
                     case BlockTag.HtmlBlock:
-                        writer.WriteLine("html_block {0}", format_str(b.StringContent));
+                        writer.WriteLine("html_block {0}", format_str(b.StringContent.ToString()));
                         break;
                     case BlockTag.ReferenceDefinition:
                         writer.WriteLine("reference_def");

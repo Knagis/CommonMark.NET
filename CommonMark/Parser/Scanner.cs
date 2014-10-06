@@ -515,7 +515,7 @@ namespace CommonMark.Parser
         /// Scans an entity.
         /// Returns number of chars matched.
         /// </summary>
-        public static int scan_entity(string s, int pos)
+        public static int scan_entity(string s, int pos, int length)
         {
             /*!re2c
               [&] ([#] ([Xx][A-Fa-f0-9]{1,8}|[0-9]{1,8}) |[A-Za-z][A-Za-z0-9]{1,31} ) [;]
@@ -523,7 +523,9 @@ namespace CommonMark.Parser
               .? { return 0; }
             */
 
-            if (pos + 3 >= s.Length)
+            var lastPos = pos + length;
+
+            if (pos + 3 >= lastPos)
                 return 0;
 
             if (s[pos] != '&')
@@ -538,10 +540,10 @@ namespace CommonMark.Parser
                 if (c == 'x' || c == 'X')
                 {
                     // expect 1-8 hex digits starting from pos+3
-                    for (i = pos + 3; i < s.Length; i++)
+                    for (i = pos + 3; i < lastPos; i++)
                     {
-                        c = char.ToUpperInvariant(s[i]);
-                        if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F'))
+                        c = s[i];
+                        if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))
                         {
                             if (++counter == 9)
                                 return 0;
@@ -558,7 +560,7 @@ namespace CommonMark.Parser
                 else
                 {
                     // expect 1-8 digits starting from pos+2
-                    for (i = pos + 2; i < s.Length; i++)
+                    for (i = pos + 2; i < lastPos; i++)
                     {
                         c = s[i];
                         if (c >= '0' && c <= '9')
@@ -579,14 +581,14 @@ namespace CommonMark.Parser
             else
             {
                 // expect a letter and 1-31 letters or digits
-                c = char.ToUpperInvariant(s[pos + 1]);
-                if (c < 'A' || c > 'Z')
+                c = s[pos + 1];
+                if ((c < 'A' || c > 'Z') && (c < 'a' && c > 'z'))
                     return 0;
 
-                for (i = pos + 2; i < s.Length; i++)
+                for (i = pos + 2; i < lastPos; i++)
                 {
-                    c = char.ToUpperInvariant(s[i]);
-                    if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z'))
+                    c = s[i];
+                    if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
                     {
                         if (++counter == 32)
                             return 0;

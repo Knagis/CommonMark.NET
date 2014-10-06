@@ -23,6 +23,13 @@ namespace CommonMark.Formatter
             this._windowsNewLine = nl == "\r\n";
         }
 
+        public override void WriteLine(string value)
+        {
+            this.Write(value);
+            this._inner.Write(this.CoreNewLine);
+            this._last = '\n';
+        }
+
         public override void Write(string value)
         {
             if (value == null || value.Length == 0)
@@ -61,6 +68,47 @@ namespace CommonMark.Formatter
             }
 
             this._last = value[value.Length - 1];
+        }
+
+        public override void Write(char[] value, int index, int count)
+        {
+            if (value == null || count == 0)
+                return;
+
+            if (this._windowsNewLine)
+            {
+                var lastPos = index;
+                var lastC = this._last;
+                int pos = index;
+
+                while (pos < index + count)
+                {
+                    if (value[pos] != '\n')
+                    {
+                        pos++;
+                        continue;
+                    }
+
+                    lastC = pos == index ? this._last : value[pos - 1];
+
+                    if (lastC != '\r')
+                    {
+                        this._inner.Write(value, lastPos, pos - lastPos);
+                        this._inner.Write('\r');
+                        lastPos = pos;
+                    }
+
+                    pos++;
+                }
+
+                this._inner.Write(value, lastPos, index + count - lastPos);
+            }
+            else
+            {
+                this._inner.Write(value, index, count);
+            }
+
+            this._last = value[index + count - 1];
         }
 
         public override void Write(char value)
