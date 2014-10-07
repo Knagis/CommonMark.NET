@@ -127,9 +127,9 @@ namespace CommonMark.Parser
 #if OptimizeFor45
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        private static char? peek_char(Subject subj)
+        private static char peek_char(Subject subj)
         {
-            return subj.Buffer.Length <= subj.Position ? (char?)null : subj.Buffer[subj.Position];
+            return subj.Buffer.Length <= subj.Position ? '\0' : subj.Buffer[subj.Position];
         }
 
         // Advance the subject.  Doesn't check for eof.
@@ -466,10 +466,10 @@ namespace CommonMark.Parser
             Inline result = null;
             Inline inew;
             int searchpos;
-            char? c;
+            char c;
             Subject subj = make_subject(s, null);
 
-            while (null != (c = peek_char(subj)))
+            while ('\0' != (c = peek_char(subj)))
             {
                 if (c == '&')
                 {
@@ -687,7 +687,7 @@ namespace CommonMark.Parser
             endlabel = subj.Position;
             if (found_label)
             {
-                if (subj.Buffer[subj.Position] == '(' &&
+                if (peek_char(subj) == '(' &&
                     ((sps = Scanner.scan_spacechars(subj.Buffer, subj.Position + 1)) > -1) &&
                     ((n = Scanner.scan_link_url(subj.Buffer, subj.Position + 1 + sps)) > -1))
                 {
@@ -966,7 +966,7 @@ namespace CommonMark.Parser
 
             if (peek_char(subj) == '\n')
                 advance(subj);
-            else if (peek_char(subj) != null)
+            else if (peek_char(subj) != '\0')
                 return 0;
 
             // insert reference into refmap
