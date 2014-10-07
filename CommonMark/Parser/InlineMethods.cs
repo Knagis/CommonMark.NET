@@ -298,29 +298,38 @@ namespace CommonMark.Parser
             }
         }
 
-        // Scan ***, **, or * and return number scanned, or 0.
-        // Don't advance position.
+        /// <summary>
+        /// Scan ***, **, or * and return number scanned, or 0.
+        /// </summary>
         static int scan_delims(Subject subj, char c, out bool can_open, out bool can_close)
         {
             int numdelims = 0;
-            char? char_before, char_after;
+            char char_before, char_after;
             int startpos = subj.Position;
+            int len = subj.Buffer.Length;
 
-            char_before = subj.Position == 0 ? '\n' : BString.bchar(subj.Buffer, subj.Position - 1);
-            while (peek_char(subj) == c)
-            {
+            char_before = startpos == 0 ? '\n' : subj.Buffer[startpos - 1];
+            while (startpos + numdelims < len && subj.Buffer[startpos + numdelims] == c)
                 numdelims++;
-                advance(subj);
+
+            subj.Position = (startpos += numdelims);
+
+            if (numdelims == 0 || numdelims > 3)
+            {
+                can_open = false;
+                can_close = false;
+                return numdelims;
             }
 
-            char_after = peek_char(subj);
-            can_open = numdelims > 0 && numdelims <= 3 && char_after != null && !char.IsWhiteSpace(char_after.Value);
-            can_close = numdelims > 0 && numdelims <= 3 && char_before != null && !char.IsWhiteSpace(char_before.Value);
+            char_after = len == startpos ? '\n' : subj.Buffer[startpos];
+
+            can_open = char_after != ' ' && char_after != '\n';
+            can_close = char_before != ' ' && char_before != '\n';
 
             if (c == '_')
             {
-                can_open = can_open && (char_before == null || !char.IsLetterOrDigit(char_before.Value));
-                can_close = can_close && (char_after == null || !char.IsLetterOrDigit(char_after.Value));
+                can_open = can_open && !char.IsLetterOrDigit(char_before);
+                can_close = can_close && !char.IsLetterOrDigit(char_after);
             }
 
             return numdelims;
@@ -328,7 +337,7 @@ namespace CommonMark.Parser
 
         private static Inline HandleEmphasis(Subject subj, char c)
         {
-            bool can_open = false, can_close = false;
+            bool can_open, can_close;
             var numdelims = scan_delims(subj, c, out can_open, out can_close);
 
             if (can_close)
