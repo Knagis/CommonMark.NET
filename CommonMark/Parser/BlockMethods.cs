@@ -335,7 +335,6 @@ namespace CommonMark.Parser
             Block last_matched_container;
             int offset = 0;
             int matched = 0;
-            int lev = 0;
             int i;
             ListData data;
             bool all_matched = true;
@@ -500,7 +499,7 @@ namespace CommonMark.Parser
                     container = add_child(container, BlockTag.BlockQuote, line_number, offset + 1);
 
                 }
-                else if (0 != (matched = Scanner.scan_atx_header_start(ln, first_nonspace, out i)))
+                else if (curChar == '#' && 0 != (matched = Scanner.scan_atx_header_start(ln, first_nonspace, out i)))
                 {
 
                     offset = first_nonspace + matched;
@@ -508,7 +507,7 @@ namespace CommonMark.Parser
                     container.HeaderLevel = i;
 
                 }
-                else if (0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace)))
+                else if ((curChar == '`' || curChar == '~') && 0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace)))
                 {
 
                     container = add_child(container, BlockTag.FencedCode, line_number, first_nonspace + 1);
@@ -518,7 +517,7 @@ namespace CommonMark.Parser
                     offset = first_nonspace + matched;
 
                 }
-                else if (Scanner.scan_html_block_tag(ln, first_nonspace))
+                else if (curChar == '<' && Scanner.scan_html_block_tag(ln, first_nonspace))
                 {
 
                     container = add_child(container, BlockTag.HtmlBlock, line_number, first_nonspace + 1);
@@ -526,12 +525,12 @@ namespace CommonMark.Parser
 
                 }
                 else if (container.Tag == BlockTag.Paragraph 
-                        && 0 != (lev = Scanner.scan_setext_header_line(ln, first_nonspace))
+                        && 0 != (matched = Scanner.scan_setext_header_line(ln, first_nonspace))
                         && ContainsSingleLine(container.StringContent))
                 {
 
                     container.Tag = BlockTag.SETextHeader;
-                    container.HeaderLevel = lev;
+                    container.HeaderLevel = matched;
                     offset = ln.Length - 1;
 
                 }
