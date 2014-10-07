@@ -13,6 +13,7 @@ namespace CommonMark.Parser
         private int _bufferLength;
         private int _bufferPosition;
         private readonly StringBuilder _builder;
+        private bool _endOfStream;
 
         public TabTextReader(TextReader inner)
         {
@@ -23,9 +24,13 @@ namespace CommonMark.Parser
 
         public bool ReadBuffer()
         {
+            if (this._endOfStream)
+                return false;
+
             this._bufferLength = this._inner.Read(this._buffer, 0, _bufferSize);
+            this._endOfStream = this._bufferLength == 0;
             this._bufferPosition = 0;
-            return this._bufferLength > 0;
+            return !this._endOfStream;
         }
 
         public string ReadLine()
@@ -101,7 +106,7 @@ namespace CommonMark.Parser
 
         public bool EndOfStream()
         {
-            return this._bufferPosition == this._bufferLength && !this.ReadBuffer();
+            return this._endOfStream || (this._bufferPosition == this._bufferLength && !this.ReadBuffer());
         }
     }
 }
