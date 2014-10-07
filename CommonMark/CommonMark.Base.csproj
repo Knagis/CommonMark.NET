@@ -62,7 +62,6 @@
     <Compile Include="Formatter\HtmlTextWriter.cs" />
     <Compile Include="Syntax\Inline.cs" />
     <Compile Include="Parser\InlineMethods.cs" />
-    <Compile Include="Syntax\InlineContent.cs" />
     <Compile Include="Syntax\InlineContentLinkable.cs" />
     <Compile Include="Syntax\InlineTag.cs" />
     <Compile Include="Syntax\ListData.cs" />

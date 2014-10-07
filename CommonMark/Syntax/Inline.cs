@@ -8,15 +8,19 @@ namespace CommonMark.Syntax
     {
         public InlineTag Tag { get; set; }
 
-        private readonly InlineContent _content = new InlineContent();
-        public InlineContent Content { get { return this._content; } }
+        public string LiteralContent { get; set; }
+
+        public Inline FirstChild { get; set; }
+
+        private readonly InlineContentLinkable _linkable = new InlineContentLinkable();
+        public InlineContentLinkable Linkable { get { return this._linkable; } }
 
         private Inline _next;
 
         /// <summary>
         /// Gets the next sibling inline.
         /// </summary>
-        public Inline Next 
+        public Inline NextSibling 
         { 
             get 
             { 

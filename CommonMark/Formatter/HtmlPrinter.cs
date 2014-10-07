@@ -245,7 +245,7 @@ namespace CommonMark.Formatter
                 switch (ils.Tag)
                 {
                     case InlineTag.String:
-                        EscapeHtml(ils.Content.Literal, false, writer);
+                        EscapeHtml(ils.LiteralContent, false, writer);
                         break;
 
                     case InlineTag.LineBreak:
@@ -258,47 +258,47 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Code:
                         writer.Write("<code>");
-                        EscapeHtml(ils.Content.Literal, false, writer);
+                        EscapeHtml(ils.LiteralContent, false, writer);
                         writer.Write("</code>");
                         break;
 
                     case InlineTag.RawHtml:
                     case InlineTag.Entity:
-                        writer.Write(ils.Content.Literal);
+                        writer.Write(ils.LiteralContent);
                         break;
 
                     case InlineTag.Link:
                         writer.Write("<a href=\"");
-                        EscapeHtml(ils.Content.Linkable.Url, true, writer);
+                        EscapeHtml(ils.Linkable.Url, true, writer);
                         writer.Write('\"');
-                        if (ils.Content.Linkable.Title.Length > 0)
+                        if (ils.Linkable.Title.Length > 0)
                         {
                             writer.Write(" title=\"");
-                            EscapeHtml(ils.Content.Linkable.Title, true, writer);
+                            EscapeHtml(ils.Linkable.Title, true, writer);
                             writer.Write('\"');
                         }
                         
                         writer.Write('>');
-                        InlinesToHtml(writer, ils.Content.Linkable.Label);
+                        InlinesToHtml(writer, ils.Linkable.Label);
                         writer.Write("</a>");
                         break;
 
                     case InlineTag.Image:
                         writer.Write("<img src=\"");
-                        EscapeHtml(ils.Content.Linkable.Url, true, writer);
+                        EscapeHtml(ils.Linkable.Url, true, writer);
                         writer.Write("\" alt=\"");
                         using (var sb = new System.IO.StringWriter())
                         using (var sbw = new HtmlTextWriter(sb))
                         {
-                            InlinesToHtml(sbw, ils.Content.Linkable.Label);
+                            InlinesToHtml(sbw, ils.Linkable.Label);
                             sbw.Flush();
                             EscapeHtml(sb.ToString(), false, writer);
                         }
                         writer.Write("\"");
-                        if (ils.Content.Linkable.Title.Length > 0)
+                        if (ils.Linkable.Title.Length > 0)
                         {
                             writer.Write(" title=\"");
-                            EscapeHtml(ils.Content.Linkable.Title, true, writer);
+                            EscapeHtml(ils.Linkable.Title, true, writer);
                             writer.Write("\"");
                         }
                         writer.Write(" />");
@@ -306,20 +306,20 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Strong:
                         writer.Write("<strong>");
-                        InlinesToHtml(writer, ils.Content.Inlines);
+                        InlinesToHtml(writer, ils.FirstChild);
                         writer.Write("</strong>");
                         break;
 
                     case InlineTag.Emphasis:
                         writer.Write("<em>");
-                        InlinesToHtml(writer, ils.Content.Inlines);
+                        InlinesToHtml(writer, ils.FirstChild);
                         writer.Write("</em>");
                         break;
 
                     default:
                         throw new CommonMarkException("Inline type " + ils.Tag + " is not supported.", ils);
                 }
-                ils = ils.Next;
+                ils = ils.NextSibling;
             }
         }
 

@@ -58,9 +58,9 @@ namespace CommonMark.Parser
         {
             Inline e = new Inline();
             e.Tag = t;
-            e.Content.Linkable.Label = label;
-            e.Content.Linkable.Url = url;
-            e.Content.Linkable.Title = title;
+            e.Linkable.Label = label;
+            e.Linkable.Url = url;
+            e.Linkable.Title = title;
             return e;
         }
 
@@ -68,7 +68,7 @@ namespace CommonMark.Parser
         {
             Inline e = new Inline();
             e.Tag = t;
-            e.Content.Inlines = contents;
+            e.FirstChild = contents;
             return e;
         }
 
@@ -77,7 +77,7 @@ namespace CommonMark.Parser
         {
             Inline e = new Inline();
             e.Tag = t;
-            e.Content.Literal = s;
+            e.LiteralContent = s;
             return e;
         }
 
@@ -109,7 +109,7 @@ namespace CommonMark.Parser
                 return b;
             }
 
-            a.LastSibling.Next = b;
+            a.LastSibling.NextSibling = b;
             return a;
         }
 
@@ -357,9 +357,9 @@ namespace CommonMark.Parser
                     // the opener is completely used up - remove the stack entry and reuse the inline element
                     var inl = istack.StartingInline;
                     inl.Tag = useDelims == 1 ? InlineTag.Emphasis : InlineTag.Strong;
-                    inl.Content.Literal = null;
-                    inl.Content.Inlines = inl.Next;
-                    inl.Next = null;
+                    inl.LiteralContent = null;
+                    inl.FirstChild = inl.NextSibling;
+                    inl.NextSibling = null;
 
                     subj.EmphasisStack = istack.Previous;
                     istack.Previous = null;
@@ -370,10 +370,10 @@ namespace CommonMark.Parser
                     // the opener will only partially be used - stack entry remains (truncated) and a new inline is added.
                     var inl = istack.StartingInline;
                     istack.DelimeterCount -= useDelims;
-                    inl.Content.Literal = istack.StartingInline.Content.Literal.Substring(0, istack.DelimeterCount);
+                    inl.LiteralContent = istack.StartingInline.LiteralContent.Substring(0, istack.DelimeterCount);
 
-                    var emph = useDelims == 1 ? make_emph(inl.Next) : make_strong(inl.Next);
-                    inl.Next = emph;
+                    var emph = useDelims == 1 ? make_emph(inl.NextSibling) : make_strong(inl.NextSibling);
+                    inl.NextSibling = emph;
                     subj.LastInline = emph;
                 }
 
@@ -879,7 +879,7 @@ namespace CommonMark.Parser
             while (subj.Position < len)
             {
                 cur = parse_inline(subj);
-                subj.LastInline.Next = cur;
+                subj.LastInline.NextSibling = cur;
                 subj.LastInline = cur.LastSibling;
             }
 

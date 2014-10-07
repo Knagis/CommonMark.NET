@@ -139,7 +139,7 @@ namespace CommonMark.Formatter
                 switch (ils.Tag)
                 {
                     case InlineTag.String:
-                        writer.WriteLine("str {0}", format_str(ils.Content.Literal));
+                        writer.WriteLine("str {0}", format_str(ils.LiteralContent));
                         break;
                     case InlineTag.LineBreak:
                         writer.WriteLine("linebreak");
@@ -148,36 +148,36 @@ namespace CommonMark.Formatter
                         writer.WriteLine("softbreak");
                         break;
                     case InlineTag.Code:
-                        writer.WriteLine("code {0}", format_str(ils.Content.Literal));
+                        writer.WriteLine("code {0}", format_str(ils.LiteralContent));
                         break;
                     case InlineTag.RawHtml:
-                        writer.WriteLine("html {0}", format_str(ils.Content.Literal));
+                        writer.WriteLine("html {0}", format_str(ils.LiteralContent));
                         break;
                     case InlineTag.Entity:
-                        writer.WriteLine("entity {0}", format_str(ils.Content.Literal));
+                        writer.WriteLine("entity {0}", format_str(ils.LiteralContent));
                         break;
                     case InlineTag.Link:
                         writer.WriteLine("link url={0} title={1}",
-                               format_str(ils.Content.Linkable.Url),
-                               format_str(ils.Content.Linkable.Title));
-                        print_inlines(writer, ils.Content.Linkable.Label, indent + 2);
+                               format_str(ils.Linkable.Url),
+                               format_str(ils.Linkable.Title));
+                        print_inlines(writer, ils.Linkable.Label, indent + 2);
                         break;
                     case InlineTag.Image:
                         writer.WriteLine("image url={0} title={1}",
-                               format_str(ils.Content.Linkable.Url),
-                               format_str(ils.Content.Linkable.Title));
-                        print_inlines(writer, ils.Content.Linkable.Label, indent + 2);
+                               format_str(ils.Linkable.Url),
+                               format_str(ils.Linkable.Title));
+                        print_inlines(writer, ils.Linkable.Label, indent + 2);
                         break;
                     case InlineTag.Strong:
                         writer.WriteLine("strong");
-                        print_inlines(writer, ils.Content.Linkable.Label, indent + 2);
+                        print_inlines(writer, ils.Linkable.Label, indent + 2);
                         break;
                     case InlineTag.Emphasis:
                         writer.WriteLine("emph");
-                        print_inlines(writer, ils.Content.Linkable.Label, indent + 2);
+                        print_inlines(writer, ils.Linkable.Label, indent + 2);
                         break;
                 }
-                ils = ils.Next;
+                ils = ils.NextSibling;
             }
         }
     }
