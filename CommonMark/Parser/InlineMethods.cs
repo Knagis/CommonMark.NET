@@ -17,7 +17,7 @@ namespace CommonMark.Parser
             if (s == null || s.Length == 0)
                 return string.Empty;
 
-            return NormalizeWhitespace(s.ToUpperInvariant());
+            return NormalizeWhitespace(s, 0, s.Length).ToUpperInvariant();
         }
 
         // Returns reference if refmap contains a reference with matching
@@ -189,44 +189,86 @@ namespace CommonMark.Parser
         /// Collapses consecutive space and newline characters into a single space.
         /// Additionaly removes leading and trailing spaces.
         /// </summary>
-        private static string NormalizeWhitespace(string s)
+        private static string NormalizeWhitespace(string s, int startIndex, int count)
         {
-            bool pendingSpace = false;
-            bool foundNonSpace = false;
-
-            var sb = new StringBuilder(s.Length);
             char c;
-            int cpos = 0;
-            for (var i = 0; i < s.Length; i++ )
-            {
-                c = s[i];
 
-                if (c == ' ' || c == '\n')
+            // count will actually be the lastIndex. The method argument is count only because other similar methods have startIndex/count
+            count = startIndex + count - 1;
+
+            // trim leading and trailing spaces.
+            while (startIndex < count)
+            {
+                c = s[startIndex];
+                if (c != ' ' && c != '\n') break;
+                startIndex++;
+            }
+
+            while (count >= startIndex)
+            {
+                c = s[count];
+                if (c != ' ' && c != '\n') break;
+                count--;
+            }
+
+            if (count < startIndex)
+                return string.Empty;
+
+            // collapse inner whitespace
+            // the complexity of this method is mainly so that the use of StringBuilder could be avoided if it is not needed
+            StringBuilder sb = null;
+            int pos = startIndex;
+            int lastPos = startIndex;
+            while (-1 != (pos = s.IndexOfAny(new[] { ' ', '\n' }, pos, count - pos)))
+            {
+                if (s[pos] == '\n')
                 {
-                    if (cpos < i)
-                        sb.Append(s, cpos, i - cpos);
-                    
-                    cpos = i + 1;
-                    if (pendingSpace)
-                        continue;
-                    if (foundNonSpace)
-                        pendingSpace = true;
+                    if (sb == null)
+                        sb = new StringBuilder(s.Length);
+
+                    // newline has to be replaced with ' '
+                    sb.Append(s, lastPos, pos - lastPos);
+                    sb.Append(' ');
+
+                    // move past consecutive spaces
+                    do
+                    {
+                        c = s[++pos];
+                        if (c != ' ' && c != '\n')
+                            break;
+                    } while (pos < count);
+
+                    lastPos = pos;
                 }
                 else
                 {
-                    foundNonSpace = true;
+                    c = s[++pos];
 
-                    if (pendingSpace)
+                    if (c == ' ' || c == '\n')
                     {
-                        sb.Append(' ');
-                        pendingSpace = false;
+                        // multiple consecutive whitespaces
+                        if (sb == null)
+                            sb = new StringBuilder(s.Length);
+
+                        sb.Append(s, lastPos, pos - lastPos);
+
+                        // move past consecutive spaces
+                        do
+                        {
+                            c = s[++pos];
+                            if (c != ' ' && c != '\n')
+                                break;
+                        } while (pos < count);
+
+                        lastPos = pos;
                     }
                 }
             }
 
-            if (cpos < s.Length)
-                sb.Append(s, cpos, s.Length - cpos);
+            if (sb == null)
+                return s.Substring(startIndex, count - startIndex + 1);
 
+            sb.Append(s, lastPos, count - lastPos + 1);
             return sb.ToString();
         }
 
@@ -252,9 +294,7 @@ namespace CommonMark.Parser
             }
             else
             {
-                var result = subj.Buffer.Substring(startpos, endpos - startpos - ticklength);
-                result = NormalizeWhitespace(result);
-                return make_code(result);
+                return make_code(NormalizeWhitespace(subj.Buffer, startpos, endpos - startpos - ticklength));
             }
         }
 
