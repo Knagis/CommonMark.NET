@@ -55,7 +55,6 @@
     <Compile Include="Syntax\Block.cs" />
     <Compile Include="Parser\BlockMethods.cs" />
     <Compile Include="Syntax\BlockTag.cs" />
-    <Compile Include="BString.cs" />
     <Compile Include="Syntax\FencedCodeData.cs" />
     <Compile Include="Formatter\HtmlPrinter.cs" />
     <Compile Include="Formatter\HtmlTextWriter.cs" />

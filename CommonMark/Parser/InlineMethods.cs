@@ -129,7 +129,7 @@ namespace CommonMark.Parser
 #endif
         private static char? peek_char(Subject subj)
         {
-            return BString.bchar(subj.Buffer, subj.Position);
+            return subj.Buffer.Length <= subj.Position ? (char?)null : subj.Buffer[subj.Position];
         }
 
         // Advance the subject.  Doesn't check for eof.
@@ -687,7 +687,7 @@ namespace CommonMark.Parser
             endlabel = subj.Position;
             if (found_label)
             {
-                if (peek_char(subj) == '(' &&
+                if (subj.Buffer[subj.Position] == '(' &&
                     ((sps = Scanner.scan_spacechars(subj.Buffer, subj.Position + 1)) > -1) &&
                     ((n = Scanner.scan_link_url(subj.Buffer, subj.Position + 1 + sps)) > -1))
                 {
@@ -699,7 +699,7 @@ namespace CommonMark.Parser
                     endtitle = (starttitle == endurl) ? starttitle :
                                starttitle + Scanner.scan_link_title(subj.Buffer, starttitle);
                     endall = endtitle + Scanner.scan_spacechars(subj.Buffer, endtitle);
-                    if (BString.bchar(subj.Buffer, endall) == ')')
+                    if (subj.Buffer[endall] == ')')
                     {
                         subj.Position = endall + 1;
                         url = subj.Buffer.Substring(starturl, endurl - starturl);
