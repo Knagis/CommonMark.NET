@@ -54,13 +54,11 @@ namespace CommonMark.Syntax
         /// <remarks>Original: inline_content</remarks>
         public Inline InlineContent { get; set; }
 
-        private ListData _listData = new ListData();
         /// <remarks>Original: list_data</remarks>
-        public ListData ListData { get { return this._listData; } set { this._listData = value; } }
+        public ListData ListData { get; set; }
 
-        private readonly FencedCodeData _fencedCodeData = new FencedCodeData();
         /// <remarks>Original: fenced_code_data</remarks>
-        public FencedCodeData FencedCodeData { get { return this._fencedCodeData; } }
+        public FencedCodeData FencedCodeData { get; set; }
 
         /// <remarks>Original: header_level</remarks>
         public int HeaderLevel { get; set; }

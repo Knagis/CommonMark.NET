@@ -99,14 +99,6 @@ namespace CommonMark.Parser
 
         public static void finalize(Block b, int line_number)
         {
-            int firstlinelen;
-            int pos;
-            Block item;
-            Block subitem;
-
-            if (b == null)
-                throw new ArgumentNullException("b");
-
             if (!b.IsOpen)
             {
                 // don't do anything if the block is already closed
@@ -115,19 +107,15 @@ namespace CommonMark.Parser
 
             b.IsOpen = false;
             if (line_number > b.StartLine)
-            {
                 b.EndLine = line_number - 1;
-            }
             else
-            {
                 b.EndLine = line_number;
-            }
 
             switch (b.Tag)
             {
 
                 case BlockTag.Paragraph:
-                    pos = 0;
+                    var pos = 0;
                     while (b.StringContent.StartsWith('[') && 0 != (pos = InlineMethods.ParseReference(b.StringContent, b.Top.ReferenceMap)))
                         b.StringContent.TrimStart(pos);
 
@@ -142,13 +130,14 @@ namespace CommonMark.Parser
 
                 case BlockTag.FencedCode:
                     // first line of contents becomes info
-                    firstlinelen = b.StringContent.IndexOf('\n') + 1;
+                    var firstlinelen = b.StringContent.IndexOf('\n') + 1;
                     b.FencedCodeData.Info = InlineMethods.Unescape(b.StringContent.TakeFromStart(firstlinelen, true).Trim());
                     break;
 
                 case BlockTag.List: // determine tight/loose status
                     b.ListData.IsTight = true; // tight by default
-                    item = b.FirstChild;
+                    var item = b.FirstChild;
+                    Block subitem;
 
                     while (item != null)
                     {
@@ -511,6 +500,7 @@ namespace CommonMark.Parser
                 {
 
                     container = add_child(container, BlockTag.FencedCode, line_number, first_nonspace + 1);
+                    container.FencedCodeData = new FencedCodeData();
                     container.FencedCodeData.FenceChar = curChar;
                     container.FencedCodeData.FenceLength = matched;
                     container.FencedCodeData.FenceOffset = first_nonspace - offset;
