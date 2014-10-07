@@ -175,7 +175,7 @@ namespace CommonMark.Formatter
                     case BlockTag.List:
                         // make sure a list starts at the beginning of the line:
                         EnsureNewlineEnding(writer);
-                        var data = b.Attributes.ListData;
+                        var data = b.ListData;
                         tag = data.ListType == ListType.Bullet ? "ul" : "ol";
                         writer.Write("<" + tag);
                         if (data.Start != 1)
@@ -187,7 +187,7 @@ namespace CommonMark.Formatter
 
                     case BlockTag.AtxHeader:
                     case BlockTag.SETextHeader:
-                        tag = "h" + b.Attributes.HeaderLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                        tag = "h" + b.HeaderLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
                         EnsureNewlineEnding(writer);
                         writer.Write("<" + tag + ">");
                         InlinesToHtml(writer, b.InlineContent);
@@ -204,9 +204,9 @@ namespace CommonMark.Formatter
                     case BlockTag.FencedCode:
                         EnsureNewlineEnding(writer);
                         writer.Write("<pre><code");
-                        if (b.Attributes.FencedCodeData.Info.Length > 0)
+                        if (b.FencedCodeData.Info.Length > 0)
                         {
-                            string[] info_words = b.Attributes.FencedCodeData.Info.Split(new[] { ' ' });
+                            string[] info_words = b.FencedCodeData.Info.Split(new[] { ' ' });
                             writer.Write(" class=\"language-");
                             EscapeHtml(info_words[0], true, writer);
                             writer.Write("\"");
@@ -230,7 +230,7 @@ namespace CommonMark.Formatter
                     default:
                         throw new CommonMarkException("Block type " + b.Tag + " is not supported.", b);
                 }
-                b = b.Next;
+                b = b.NextSibling;
             }
         }
 

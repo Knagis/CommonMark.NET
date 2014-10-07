@@ -13,7 +13,7 @@ namespace CommonMark.Parser
         public static Block make_document()
         {
             Block e = new Block(BlockTag.Document, 1, 1);
-            e.Attributes.ReferenceMap = new Dictionary<string, Reference>();
+            e.ReferenceMap = new Dictionary<string, Reference>();
             e.Top = e;
             return e;
         }
@@ -128,7 +128,7 @@ namespace CommonMark.Parser
 
                 case BlockTag.Paragraph:
                     pos = 0;
-                    while (b.StringContent.StartsWith('[') && 0 != (pos = InlineMethods.ParseReference(b.StringContent, b.Top.Attributes.ReferenceMap)))
+                    while (b.StringContent.StartsWith('[') && 0 != (pos = InlineMethods.ParseReference(b.StringContent, b.Top.ReferenceMap)))
                         b.StringContent.TrimStart(pos);
 
                     if (b.StringContent.IsFirstLineBlank())
@@ -143,19 +143,19 @@ namespace CommonMark.Parser
                 case BlockTag.FencedCode:
                     // first line of contents becomes info
                     firstlinelen = b.StringContent.IndexOf('\n') + 1;
-                    b.Attributes.FencedCodeData.Info = InlineMethods.Unescape(b.StringContent.TakeFromStart(firstlinelen, true).Trim());
+                    b.FencedCodeData.Info = InlineMethods.Unescape(b.StringContent.TakeFromStart(firstlinelen, true).Trim());
                     break;
 
                 case BlockTag.List: // determine tight/loose status
-                    b.Attributes.ListData.IsTight = true; // tight by default
+                    b.ListData.IsTight = true; // tight by default
                     item = b.FirstChild;
 
                     while (item != null)
                     {
                         // check for non-final non-empty list item ending with blank line:
-                        if (item.IsLastLineBlank && item.Next != null)
+                        if (item.IsLastLineBlank && item.NextSibling != null)
                         {
-                            b.Attributes.ListData.IsTight = false;
+                            b.ListData.IsTight = false;
                             break;
                         }
                         // recurse into children of list item, to see if there are
@@ -164,18 +164,18 @@ namespace CommonMark.Parser
                         while (subitem != null)
                         {
                             if (ends_with_blank_line(subitem) &&
-                                (item.Next != null || subitem.Next != null))
+                                (item.NextSibling != null || subitem.NextSibling != null))
                             {
-                                b.Attributes.ListData.IsTight = false;
+                                b.ListData.IsTight = false;
                                 break;
                             }
-                            subitem = subitem.Next;
+                            subitem = subitem.NextSibling;
                         }
-                        if (!(b.Attributes.ListData.IsTight))
+                        if (!(b.ListData.IsTight))
                         {
                             break;
                         }
-                        item = item.Next;
+                        item = item.NextSibling;
                     }
 
                     break;
@@ -205,7 +205,7 @@ namespace CommonMark.Parser
 
             if (parent.LastChild != null)
             {
-                parent.LastChild.Next = child;
+                parent.LastChild.NextSibling = child;
                 child.Previous = parent.LastChild;
             }
             else
@@ -244,7 +244,7 @@ namespace CommonMark.Parser
             while (child != null)
             {
                 process_inlines(child, refmap);
-                child = child.Next;
+                child = child.NextSibling;
             }
         }
 
@@ -383,8 +383,8 @@ namespace CommonMark.Parser
 
                     case BlockTag.ListItem:
                         {
-                            if (indent >= container.Attributes.ListData.MarkerOffset + container.Attributes.ListData.Padding)
-                                offset += container.Attributes.ListData.MarkerOffset + container.Attributes.ListData.Padding;
+                            if (indent >= container.ListData.MarkerOffset + container.ListData.Padding)
+                                offset += container.ListData.MarkerOffset + container.ListData.Padding;
                             else if (blank)
                                 offset = first_nonspace;
                             else
@@ -416,7 +416,7 @@ namespace CommonMark.Parser
                     case BlockTag.FencedCode:
                         {
                             // skip optional spaces of fence offset
-                            i = container.Attributes.FencedCodeData.FenceOffset;
+                            i = container.FencedCodeData.FenceOffset;
                             while (i > 0 && ln[offset] == ' ')
                             {
                                 offset++;
@@ -505,16 +505,16 @@ namespace CommonMark.Parser
 
                     offset = first_nonspace + matched;
                     container = add_child(container, BlockTag.AtxHeader, line_number, offset + 1);
-                    container.Attributes.HeaderLevel = i;
+                    container.HeaderLevel = i;
 
                 }
                 else if (0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace)))
                 {
 
                     container = add_child(container, BlockTag.FencedCode, line_number, first_nonspace + 1);
-                    container.Attributes.FencedCodeData.FenceChar = curChar;
-                    container.Attributes.FencedCodeData.FenceLength = matched;
-                    container.Attributes.FencedCodeData.FenceOffset = first_nonspace - offset;
+                    container.FencedCodeData.FenceChar = curChar;
+                    container.FencedCodeData.FenceLength = matched;
+                    container.FencedCodeData.FenceOffset = first_nonspace - offset;
                     offset = first_nonspace + matched;
 
                 }
@@ -531,7 +531,7 @@ namespace CommonMark.Parser
                 {
 
                     container.Tag = BlockTag.SETextHeader;
-                    container.Attributes.HeaderLevel = lev;
+                    container.HeaderLevel = lev;
                     offset = ln.Length - 1;
 
                 }
@@ -575,15 +575,15 @@ namespace CommonMark.Parser
 
                     data.MarkerOffset = indent;
 
-                    if (container.Tag != BlockTag.List || !lists_match(container.Attributes.ListData, data))
+                    if (container.Tag != BlockTag.List || !lists_match(container.ListData, data))
                     {
                         container = add_child(container, BlockTag.List, line_number, first_nonspace + 1);
-                        container.Attributes.ListData = data;
+                        container.ListData = data;
                     }
 
                     // add the list item
                     container = add_child(container, BlockTag.ListItem, line_number, first_nonspace + 1);
-                    container.Attributes.ListData = data;
+                    container.ListData = data;
                 }
                 else
                 {
@@ -663,8 +663,8 @@ namespace CommonMark.Parser
                 {
 
                     matched = (indent <= 3
-                      && curChar == container.Attributes.FencedCodeData.FenceChar)
-                      && (0 != Scanner.scan_close_code_fence(ln, first_nonspace, container.Attributes.FencedCodeData.FenceLength))
+                      && curChar == container.FencedCodeData.FenceChar)
+                      && (0 != Scanner.scan_close_code_fence(ln, first_nonspace, container.FencedCodeData.FenceLength))
                       ? 1 : 0;
                     if (matched != 0)
                     {

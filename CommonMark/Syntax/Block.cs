@@ -45,7 +45,7 @@ namespace CommonMark.Syntax
 
         /// <summary>
         /// Gets or sets the string content of this block. The content consists of multiple string parts to avoid string concatenation.
-        /// Note that some parts of the parser (for example, <see cref="Formatter.HtmlPrinter.EscapeHtml"/>) might assume that
+        /// Note that some parts of the parser (for example, <see cref="Formatter.HtmlPrinter.EscapeHtml(StringContent, bool, System.IO.TextWriter)"/>) might assume that
         /// the parts are not split within certain objects, so it is advised that the parts are split on newline.
         /// </summary>
         /// <remarks>Original: string_content</remarks>
@@ -54,10 +54,21 @@ namespace CommonMark.Syntax
         /// <remarks>Original: inline_content</remarks>
         public Inline InlineContent { get; set; }
 
-        private readonly BlockAttributes _attributes = new BlockAttributes();
-        public BlockAttributes Attributes { get { return this._attributes; } }
+        private ListData _listData = new ListData();
+        /// <remarks>Original: list_data</remarks>
+        public ListData ListData { get { return this._listData; } set { this._listData = value; } }
 
-        public Block Next { get; set; }
+        private readonly FencedCodeData _fencedCodeData = new FencedCodeData();
+        /// <remarks>Original: fenced_code_data</remarks>
+        public FencedCodeData FencedCodeData { get { return this._fencedCodeData; } }
+
+        /// <remarks>Original: header_level</remarks>
+        public int HeaderLevel { get; set; }
+
+        /// <remarks>Original: refmap</remarks>
+        public Dictionary<string, Reference> ReferenceMap { get; set; }
+
+        public Block NextSibling { get; set; }
 
         /// <remarks>Original: prev</remarks>
         public Block Previous { get; set; }

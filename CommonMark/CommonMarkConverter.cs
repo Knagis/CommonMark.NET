@@ -119,7 +119,7 @@ namespace CommonMark
 
             try
             {
-                BlockMethods.process_inlines(document, document.Attributes.ReferenceMap);
+                BlockMethods.process_inlines(document, document.ReferenceMap);
             }
             catch(CommonMarkException)
             {

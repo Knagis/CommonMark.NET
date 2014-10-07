@@ -61,12 +61,12 @@ namespace CommonMark.Formatter
                         print_blocks(writer, b.FirstChild, indent + 2);
                         break;
                     case BlockTag.ListItem:
-                        data = b.Attributes.ListData;
+                        data = b.ListData;
                         writer.WriteLine("list_item");
                         print_blocks(writer, b.FirstChild, indent + 2);
                         break;
                     case BlockTag.List:
-                        data = b.Attributes.ListData;
+                        data = b.ListData;
                         if (data.ListType == ListType.Ordered)
                         {
                             writer.WriteLine("list (type=ordered tight={0} start={1} delim={2})",
@@ -83,11 +83,11 @@ namespace CommonMark.Formatter
                         print_blocks(writer, b.FirstChild, indent + 2);
                         break;
                     case BlockTag.AtxHeader:
-                        writer.WriteLine("atx_header (level={0})", b.Attributes.HeaderLevel);
+                        writer.WriteLine("atx_header (level={0})", b.HeaderLevel);
                         print_inlines(writer, b.InlineContent, indent + 2);
                         break;
                     case BlockTag.SETextHeader:
-                        writer.WriteLine("setext_header (level={0})", b.Attributes.HeaderLevel);
+                        writer.WriteLine("setext_header (level={0})", b.HeaderLevel);
                         print_inlines(writer, b.InlineContent, indent + 2);
                         break;
                     case BlockTag.Paragraph:
@@ -102,8 +102,8 @@ namespace CommonMark.Formatter
                         break;
                     case BlockTag.FencedCode:
                         writer.WriteLine("fenced_code length={0} info={1} {2}",
-                               b.Attributes.FencedCodeData.FenceLength,
-                               format_str(b.Attributes.FencedCodeData.Info),
+                               b.FencedCodeData.FenceLength,
+                               format_str(b.FencedCodeData.Info),
                                format_str(b.StringContent.ToString()));
                         break;
                     case BlockTag.HtmlBlock:
@@ -115,7 +115,7 @@ namespace CommonMark.Formatter
                     default:
                         throw new CommonMarkException("Block type " + b.Tag + " is not supported.", b);
                 }
-                b = b.Next;
+                b = b.NextSibling;
             }
         }
 
