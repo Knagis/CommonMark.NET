@@ -47,12 +47,13 @@ namespace CommonMark.Parser
                 throw new CommonMarkException(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
 
             var len = length == -1 ? ln.Length - offset : length;
+            if (len <= 0)
+                return;
 
             var curSC = block.StringContent;
             if (curSC == null)
                 block.StringContent = curSC = new StringContent();
 
-            if (len > 0)
                 block.StringContent.Append(ln, offset, len);
         }
 
@@ -174,21 +175,21 @@ namespace CommonMark.Parser
             }
         }
 
-        // Add a block as child of another.  Return pointer to child.
-        public static Block add_child(Block parent, BlockTag block_type, int start_line, int start_column)
+        /// <summary>
+        /// Adds a new block as child of another. Return the child.
+        /// </summary>
+        /// <remarks>Original: add_child</remarks>
+        public static Block CreateChildBlock(Block parent, BlockTag blockType, int startLine, int startColumn)
         {
             // if 'parent' isn't the kind of block that can accept this child,
             // then back up til we hit a block that can.
-            while (!can_contain(parent.Tag, block_type))
+            while (!can_contain(parent.Tag, blockType))
             {
-                finalize(parent, start_line);
+                finalize(parent, startLine);
                 parent = parent.Parent;
             }
 
-            if (parent == null)
-                throw new ArgumentNullException("parent");
-
-            Block child = new Block(block_type, start_line, start_column);
+            Block child = new Block(blockType, startLine, startColumn);
             child.Parent = parent;
             child.Top = parent.Top;
 
@@ -212,24 +213,17 @@ namespace CommonMark.Parser
         // string content into inline content where appropriate.
         public static void process_inlines(Block cur, Dictionary<string, Reference> refmap)
         {
-            switch (cur.Tag)
+            var tag = cur.Tag;
+            if (tag == BlockTag.Paragraph || tag == BlockTag.AtxHeader || tag == BlockTag.SETextHeader)
             {
-
-                case BlockTag.Paragraph:
-                case BlockTag.AtxHeader:
-                case BlockTag.SETextHeader:
-                    if (cur.StringContent == null)
-                        throw new CommonMarkException("The block does not contain string content.", cur);
-
+                if (cur.StringContent != null)
+                {
                     cur.InlineContent = InlineMethods.parse_inlines(cur.StringContent.ToString(), refmap);
                     cur.StringContent = null;
-                    break;
-
-                default:
-                    break;
+                }
             }
 
-            Block child = cur.FirstChild;
+            var child = cur.FirstChild;
             while (child != null)
             {
                 process_inlines(child, refmap);
@@ -468,7 +462,7 @@ namespace CommonMark.Parser
                     if (cur.Tag != BlockTag.Paragraph && !blank)
                     {
                         offset += CODE_INDENT;
-                        container = add_child(container, BlockTag.IndentedCode, line_number, offset + 1);
+                        container = CreateChildBlock(container, BlockTag.IndentedCode, line_number, offset + 1);
                     }
                     else
                     {
@@ -485,21 +479,21 @@ namespace CommonMark.Parser
                     if (ln[offset] == ' ')
                         offset++;
 
-                    container = add_child(container, BlockTag.BlockQuote, line_number, offset + 1);
+                    container = CreateChildBlock(container, BlockTag.BlockQuote, line_number, offset + 1);
 
                 }
                 else if (curChar == '#' && 0 != (matched = Scanner.scan_atx_header_start(ln, first_nonspace, out i)))
                 {
 
                     offset = first_nonspace + matched;
-                    container = add_child(container, BlockTag.AtxHeader, line_number, offset + 1);
+                    container = CreateChildBlock(container, BlockTag.AtxHeader, line_number, offset + 1);
                     container.HeaderLevel = i;
 
                 }
                 else if ((curChar == '`' || curChar == '~') && 0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace)))
                 {
 
-                    container = add_child(container, BlockTag.FencedCode, line_number, first_nonspace + 1);
+                    container = CreateChildBlock(container, BlockTag.FencedCode, line_number, first_nonspace + 1);
                     container.FencedCodeData = new FencedCodeData();
                     container.FencedCodeData.FenceChar = curChar;
                     container.FencedCodeData.FenceLength = matched;
@@ -510,7 +504,7 @@ namespace CommonMark.Parser
                 else if (curChar == '<' && Scanner.scan_html_block_tag(ln, first_nonspace))
                 {
 
-                    container = add_child(container, BlockTag.HtmlBlock, line_number, first_nonspace + 1);
+                    container = CreateChildBlock(container, BlockTag.HtmlBlock, line_number, first_nonspace + 1);
                     // note, we don't adjust offset because the tag is part of the text
 
                 }
@@ -528,7 +522,7 @@ namespace CommonMark.Parser
                 {
 
                     // it's only now that we know the line is not part of a setext header:
-                    container = add_child(container, BlockTag.HorizontalRuler, line_number, first_nonspace + 1);
+                    container = CreateChildBlock(container, BlockTag.HorizontalRuler, line_number, first_nonspace + 1);
                     finalize(container, line_number);
                     container = container.Parent;
                     offset = ln.Length - 1;
@@ -566,12 +560,12 @@ namespace CommonMark.Parser
 
                     if (container.Tag != BlockTag.List || !lists_match(container.ListData, data))
                     {
-                        container = add_child(container, BlockTag.List, line_number, first_nonspace + 1);
+                        container = CreateChildBlock(container, BlockTag.List, line_number, first_nonspace + 1);
                         container.ListData = data;
                     }
 
                     // add the list item
-                    container = add_child(container, BlockTag.ListItem, line_number, first_nonspace + 1);
+                    container = CreateChildBlock(container, BlockTag.ListItem, line_number, first_nonspace + 1);
                     container.ListData = data;
                 }
                 else
@@ -711,7 +705,7 @@ namespace CommonMark.Parser
                 {
 
                     // create paragraph container for line
-                    container = add_child(container, BlockTag.Paragraph, line_number, first_nonspace + 1);
+                    container = CreateChildBlock(container, BlockTag.Paragraph, line_number, first_nonspace + 1);
                     add_line(container, ln, first_nonspace);
 
                 }

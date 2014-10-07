@@ -119,7 +119,7 @@ namespace CommonMark.Parser
 #endif
         private static Subject make_subject(string s, Dictionary<string, Reference> refmap)
         {
-            return new Subject(s == null ? string.Empty : s.TrimEnd(), refmap);
+            return new Subject(s.TrimEnd(), refmap);
         }
 
         // Return the next character in the subject, without advancing.
@@ -874,6 +874,9 @@ namespace CommonMark.Parser
 
         public static Inline parse_inlines(string input, Dictionary<string, Reference> refmap)
         {
+            if (input == null)
+                return null;
+
             Subject subj = make_subject(input, refmap);
 
             var len = subj.Buffer.Length;
