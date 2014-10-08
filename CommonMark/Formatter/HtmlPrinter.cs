@@ -269,7 +269,7 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Link:
                         writer.Write("<a href=\"");
-                        EscapeHtml(ils.Linkable.Url, true, writer);
+                        writer.Write(Uri.EscapeUriString(ils.Linkable.Url));
                         writer.Write('\"');
                         if (ils.Linkable.Title.Length > 0)
                         {
@@ -285,7 +285,7 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Image:
                         writer.Write("<img src=\"");
-                        EscapeHtml(ils.Linkable.Url, true, writer);
+                        writer.Write(Uri.EscapeUriString(ils.Linkable.Url));
                         writer.Write("\" alt=\"");
                         using (var sb = new System.IO.StringWriter())
                         using (var sbw = new HtmlTextWriter(sb))
