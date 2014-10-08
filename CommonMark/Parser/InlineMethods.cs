@@ -349,8 +349,7 @@ namespace CommonMark.Parser
                     if (istack == null)
                         goto cannotClose;
 
-                    // the only combination that is not processed is **foo*
-                    if ((istack.DelimeterCount != 2 || numdelims != 1) && istack.Delimeter == c)
+                    if (istack.Delimeter == c)
                         break;
 
                     istack = istack.Previous;
