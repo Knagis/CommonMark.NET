@@ -70,7 +70,7 @@ namespace CommonMark.Parser
                 [>] { return (p - start); }
               .? { return 0; }
             */
-            
+
             if (pos + 6 >= s.Length)
                 return 0;
 
@@ -218,7 +218,7 @@ namespace CommonMark.Parser
                 }
                 if (c <= 0x20)
                     return openParens ? 0 : i - pos;
-                
+
                 if (i == lastPos)
                     return openParens ? 0 : i - pos + 1;
 
@@ -286,7 +286,7 @@ namespace CommonMark.Parser
 
             return s.Length - pos;
         }
-        
+
         /// <summary>
         /// Match ATX header start.
         /// </summary>
@@ -306,10 +306,10 @@ namespace CommonMark.Parser
 
             bool spaceExists = false;
             char c;
-            for (var i = pos + 1; i < s.Length; i++ )
+            for (var i = pos + 1; i < s.Length; i++)
             {
                 c = s[i];
-                
+
                 if (c == '#')
                 {
                     if (headerLevel == 6)
@@ -330,13 +330,13 @@ namespace CommonMark.Parser
                 }
                 else
                 {
-                    return spaceExists ? i - pos : 0;                        
+                    return spaceExists ? i - pos : 0;
                 }
             }
 
             if (spaceExists)
                 return s.Length - pos;
-            
+
             return 0;
         }
 
@@ -362,7 +362,7 @@ namespace CommonMark.Parser
 
             char c;
             var fin = false;
-            for (var i = pos + 1; i < s.Length; i++ )
+            for (var i = pos + 1; i < s.Length; i++)
             {
                 c = s[i];
                 if (c == c1 && !fin)
@@ -408,11 +408,11 @@ namespace CommonMark.Parser
                         x = c;
                     else
                         return 0;
-                    
+
                     count = 1;
                 }
                 else if (c == x)
-                    count ++;
+                    count++;
                 else
                     return 0;
             }
@@ -515,7 +515,7 @@ namespace CommonMark.Parser
         /// Scans an entity.
         /// Returns number of chars matched.
         /// </summary>
-        public static int scan_entity(string s, int pos, int length)
+        public static int scan_entity(string s, int pos, int length, out string namedEntity, out int numericEntity)
         {
             /*!re2c
               [&] ([#] ([Xx][A-Fa-f0-9]{1,8}|[0-9]{1,8}) |[A-Za-z][A-Za-z0-9]{1,31} ) [;]
@@ -524,6 +524,9 @@ namespace CommonMark.Parser
             */
 
             var lastPos = pos + length;
+
+            namedEntity = null;
+            numericEntity = 0;
 
             if (pos + 3 >= lastPos)
                 return 0;
@@ -543,11 +546,22 @@ namespace CommonMark.Parser
                     for (i = pos + 3; i < lastPos; i++)
                     {
                         c = s[i];
-                        if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))
+                        if (c >= '0' && c <= '9')
                         {
-                            if (++counter == 9)
-                                return 0;
-
+                            if (++counter == 9) return 0;
+                            numericEntity = numericEntity * 16 + (c - '0');
+                            continue;
+                        }
+                        else if (c >= 'A' && c <= 'F')
+                        {
+                            if (++counter == 9) return 0;
+                            numericEntity = numericEntity * 16 + (c - 'A' + 10);
+                            continue;
+                        }
+                        else if (c >= 'a' && c <= 'f')
+                        {
+                            if (++counter == 9) return 0;
+                            numericEntity = numericEntity * 16 + (c - 'a' + 10);
                             continue;
                         }
 
@@ -565,9 +579,8 @@ namespace CommonMark.Parser
                         c = s[i];
                         if (c >= '0' && c <= '9')
                         {
-                            if (++counter == 9)
-                                return 0;
-
+                            if (++counter == 9) return 0;
+                            numericEntity = numericEntity * 10 + (c - '0');
                             continue;
                         }
 
@@ -597,7 +610,10 @@ namespace CommonMark.Parser
                     }
 
                     if (c == ';')
+                    {
+                        namedEntity = s.Substring(pos + 1, counter + 1);
                         return counter == 0 ? 0 : i - pos + 1;
+                    }
 
                     return 0;
                 }

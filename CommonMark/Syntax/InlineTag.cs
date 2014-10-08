@@ -18,8 +18,6 @@ namespace CommonMark.Syntax
         /// <remarks>Original: raw_html</remarks>
         RawHtml,
 
-        Entity,
-
         /// <remarks>Original: emph</remarks>
         Emphasis,
 

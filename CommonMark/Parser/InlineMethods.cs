@@ -93,7 +93,6 @@ namespace CommonMark.Parser
         private static Inline make_str(string s) { return make_literal(InlineTag.String, s); }
         private static Inline make_code(string s) { return make_literal(InlineTag.Code, s); }
         private static Inline make_raw_html(string s) { return make_literal(InlineTag.RawHtml, s); }
-        private static Inline make_entity(string s) { return make_literal(InlineTag.Entity, s); }
         private static Inline make_linebreak() { return make_simple(InlineTag.LineBreak); }
         private static Inline make_softbreak() { return make_simple(InlineTag.SoftBreak); }
         private static Inline make_link(Inline label, string url, string title) { return make_linkable(InlineTag.Link, label, url, title); }
@@ -443,19 +442,34 @@ namespace CommonMark.Parser
         private static Inline handle_entity(Subject subj)
         {
             int match;
-            Inline result;
-            match = Scanner.scan_entity(subj.Buffer, subj.Position, subj.Buffer.Length - subj.Position);
+            string namedEntity;
+            int numericEntity;
+            match = Scanner.scan_entity(subj.Buffer, subj.Position, subj.Buffer.Length - subj.Position, out namedEntity, out numericEntity);
             if (match > 0)
             {
-                result = make_entity(subj.Buffer.Substring(subj.Position, match));
                 subj.Position += match;
+
+                if (namedEntity != null)
+                {
+                    var decoded = EntityDecoder.DecodeEntity(namedEntity);
+                    if (decoded != null)
+                        return make_str(decoded);
+                }
+                else if (numericEntity > 0)
+                {
+                    var decoded = EntityDecoder.DecodeEntity(numericEntity);
+                    if (decoded != null)
+                        return make_str(decoded);
+                    return make_str("\uFFFD");
+                }
+
+                return make_str(subj.Buffer.Substring(subj.Position - match, match));
             }
             else
             {
                 advance(subj);
-                result = make_str("&");
+                return make_str("&");
             }
-            return result;
         }
 
         // Like make_str, but parses entities.
@@ -497,20 +511,82 @@ namespace CommonMark.Parser
         public static string Unescape(string url)
         {
             // remove backslashes before punctuation chars:
-            int searchpos = 0;
+            int searchPos = 0;
+            int lastPos = 0;
+            int match;
             char c;
-            while ((searchpos = url.IndexOf('\\', searchpos)) != -1)
-            {
-                searchpos++;
-                if (url.Length == searchpos)
-                    break;
+            char[] search = new[] { '\\', '&' };
+            StringBuilder sb = null;
 
-                c = url[searchpos];
-                if (Utilities.IsAsciiSymbol(c))
-                    url = url.Remove(searchpos - 1, 1);
+            while ((searchPos = url.IndexOfAny(search, searchPos)) != -1)
+            {
+                c = url[searchPos];
+                if (c == '\\')
+                {
+                    searchPos++;
+
+                    if (url.Length == searchPos)
+                        break;
+
+                    c = url[searchPos];
+                    if (Utilities.IsAsciiSymbol(c))
+                    {
+                        if (sb == null) sb = new StringBuilder(url.Length);
+                        sb.Append(url, lastPos, searchPos - lastPos - 1);
+                        lastPos = searchPos;
+                    }
+                }
+                else if (c == '&')
+                {
+                    string namedEntity;
+                    int numericEntity;
+                    match = Scanner.scan_entity(url, searchPos, url.Length - searchPos, out namedEntity, out numericEntity);
+                    if (match == 0)
+                    {
+                        searchPos++;
+                    }
+                    else
+                    {
+                        searchPos += match;
+
+                        if (namedEntity != null)
+                        {
+                            var decoded = EntityDecoder.DecodeEntity(namedEntity);
+                            if (decoded != null)
+                            {
+                                if (sb == null) sb = new StringBuilder(url.Length);
+                                sb.Append(url, lastPos, searchPos - match - lastPos);
+                                sb.Append(decoded);
+                                lastPos = searchPos;
+                            }
+                        }
+                        else if (numericEntity > 0)
+                        {
+                            var decoded = EntityDecoder.DecodeEntity(numericEntity);
+                            if (decoded != null)
+                            {
+                                if (sb == null) sb = new StringBuilder(url.Length);
+                                sb.Append(url, lastPos, searchPos - match - lastPos);
+                                sb.Append(decoded);
+                            }
+                            else
+                            {
+                                if (sb == null) sb = new StringBuilder(url.Length);
+                                sb.Append(url, lastPos, searchPos - match - lastPos);
+                                sb.Append('\uFFFD');
+                            }
+
+                            lastPos = searchPos;
+                        }
+                    }
+                }
             }
 
-            return url;
+            if (sb == null)
+                return url;
+
+            sb.Append(url, lastPos, url.Length - lastPos);
+            return sb.ToString();
         }
 
         /// <summary>

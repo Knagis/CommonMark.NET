@@ -46,6 +46,9 @@ namespace CommonMark.Tests
             var inPre = false;
             html = html.Replace("\r", "");
 
+            // needed to compare UTF-32 characters
+            html = html.Normalize(NormalizationForm.FormKD);
+
             foreach (var line in html.Split('\n'))
             {
                 if (Regex.IsMatch(line, @"<pre"))

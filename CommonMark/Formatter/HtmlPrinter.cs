@@ -8,17 +8,79 @@ namespace CommonMark.Formatter
 {
     internal static class HtmlPrinter
     {
-        private static readonly char[] EscapeHtmlCharacters = new[] { '&', '<', '>', '\"' };
+        private static readonly char[] EscapeHtmlCharacters = new[] { '&', '<', '>', '"' };
+        private static readonly string HexCharacters = "0123456789ABCDEF";
+
+        private static readonly bool[] UrlSafeCharacters = new[] {
+            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+            false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+            false, true,  false, true,  true,  true,  false, false, true,  true,  true,  true,  true,  true,  true,  true, 
+            true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  false, true,  false, true, 
+            true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, 
+            true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  false, false, false, false, true, 
+            false, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, 
+            true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  false, false, false, false, false,
+        };
+
+        /// <summary>
+        /// Escapes special URL characters.
+        /// </summary>
+        /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
+        private static void EscapeUrl(string input, System.IO.TextWriter target)
+        {
+            char c;
+            int lastPos = 0;
+            char[] buffer = input.ToCharArray();
+            for (var pos = 0; pos < buffer.Length; pos++)
+            {
+                c = buffer[pos];
+
+                if (c == '&')
+                {
+                    target.Write(buffer, lastPos, pos - lastPos);
+                    lastPos = pos + 1;
+                    target.Write("&amp;");
+                }
+                else if (c < 128 && !UrlSafeCharacters[c])
+                {
+                    target.Write(buffer, lastPos, pos - lastPos);
+                    lastPos = pos + 1;
+
+                    target.Write(new[] { '%', HexCharacters[c / 16], HexCharacters[c % 16] });
+                }
+                else if (c > 127)
+                {
+                    target.Write(buffer, lastPos, pos - lastPos);
+                    lastPos = pos + 1;
+
+                    byte[] bytes;
+                    if (c >= '\ud800' && c <= '\udfff' && buffer.Length != lastPos)
+                    {
+                        // this char is the first of UTF-32 character pair
+                        bytes = Encoding.UTF8.GetBytes(new[] { c, buffer[lastPos] });
+                        lastPos = ++pos + 1;
+                    }
+                    else
+                    {
+                        bytes = Encoding.UTF8.GetBytes(new[] { c });
+                    }
+
+                    for (var i = 0; i < bytes.Length; i++)
+                        target.Write(new[] { '%', HexCharacters[bytes[i] / 16], HexCharacters[bytes[i] % 16] });
+                }
+            }
+
+            target.Write(buffer, lastPos, buffer.Length - lastPos);
+        }
 
         /// <summary>
         /// Escapes special HTML characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeHtml(string input, bool preserveEntities, System.IO.TextWriter target)
+        private static void EscapeHtml(string input, System.IO.TextWriter target)
         {
             int pos = 0;
             int lastPos = 0;
-            int match;
             char[] buffer = null;
 
             while ((pos = input.IndexOfAny(EscapeHtmlCharacters, lastPos)) != -1)
@@ -38,10 +100,7 @@ namespace CommonMark.Formatter
                         target.Write("&gt;");
                         break;
                     case '&':
-                        if (preserveEntities && 0 != (match = Scanner.scan_entity(input, pos, input.Length - pos)))
-                            target.Write('&');
-                        else
-                            target.Write("&amp;");
+                        target.Write("&amp;");
                         break;
                     case '"':
                         target.Write("&quot;");
@@ -51,15 +110,15 @@ namespace CommonMark.Formatter
 
             if (buffer == null)
                 target.Write(input);
-
-            target.Write(buffer, lastPos, input.Length - lastPos);
+            else
+                target.Write(buffer, lastPos, input.Length - lastPos);
         }
 
         /// <summary>
         /// Escapes special HTML characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeHtml(StringContent inp, bool preserveEntities, System.IO.TextWriter target)
+        private static void EscapeHtml(StringContent inp, System.IO.TextWriter target)
         {
             int pos;
             int lastPos;
@@ -90,11 +149,7 @@ namespace CommonMark.Formatter
                             target.Write("&gt;");
                             break;
                         case '&':
-                            // note that here it is assumed that the entity will be completely within this one part
-                            if (preserveEntities && 0 != Scanner.scan_entity(part.Source, pos, part.Length - pos + part.StartIndex))
-                                target.Write('&');
-                            else
-                                target.Write("&amp;");
+                            target.Write("&amp;");
                             break;
                         case '"':
                             target.Write("&quot;");
@@ -197,7 +252,7 @@ namespace CommonMark.Formatter
                     case BlockTag.IndentedCode:
                         EnsureNewlineEnding(writer);
                         writer.Write("<pre><code>");
-                        EscapeHtml(b.StringContent, false, writer);
+                        EscapeHtml(b.StringContent, writer);
                         writer.WriteLine("</code></pre>");
                         break;
 
@@ -208,11 +263,11 @@ namespace CommonMark.Formatter
                         {
                             string[] info_words = b.FencedCodeData.Info.Split(new[] { ' ' });
                             writer.Write(" class=\"language-");
-                            EscapeHtml(info_words[0], true, writer);
+                            EscapeHtml(info_words[0], writer);
                             writer.Write("\"");
                         }
                         writer.Write(">");
-                        EscapeHtml(b.StringContent, false, writer);
+                        EscapeHtml(b.StringContent, writer);
                         writer.WriteLine("</code></pre>");
                         break;
 
@@ -245,7 +300,7 @@ namespace CommonMark.Formatter
                 switch (ils.Tag)
                 {
                     case InlineTag.String:
-                        EscapeHtml(ils.LiteralContent, false, writer);
+                        EscapeHtml(ils.LiteralContent, writer);
                         break;
 
                     case InlineTag.LineBreak:
@@ -258,23 +313,22 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Code:
                         writer.Write("<code>");
-                        EscapeHtml(ils.LiteralContent, false, writer);
+                        EscapeHtml(ils.LiteralContent, writer);
                         writer.Write("</code>");
                         break;
 
                     case InlineTag.RawHtml:
-                    case InlineTag.Entity:
                         writer.Write(ils.LiteralContent);
                         break;
 
                     case InlineTag.Link:
                         writer.Write("<a href=\"");
-                        writer.Write(Uri.EscapeUriString(ils.Linkable.Url));
+                        EscapeUrl(ils.Linkable.Url, writer);
                         writer.Write('\"');
                         if (ils.Linkable.Title.Length > 0)
                         {
                             writer.Write(" title=\"");
-                            EscapeHtml(ils.Linkable.Title, true, writer);
+                            EscapeHtml(ils.Linkable.Title, writer);
                             writer.Write('\"');
                         }
                         
@@ -285,20 +339,20 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Image:
                         writer.Write("<img src=\"");
-                        writer.Write(Uri.EscapeUriString(ils.Linkable.Url));
+                        EscapeUrl(ils.Linkable.Url, writer);
                         writer.Write("\" alt=\"");
                         using (var sb = new System.IO.StringWriter())
                         using (var sbw = new HtmlTextWriter(sb))
                         {
                             InlinesToHtml(sbw, ils.Linkable.Label);
                             sbw.Flush();
-                            EscapeHtml(sb.ToString(), false, writer);
+                            EscapeHtml(sb.ToString(), writer);
                         }
                         writer.Write("\"");
                         if (ils.Linkable.Title.Length > 0)
                         {
                             writer.Write(" title=\"");
-                            EscapeHtml(ils.Linkable.Title, true, writer);
+                            EscapeHtml(ils.Linkable.Title, writer);
                             writer.Write("\"");
                         }
                         writer.Write(" />");

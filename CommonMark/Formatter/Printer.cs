@@ -153,9 +153,6 @@ namespace CommonMark.Formatter
                     case InlineTag.RawHtml:
                         writer.WriteLine("html {0}", format_str(ils.LiteralContent));
                         break;
-                    case InlineTag.Entity:
-                        writer.WriteLine("entity {0}", format_str(ils.LiteralContent));
-                        break;
                     case InlineTag.Link:
                         writer.WriteLine("link url={0} title={1}",
                                format_str(ils.Linkable.Url),
