@@ -4,6 +4,7 @@
     <BuildMode>v2.0</BuildMode>
     <ProjectGuid>{075E7F00-F1C0-49AA-808D-8B15F1A82DDE}</ProjectGuid>
     <TargetFrameworkVersionEx>v2.0</TargetFrameworkVersionEx>
+    <DefineConstantsEx>OptimizeFor20</DefineConstantsEx>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -20,6 +20,8 @@ namespace CommonMark.Tests
             // Arrange
             var commonMark = Helpers.Normalize("*_*_");
             var expected = Helpers.Normalize("<p><em>_</em>_</p>");
+            Helpers.LogValue("CommonMark", commonMark);
+            Helpers.LogValue("Expected", expected);
 
             // Act
             var actual = CommonMarkConverter.Convert(commonMark);
@@ -38,7 +40,9 @@ namespace CommonMark.Tests
             // Arrange
             var commonMark = Helpers.Normalize("*a _b _c d_ e*");
             var expected = Helpers.Normalize("<p><em>a _b <em>c d</em> e</em></p>");
-
+            Helpers.LogValue("CommonMark", commonMark);
+            Helpers.LogValue("Expected", expected);
+            
             // Act
             var actual = CommonMarkConverter.Convert(commonMark);
 
@@ -56,6 +60,8 @@ namespace CommonMark.Tests
             // Arrange
             var commonMark = Helpers.Normalize("**foo, *bar*, abc**");
             var expected = Helpers.Normalize("<p><strong>foo, <em>bar</em>, abc</strong></p>");
+            Helpers.LogValue("CommonMark", commonMark);
+            Helpers.LogValue("Expected", expected);
 
             // Act
             var actual = CommonMarkConverter.Convert(commonMark);

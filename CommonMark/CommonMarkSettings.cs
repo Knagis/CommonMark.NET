@@ -16,6 +16,12 @@ namespace CommonMark
         /// </summary>
         public OutputFormat OutputFormat { get; set; }
 
+        /// <summary>
+        /// Gets or sets the delegate that is used to resolve addresses during rendering process. Can be used to process application relative URLs (<c>~/foo/bar</c>).
+        /// </summary>
+        /// <example><code>CommonMarkSettings.Default.UriResolver = VirtualPathUtility.ToAbsolute;</code></example>
+        public Func<string, string> UriResolver { get; set; }
+
         private static readonly CommonMarkSettings _default = new CommonMarkSettings();
 
         /// <summary>
@@ -23,5 +29,13 @@ namespace CommonMark
         /// future conversions that do not specify their own settings.
         /// </summary>
         public static CommonMarkSettings Default { get { return _default; } }
+
+        /// <summary>
+        /// Creates a copy of this configuration object.
+        /// </summary>
+        public CommonMarkSettings Clone()
+        {
+            return (CommonMarkSettings)this.MemberwiseClone();
+        }
     }
 }

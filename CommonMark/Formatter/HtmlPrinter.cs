@@ -175,14 +175,14 @@ namespace CommonMark.Formatter
         /// Convert a block list to HTML.  Returns 0 on success, and sets result.
         /// </summary>
         /// <remarks>Orig: blocks_to_html</remarks>
-        public static void BlocksToHtml(System.IO.TextWriter writer, Block b, bool tight)
+        public static void BlocksToHtml(System.IO.TextWriter writer, Block b, CommonMarkSettings settings)
         {
             using (var wrapper = new HtmlTextWriter(writer))
-                BlocksToHtmlInner(wrapper, b, tight);
+                BlocksToHtmlInner(wrapper, b, settings, false);
         }
 
         /// <remarks>Orig: blocks_to_html_inner</remarks>
-        private static void BlocksToHtmlInner(HtmlTextWriter writer, Block b, bool tight)
+        private static void BlocksToHtmlInner(HtmlTextWriter writer, Block b, CommonMarkSettings settings, bool tight)
         {
             string tag;
             while (b != null)
@@ -190,19 +190,19 @@ namespace CommonMark.Formatter
                 switch (b.Tag)
                 {
                     case BlockTag.Document:
-                        BlocksToHtmlInner(writer, b.FirstChild, false);
+                        BlocksToHtmlInner(writer, b.FirstChild, settings, false);
                         break;
 
                     case BlockTag.Paragraph:
                         if (tight)
                         {
-                            InlinesToHtml(writer, b.InlineContent);
+                            InlinesToHtml(writer, b.InlineContent, settings);
                         }
                         else
                         {
                             EnsureNewlineEnding(writer);
                             writer.Write("<p>");
-                            InlinesToHtml(writer, b.InlineContent);
+                            InlinesToHtml(writer, b.InlineContent, settings);
                             writer.WriteLine("</p>");
                         }
                         break;
@@ -210,7 +210,7 @@ namespace CommonMark.Formatter
                     case BlockTag.BlockQuote:
                         EnsureNewlineEnding(writer);
                         writer.WriteLine("<blockquote>");
-                        BlocksToHtmlInner(writer, b.FirstChild, false);
+                        BlocksToHtmlInner(writer, b.FirstChild, settings, false);
                         writer.WriteLine("</blockquote>");
                         break;
 
@@ -220,7 +220,7 @@ namespace CommonMark.Formatter
                         using (var sb = new System.IO.StringWriter())
                         using (var sbw = new HtmlTextWriter(sb))
                         {
-                            BlocksToHtmlInner(sbw, b.FirstChild, tight);
+                            BlocksToHtmlInner(sbw, b.FirstChild, settings, tight);
                             sbw.Flush();
                             writer.Write(sb.ToString().TrimEnd());
                         }
@@ -236,7 +236,7 @@ namespace CommonMark.Formatter
                         if (data.Start != 1)
                             writer.Write(" start=\"" + data.Start.ToString(System.Globalization.CultureInfo.InvariantCulture) + "\"");
                         writer.WriteLine(">");
-                        BlocksToHtmlInner(writer, b.FirstChild, data.IsTight);
+                        BlocksToHtmlInner(writer, b.FirstChild, settings, data.IsTight);
                         writer.WriteLine("</" + tag + ">");
                         break;
 
@@ -245,7 +245,7 @@ namespace CommonMark.Formatter
                         tag = "h" + b.HeaderLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
                         EnsureNewlineEnding(writer);
                         writer.Write("<" + tag + ">");
-                        InlinesToHtml(writer, b.InlineContent);
+                        InlinesToHtml(writer, b.InlineContent, settings);
                         writer.WriteLine("</" + tag + ">");
                         break;
 
@@ -289,12 +289,13 @@ namespace CommonMark.Formatter
             }
         }
 
-        // Convert an inline list to HTML.  Returns 0 on success, and sets result.
         /// <summary>
+        /// Convert an inline list to HTML.  Returns 0 on success, and sets result.
         /// </summary>
         /// <remarks>Orig: inlines_to_html</remarks>
-        public static void InlinesToHtml(HtmlTextWriter writer, Inline ils)
+        private static void InlinesToHtml(HtmlTextWriter writer, Inline ils, CommonMarkSettings settings)
         {
+            Func<string, string> uriResolver = settings.UriResolver;
             while (ils != null)
             {
                 switch (ils.Tag)
@@ -323,7 +324,11 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Link:
                         writer.Write("<a href=\"");
-                        EscapeUrl(ils.Linkable.Url, writer);
+                        if (uriResolver != null)
+                            EscapeUrl(uriResolver(ils.Linkable.Url), writer);
+                        else
+                            EscapeUrl(ils.Linkable.Url, writer);
+
                         writer.Write('\"');
                         if (ils.Linkable.Title.Length > 0)
                         {
@@ -333,18 +338,22 @@ namespace CommonMark.Formatter
                         }
                         
                         writer.Write('>');
-                        InlinesToHtml(writer, ils.Linkable.Label);
+                        InlinesToHtml(writer, ils.Linkable.Label, settings);
                         writer.Write("</a>");
                         break;
 
                     case InlineTag.Image:
                         writer.Write("<img src=\"");
-                        EscapeUrl(ils.Linkable.Url, writer);
+                        if (uriResolver != null)
+                            EscapeUrl(uriResolver(ils.Linkable.Url), writer);
+                        else
+                            EscapeUrl(ils.Linkable.Url, writer);
+
                         writer.Write("\" alt=\"");
                         using (var sb = new System.IO.StringWriter())
                         using (var sbw = new HtmlTextWriter(sb))
                         {
-                            InlinesToHtml(sbw, ils.Linkable.Label);
+                            InlinesToHtml(sbw, ils.Linkable.Label, settings);
                             sbw.Flush();
                             EscapeHtml(sb.ToString(), writer);
                         }
@@ -360,13 +369,13 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Strong:
                         writer.Write("<strong>");
-                        InlinesToHtml(writer, ils.FirstChild);
+                        InlinesToHtml(writer, ils.FirstChild, settings);
                         writer.Write("</strong>");
                         break;
 
                     case InlineTag.Emphasis:
                         writer.Write("<em>");
-                        InlinesToHtml(writer, ils.FirstChild);
+                        InlinesToHtml(writer, ils.FirstChild, settings);
                         writer.Write("</em>");
                         break;
 
@@ -376,6 +385,5 @@ namespace CommonMark.Formatter
                 ils = ils.NextSibling;
             }
         }
-
     }
 }
