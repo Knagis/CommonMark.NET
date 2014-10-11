@@ -148,7 +148,7 @@ namespace CommonMark.Parser
 
             var j = 0;
             var tagname = new char[10];
-            while (char.IsLetter(nextChar) && j <= 10 && ++i < s.Length)
+            while (((nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z')) && j <= 10 && ++i < s.Length)
             {
                 tagname[j++] = nextChar;
                 nextChar = s[i];
@@ -158,7 +158,7 @@ namespace CommonMark.Parser
             if (Array.BinarySearch(blockTagNames, scheme, StringComparer.Ordinal) < 0)
                 return false;
 
-            return nextChar == '>' || (!slashAtBeginning && nextChar == '/') || char.IsWhiteSpace(nextChar);
+            return nextChar == '>' || (!slashAtBeginning && nextChar == '/') || (nextChar == ' ' || nextChar == '\n');
         }
 
         /// <summary>
@@ -280,7 +280,7 @@ namespace CommonMark.Parser
 
             for (var i = pos; i < s.Length; i++)
             {
-                if (!char.IsWhiteSpace(s[i]))
+                if (s[i] != ' ' && s[i] != '\n')
                     return i - pos;
             }
 

@@ -715,7 +715,7 @@ namespace CommonMark.Parser
                         break;
                     case '\\':
                         advance(subj);
-                        if (char.IsPunctuation(subj.Buffer[subj.Position]))
+                        if (Utilities.IsAsciiSymbol(subj.Buffer[subj.Position]))
                             advance(subj);
                         break;
                     default:

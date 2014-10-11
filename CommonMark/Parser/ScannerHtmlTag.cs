@@ -24,7 +24,7 @@ namespace CommonMark.Parser
                 if (nextChar == '>')
                     return i - pos + 1;
 
-                if (char.IsWhiteSpace(nextChar))
+                if (nextChar == ' ' || nextChar == '\n')
                 {
                     tagNameEnded = true;
                     continue;
@@ -136,7 +136,7 @@ namespace CommonMark.Parser
                 if (nextChar == '>')
                     return spaceFound ? i - pos + 1 : 0;
 
-                if (char.IsWhiteSpace(nextChar))
+                if (nextChar == ' ' || nextChar == '\n')
                     spaceFound = true;
             }
 
