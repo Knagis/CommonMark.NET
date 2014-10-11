@@ -13,8 +13,8 @@ namespace CommonMark.Parser
             if (pos + 2 >= s.Length)
                 return 0;
 
-            var nextChar = char.ToUpperInvariant(s[pos + 1]);
-            if (nextChar < 'A' || nextChar > 'Z')
+            var nextChar = s[pos + 1];
+            if ((nextChar < 'A' || nextChar > 'Z') && (nextChar < 'a' || nextChar > 'z'))
                 return 0;
 
             var tagNameEnded = false;
@@ -30,9 +30,9 @@ namespace CommonMark.Parser
                     continue;
                 }
 
-                nextChar = char.ToUpperInvariant(nextChar);
-
-                if (tagNameEnded || nextChar < 'A' || nextChar > 'Z')
+                if (tagNameEnded || ((nextChar < 'A' || nextChar > 'Z') 
+                                  && (nextChar < 'a' || nextChar > 'z') 
+                                  && (nextChar < '0' || nextChar > '9')))
                     return 0;
             }
 
