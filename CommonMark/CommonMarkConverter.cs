@@ -14,7 +14,8 @@ namespace CommonMark
     public static class CommonMarkConverter
     {
         /// <summary>
-        /// Gets the CommonMark assembly version number.
+        /// Gets the CommonMark assembly version number. Note that might differ from the actual release version
+        /// since the assembly version is not always incremented to reduce possible reference errors when updating.
         /// </summary>
         public static Version AssemblyVersion
         {

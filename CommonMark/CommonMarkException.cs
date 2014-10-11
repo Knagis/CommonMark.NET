@@ -5,14 +5,12 @@ using System.Text;
 
 namespace CommonMark
 {
-    ////[Serializable]
     /// <summary>
-    /// 
+    /// An exception that is caught during CommonMark parsing or formatting.
     /// </summary>
-    /// <remarks>
-    /// The exception does not specify [Serializable] attribute as most exceptions do because the library is created
-    /// as portable and it is not supported there.
-    /// </remarks>
+#if OptimizeFor45
+    [Serializable]
+#endif
     public class CommonMarkException : Exception
     {
         /// <summary>
@@ -26,12 +24,8 @@ namespace CommonMark
         public Inline InlineElement { get; private set; }
 
         public CommonMarkException() { }
-        public CommonMarkException(string message) : base(message) 
-        {
-        }
-        public CommonMarkException(string message, Exception inner) : base(message, inner)
-        {
-        }
+        public CommonMarkException(string message) : base(message) { }
+        public CommonMarkException(string message, Exception inner) : base(message, inner) { }
         public CommonMarkException(string message, Inline inline, Exception inner = null) : base(message, inner)
         {
             this.InlineElement = inline;
@@ -41,19 +35,21 @@ namespace CommonMark
             this.BlockElement = block;
         }
 
-        ////protected CommonMarkException(
-        ////  System.Runtime.Serialization.SerializationInfo info,
-        ////  System.Runtime.Serialization.StreamingContext context)
-        ////    : base(info, context) 
-        ////{
-        ////    this.BlockElement = (Block)info.GetValue("BlockElement", typeof(Block));
-        ////    this.InlineElement = (Inline)info.GetValue("InlineElement", typeof(Block));
-        ////}
-        ////public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-        ////{
-        ////    base.GetObjectData(info, context);
-        ////    info.AddValue("BlockElement", this.BlockElement);
-        ////    info.AddValue("InlineElement", this.InlineElement);
-        ////}
+#if OptimizeFor45
+        protected CommonMarkException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context)
+            : base(info, context) 
+        {
+            this.BlockElement = (Block)info.GetValue("BlockElement", typeof(Block));
+            this.InlineElement = (Inline)info.GetValue("InlineElement", typeof(Inline));
+        }
+        public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue("BlockElement", this.BlockElement);
+            info.AddValue("InlineElement", this.InlineElement);
+        }
+#endif
     }
 }

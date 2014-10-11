@@ -4,13 +4,11 @@ using System.Text;
 
 namespace CommonMark
 {
+    /// <summary>
+    /// Class used to configure the behavior of <see cref="CommonMarkConverter"/>.
+    /// </summary>
     public sealed class CommonMarkSettings
     {
-        public CommonMarkSettings()
-        {
-            this.OutputFormat = OutputFormat.Html;
-        }
-
         /// <summary>
         /// Gets or sets the output format used by the last stage of conversion.
         /// </summary>
