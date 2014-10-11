@@ -18,7 +18,7 @@ namespace CommonMark.Parser
         internal static bool MatchWhitespaces(string data, ref char currentCharacter, ref int currentPosition, int lastPosition)
         {
             var matched = false;
-            while (char.IsWhiteSpace(currentCharacter) && currentPosition < lastPosition)
+            while ((currentCharacter == ' ' || currentCharacter == '\n') && currentPosition < lastPosition)
             {
                 currentCharacter = data[++currentPosition];
                 matched = true;
@@ -54,7 +54,7 @@ namespace CommonMark.Parser
         internal static bool MatchAsciiLetterOrDigit(string data, ref char currentCharacter, ref int currentPosition, int lastPosition)
         {
             var matched = false;
-            while ((    (currentCharacter >= 'a' && currentCharacter <= 'z') 
+            while ((   (currentCharacter >= 'a' && currentCharacter <= 'z') 
                     || (currentCharacter >= 'A' && currentCharacter <= 'Z') 
                     || (currentCharacter >= '0' && currentCharacter <= '9'))
                   && currentPosition < lastPosition)
@@ -159,7 +159,7 @@ namespace CommonMark.Parser
                 && currentCharacter != invalid4
                 && currentCharacter != invalid5
                 && currentCharacter != invalid6
-                && !char.IsWhiteSpace(currentCharacter)
+                && (currentCharacter != ' ' && currentCharacter != '\n')
                 && currentPosition < lastPosition)
             {
                 currentCharacter = data[++currentPosition];
