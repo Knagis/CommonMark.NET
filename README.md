@@ -20,6 +20,8 @@ To convert data stored in a string:
 var result = CommonMark.CommonMarkConverter.Convert("**Hello world!**");
 ```
 
+See [issue #4] [issue4] for an example how the parser can be extended with additional logic.
+
 **Important:** The converter [does not include any HTML sanitizing][XSS].
 
 ## Compatibility
@@ -37,7 +39,7 @@ only free edition that supports PCL projects.
 Using a [simple tool][3] to compare the performance of various Markdown implementations for .NET yields the
 following results:
 
-     CommonMark.NET 0.4.0      4 ms   7%      (current release for this library)
+     CommonMark.NET 0.4.1      4 ms   7%      (current release for this library)
 	 CommonMark.NET 0.3.0      5 ms   8%
      CommonMark.NET 0.2.1      6 ms   10%
      CommonMark.NET 0.2.0      7 ms   11%     
@@ -56,9 +58,9 @@ This benchmark is very simple and tests the processing of the CommonMark specifi
 
 ## References
 
-This is a port of the reference implementation in C, available on [jgm/stdm repo] [2]. The implementation keeps the
-same approach - the source is parsed into a syntax tree that can be used to add custom processing if the 
-application needs it and then formatted into HTML.
+This library is based on a port of the reference implementation in C, available on [jgm/stdm repo] [2]. 
+It follows the same approach - the source is parsed into a syntax tree that can be used to add custom 
+processing if the application needs it and then formatted into HTML.
 
 ## Running tests
 
@@ -73,5 +75,6 @@ have failed due to Unicode symbols that are not supported by the approach used i
 [1]: http://spec.commonmark.org/
 [2]: https://github.com/jgm/stmd/commit/2cf0750a7a507eded4cf3c9a48fd1f924d0ce538
 [3]: https://github.com/Knagis/CommonMarkBenchmark
+[issue4]: https://github.com/Knagis/CommonMark.NET/issues/4
 [XSS]: http://talk.commonmark.org/t/cross-site-scripting-issue-in-standard-markdown-example-at-try-standardmarkdown-com/55
 [nuget]: https://www.nuget.org/packages/CommonMark.NET/
