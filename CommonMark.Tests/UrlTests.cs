@@ -12,6 +12,24 @@ namespace CommonMark.Tests
     {
         [TestMethod]
         [TestCategory("Inlines - Links")]
+        public void NewlineInUrl()
+        {
+            // Arrange
+            var commonMark = Helpers.Normalize("[foo](\r\n/url)\r\n\r\n[foo](");
+            var expected = Helpers.Normalize("<p><a href=\"/url\">foo</a></p>\r\n<p>[foo](</p>");
+            Helpers.LogValue("CommonMark", commonMark);
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
         public void UTF32CharacterEscape()
         {
             // Arrange

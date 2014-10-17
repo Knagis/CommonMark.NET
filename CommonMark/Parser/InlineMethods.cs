@@ -774,7 +774,7 @@ namespace CommonMark.Parser
                     endtitle = (starttitle == endurl) ? starttitle :
                                starttitle + Scanner.scan_link_title(subj.Buffer, starttitle);
                     endall = endtitle + Scanner.scan_spacechars(subj.Buffer, endtitle);
-                    if (subj.Buffer[endall] == ')')
+                    if (endall < subj.Buffer.Length && subj.Buffer[endall] == ')')
                     {
                         subj.Position = endall + 1;
                         url = subj.Buffer.Substring(starturl, endurl - starturl);
