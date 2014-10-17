@@ -54,7 +54,7 @@ following results:
                  Baseline     65 ms   100%    (used to compare results on different machines)
 
 This benchmark is very simple and tests the processing of the CommonMark specification document itself (a 
-175 KB file). The results are provided just for a high-level comparison.
+115 KB file). The results are provided just for a high-level comparison.
 
 ## References
 
