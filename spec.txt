@@ -1,9 +1,9 @@
-﻿---
+---
 title: CommonMark Spec
 author:
 - John MacFarlane
-version: 2
-date: 2014-09-19
+version: 0.4
+date: 2014-10-24
 ...
 
 # Introduction
@@ -192,10 +192,10 @@ In the examples, the `→` character is used to represent tabs.
 # Preprocessing
 
 A [line](#line) <a id="line"></a>
-is a sequence of zero or more characters followed by a line
-ending (CR, LF, or CRLF) or by the end of
-file.
+is a sequence of zero or more [characters](#character) followed by a
+line ending (CR, LF, or CRLF) or by the end of file.
 
+A [character](#character)<a id="character"></a> is a unicode code point.
 This spec does not specify an encoding; it thinks of lines as composed
 of characters rather than bytes.  A conforming parser may be limited
 to a certain encoding.
@@ -377,16 +377,18 @@ Spaces are allowed at the end:
 <hr />
 .
 
-However, no other characters may occur at the end or the
-beginning:
+However, no other characters may occur in the line:
 
 .
 _ _ _ _ a
 
 a------
+
+---a---
 .
 <p>_ _ _ _ a</p>
 <p>a------</p>
+<p>---a---</p>
 .
 
 It is required that all of the non-space characters be the same.
@@ -662,7 +664,10 @@ ATX headers can be empty:
 A [setext header](#setext-header) <a id="setext-header"></a>
 consists of a line of text, containing at least one nonspace character,
 with no more than 3 spaces indentation, followed by a [setext header
-underline](#setext-header-underline).  A [setext header
+underline](#setext-header-underline).  The line of text must be
+one that, were it not followed by the setext header underline,
+would be interpreted as part of a paragraph:  it cannot be a code
+block, header, blockquote, horizontal rule, or list.  A [setext header
 underline](#setext-header-underline) <a id="setext-header-underline"></a>
 is a sequence of `=` characters or a sequence of `-` characters, with no
 more than 3 spaces indentation and any number of trailing
@@ -863,6 +868,56 @@ Setext headers cannot be empty:
 <p>====</p>
 .
 
+Setext header text lines must not be interpretable as block
+constructs other than paragraphs.  So, the line of dashes
+in these examples gets interpreted as a horizontal rule:
+
+.
+---
+---
+.
+<hr />
+<hr />
+.
+
+.
+- foo
+-----
+.
+<ul>
+<li>foo</li>
+</ul>
+<hr />
+.
+
+.
+    foo
+---
+.
+<pre><code>foo
+</code></pre>
+<hr />
+.
+
+.
+> foo
+-----
+.
+<blockquote>
+<p>foo</p>
+</blockquote>
+<hr />
+.
+
+If you want a header with `> foo` as its literal text, you can
+use backslash escapes:
+
+.
+\> foo
+------
+.
+<h2>&gt; foo</h2>
+.
 
 ## Indented code blocks
 
@@ -1355,8 +1410,8 @@ name is one of the following (case-insensitive):
 `output`, `col`, `p`, `colgroup`, `pre`, `dd`, `progress`, `div`,
 `section`, `dl`, `table`, `td`, `dt`, `tbody`, `embed`, `textarea`,
 `fieldset`, `tfoot`, `figcaption`, `th`, `figure`, `thead`, `footer`,
-`footer`, `tr`, `form`, `ul`, `h1`, `h2`, `h3`, `h4`, `h5`, `h6`,
-`video`, `script`, `style`.
+`tr`, `form`, `ul`, `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `video`,
+`script`, `style`.
 
 An [HTML block](#html-block) <a id="html-block"></a> begins with an
 [HTML block tag](#html-block-tag), [HTML comment](#html-comment),
@@ -1447,11 +1502,11 @@ A processing instruction:
 
 .
 <?php
-  echo 'foo'
+  echo '>';
 ?>
 .
 <?php
-  echo 'foo'
+  echo '>';
 ?>
 .
 
@@ -3005,6 +3060,21 @@ A list item may be empty:
 </ul>
 .
 
+A list item can contain a header:
+
+.
+- # Foo
+- Bar
+  ---
+  baz
+.
+<ul>
+<li><h1>Foo</h1></li>
+<li><h2>Bar</h2>
+<p>baz</p></li>
+</ul>
+.
+
 ### Motivation
 
 John Gruber's Markdown spec says the following about list items:
@@ -3214,7 +3284,7 @@ A list is [loose](#loose) if it any of its constituent list items are
 separated by blank lines, or if any of its constituent list items
 directly contain two block-level elements with a blank line between
 them.  Otherwise a list is [tight](#tight).  (The difference in HTML output
-is that paragraphs in a loose with are wrapped in `<p>` tags, while
+is that paragraphs in a loose list are wrapped in `<p>` tags, while
 paragraphs in a tight list are not.)
 
 Changing the bullet or ordered list delimiter starts a new list:
@@ -3750,7 +3820,7 @@ always need to be written as entities for security reasons.
 .
 &nbsp; &amp; &copy; &AElig; &Dcaron; &frac34; &HilbertSpace; &DifferentialD; &ClockwiseContourIntegral;
 .
-<p>  &amp; © Æ Ď ¾ ℋ ⅆ ∲</p>
+<p>  &amp; © Æ Ď ¾ ℋ ⅆ ∲</p>
 .
 
 [Decimal entities](#decimal-entities) <a id="decimal-entities"></a>
@@ -4095,21 +4165,42 @@ for efficient parsing strategies that do not backtrack:
     (c) it is not followed by an ASCII alphanumeric character.
 
 9.  Emphasis begins with a delimiter that [can open
-    emphasis](#can-open-emphasis) and includes inlines parsed
-    sequentially until a delimiter that [can close
+    emphasis](#can-open-emphasis) and ends with a delimiter that [can close
     emphasis](#can-close-emphasis), and that uses the same
-    character (`_` or `*`) as the opening delimiter, is reached.
+    character (`_` or `*`) as the opening delimiter.  The inlines
+    between the open delimiter and the closing delimiter are the
+    contents of the emphasis inline.
 
 10. Strong emphasis begins with a delimiter that [can open strong
-    emphasis](#can-open-strong-emphasis) and includes inlines parsed
-    sequentially until a delimiter that [can close strong
-    emphasis](#can-close-strong-emphasis), and that uses the
-    same character (`_` or `*`) as the opening delimiter, is reached.
+    emphasis](#can-open-strong-emphasis) and ends with a delimiter that
+    [can close strong emphasis](#can-close-strong-emphasis), and that uses the
+    same character (`_` or `*`) as the opening delimiter.  The inlines
+    between the open delimiter and the closing delimiter are the
+    contents of the strong emphasis inline.
 
-11. In case of ambiguity, strong emphasis takes precedence.  Thus,
-    `**foo**` is `<strong>foo</strong>`, not `<em><em>foo</em></em>`,
-    and `***foo***` is `<strong><em>foo</em></strong>`, not
-    `<em><strong>foo</strong></em>` or `<em><em><em>foo</em></em></em>`.
+Where rules 1--10 above are compatible with multiple parsings,
+the following principles resolve ambiguity:
+
+11. An interpretation `<strong>...</strong>` is always preferred to
+    `<em><em>...</em></em>`.
+
+12. An interpretation `<strong><em>...</em></strong>` is always
+    preferred to `<em><strong>..</strong></em>`.
+
+13. Earlier closings are preferred to later closings.  Thus,
+    when two potential emphasis or strong emphasis spans overlap,
+    the first takes precedence: for example, `*foo _bar* baz_`
+    is parsed as `<em>foo _bar</em> baz_` rather than
+    `*foo <em>bar* baz</em>`.  For the same reason,
+    `**foo*bar**` is parsed as `<em><em>foo</em>bar</em>*`
+    rather than `<strong>foo*bar</strong>`.
+
+14. Inline code spans, links, images, and HTML tags group more tightly
+    than emphasis.  So, when there is a choice between an interpretation
+    that contains one of these elements and one that does not, the
+    former always wins.  Thus, for example, `*[foo*](bar)` is
+    parsed as `*<a href="bar">foo*</a>` rather than as
+    `<em>[foo</em>](bar)`.
 
 These rules can be illustrated through a series of examples.
 
@@ -4719,6 +4810,46 @@ More cases with mismatched delimiters:
 ***foo *bar*
 .
 <p>***foo <em>bar</em></p>
+.
+
+The following cases illustrate rule 13:
+
+.
+*foo _bar* baz_
+.
+<p><em>foo _bar</em> baz_</p>
+.
+
+.
+**foo bar* baz**
+.
+<p><em><em>foo bar</em> baz</em>*</p>
+.
+
+The following cases illustrate rule 14:
+
+.
+*[foo*](bar)
+.
+<p>*<a href="bar">foo*</a></p>
+.
+
+.
+*![foo*](bar)
+.
+<p>*<img src="bar" alt="foo*" /></p>
+.
+
+.
+*<img src="foo" title="*"/>
+.
+<p>*<img src="foo" title="*"/></p>
+.
+
+.
+*a`a*`
+.
+<p>*a<code>a*</code></p>
 .
 
 ## Links
