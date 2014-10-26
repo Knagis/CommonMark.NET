@@ -160,7 +160,7 @@ namespace CommonMark
             {
                 if (settings.OutputFormat == OutputFormat.SyntaxTree)
                 {
-                    Printer.print_blocks(target, document, 0);
+                    Printer.print_blocks(target, document, 0, 0);
                 }
                 else
                 {

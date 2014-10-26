@@ -40,8 +40,11 @@ namespace CommonMark.Formatter
 
         // Functions to pretty-print inline and block lists, for debugging.
         // Prettyprint an inline list, for debugging.
-        public static void print_blocks(System.IO.TextWriter writer, Block b, int indent)
+        public static void print_blocks(System.IO.TextWriter writer, Block b, int indent, int depth)
         {
+            if (depth > 100)
+                throw new CommonMarkException("The document contains block elements nested more than 100 levels deep which is not supported.");
+
             ListData data;
             while (b != null)
             {
@@ -54,16 +57,16 @@ namespace CommonMark.Formatter
                 {
                     case BlockTag.Document:
                         writer.WriteLine("document");
-                        print_blocks(writer, b.FirstChild, indent + 2);
+                        print_blocks(writer, b.FirstChild, indent + 2, depth + 1);
                         break;
                     case BlockTag.BlockQuote:
                         writer.WriteLine("block_quote");
-                        print_blocks(writer, b.FirstChild, indent + 2);
+                        print_blocks(writer, b.FirstChild, indent + 2, depth + 1);
                         break;
                     case BlockTag.ListItem:
                         data = b.ListData;
                         writer.WriteLine("list_item");
-                        print_blocks(writer, b.FirstChild, indent + 2);
+                        print_blocks(writer, b.FirstChild, indent + 2, depth + 1);
                         break;
                     case BlockTag.List:
                         data = b.ListData;
@@ -80,19 +83,19 @@ namespace CommonMark.Formatter
                                  data.IsTight,
                                  data.BulletChar);
                         }
-                        print_blocks(writer, b.FirstChild, indent + 2);
+                        print_blocks(writer, b.FirstChild, indent + 2, depth + 1);
                         break;
                     case BlockTag.AtxHeader:
                         writer.WriteLine("atx_header (level={0})", b.HeaderLevel);
-                        print_inlines(writer, b.InlineContent, indent + 2);
+                        print_inlines(writer, b.InlineContent, indent + 2, depth + 1);
                         break;
                     case BlockTag.SETextHeader:
                         writer.WriteLine("setext_header (level={0})", b.HeaderLevel);
-                        print_inlines(writer, b.InlineContent, indent + 2);
+                        print_inlines(writer, b.InlineContent, indent + 2, depth + 1);
                         break;
                     case BlockTag.Paragraph:
                         writer.WriteLine("paragraph");
-                        print_inlines(writer, b.InlineContent, indent + 2);
+                        print_inlines(writer, b.InlineContent, indent + 2, depth + 1);
                         break;
                     case BlockTag.HorizontalRuler:
                         writer.WriteLine("hrule");
@@ -120,8 +123,11 @@ namespace CommonMark.Formatter
         }
 
         // Prettyprint an inline list, for debugging.
-        public static void print_inlines(System.IO.TextWriter writer, Inline ils, int indent)
+        public static void print_inlines(System.IO.TextWriter writer, Inline ils, int indent, int depth)
         {
+            if (depth > 100)
+                throw new CommonMarkException("The document contains inline elements nested more than 100 levels deep which is not supported.");
+
             while (ils != null)
             {
                 /*
@@ -157,21 +163,21 @@ namespace CommonMark.Formatter
                         writer.WriteLine("link url={0} title={1}",
                                format_str(ils.Linkable.Url),
                                format_str(ils.Linkable.Title));
-                        print_inlines(writer, ils.Linkable.Label, indent + 2);
+                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
                         break;
                     case InlineTag.Image:
                         writer.WriteLine("image url={0} title={1}",
                                format_str(ils.Linkable.Url),
                                format_str(ils.Linkable.Title));
-                        print_inlines(writer, ils.Linkable.Label, indent + 2);
+                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
                         break;
                     case InlineTag.Strong:
                         writer.WriteLine("strong");
-                        print_inlines(writer, ils.Linkable.Label, indent + 2);
+                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
                         break;
                     case InlineTag.Emphasis:
                         writer.WriteLine("emph");
-                        print_inlines(writer, ils.Linkable.Label, indent + 2);
+                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
                         break;
                 }
                 ils = ils.NextSibling;

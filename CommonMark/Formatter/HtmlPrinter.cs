@@ -178,31 +178,34 @@ namespace CommonMark.Formatter
         public static void BlocksToHtml(System.IO.TextWriter writer, Block b, CommonMarkSettings settings)
         {
             using (var wrapper = new HtmlTextWriter(writer))
-                BlocksToHtmlInner(wrapper, b, settings, false);
+                BlocksToHtmlInner(wrapper, b, settings, false, 0);
         }
 
         /// <remarks>Orig: blocks_to_html_inner</remarks>
-        private static void BlocksToHtmlInner(HtmlTextWriter writer, Block b, CommonMarkSettings settings, bool tight)
+        private static void BlocksToHtmlInner(HtmlTextWriter writer, Block b, CommonMarkSettings settings, bool tight, int depth)
         {
+            if (depth > 100)
+                throw new CommonMarkException("The document contains block elements nested more than 100 levels deep which is not supported.");
+
             string tag;
             while (b != null)
             {
                 switch (b.Tag)
                 {
                     case BlockTag.Document:
-                        BlocksToHtmlInner(writer, b.FirstChild, settings, false);
+                        BlocksToHtmlInner(writer, b.FirstChild, settings, false, depth + 1);
                         break;
 
                     case BlockTag.Paragraph:
                         if (tight)
                         {
-                            InlinesToHtml(writer, b.InlineContent, settings);
+                            InlinesToHtml(writer, b.InlineContent, settings, 0);
                         }
                         else
                         {
                             EnsureNewlineEnding(writer);
                             writer.Write("<p>");
-                            InlinesToHtml(writer, b.InlineContent, settings);
+                            InlinesToHtml(writer, b.InlineContent, settings, 0);
                             writer.WriteLine("</p>");
                         }
                         break;
@@ -210,7 +213,7 @@ namespace CommonMark.Formatter
                     case BlockTag.BlockQuote:
                         EnsureNewlineEnding(writer);
                         writer.WriteLine("<blockquote>");
-                        BlocksToHtmlInner(writer, b.FirstChild, settings, false);
+                        BlocksToHtmlInner(writer, b.FirstChild, settings, false, depth + 1);
                         writer.WriteLine("</blockquote>");
                         break;
 
@@ -220,7 +223,7 @@ namespace CommonMark.Formatter
                         using (var sb = new System.IO.StringWriter())
                         using (var sbw = new HtmlTextWriter(sb))
                         {
-                            BlocksToHtmlInner(sbw, b.FirstChild, settings, tight);
+                            BlocksToHtmlInner(sbw, b.FirstChild, settings, tight, depth + 1);
                             sbw.Flush();
                             writer.Write(sb.ToString().TrimEnd());
                         }
@@ -236,7 +239,7 @@ namespace CommonMark.Formatter
                         if (data.Start != 1)
                             writer.Write(" start=\"" + data.Start.ToString(System.Globalization.CultureInfo.InvariantCulture) + "\"");
                         writer.WriteLine(">");
-                        BlocksToHtmlInner(writer, b.FirstChild, settings, data.IsTight);
+                        BlocksToHtmlInner(writer, b.FirstChild, settings, data.IsTight, depth + 1);
                         writer.WriteLine("</" + tag + ">");
                         break;
 
@@ -245,7 +248,7 @@ namespace CommonMark.Formatter
                         tag = "h" + b.HeaderLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
                         EnsureNewlineEnding(writer);
                         writer.Write("<" + tag + ">");
-                        InlinesToHtml(writer, b.InlineContent, settings);
+                        InlinesToHtml(writer, b.InlineContent, settings, 0);
                         writer.WriteLine("</" + tag + ">");
                         break;
 
@@ -293,9 +296,12 @@ namespace CommonMark.Formatter
         /// Convert an inline list to HTML.  Returns 0 on success, and sets result.
         /// </summary>
         /// <remarks>Orig: inlines_to_html</remarks>
-        private static void InlinesToHtml(HtmlTextWriter writer, Inline ils, CommonMarkSettings settings)
+        private static void InlinesToHtml(HtmlTextWriter writer, Inline ils, CommonMarkSettings settings, int depth)
         {
-            Func<string, string> uriResolver = settings.UriResolver;
+            if (depth > 100)
+                throw new CommonMarkException("The document contains inline elements nested more than 100 levels deep which is not supported.");
+
+            var uriResolver = settings.UriResolver;
             while (ils != null)
             {
                 switch (ils.Tag)
@@ -338,7 +344,7 @@ namespace CommonMark.Formatter
                         }
                         
                         writer.Write('>');
-                        InlinesToHtml(writer, ils.Linkable.Label, settings);
+                        InlinesToHtml(writer, ils.Linkable.Label, settings, depth + 1);
                         writer.Write("</a>");
                         break;
 
@@ -353,7 +359,7 @@ namespace CommonMark.Formatter
                         using (var sb = new System.IO.StringWriter())
                         using (var sbw = new HtmlTextWriter(sb))
                         {
-                            InlinesToHtml(sbw, ils.Linkable.Label, settings);
+                            InlinesToHtml(sbw, ils.Linkable.Label, settings, depth + 1);
                             sbw.Flush();
                             EscapeHtml(sb.ToString(), writer);
                         }
@@ -369,13 +375,13 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Strong:
                         writer.Write("<strong>");
-                        InlinesToHtml(writer, ils.FirstChild, settings);
+                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
                         writer.Write("</strong>");
                         break;
 
                     case InlineTag.Emphasis:
                         writer.Write("<em>");
-                        InlinesToHtml(writer, ils.FirstChild, settings);
+                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
                         writer.Write("</em>");
                         break;
 
