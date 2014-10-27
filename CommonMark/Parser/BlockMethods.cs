@@ -686,9 +686,9 @@ namespace CommonMark.Parser
                     while (p >= 0 && ln[p] == '#')
                         p--;
 
-                    // the last # was escaped, so we include it.
-                    if (p >= 0 && ln[p] == '\\')
-                        p++;
+                    // there must be a space before the last hashtag
+                    if (p < 0 || ln[p] != ' ')
+                        p = ln.Length - 1;
 
                     add_line(container, ln, first_nonspace, p - first_nonspace + 1);
                     finalize(container, line_number);
