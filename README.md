@@ -51,6 +51,7 @@ following results:
     CommonMarkSharp 0.3.2     30 ms   46%
        MarkdownSharp 1.13     55 ms   84%     (might not conform to CommonMark specification)
          MarkdownDeep 1.5      7 ms   11%     (might not conform to CommonMark specification)
+	  MoonShine (sundown)      3 ms    6%     (wrapper for a native x86 .dll)
                  Baseline     65 ms   100%    (used to compare results on different machines)
 
 This benchmark is very simple and tests the processing of the CommonMark specification document itself (a 
