@@ -403,7 +403,7 @@ namespace CommonMark.Parser
                         return HandleEmphasis(subj, c);
                     }
 
-                    return make_str(string.Empty);
+                    return null;
                 }
             }
 
@@ -507,7 +507,7 @@ namespace CommonMark.Parser
                     details = null;
 
                 MatchSquareBracketStack(istack, subj, null, details);
-                return make_str(string.Empty);
+                return null;
             }
 
             var inlText = make_str("]");
@@ -970,8 +970,11 @@ namespace CommonMark.Parser
             while (subj.Position < len)
             {
                 cur = parse_inline(subj);
-                subj.LastInline.NextSibling = cur;
-                subj.LastInline = cur.LastSibling;
+                if (cur != null)
+                {
+                    subj.LastInline.NextSibling = cur;
+                    subj.LastInline = cur.LastSibling;
+                }
             }
 
             InlineStack.PostProcessInlineStack(subj, subj.FirstPendingInline, subj.LastPendingInline, InlineStack.InlineStackPriority.Maximum);
