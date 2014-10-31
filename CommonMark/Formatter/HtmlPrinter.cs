@@ -28,6 +28,9 @@ namespace CommonMark.Formatter
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
         private static void EscapeUrl(string input, System.IO.TextWriter target)
         {
+            if (input == null)
+                return;
+
             char c;
             int lastPos = 0;
             char[] buffer = input.ToCharArray();
@@ -79,6 +82,9 @@ namespace CommonMark.Formatter
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
         private static void EscapeHtml(string input, System.IO.TextWriter target)
         {
+            if (input == null)
+                return;
+
             int pos = 0;
             int lastPos = 0;
             char[] buffer = null;
@@ -296,7 +302,7 @@ namespace CommonMark.Formatter
         /// Convert an inline list to HTML.  Returns 0 on success, and sets result.
         /// </summary>
         /// <remarks>Orig: inlines_to_html</remarks>
-        private static void InlinesToHtml(HtmlTextWriter writer, Inline ils, CommonMarkSettings settings, int depth)
+        private static void InlinesToHtml(HtmlTextWriter writer, Inline ils, CommonMarkSettings settings, int depth, bool withinLink = false)
         {
             if (depth > 100)
                 throw new CommonMarkException("The document contains inline elements nested more than 100 levels deep which is not supported.");
@@ -329,23 +335,32 @@ namespace CommonMark.Formatter
                         break;
 
                     case InlineTag.Link:
-                        writer.Write("<a href=\"");
-                        if (uriResolver != null)
-                            EscapeUrl(uriResolver(ils.Linkable.Url), writer);
-                        else
-                            EscapeUrl(ils.Linkable.Url, writer);
-
-                        writer.Write('\"');
-                        if (ils.Linkable.Title.Length > 0)
+                        if (withinLink)
                         {
-                            writer.Write(" title=\"");
-                            EscapeHtml(ils.Linkable.Title, writer);
-                            writer.Write('\"');
+                            writer.Write('[');
+                            InlinesToHtml(writer, ils.FirstChild, settings, depth + 1, true);
+                            writer.Write(']');
                         }
-                        
-                        writer.Write('>');
-                        InlinesToHtml(writer, ils.Linkable.Label, settings, depth + 1);
-                        writer.Write("</a>");
+                        else
+                        {
+                            writer.Write("<a href=\"");
+                            if (uriResolver != null)
+                                EscapeUrl(uriResolver(ils.Linkable.Url), writer);
+                            else
+                                EscapeUrl(ils.Linkable.Url, writer);
+
+                            writer.Write('\"');
+                            if (!string.IsNullOrEmpty(ils.Linkable.Title))
+                            {
+                                writer.Write(" title=\"");
+                                EscapeHtml(ils.Linkable.Title, writer);
+                                writer.Write('\"');
+                            }
+
+                            writer.Write('>');
+                            InlinesToHtml(writer, ils.FirstChild, settings, depth + 1, true);
+                            writer.Write("</a>");
+                        }
                         break;
 
                     case InlineTag.Image:
@@ -359,7 +374,7 @@ namespace CommonMark.Formatter
                         using (var sb = new System.IO.StringWriter())
                         using (var sbw = new HtmlTextWriter(sb))
                         {
-                            InlinesToHtml(sbw, ils.Linkable.Label, settings, depth + 1);
+                            InlinesToHtml(sbw, ils.FirstChild, settings, depth + 1, withinLink);
                             sbw.Flush();
                             EscapeHtml(sb.ToString(), writer);
                         }
@@ -375,13 +390,13 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Strong:
                         writer.Write("<strong>");
-                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
+                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1, withinLink);
                         writer.Write("</strong>");
                         break;
 
                     case InlineTag.Emphasis:
                         writer.Write("<em>");
-                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
+                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1, withinLink);
                         writer.Write("</em>");
                         break;
 

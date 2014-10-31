@@ -22,17 +22,20 @@ namespace CommonMark.Parser
         /// </summary>
         public int Position;
 
-        public int LabelNestingLevel;
-
         /// <summary>
         /// The last top-level inline parsed from this subject.
         /// </summary>
         public Inline LastInline;
 
         /// <summary>
-        /// The current stack of possible emphasis openers. Can be <c>null</c>.
+        /// The last entry of the current stack of possible emphasis openers. Can be <c>null</c>.
         /// </summary>
-        public InlineStack EmphasisStack;
+        public InlineStack LastPendingInline;
+
+        /// <summary>
+        /// The first entry of the current stack of possible emphasis openers. Can be <c>null</c>.
+        /// </summary>
+        public InlineStack FirstPendingInline;
 
         public readonly Dictionary<string, Reference> ReferenceMap;
 

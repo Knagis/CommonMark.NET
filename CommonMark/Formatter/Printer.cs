@@ -9,6 +9,9 @@ namespace CommonMark.Formatter
     {
         private static string format_str(string s)
         {
+            if (s == null)
+                return string.Empty;
+
             int pos = 0;
             int len = s.Length;
             StringBuilder result = new StringBuilder();
@@ -163,21 +166,21 @@ namespace CommonMark.Formatter
                         writer.WriteLine("link url={0} title={1}",
                                format_str(ils.Linkable.Url),
                                format_str(ils.Linkable.Title));
-                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
+                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
                         break;
                     case InlineTag.Image:
                         writer.WriteLine("image url={0} title={1}",
                                format_str(ils.Linkable.Url),
                                format_str(ils.Linkable.Title));
-                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
+                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
                         break;
                     case InlineTag.Strong:
                         writer.WriteLine("strong");
-                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
+                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
                         break;
                     case InlineTag.Emphasis:
                         writer.WriteLine("emph");
-                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
+                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
                         break;
                 }
                 ils = ils.NextSibling;
