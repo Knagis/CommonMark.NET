@@ -8,6 +8,7 @@ namespace CommonMark.Parser
     internal static class InlineMethods
     {
         private static readonly char[] SpecialCharacters = new[] { '\n', '\\', '`', '&', '_', '*', '[', ']', '<', '!' };
+        private static readonly char[] WhiteSpaceCharacters = new[] { '\n', ' ' };
 
         /// <summary>
         /// Collapses internal whitespace to single space, removes leading/trailing whitespace, folds case.
@@ -218,7 +219,7 @@ namespace CommonMark.Parser
             StringBuilder sb = null;
             int pos = startIndex;
             int lastPos = startIndex;
-            while (-1 != (pos = s.IndexOfAny(new[] { ' ', '\n' }, pos, count - pos)))
+            while (-1 != (pos = s.IndexOfAny(WhiteSpaceCharacters, pos, count - pos)))
             {
                 if (s[pos] == '\n')
                 {
