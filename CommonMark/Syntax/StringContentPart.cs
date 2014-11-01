@@ -9,6 +9,13 @@ namespace CommonMark.Syntax
     /// </summary>
     internal struct StringPart
     {
+        public StringPart(string source, int startIndex, int length)
+        {
+            this.Source = source;
+            this.StartIndex = startIndex;
+            this.Length = length;
+        }
+
         /// <summary>
         /// Gets or sets the string object this part is created from.
         /// </summary>
@@ -23,5 +30,13 @@ namespace CommonMark.Syntax
         /// Gets or sets the length of the part.
         /// </summary>
         public int Length;
+
+        public override string ToString()
+        {
+            if (this.Source == null)
+                return null;
+
+            return this.Source.Substring(this.StartIndex, this.Length);
+        }
     }
 }

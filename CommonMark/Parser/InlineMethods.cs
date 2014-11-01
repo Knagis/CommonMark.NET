@@ -13,20 +13,23 @@ namespace CommonMark.Parser
         /// <summary>
         /// Collapses internal whitespace to single space, removes leading/trailing whitespace, folds case.
         /// </summary>
-        private static string NormalizeReference(string s)
+        private static string NormalizeReference(StringPart s)
         {
-            if (s == null || s.Length == 0)
+            if (s.Length == 0)
                 return string.Empty;
 
-            return NormalizeWhitespace(s, 0, s.Length).ToUpperInvariant();
+            return NormalizeWhitespace(s.Source, s.StartIndex, s.Length).ToUpperInvariant();
         }
 
         // Returns reference if refmap contains a reference with matching
         // label, otherwise null.
-        public static Reference lookup_reference(Dictionary<string, Reference> refmap, string lab)
+        public static Reference lookup_reference(Dictionary<string, Reference> refmap, StringPart lab)
         {
             if (refmap == null)
                 return null;
+
+            if (lab.Length > Reference.MaximumReferenceLabelLength)
+                return Reference.InvalidReference;
 
             string label = NormalizeReference(lab);
 
@@ -37,7 +40,7 @@ namespace CommonMark.Parser
             return null;
         }
 
-        public static Reference make_reference(string label, string url, string title)
+        public static Reference make_reference(StringPart label, string url, string title)
         {
             Reference r = new Reference();
             r.Label = NormalizeReference(label);
@@ -499,7 +502,7 @@ namespace CommonMark.Parser
                 if (details == null || details == Reference.SelfReference)
                 {
                     var startpos = istack.StartPosition;
-                    var label = subj.Buffer.Substring(startpos, endpos - startpos - 1);
+                    var label = new StringPart(subj.Buffer, startpos, endpos - startpos - 1);
 
                     details = lookup_reference(subj.ReferenceMap, label);
                 }
@@ -830,10 +833,10 @@ namespace CommonMark.Parser
                 var label = ParseReferenceLabel(subj);
                 if (label != null)
                 {
-                    if (label.Length == 0)
+                    if (label.Value.Length == 0)
                         return Reference.SelfReference;
 
-                    var details = lookup_reference(subj.ReferenceMap, label);
+                    var details = lookup_reference(subj.ReferenceMap, label.Value);
                     if (details != null)
                         return details;
 
@@ -1011,7 +1014,7 @@ namespace CommonMark.Parser
         /// markers. So, 2 below contains a link while 1 does not:
         /// 1. [a link `with a ](/url)` character
         /// 2. [a link *with emphasized ](/url) text*        /// </summary>
-        private static string ParseReferenceLabel(Subject subj)
+        private static StringPart? ParseReferenceLabel(Subject subj)
         {
             int nestlevel = 0;
             var startPos = subj.Position;
@@ -1074,7 +1077,7 @@ namespace CommonMark.Parser
 
             if (c == ']')
             {
-                var label = source.Substring(labelStartPos, subj.Position - labelStartPos);
+                var label = new StringPart(source, labelStartPos, subj.Position - labelStartPos);
                 subj.Position++;
                 return label;
             }
@@ -1097,7 +1100,7 @@ namespace CommonMark.Parser
 
             // parse label:
             var lab = ParseReferenceLabel(subj);
-            if (lab == null)
+            if (lab == null || lab.Value.Length > Reference.MaximumReferenceLabelLength)
                 return 0;
 
             // colon:
@@ -1142,7 +1145,7 @@ namespace CommonMark.Parser
                 return 0;
 
             // insert reference into refmap
-            add_reference(refmap, make_reference(lab, url, title));
+            add_reference(refmap, make_reference(lab.Value, url, title));
 
             return subj.Position;
         }
