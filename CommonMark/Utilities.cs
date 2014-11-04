@@ -31,5 +31,14 @@ namespace CommonMark
             // char.IsSymbol also works with Unicode symbols that cannot be escaped based on the specification.
             return (c > ' ' && c < '0') || (c > '9' && c < 'A') || (c > 'Z' && c < 'a') || (c > 'z' && c < 127);
         }
+
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
+        public static bool IsAsciiLetterOrDigit(char c)
+        {
+            // char.IsSymbol also works with Unicode symbols that cannot be escaped based on the specification.
+            return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z');
+        }
     }
 }

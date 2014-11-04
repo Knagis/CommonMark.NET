@@ -15,8 +15,8 @@ namespace CommonMark.Tests.Specification
         // title: CommonMark Spec
         // author:
         // - John MacFarlane
-        // version: 0.7
-        // date: 2014-10-28
+        // version: 0.9
+        // date: 2014-11-04
         // ...
         //
         // # Introduction
@@ -10475,87 +10475,71 @@ namespace CommonMark.Tests.Specification
         // for efficient parsing strategies that do not backtrack:
         //
         // 1.  A single `*` character [can open emphasis](#can-open-emphasis)
-        // <a id="can-open-emphasis"></a> iff
-        //
-        // (a) it is not part of a sequence of four or more unescaped `*`s,
-        // (b) it is not followed by whitespace, and
-        // (c) either it is not followed by a `*` character or it is
-        // followed immediately by emphasis or strong emphasis.
+        // <a id="can-open-emphasis"></a> iff it is not followed by
+        // whitespace.
         //
         // 2.  A single `_` character [can open emphasis](#can-open-emphasis) iff
-        //
-        // (a) it is not part of a sequence of four or more unescaped `_`s,
-        // (b) it is not followed by whitespace,
-        // (c) it is not preceded by an ASCII alphanumeric character, and
-        // (d) either it is not followed by a `_` character or it is
-        // followed immediately by emphasis or strong emphasis.
+        // it is not followed by whitespace and it is not preceded by an
+        // ASCII alphanumeric character.
         //
         // 3.  A single `*` character [can close emphasis](#can-close-emphasis)
-        // <a id="can-close-emphasis"></a> iff
-        //
-        // (a) it is not part of a sequence of four or more unescaped `*`s, and
-        // (b) it is not preceded by whitespace.
+        // <a id="can-close-emphasis"></a> iff it is not preceded by whitespace.
         //
         // 4.  A single `_` character [can close emphasis](#can-close-emphasis) iff
-        //
-        // (a) it is not part of a sequence of four or more unescaped `_`s,
-        // (b) it is not preceded by whitespace, and
-        // (c) it is not followed by an ASCII alphanumeric character.
+        // it is not preceded by whitespace and it is not followed by an
+        // ASCII alphanumeric character.
         //
         // 5.  A double `**` [can open strong emphasis](#can-open-strong-emphasis)
-        // <a id="can-open-strong-emphasis" ></a> iff
-        //
-        // (a) it is not part of a sequence of four or more unescaped `*`s,
-        // (b) it is not followed by whitespace, and
-        // (c) either it is not followed by a `*` character or it is
-        // followed immediately by emphasis.
+        // <a id="can-open-strong-emphasis" ></a> iff it is not followed by
+        // whitespace.
         //
         // 6.  A double `__` [can open strong emphasis](#can-open-strong-emphasis)
-        // iff
-        //
-        // (a) it is not part of a sequence of four or more unescaped `_`s,
-        // (b) it is not followed by whitespace, and
-        // (c) it is not preceded by an ASCII alphanumeric character, and
-        // (d) either it is not followed by a `_` character or it is
-        // followed immediately by emphasis.
+        // iff it is not followed by whitespace and it is not preceded by an
+        // ASCII alphanumeric character.
         //
         // 7.  A double `**` [can close strong emphasis](#can-close-strong-emphasis)
-        // <a id="can-close-strong-emphasis" ></a> iff
-        //
-        // (a) it is not part of a sequence of four or more unescaped `*`s, and
-        // (b) it is not preceded by whitespace.
+        // <a id="can-close-strong-emphasis" ></a> iff it is not preceded by
+        // whitespace.
         //
         // 8.  A double `__` [can close strong emphasis](#can-close-strong-emphasis)
-        // iff
-        //
-        // (a) it is not part of a sequence of four or more unescaped `_`s,
-        // (b) it is not preceded by whitespace, and
-        // (c) it is not followed by an ASCII alphanumeric character.
+        // iff it is not preceded by whitespace and it is not followed by an
+        // ASCII alphanumeric character.
         //
         // 9.  Emphasis begins with a delimiter that [can open
         // emphasis](#can-open-emphasis) and ends with a delimiter that [can close
         // emphasis](#can-close-emphasis), and that uses the same
-        // character (`_` or `*`) as the opening delimiter.  The inlines
-        // between the open delimiter and the closing delimiter are the
-        // contents of the emphasis inline.
+        // character (`_` or `*`) as the opening delimiter.  There must
+        // be a nonempty sequence of inlines between the open delimiter
+        // and the closing delimiter; these form the contents of the emphasis
+        // inline.
         //
         // 10. Strong emphasis begins with a delimiter that [can open strong
         // emphasis](#can-open-strong-emphasis) and ends with a delimiter that
-        // [can close strong emphasis](#can-close-strong-emphasis), and that uses the
-        // same character (`_` or `*`) as the opening delimiter.  The inlines
-        // between the open delimiter and the closing delimiter are the
-        // contents of the strong emphasis inline.
+        // [can close strong emphasis](#can-close-strong-emphasis), and that
+        // uses the same character (`_` or `*`) as the opening delimiter.
+        // There must be a nonempty sequence of inlines between the open
+        // delimiter and the closing delimiter; these form the contents of
+        // the strong emphasis inline.
         //
-        // Where rules 1--10 above are compatible with multiple parsings,
+        // 11. A literal `*` character cannot occur at the beginning or end of
+        // `*`-delimited emphasis or `**`-delimited strong emphasis, unless it
+        // is backslash-escaped.
+        //
+        // 12. A literal `_` character cannot occur at the beginning or end of
+        // `_`-delimited emphasis or `__`-delimited strong emphasis, unless it
+        // is backslash-escaped.
+        //
+        // Where rules 1--12 above are compatible with multiple parsings,
         // the following principles resolve ambiguity:
         //
-        // 11. An interpretation `<strong>...</strong>` is always preferred to
+        // 13. The number of nestings should be minimized. Thus, for example,
+        // an interpretation `<strong>...</strong>` is always preferred to
         // `<em><em>...</em></em>`.
         //
-        // 12. An interpretation `<strong><em>...</em></strong>` is always
+        // 14. An interpretation `<strong><em>...</em></strong>` is always
         // preferred to `<em><strong>..</strong></em>`.
         //
-        // 13. When two potential emphasis or strong emphasis spans overlap,
+        // 15. When two potential emphasis or strong emphasis spans overlap,
         // so that the second begins before the first ends and ends after
         // the first ends, the first is preferred. Thus, for example,
         // `*foo _bar* baz_` is parsed as `<em>foo _bar</em> baz_` rather
@@ -10563,13 +10547,13 @@ namespace CommonMark.Tests.Specification
         // `**foo*bar**` is parsed as `<em><em>foo</em>bar</em>*`
         // rather than `<strong>foo*bar</strong>`.
         //
-        // 14. When there are two potential emphasis or strong emphasis spans
+        // 16. When there are two potential emphasis or strong emphasis spans
         // with the same closing delimiter, the shorter one (the one that
         // opens later) is preferred. Thus, for example,
         // `**foo **bar baz**` is parsed as `**foo <strong>bar baz</strong>`
         // rather than `<strong>foo **bar baz</strong>`.
         //
-        // 15. Inline code spans, links, images, and HTML tags group more tightly
+        // 17. Inline code spans, links, images, and HTML tags group more tightly
         // than emphasis.  So, when there is a choice between an interpretation
         // that contains one of these elements and one that does not, the
         // former always wins.  Thus, for example, `*[foo*](bar)` is
@@ -10578,7 +10562,7 @@ namespace CommonMark.Tests.Specification
         //
         // These rules can be illustrated through a series of examples.
         //
-        // Simple emphasis:
+        // Rule 1:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -10610,6 +10594,8 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // This is not emphasis, because the opening `*` is followed by
+        // whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -10619,18 +10605,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo bar_
+            //     a * foo bar*
             //
             // Should be rendered as:
-            //     <p><em>foo bar</em></p>
+            //     <p>a * foo bar*</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_foo bar_");
-            var expected = Helpers.Normalize("<p><em>foo bar</em></p>");
+            var commonMark = Helpers.Normalize("a * foo bar*");
+            var expected = Helpers.Normalize("<p>a * foo bar*</p>");
             Helpers.Log("Example {0}", 259);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo bar_");
+            Helpers.LogValue("CommonMark", "a * foo bar*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -10641,7 +10627,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // Simple strong emphasis:
+        // Intraword emphasis with `*` is permitted:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -10651,18 +10637,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo bar**
+            //     foo*bar*
             //
             // Should be rendered as:
-            //     <p><strong>foo bar</strong></p>
+            //     <p>foo<em>bar</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**foo bar**");
-            var expected = Helpers.Normalize("<p><strong>foo bar</strong></p>");
+            var commonMark = Helpers.Normalize("foo*bar*");
+            var expected = Helpers.Normalize("<p>foo<em>bar</em></p>");
             Helpers.Log("Example {0}", 260);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo bar**");
+            Helpers.LogValue("CommonMark", "foo*bar*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -10682,18 +10668,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo bar__
+            //     5*6*78
             //
             // Should be rendered as:
-            //     <p><strong>foo bar</strong></p>
+            //     <p>5<em>6</em>78</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__foo bar__");
-            var expected = Helpers.Normalize("<p><strong>foo bar</strong></p>");
+            var commonMark = Helpers.Normalize("5*6*78");
+            var expected = Helpers.Normalize("<p>5<em>6</em>78</p>");
             Helpers.Log("Example {0}", 261);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo bar__");
+            Helpers.LogValue("CommonMark", "5*6*78");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -10704,7 +10690,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // Emphasis can continue over line breaks:
+        // Rule 2:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -10714,20 +10700,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo
-            //     bar*
+            //     _foo bar_
             //
             // Should be rendered as:
-            //     <p><em>foo
-            //     bar</em></p>
+            //     <p><em>foo bar</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo\nbar*");
-            var expected = Helpers.Normalize("<p><em>foo\nbar</em></p>");
+            var commonMark = Helpers.Normalize("_foo bar_");
+            var expected = Helpers.Normalize("<p><em>foo bar</em></p>");
             Helpers.Log("Example {0}", 262);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo\nbar*");
+            Helpers.LogValue("CommonMark", "_foo bar_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -10738,6 +10722,8 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // This is not emphasis, because the opening `*` is followed by
+        // whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -10747,20 +10733,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo
-            //     bar_
+            //     _ foo bar_
             //
             // Should be rendered as:
-            //     <p><em>foo
-            //     bar</em></p>
+            //     <p>_ foo bar_</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_foo\nbar_");
-            var expected = Helpers.Normalize("<p><em>foo\nbar</em></p>");
+            var commonMark = Helpers.Normalize("_ foo bar_");
+            var expected = Helpers.Normalize("<p>_ foo bar_</p>");
             Helpers.Log("Example {0}", 263);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo\nbar_");
+            Helpers.LogValue("CommonMark", "_ foo bar_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -10771,6 +10755,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Emphasis with `_` is not allowed inside ASCII words:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -10780,20 +10765,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo
-            //     bar**
+            //     foo_bar_
             //
             // Should be rendered as:
-            //     <p><strong>foo
-            //     bar</strong></p>
+            //     <p>foo_bar_</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**foo\nbar**");
-            var expected = Helpers.Normalize("<p><strong>foo\nbar</strong></p>");
+            var commonMark = Helpers.Normalize("foo_bar_");
+            var expected = Helpers.Normalize("<p>foo_bar_</p>");
             Helpers.Log("Example {0}", 264);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo\nbar**");
+            Helpers.LogValue("CommonMark", "foo_bar_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -10813,20 +10796,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo
-            //     bar__
+            //     5_6_78
             //
             // Should be rendered as:
-            //     <p><strong>foo
-            //     bar</strong></p>
+            //     <p>5_6_78</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__foo\nbar__");
-            var expected = Helpers.Normalize("<p><strong>foo\nbar</strong></p>");
+            var commonMark = Helpers.Normalize("5_6_78");
+            var expected = Helpers.Normalize("<p>5_6_78</p>");
             Helpers.Log("Example {0}", 265);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo\nbar__");
+            Helpers.LogValue("CommonMark", "5_6_78");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -10837,7 +10818,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // Emphasis can contain other inline constructs:
+        // But it is permitted inside non-ASCII words:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -10847,18 +10828,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo [bar](/url)*
+            //     пристаням_стремятся_
             //
             // Should be rendered as:
-            //     <p><em>foo <a href="/url">bar</a></em></p>
+            //     <p>пристаням<em>стремятся</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo [bar](/url)*");
-            var expected = Helpers.Normalize("<p><em>foo <a href=\"/url\">bar</a></em></p>");
+            var commonMark = Helpers.Normalize("пристаням_стремятся_");
+            var expected = Helpers.Normalize("<p>пристаням<em>стремятся</em></p>");
             Helpers.Log("Example {0}", 266);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo [bar](/url)*");
+            Helpers.LogValue("CommonMark", "пристаням_стремятся_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -10869,6 +10850,10 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Rule 3:
+        //
+        // This is not emphasis, because the closing `*` is preceded by
+        // whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -10878,18 +10863,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo [bar](/url)_
+            //     *foo bar *
             //
             // Should be rendered as:
-            //     <p><em>foo <a href="/url">bar</a></em></p>
+            //     <p>*foo bar *</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_foo [bar](/url)_");
-            var expected = Helpers.Normalize("<p><em>foo <a href=\"/url\">bar</a></em></p>");
+            var commonMark = Helpers.Normalize("*foo bar *");
+            var expected = Helpers.Normalize("<p>*foo bar *</p>");
             Helpers.Log("Example {0}", 267);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo [bar](/url)_");
+            Helpers.LogValue("CommonMark", "*foo bar *");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -10900,6 +10885,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Intraword emphasis with `*` is allowed:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -10909,18 +10895,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo [bar](/url)**
+            //     *foo*bar
             //
             // Should be rendered as:
-            //     <p><strong>foo <a href="/url">bar</a></strong></p>
+            //     <p><em>foo</em>bar</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**foo [bar](/url)**");
-            var expected = Helpers.Normalize("<p><strong>foo <a href=\"/url\">bar</a></strong></p>");
+            var commonMark = Helpers.Normalize("*foo*bar");
+            var expected = Helpers.Normalize("<p><em>foo</em>bar</p>");
             Helpers.Log("Example {0}", 268);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo [bar](/url)**");
+            Helpers.LogValue("CommonMark", "*foo*bar");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -10931,6 +10917,10 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Rule 4:
+        //
+        // This is not emphasis, because the closing `_` is preceded by
+        // whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -10940,18 +10930,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo [bar](/url)__
+            //     _foo bar _
             //
             // Should be rendered as:
-            //     <p><strong>foo <a href="/url">bar</a></strong></p>
+            //     <p>_foo bar _</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__foo [bar](/url)__");
-            var expected = Helpers.Normalize("<p><strong>foo <a href=\"/url\">bar</a></strong></p>");
+            var commonMark = Helpers.Normalize("_foo bar _");
+            var expected = Helpers.Normalize("<p>_foo bar _</p>");
             Helpers.Log("Example {0}", 269);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo [bar](/url)__");
+            Helpers.LogValue("CommonMark", "_foo bar _");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -10962,8 +10952,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // Symbols contained in other inline constructs will not
-        // close emphasis:
+        // Intraword emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -10973,18 +10962,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo [bar*](/url)
+            //     _foo_bar
             //
             // Should be rendered as:
-            //     <p>*foo <a href="/url">bar*</a></p>
+            //     <p>_foo_bar</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo [bar*](/url)");
-            var expected = Helpers.Normalize("<p>*foo <a href=\"/url\">bar*</a></p>");
+            var commonMark = Helpers.Normalize("_foo_bar");
+            var expected = Helpers.Normalize("<p>_foo_bar</p>");
             Helpers.Log("Example {0}", 270);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo [bar*](/url)");
+            Helpers.LogValue("CommonMark", "_foo_bar");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11004,18 +10993,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo [bar_](/url)
+            //     _пристаням_стремятся
             //
             // Should be rendered as:
-            //     <p>_foo <a href="/url">bar_</a></p>
+            //     <p><em>пристаням</em>стремятся</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_foo [bar_](/url)");
-            var expected = Helpers.Normalize("<p>_foo <a href=\"/url\">bar_</a></p>");
+            var commonMark = Helpers.Normalize("_пристаням_стремятся");
+            var expected = Helpers.Normalize("<p><em>пристаням</em>стремятся</p>");
             Helpers.Log("Example {0}", 271);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo [bar_](/url)");
+            Helpers.LogValue("CommonMark", "_пристаням_стремятся");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11035,18 +11024,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **<a href="**">
+            //     _foo_bar_baz_
             //
             // Should be rendered as:
-            //     <p>**<a href="**"></p>
+            //     <p><em>foo_bar_baz</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**<a href=\"**\">");
-            var expected = Helpers.Normalize("<p>**<a href=\"**\"></p>");
+            var commonMark = Helpers.Normalize("_foo_bar_baz_");
+            var expected = Helpers.Normalize("<p><em>foo_bar_baz</em></p>");
             Helpers.Log("Example {0}", 272);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**<a href=\"**\">");
+            Helpers.LogValue("CommonMark", "_foo_bar_baz_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11057,6 +11046,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Rule 5:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11066,18 +11056,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __<a href="__">
+            //     **foo bar**
             //
             // Should be rendered as:
-            //     <p>__<a href="__"></p>
+            //     <p><strong>foo bar</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__<a href=\"__\">");
-            var expected = Helpers.Normalize("<p>__<a href=\"__\"></p>");
+            var commonMark = Helpers.Normalize("**foo bar**");
+            var expected = Helpers.Normalize("<p><strong>foo bar</strong></p>");
             Helpers.Log("Example {0}", 273);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__<a href=\"__\">");
+            Helpers.LogValue("CommonMark", "**foo bar**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11088,6 +11078,8 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // This is not strong emphasis, because the opening delimiter is
+        // followed by whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11097,18 +11089,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *a `*`*
+            //     ** foo bar**
             //
             // Should be rendered as:
-            //     <p><em>a <code>*</code></em></p>
+            //     <p>** foo bar**</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*a `*`*");
-            var expected = Helpers.Normalize("<p><em>a <code>*</code></em></p>");
+            var commonMark = Helpers.Normalize("** foo bar**");
+            var expected = Helpers.Normalize("<p>** foo bar**</p>");
             Helpers.Log("Example {0}", 274);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*a `*`*");
+            Helpers.LogValue("CommonMark", "** foo bar**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11119,6 +11111,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Intraword strong emphasis with `**` is permitted:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11128,18 +11121,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _a `_`_
+            //     foo**bar**
             //
             // Should be rendered as:
-            //     <p><em>a <code>_</code></em></p>
+            //     <p>foo<strong>bar</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_a `_`_");
-            var expected = Helpers.Normalize("<p><em>a <code>_</code></em></p>");
+            var commonMark = Helpers.Normalize("foo**bar**");
+            var expected = Helpers.Normalize("<p>foo<strong>bar</strong></p>");
             Helpers.Log("Example {0}", 275);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_a `_`_");
+            Helpers.LogValue("CommonMark", "foo**bar**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11150,6 +11143,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Rule 6:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11159,18 +11153,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **a<http://foo.bar?q=**>
+            //     __foo bar__
             //
             // Should be rendered as:
-            //     <p>**a<a href="http://foo.bar?q=**">http://foo.bar?q=**</a></p>
+            //     <p><strong>foo bar</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**a<http://foo.bar?q=**>");
-            var expected = Helpers.Normalize("<p>**a<a href=\"http://foo.bar?q=**\">http://foo.bar?q=**</a></p>");
+            var commonMark = Helpers.Normalize("__foo bar__");
+            var expected = Helpers.Normalize("<p><strong>foo bar</strong></p>");
             Helpers.Log("Example {0}", 276);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**a<http://foo.bar?q=**>");
+            Helpers.LogValue("CommonMark", "__foo bar__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11181,6 +11175,8 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // This is not strong emphasis, because the opening delimiter is
+        // followed by whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11190,18 +11186,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __a<http://foo.bar?q=__>
+            //     __ foo bar__
             //
             // Should be rendered as:
-            //     <p>__a<a href="http://foo.bar?q=__">http://foo.bar?q=__</a></p>
+            //     <p>__ foo bar__</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__a<http://foo.bar?q=__>");
-            var expected = Helpers.Normalize("<p>__a<a href=\"http://foo.bar?q=__\">http://foo.bar?q=__</a></p>");
+            var commonMark = Helpers.Normalize("__ foo bar__");
+            var expected = Helpers.Normalize("<p>__ foo bar__</p>");
             Helpers.Log("Example {0}", 277);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__a<http://foo.bar?q=__>");
+            Helpers.LogValue("CommonMark", "__ foo bar__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11212,8 +11208,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // This is not emphasis, because the opening delimiter is
-        // followed by white space:
+        // Intraword emphasis examples:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11223,18 +11218,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     and * foo bar*
+            //     foo__bar__
             //
             // Should be rendered as:
-            //     <p>and * foo bar*</p>
+            //     <p>foo__bar__</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("and * foo bar*");
-            var expected = Helpers.Normalize("<p>and * foo bar*</p>");
+            var commonMark = Helpers.Normalize("foo__bar__");
+            var expected = Helpers.Normalize("<p>foo__bar__</p>");
             Helpers.Log("Example {0}", 278);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "and * foo bar*");
+            Helpers.LogValue("CommonMark", "foo__bar__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11254,18 +11249,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _ foo bar_
+            //     5__6__78
             //
             // Should be rendered as:
-            //     <p>_ foo bar_</p>
+            //     <p>5__6__78</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_ foo bar_");
-            var expected = Helpers.Normalize("<p>_ foo bar_</p>");
+            var commonMark = Helpers.Normalize("5__6__78");
+            var expected = Helpers.Normalize("<p>5__6__78</p>");
             Helpers.Log("Example {0}", 279);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_ foo bar_");
+            Helpers.LogValue("CommonMark", "5__6__78");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11285,18 +11280,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     and ** foo bar**
+            //     пристаням__стремятся__
             //
             // Should be rendered as:
-            //     <p>and ** foo bar**</p>
+            //     <p>пристаням<strong>стремятся</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("and ** foo bar**");
-            var expected = Helpers.Normalize("<p>and ** foo bar**</p>");
+            var commonMark = Helpers.Normalize("пристаням__стремятся__");
+            var expected = Helpers.Normalize("<p>пристаням<strong>стремятся</strong></p>");
             Helpers.Log("Example {0}", 280);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "and ** foo bar**");
+            Helpers.LogValue("CommonMark", "пристаням__стремятся__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11316,18 +11311,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __ foo bar__
+            //     __foo, __bar__, baz__
             //
             // Should be rendered as:
-            //     <p>__ foo bar__</p>
+            //     <p><strong>foo, <strong>bar</strong>, baz</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__ foo bar__");
-            var expected = Helpers.Normalize("<p>__ foo bar__</p>");
+            var commonMark = Helpers.Normalize("__foo, __bar__, baz__");
+            var expected = Helpers.Normalize("<p><strong>foo, <strong>bar</strong>, baz</strong></p>");
             Helpers.Log("Example {0}", 281);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__ foo bar__");
+            Helpers.LogValue("CommonMark", "__foo, __bar__, baz__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11338,8 +11333,10 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // This is not emphasis, because the closing delimiter is
-        // preceded by white space:
+        // Rule 7:
+        //
+        // This is not strong emphasis, because the closing delimiter is preceded
+        // by whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11349,18 +11346,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     and *foo bar *
+            //     **foo bar **
             //
             // Should be rendered as:
-            //     <p>and *foo bar *</p>
+            //     <p>**foo bar **</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("and *foo bar *");
-            var expected = Helpers.Normalize("<p>and *foo bar *</p>");
+            var commonMark = Helpers.Normalize("**foo bar **");
+            var expected = Helpers.Normalize("<p>**foo bar **</p>");
             Helpers.Log("Example {0}", 282);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "and *foo bar *");
+            Helpers.LogValue("CommonMark", "**foo bar **");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11371,6 +11368,10 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // (Nor can it be interpreted as an emphasized `*foo bar *`, because of
+        // Rule 11.)
+        //
+        // Intraword emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11380,18 +11381,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     and _foo bar _
+            //     **foo**bar
             //
             // Should be rendered as:
-            //     <p>and _foo bar _</p>
+            //     <p><strong>foo</strong>bar</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("and _foo bar _");
-            var expected = Helpers.Normalize("<p>and _foo bar _</p>");
+            var commonMark = Helpers.Normalize("**foo**bar");
+            var expected = Helpers.Normalize("<p><strong>foo</strong>bar</p>");
             Helpers.Log("Example {0}", 283);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "and _foo bar _");
+            Helpers.LogValue("CommonMark", "**foo**bar");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11402,6 +11403,10 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Rule 8:
+        //
+        // This is not strong emphasis, because the closing delimiter is
+        // preceded by whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11411,18 +11416,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     and **foo bar **
+            //     __foo bar __
             //
             // Should be rendered as:
-            //     <p>and **foo bar **</p>
+            //     <p>__foo bar __</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("and **foo bar **");
-            var expected = Helpers.Normalize("<p>and **foo bar **</p>");
+            var commonMark = Helpers.Normalize("__foo bar __");
+            var expected = Helpers.Normalize("<p>__foo bar __</p>");
             Helpers.Log("Example {0}", 284);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "and **foo bar **");
+            Helpers.LogValue("CommonMark", "__foo bar __");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11433,6 +11438,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Intraword strong emphasis examples:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11442,18 +11448,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     and __foo bar __
+            //     __foo__bar
             //
             // Should be rendered as:
-            //     <p>and __foo bar __</p>
+            //     <p>__foo__bar</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("and __foo bar __");
-            var expected = Helpers.Normalize("<p>and __foo bar __</p>");
+            var commonMark = Helpers.Normalize("__foo__bar");
+            var expected = Helpers.Normalize("<p>__foo__bar</p>");
             Helpers.Log("Example {0}", 285);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "and __foo bar __");
+            Helpers.LogValue("CommonMark", "__foo__bar");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11464,8 +11470,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // The rules imply that a sequence of four or more unescaped `*` or
-        // `_` characters will always be parsed as a literal string:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11475,18 +11479,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ****hi****
+            //     __пристаням__стремятся
             //
             // Should be rendered as:
-            //     <p>****hi****</p>
+            //     <p><strong>пристаням</strong>стремятся</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("****hi****");
-            var expected = Helpers.Normalize("<p>****hi****</p>");
+            var commonMark = Helpers.Normalize("__пристаням__стремятся");
+            var expected = Helpers.Normalize("<p><strong>пристаням</strong>стремятся</p>");
             Helpers.Log("Example {0}", 286);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "****hi****");
+            Helpers.LogValue("CommonMark", "__пристаням__стремятся");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11506,18 +11510,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _____hi_____
+            //     __foo__bar__baz__
             //
             // Should be rendered as:
-            //     <p>_____hi_____</p>
+            //     <p><strong>foo__bar__baz</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_____hi_____");
-            var expected = Helpers.Normalize("<p>_____hi_____</p>");
+            var commonMark = Helpers.Normalize("__foo__bar__baz__");
+            var expected = Helpers.Normalize("<p><strong>foo__bar__baz</strong></p>");
             Helpers.Log("Example {0}", 287);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_____hi_____");
+            Helpers.LogValue("CommonMark", "__foo__bar__baz__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11528,6 +11532,10 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Rule 9:
+        //
+        // Any nonempty sequence of inline elements can be the contents of an
+        // emphasized span.
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11537,18 +11545,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     Sign here: _________
+            //     *foo [bar](/url)*
             //
             // Should be rendered as:
-            //     <p>Sign here: _________</p>
+            //     <p><em>foo <a href="/url">bar</a></em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("Sign here: _________");
-            var expected = Helpers.Normalize("<p>Sign here: _________</p>");
+            var commonMark = Helpers.Normalize("*foo [bar](/url)*");
+            var expected = Helpers.Normalize("<p><em>foo <a href=\"/url\">bar</a></em></p>");
             Helpers.Log("Example {0}", 288);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "Sign here: _________");
+            Helpers.LogValue("CommonMark", "*foo [bar](/url)*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11559,8 +11567,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // The rules also imply that there can be no empty emphasis or strong
-        // emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11570,18 +11576,20 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ** is not an empty emphasis
+            //     *foo
+            //     bar*
             //
             // Should be rendered as:
-            //     <p>** is not an empty emphasis</p>
+            //     <p><em>foo
+            //     bar</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("** is not an empty emphasis");
-            var expected = Helpers.Normalize("<p>** is not an empty emphasis</p>");
+            var commonMark = Helpers.Normalize("*foo\nbar*");
+            var expected = Helpers.Normalize("<p><em>foo\nbar</em></p>");
             Helpers.Log("Example {0}", 289);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "** is not an empty emphasis");
+            Helpers.LogValue("CommonMark", "*foo\nbar*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11592,6 +11600,8 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // In particular, emphasis and strong emphasis can be nested
+        // inside emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11601,18 +11611,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **** is not an empty strong emphasis
+            //     _foo __bar__ baz_
             //
             // Should be rendered as:
-            //     <p>**** is not an empty strong emphasis</p>
+            //     <p><em>foo <strong>bar</strong> baz</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**** is not an empty strong emphasis");
-            var expected = Helpers.Normalize("<p>**** is not an empty strong emphasis</p>");
+            var commonMark = Helpers.Normalize("_foo __bar__ baz_");
+            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong> baz</em></p>");
             Helpers.Log("Example {0}", 290);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**** is not an empty strong emphasis");
+            Helpers.LogValue("CommonMark", "_foo __bar__ baz_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11623,8 +11633,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // To include `*` or `_` in emphasized sections, use backslash escapes
-        // or code spans:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11634,18 +11642,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *here is a \**
+            //     _foo _bar_ baz_
             //
             // Should be rendered as:
-            //     <p><em>here is a *</em></p>
+            //     <p><em>foo <em>bar</em> baz</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*here is a \\**");
-            var expected = Helpers.Normalize("<p><em>here is a *</em></p>");
+            var commonMark = Helpers.Normalize("_foo _bar_ baz_");
+            var expected = Helpers.Normalize("<p><em>foo <em>bar</em> baz</em></p>");
             Helpers.Log("Example {0}", 291);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*here is a \\**");
+            Helpers.LogValue("CommonMark", "_foo _bar_ baz_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11665,18 +11673,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __this is a double underscore (`__`)__
+            //     __foo_ bar_
             //
             // Should be rendered as:
-            //     <p><strong>this is a double underscore (<code>__</code>)</strong></p>
+            //     <p><em><em>foo</em> bar</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__this is a double underscore (`__`)__");
-            var expected = Helpers.Normalize("<p><strong>this is a double underscore (<code>__</code>)</strong></p>");
+            var commonMark = Helpers.Normalize("__foo_ bar_");
+            var expected = Helpers.Normalize("<p><em><em>foo</em> bar</em></p>");
             Helpers.Log("Example {0}", 292);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__this is a double underscore (`__`)__");
+            Helpers.LogValue("CommonMark", "__foo_ bar_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11687,7 +11695,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // Or use the other emphasis character:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11697,18 +11704,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *_*
+            //     *foo *bar**
             //
             // Should be rendered as:
-            //     <p><em>_</em></p>
+            //     <p><em>foo <em>bar</em></em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*_*");
-            var expected = Helpers.Normalize("<p><em>_</em></p>");
+            var commonMark = Helpers.Normalize("*foo *bar**");
+            var expected = Helpers.Normalize("<p><em>foo <em>bar</em></em></p>");
             Helpers.Log("Example {0}", 293);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*_*");
+            Helpers.LogValue("CommonMark", "*foo *bar**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11728,18 +11735,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _*_
+            //     *foo **bar** baz*
             //
             // Should be rendered as:
-            //     <p><em>*</em></p>
+            //     <p><em>foo <strong>bar</strong> baz</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_*_");
-            var expected = Helpers.Normalize("<p><em>*</em></p>");
+            var commonMark = Helpers.Normalize("*foo **bar** baz*");
+            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong> baz</em></p>");
             Helpers.Log("Example {0}", 294);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_*_");
+            Helpers.LogValue("CommonMark", "*foo **bar** baz*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11750,6 +11757,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // But note:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11759,18 +11767,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *__*
+            //     *foo**bar**baz*
             //
             // Should be rendered as:
-            //     <p><em>__</em></p>
+            //     <p><em>foo</em><em>bar</em><em>baz</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*__*");
-            var expected = Helpers.Normalize("<p><em>__</em></p>");
+            var commonMark = Helpers.Normalize("*foo**bar**baz*");
+            var expected = Helpers.Normalize("<p><em>foo</em><em>bar</em><em>baz</em></p>");
             Helpers.Log("Example {0}", 295);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*__*");
+            Helpers.LogValue("CommonMark", "*foo**bar**baz*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11781,6 +11789,9 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // The difference is that in the preceding case,
+        // the internal delimiters [can close emphasis](#can-close-emphasis),
+        // while in the cases with spaces, they cannot.
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11790,18 +11801,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _**_
+            //     ***foo** bar*
             //
             // Should be rendered as:
-            //     <p><em>**</em></p>
+            //     <p><em><strong>foo</strong> bar</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_**_");
-            var expected = Helpers.Normalize("<p><em>**</em></p>");
+            var commonMark = Helpers.Normalize("***foo** bar*");
+            var expected = Helpers.Normalize("<p><em><strong>foo</strong> bar</em></p>");
             Helpers.Log("Example {0}", 296);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_**_");
+            Helpers.LogValue("CommonMark", "***foo** bar*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11812,7 +11823,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // `*` delimiters allow intra-word emphasis; `_` delimiters do not:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11822,18 +11832,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo*bar*baz
+            //     *foo **bar***
             //
             // Should be rendered as:
-            //     <p>foo<em>bar</em>baz</p>
+            //     <p><em>foo <strong>bar</strong></em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("foo*bar*baz");
-            var expected = Helpers.Normalize("<p>foo<em>bar</em>baz</p>");
+            var commonMark = Helpers.Normalize("*foo **bar***");
+            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong></em></p>");
             Helpers.Log("Example {0}", 297);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo*bar*baz");
+            Helpers.LogValue("CommonMark", "*foo **bar***");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11844,6 +11854,9 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Note, however, that in the following case we get no strong
+        // emphasis, because the opening delimiter is closed by the first
+        // `*` before `bar`:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11853,18 +11866,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo_bar_baz
+            //     *foo**bar***
             //
             // Should be rendered as:
-            //     <p>foo_bar_baz</p>
+            //     <p><em>foo</em><em>bar</em>**</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("foo_bar_baz");
-            var expected = Helpers.Normalize("<p>foo_bar_baz</p>");
+            var commonMark = Helpers.Normalize("*foo**bar***");
+            var expected = Helpers.Normalize("<p><em>foo</em><em>bar</em>**</p>");
             Helpers.Log("Example {0}", 298);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo_bar_baz");
+            Helpers.LogValue("CommonMark", "*foo**bar***");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11875,6 +11888,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Indefinite levels of nesting are possible:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11884,18 +11898,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo__bar__baz
+            //     *foo **bar *baz* bim** bop*
             //
             // Should be rendered as:
-            //     <p>foo__bar__baz</p>
+            //     <p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("foo__bar__baz");
-            var expected = Helpers.Normalize("<p>foo__bar__baz</p>");
+            var commonMark = Helpers.Normalize("*foo **bar *baz* bim** bop*");
+            var expected = Helpers.Normalize("<p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>");
             Helpers.Log("Example {0}", 299);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo__bar__baz");
+            Helpers.LogValue("CommonMark", "*foo **bar *baz* bim** bop*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11915,18 +11929,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo_bar_baz_
+            //     *foo [*bar*](/url)*
             //
             // Should be rendered as:
-            //     <p><em>foo_bar_baz</em></p>
+            //     <p><em>foo <a href="/url"><em>bar</em></a></em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_foo_bar_baz_");
-            var expected = Helpers.Normalize("<p><em>foo_bar_baz</em></p>");
+            var commonMark = Helpers.Normalize("*foo [*bar*](/url)*");
+            var expected = Helpers.Normalize("<p><em>foo <a href=\"/url\"><em>bar</em></a></em></p>");
             Helpers.Log("Example {0}", 300);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo_bar_baz_");
+            Helpers.LogValue("CommonMark", "*foo [*bar*](/url)*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11937,6 +11951,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // There can be no empty emphasis or strong emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -11946,18 +11961,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     11*15*32
+            //     ** is not an empty emphasis
             //
             // Should be rendered as:
-            //     <p>11<em>15</em>32</p>
+            //     <p>** is not an empty emphasis</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("11*15*32");
-            var expected = Helpers.Normalize("<p>11<em>15</em>32</p>");
+            var commonMark = Helpers.Normalize("** is not an empty emphasis");
+            var expected = Helpers.Normalize("<p>** is not an empty emphasis</p>");
             Helpers.Log("Example {0}", 301);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "11*15*32");
+            Helpers.LogValue("CommonMark", "** is not an empty emphasis");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11977,18 +11992,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     11_15_32
+            //     **** is not an empty strong emphasis
             //
             // Should be rendered as:
-            //     <p>11_15_32</p>
+            //     <p>**** is not an empty strong emphasis</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("11_15_32");
-            var expected = Helpers.Normalize("<p>11_15_32</p>");
+            var commonMark = Helpers.Normalize("**** is not an empty strong emphasis");
+            var expected = Helpers.Normalize("<p>**** is not an empty strong emphasis</p>");
             Helpers.Log("Example {0}", 302);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "11_15_32");
+            Helpers.LogValue("CommonMark", "**** is not an empty strong emphasis");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -11999,8 +12014,10 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // Internal underscores will be ignored in underscore-delimited
-        // emphasis:
+        // Rule 10:
+        //
+        // Any nonempty sequence of inline elements can be the contents of an
+        // strongly emphasized span.
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12010,18 +12027,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo_bar_baz_
+            //     **foo [bar](/url)**
             //
             // Should be rendered as:
-            //     <p><em>foo_bar_baz</em></p>
+            //     <p><strong>foo <a href="/url">bar</a></strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_foo_bar_baz_");
-            var expected = Helpers.Normalize("<p><em>foo_bar_baz</em></p>");
+            var commonMark = Helpers.Normalize("**foo [bar](/url)**");
+            var expected = Helpers.Normalize("<p><strong>foo <a href=\"/url\">bar</a></strong></p>");
             Helpers.Log("Example {0}", 303);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo_bar_baz_");
+            Helpers.LogValue("CommonMark", "**foo [bar](/url)**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12041,18 +12058,20 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo__bar__baz__
+            //     **foo
+            //     bar**
             //
             // Should be rendered as:
-            //     <p><strong>foo__bar__baz</strong></p>
+            //     <p><strong>foo
+            //     bar</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__foo__bar__baz__");
-            var expected = Helpers.Normalize("<p><strong>foo__bar__baz</strong></p>");
+            var commonMark = Helpers.Normalize("**foo\nbar**");
+            var expected = Helpers.Normalize("<p><strong>foo\nbar</strong></p>");
             Helpers.Log("Example {0}", 304);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo__bar__baz__");
+            Helpers.LogValue("CommonMark", "**foo\nbar**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12063,7 +12082,8 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // The rules are sufficient for the following nesting patterns:
+        // In particular, emphasis and strong emphasis can be nested
+        // inside strong emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12073,18 +12093,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo bar***
+            //     __foo _bar_ baz__
             //
             // Should be rendered as:
-            //     <p><strong><em>foo bar</em></strong></p>
+            //     <p><strong>foo <em>bar</em> baz</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("***foo bar***");
-            var expected = Helpers.Normalize("<p><strong><em>foo bar</em></strong></p>");
+            var commonMark = Helpers.Normalize("__foo _bar_ baz__");
+            var expected = Helpers.Normalize("<p><strong>foo <em>bar</em> baz</strong></p>");
             Helpers.Log("Example {0}", 305);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo bar***");
+            Helpers.LogValue("CommonMark", "__foo _bar_ baz__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12104,18 +12124,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ___foo bar___
+            //     __foo __bar__ baz__
             //
             // Should be rendered as:
-            //     <p><strong><em>foo bar</em></strong></p>
+            //     <p><strong>foo <strong>bar</strong> baz</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("___foo bar___");
-            var expected = Helpers.Normalize("<p><strong><em>foo bar</em></strong></p>");
+            var commonMark = Helpers.Normalize("__foo __bar__ baz__");
+            var expected = Helpers.Normalize("<p><strong>foo <strong>bar</strong> baz</strong></p>");
             Helpers.Log("Example {0}", 306);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "___foo bar___");
+            Helpers.LogValue("CommonMark", "__foo __bar__ baz__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12135,18 +12155,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo** bar*
+            //     ____foo__ bar__
             //
             // Should be rendered as:
-            //     <p><em><strong>foo</strong> bar</em></p>
+            //     <p><strong><strong>foo</strong> bar</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("***foo** bar*");
-            var expected = Helpers.Normalize("<p><em><strong>foo</strong> bar</em></p>");
+            var commonMark = Helpers.Normalize("____foo__ bar__");
+            var expected = Helpers.Normalize("<p><strong><strong>foo</strong> bar</strong></p>");
             Helpers.Log("Example {0}", 307);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo** bar*");
+            Helpers.LogValue("CommonMark", "____foo__ bar__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12166,18 +12186,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ___foo__ bar_
+            //     **foo **bar****
             //
             // Should be rendered as:
-            //     <p><em><strong>foo</strong> bar</em></p>
+            //     <p><strong>foo <strong>bar</strong></strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("___foo__ bar_");
-            var expected = Helpers.Normalize("<p><em><strong>foo</strong> bar</em></p>");
+            var commonMark = Helpers.Normalize("**foo **bar****");
+            var expected = Helpers.Normalize("<p><strong>foo <strong>bar</strong></strong></p>");
             Helpers.Log("Example {0}", 308);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "___foo__ bar_");
+            Helpers.LogValue("CommonMark", "**foo **bar****");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12197,18 +12217,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo* bar**
+            //     **foo *bar* baz**
             //
             // Should be rendered as:
-            //     <p><strong><em>foo</em> bar</strong></p>
+            //     <p><strong>foo <em>bar</em> baz</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("***foo* bar**");
-            var expected = Helpers.Normalize("<p><strong><em>foo</em> bar</strong></p>");
+            var commonMark = Helpers.Normalize("**foo *bar* baz**");
+            var expected = Helpers.Normalize("<p><strong>foo <em>bar</em> baz</strong></p>");
             Helpers.Log("Example {0}", 309);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo* bar**");
+            Helpers.LogValue("CommonMark", "**foo *bar* baz**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12219,6 +12239,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // But note:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12228,18 +12249,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ___foo_ bar__
+            //     **foo*bar*baz**
             //
             // Should be rendered as:
-            //     <p><strong><em>foo</em> bar</strong></p>
+            //     <p><em><em>foo</em>bar</em>baz**</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("___foo_ bar__");
-            var expected = Helpers.Normalize("<p><strong><em>foo</em> bar</strong></p>");
+            var commonMark = Helpers.Normalize("**foo*bar*baz**");
+            var expected = Helpers.Normalize("<p><em><em>foo</em>bar</em>baz**</p>");
             Helpers.Log("Example {0}", 310);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "___foo_ bar__");
+            Helpers.LogValue("CommonMark", "**foo*bar*baz**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12250,6 +12271,9 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // The difference is that in the preceding case,
+        // the internal delimiters [can close emphasis](#can-close-emphasis),
+        // while in the cases with spaces, they cannot.
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12259,18 +12283,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo **bar***
+            //     ***foo* bar**
             //
             // Should be rendered as:
-            //     <p><em>foo <strong>bar</strong></em></p>
+            //     <p><strong><em>foo</em> bar</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo **bar***");
-            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong></em></p>");
+            var commonMark = Helpers.Normalize("***foo* bar**");
+            var expected = Helpers.Normalize("<p><strong><em>foo</em> bar</strong></p>");
             Helpers.Log("Example {0}", 311);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo **bar***");
+            Helpers.LogValue("CommonMark", "***foo* bar**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12290,18 +12314,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo __bar___
+            //     **foo *bar***
             //
             // Should be rendered as:
-            //     <p><em>foo <strong>bar</strong></em></p>
+            //     <p><strong>foo <em>bar</em></strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_foo __bar___");
-            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong></em></p>");
+            var commonMark = Helpers.Normalize("**foo *bar***");
+            var expected = Helpers.Normalize("<p><strong>foo <em>bar</em></strong></p>");
             Helpers.Log("Example {0}", 312);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo __bar___");
+            Helpers.LogValue("CommonMark", "**foo *bar***");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12312,6 +12336,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Indefinite levels of nesting are possible:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12321,18 +12346,20 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo *bar***
+            //     **foo *bar **baz**
+            //     bim* bop**
             //
             // Should be rendered as:
-            //     <p><strong>foo <em>bar</em></strong></p>
+            //     <p><strong>foo <em>bar <strong>baz</strong>
+            //     bim</em> bop</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**foo *bar***");
-            var expected = Helpers.Normalize("<p><strong>foo <em>bar</em></strong></p>");
+            var commonMark = Helpers.Normalize("**foo *bar **baz**\nbim* bop**");
+            var expected = Helpers.Normalize("<p><strong>foo <em>bar <strong>baz</strong>\nbim</em> bop</strong></p>");
             Helpers.Log("Example {0}", 313);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo *bar***");
+            Helpers.LogValue("CommonMark", "**foo *bar **baz**\nbim* bop**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12352,18 +12379,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo _bar___
+            //     **foo [*bar*](/url)**
             //
             // Should be rendered as:
-            //     <p><strong>foo <em>bar</em></strong></p>
+            //     <p><strong>foo <a href="/url"><em>bar</em></a></strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__foo _bar___");
-            var expected = Helpers.Normalize("<p><strong>foo <em>bar</em></strong></p>");
+            var commonMark = Helpers.Normalize("**foo [*bar*](/url)**");
+            var expected = Helpers.Normalize("<p><strong>foo <a href=\"/url\"><em>bar</em></a></strong></p>");
             Helpers.Log("Example {0}", 314);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo _bar___");
+            Helpers.LogValue("CommonMark", "**foo [*bar*](/url)**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12374,6 +12401,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // There can be no empty emphasis or strong emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12383,18 +12411,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo **bar***
+            //     __ is not an empty emphasis
             //
             // Should be rendered as:
-            //     <p><em>foo <strong>bar</strong></em></p>
+            //     <p>__ is not an empty emphasis</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo **bar***");
-            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong></em></p>");
+            var commonMark = Helpers.Normalize("__ is not an empty emphasis");
+            var expected = Helpers.Normalize("<p>__ is not an empty emphasis</p>");
             Helpers.Log("Example {0}", 315);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo **bar***");
+            Helpers.LogValue("CommonMark", "__ is not an empty emphasis");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12414,18 +12442,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo __bar___
+            //     ____ is not an empty strong emphasis
             //
             // Should be rendered as:
-            //     <p><em>foo <strong>bar</strong></em></p>
+            //     <p>____ is not an empty strong emphasis</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_foo __bar___");
-            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong></em></p>");
+            var commonMark = Helpers.Normalize("____ is not an empty strong emphasis");
+            var expected = Helpers.Normalize("<p>____ is not an empty strong emphasis</p>");
             Helpers.Log("Example {0}", 316);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo __bar___");
+            Helpers.LogValue("CommonMark", "____ is not an empty strong emphasis");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12436,6 +12464,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Rule 11:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12445,18 +12474,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo *bar* baz*
+            //     foo ***
             //
             // Should be rendered as:
-            //     <p><em>foo <em>bar</em> baz</em></p>
+            //     <p>foo ***</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo *bar* baz*");
-            var expected = Helpers.Normalize("<p><em>foo <em>bar</em> baz</em></p>");
+            var commonMark = Helpers.Normalize("foo ***");
+            var expected = Helpers.Normalize("<p>foo ***</p>");
             Helpers.Log("Example {0}", 317);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo *bar* baz*");
+            Helpers.LogValue("CommonMark", "foo ***");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12476,18 +12505,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo _bar_ baz_
+            //     foo *\**
             //
             // Should be rendered as:
-            //     <p><em>foo <em>bar</em> baz</em></p>
+            //     <p>foo <em>*</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_foo _bar_ baz_");
-            var expected = Helpers.Normalize("<p><em>foo <em>bar</em> baz</em></p>");
+            var commonMark = Helpers.Normalize("foo *\\**");
+            var expected = Helpers.Normalize("<p>foo <em>*</em></p>");
             Helpers.Log("Example {0}", 318);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo _bar_ baz_");
+            Helpers.LogValue("CommonMark", "foo *\\**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12507,18 +12536,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo **bar** baz**
+            //     foo *_*
             //
             // Should be rendered as:
-            //     <p><strong>foo <strong>bar</strong> baz</strong></p>
+            //     <p>foo <em>_</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**foo **bar** baz**");
-            var expected = Helpers.Normalize("<p><strong>foo <strong>bar</strong> baz</strong></p>");
+            var commonMark = Helpers.Normalize("foo *_*");
+            var expected = Helpers.Normalize("<p>foo <em>_</em></p>");
             Helpers.Log("Example {0}", 319);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo **bar** baz**");
+            Helpers.LogValue("CommonMark", "foo *_*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12538,18 +12567,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo __bar__ baz__
+            //     foo *****
             //
             // Should be rendered as:
-            //     <p><strong>foo <strong>bar</strong> baz</strong></p>
+            //     <p>foo *****</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__foo __bar__ baz__");
-            var expected = Helpers.Normalize("<p><strong>foo <strong>bar</strong> baz</strong></p>");
+            var commonMark = Helpers.Normalize("foo *****");
+            var expected = Helpers.Normalize("<p>foo *****</p>");
             Helpers.Log("Example {0}", 320);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo __bar__ baz__");
+            Helpers.LogValue("CommonMark", "foo *****");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12569,18 +12598,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo **bar** baz*
+            //     foo **\***
             //
             // Should be rendered as:
-            //     <p><em>foo <strong>bar</strong> baz</em></p>
+            //     <p>foo <strong>*</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo **bar** baz*");
-            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong> baz</em></p>");
+            var commonMark = Helpers.Normalize("foo **\\***");
+            var expected = Helpers.Normalize("<p>foo <strong>*</strong></p>");
             Helpers.Log("Example {0}", 321);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo **bar** baz*");
+            Helpers.LogValue("CommonMark", "foo **\\***");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12600,18 +12629,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo __bar__ baz_
+            //     foo **_**
             //
             // Should be rendered as:
-            //     <p><em>foo <strong>bar</strong> baz</em></p>
+            //     <p>foo <strong>_</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("_foo __bar__ baz_");
-            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong> baz</em></p>");
+            var commonMark = Helpers.Normalize("foo **_**");
+            var expected = Helpers.Normalize("<p>foo <strong>_</strong></p>");
             Helpers.Log("Example {0}", 322);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo __bar__ baz_");
+            Helpers.LogValue("CommonMark", "foo **_**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12622,6 +12651,9 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Note that when delimiters do not match evenly, Rule 11 determines
+        // that the excess literal `*` characters will appear outside of the
+        // emphasis, rather than inside it:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12631,18 +12663,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo *bar* baz**
+            //     **foo*
             //
             // Should be rendered as:
-            //     <p><strong>foo <em>bar</em> baz</strong></p>
+            //     <p>*<em>foo</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**foo *bar* baz**");
-            var expected = Helpers.Normalize("<p><strong>foo <em>bar</em> baz</strong></p>");
+            var commonMark = Helpers.Normalize("**foo*");
+            var expected = Helpers.Normalize("<p>*<em>foo</em></p>");
             Helpers.Log("Example {0}", 323);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo *bar* baz**");
+            Helpers.LogValue("CommonMark", "**foo*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12662,18 +12694,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo _bar_ baz__
+            //     *foo**
             //
             // Should be rendered as:
-            //     <p><strong>foo <em>bar</em> baz</strong></p>
+            //     <p><em>foo</em>*</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__foo _bar_ baz__");
-            var expected = Helpers.Normalize("<p><strong>foo <em>bar</em> baz</strong></p>");
+            var commonMark = Helpers.Normalize("*foo**");
+            var expected = Helpers.Normalize("<p><em>foo</em>*</p>");
             Helpers.Log("Example {0}", 324);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo _bar_ baz__");
+            Helpers.LogValue("CommonMark", "*foo**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12693,18 +12725,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo, *bar*, baz**
+            //     ***foo**
             //
             // Should be rendered as:
-            //     <p><strong>foo, <em>bar</em>, baz</strong></p>
+            //     <p>*<strong>foo</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**foo, *bar*, baz**");
-            var expected = Helpers.Normalize("<p><strong>foo, <em>bar</em>, baz</strong></p>");
+            var commonMark = Helpers.Normalize("***foo**");
+            var expected = Helpers.Normalize("<p>*<strong>foo</strong></p>");
             Helpers.Log("Example {0}", 325);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo, *bar*, baz**");
+            Helpers.LogValue("CommonMark", "***foo**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12724,18 +12756,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo, _bar_, baz__
+            //     ****foo*
             //
             // Should be rendered as:
-            //     <p><strong>foo, <em>bar</em>, baz</strong></p>
+            //     <p>***<em>foo</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("__foo, _bar_, baz__");
-            var expected = Helpers.Normalize("<p><strong>foo, <em>bar</em>, baz</strong></p>");
+            var commonMark = Helpers.Normalize("****foo*");
+            var expected = Helpers.Normalize("<p>***<em>foo</em></p>");
             Helpers.Log("Example {0}", 326);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo, _bar_, baz__");
+            Helpers.LogValue("CommonMark", "****foo*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12746,7 +12778,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // But note:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12756,18 +12787,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo**bar**baz*
+            //     **foo***
             //
             // Should be rendered as:
-            //     <p><em>foo</em><em>bar</em><em>baz</em></p>
+            //     <p><strong>foo</strong>*</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo**bar**baz*");
-            var expected = Helpers.Normalize("<p><em>foo</em><em>bar</em><em>baz</em></p>");
+            var commonMark = Helpers.Normalize("**foo***");
+            var expected = Helpers.Normalize("<p><strong>foo</strong>*</p>");
             Helpers.Log("Example {0}", 327);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo**bar**baz*");
+            Helpers.LogValue("CommonMark", "**foo***");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12787,18 +12818,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo*bar*baz**
+            //     *foo****
             //
             // Should be rendered as:
-            //     <p><em><em>foo</em>bar</em>baz**</p>
+            //     <p><em>foo</em>***</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**foo*bar*baz**");
-            var expected = Helpers.Normalize("<p><em><em>foo</em>bar</em>baz**</p>");
+            var commonMark = Helpers.Normalize("*foo****");
+            var expected = Helpers.Normalize("<p><em>foo</em>***</p>");
             Helpers.Log("Example {0}", 328);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo*bar*baz**");
+            Helpers.LogValue("CommonMark", "*foo****");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12809,13 +12840,7 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // The difference is that in the two preceding cases,
-        // the internal delimiters [can close emphasis](#can-close-emphasis),
-        // while in the cases with spaces, they cannot.
-        //
-        // Note that you cannot nest emphasis directly inside emphasis
-        // using the same delimeter, or strong emphasis directly inside
-        // strong emphasis:
+        // Rule 12:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12825,18 +12850,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo**
+            //     foo ___
             //
             // Should be rendered as:
-            //     <p><strong>foo</strong></p>
+            //     <p>foo ___</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**foo**");
-            var expected = Helpers.Normalize("<p><strong>foo</strong></p>");
+            var commonMark = Helpers.Normalize("foo ___");
+            var expected = Helpers.Normalize("<p>foo ___</p>");
             Helpers.Log("Example {0}", 329);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo**");
+            Helpers.LogValue("CommonMark", "foo ___");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12856,18 +12881,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ****foo****
+            //     foo _\__
             //
             // Should be rendered as:
-            //     <p>****foo****</p>
+            //     <p>foo <em>_</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("****foo****");
-            var expected = Helpers.Normalize("<p>****foo****</p>");
+            var commonMark = Helpers.Normalize("foo _\\__");
+            var expected = Helpers.Normalize("<p>foo <em>_</em></p>");
             Helpers.Log("Example {0}", 330);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "****foo****");
+            Helpers.LogValue("CommonMark", "foo _\\__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12878,7 +12903,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // For these nestings, you need to switch delimiters:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12888,18 +12912,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *_foo_*
+            //     foo _*_
             //
             // Should be rendered as:
-            //     <p><em><em>foo</em></em></p>
+            //     <p>foo <em>*</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*_foo_*");
-            var expected = Helpers.Normalize("<p><em><em>foo</em></em></p>");
+            var commonMark = Helpers.Normalize("foo _*_");
+            var expected = Helpers.Normalize("<p>foo <em>*</em></p>");
             Helpers.Log("Example {0}", 331);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*_foo_*");
+            Helpers.LogValue("CommonMark", "foo _*_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12919,18 +12943,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **__foo__**
+            //     foo _____
             //
             // Should be rendered as:
-            //     <p><strong><strong>foo</strong></strong></p>
+            //     <p>foo _____</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**__foo__**");
-            var expected = Helpers.Normalize("<p><strong><strong>foo</strong></strong></p>");
+            var commonMark = Helpers.Normalize("foo _____");
+            var expected = Helpers.Normalize("<p>foo _____</p>");
             Helpers.Log("Example {0}", 332);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**__foo__**");
+            Helpers.LogValue("CommonMark", "foo _____");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12941,9 +12965,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // Note that a `*` followed by a `*` can close emphasis, and
-        // a `**` followed by a `*` can close strong emphasis (and
-        // similarly for `_` and `__`):
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -12953,18 +12974,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo**
+            //     foo __\___
             //
             // Should be rendered as:
-            //     <p><em>foo</em>*</p>
+            //     <p>foo <strong>_</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo**");
-            var expected = Helpers.Normalize("<p><em>foo</em>*</p>");
+            var commonMark = Helpers.Normalize("foo __\\___");
+            var expected = Helpers.Normalize("<p>foo <strong>_</strong></p>");
             Helpers.Log("Example {0}", 333);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo**");
+            Helpers.LogValue("CommonMark", "foo __\\___");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -12984,18 +13005,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo *bar**
+            //     foo __*__
             //
             // Should be rendered as:
-            //     <p><em>foo <em>bar</em></em></p>
+            //     <p>foo <strong>*</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo *bar**");
-            var expected = Helpers.Normalize("<p><em>foo <em>bar</em></em></p>");
+            var commonMark = Helpers.Normalize("foo __*__");
+            var expected = Helpers.Normalize("<p>foo <strong>*</strong></p>");
             Helpers.Log("Example {0}", 334);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo *bar**");
+            Helpers.LogValue("CommonMark", "foo __*__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13015,18 +13036,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo***
+            //     __foo_
             //
             // Should be rendered as:
-            //     <p><strong>foo</strong>*</p>
+            //     <p>_<em>foo</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**foo***");
-            var expected = Helpers.Normalize("<p><strong>foo</strong>*</p>");
+            var commonMark = Helpers.Normalize("__foo_");
+            var expected = Helpers.Normalize("<p>_<em>foo</em></p>");
             Helpers.Log("Example {0}", 335);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo***");
+            Helpers.LogValue("CommonMark", "__foo_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13037,6 +13058,9 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Note that when delimiters do not match evenly, Rule 12 determines
+        // that the excess literal `_` characters will appear outside of the
+        // emphasis, rather than inside it:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -13046,18 +13070,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo* bar***
+            //     _foo__
             //
             // Should be rendered as:
-            //     <p><strong><em>foo</em> bar</strong>*</p>
+            //     <p><em>foo</em>_</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("***foo* bar***");
-            var expected = Helpers.Normalize("<p><strong><em>foo</em> bar</strong>*</p>");
+            var commonMark = Helpers.Normalize("_foo__");
+            var expected = Helpers.Normalize("<p><em>foo</em>_</p>");
             Helpers.Log("Example {0}", 336);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo* bar***");
+            Helpers.LogValue("CommonMark", "_foo__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13077,18 +13101,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo** bar***
+            //     ___foo__
             //
             // Should be rendered as:
-            //     <p><em><strong>foo</strong> bar</em>**</p>
+            //     <p>_<strong>foo</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("***foo** bar***");
-            var expected = Helpers.Normalize("<p><em><strong>foo</strong> bar</em>**</p>");
+            var commonMark = Helpers.Normalize("___foo__");
+            var expected = Helpers.Normalize("<p>_<strong>foo</strong></p>");
             Helpers.Log("Example {0}", 337);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo** bar***");
+            Helpers.LogValue("CommonMark", "___foo__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13099,8 +13123,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // The following contains no strong emphasis, because the opening
-        // delimiter is closed by the first `*` before `bar`:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -13110,18 +13132,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo**bar***
+            //     ____foo_
             //
             // Should be rendered as:
-            //     <p><em>foo</em><em>bar</em>**</p>
+            //     <p>___<em>foo</em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo**bar***");
-            var expected = Helpers.Normalize("<p><em>foo</em><em>bar</em>**</p>");
+            var commonMark = Helpers.Normalize("____foo_");
+            var expected = Helpers.Normalize("<p>___<em>foo</em></p>");
             Helpers.Log("Example {0}", 338);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo**bar***");
+            Helpers.LogValue("CommonMark", "____foo_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13132,7 +13154,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // However, a string of four or more `****` can never close emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -13142,18 +13163,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo****
+            //     __foo___
             //
             // Should be rendered as:
-            //     <p>*foo****</p>
+            //     <p><strong>foo</strong>_</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo****");
-            var expected = Helpers.Normalize("<p>*foo****</p>");
+            var commonMark = Helpers.Normalize("__foo___");
+            var expected = Helpers.Normalize("<p><strong>foo</strong>_</p>");
             Helpers.Log("Example {0}", 339);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo****");
+            Helpers.LogValue("CommonMark", "__foo___");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13164,7 +13185,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // We retain symmetry in these cases:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -13174,21 +13194,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo**
-            //     
-            //     **foo*
+            //     _foo____
             //
             // Should be rendered as:
-            //     <p><em>foo</em>*</p>
-            //     <p>*<em>foo</em></p>
+            //     <p><em>foo</em>___</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo**\n\n**foo*");
-            var expected = Helpers.Normalize("<p><em>foo</em>*</p>\n<p>*<em>foo</em></p>");
+            var commonMark = Helpers.Normalize("_foo____");
+            var expected = Helpers.Normalize("<p><em>foo</em>___</p>");
             Helpers.Log("Example {0}", 340);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo**\n\n**foo*");
+            Helpers.LogValue("CommonMark", "_foo____");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13199,6 +13216,8 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Rule 13 implies that if you want emphasis nested directly inside
+        // emphasis, you must use different delimiters:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -13208,21 +13227,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo *bar**
-            //     
-            //     **foo* bar*
+            //     **foo**
             //
             // Should be rendered as:
-            //     <p><em>foo <em>bar</em></em></p>
-            //     <p><em><em>foo</em> bar</em></p>
+            //     <p><strong>foo</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*foo *bar**\n\n**foo* bar*");
-            var expected = Helpers.Normalize("<p><em>foo <em>bar</em></em></p>\n<p><em><em>foo</em> bar</em></p>");
+            var commonMark = Helpers.Normalize("**foo**");
+            var expected = Helpers.Normalize("<p><strong>foo</strong></p>");
             Helpers.Log("Example {0}", 341);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo *bar**\n\n**foo* bar*");
+            Helpers.LogValue("CommonMark", "**foo**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13233,7 +13249,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // More cases with mismatched delimiters:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -13243,18 +13258,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *bar***
+            //     *_foo_*
             //
             // Should be rendered as:
-            //     <p><em>bar</em>**</p>
+            //     <p><em><em>foo</em></em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*bar***");
-            var expected = Helpers.Normalize("<p><em>bar</em>**</p>");
+            var commonMark = Helpers.Normalize("*_foo_*");
+            var expected = Helpers.Normalize("<p><em><em>foo</em></em></p>");
             Helpers.Log("Example {0}", 342);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*bar***");
+            Helpers.LogValue("CommonMark", "*_foo_*");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13274,18 +13289,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo*
+            //     __foo__
             //
             // Should be rendered as:
-            //     <p>**<em>foo</em></p>
+            //     <p><strong>foo</strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("***foo*");
-            var expected = Helpers.Normalize("<p>**<em>foo</em></p>");
+            var commonMark = Helpers.Normalize("__foo__");
+            var expected = Helpers.Normalize("<p><strong>foo</strong></p>");
             Helpers.Log("Example {0}", 343);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo*");
+            Helpers.LogValue("CommonMark", "__foo__");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13305,18 +13320,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **bar***
+            //     _*foo*_
             //
             // Should be rendered as:
-            //     <p><strong>bar</strong>*</p>
+            //     <p><em><em>foo</em></em></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**bar***");
-            var expected = Helpers.Normalize("<p><strong>bar</strong>*</p>");
+            var commonMark = Helpers.Normalize("_*foo*_");
+            var expected = Helpers.Normalize("<p><em><em>foo</em></em></p>");
             Helpers.Log("Example {0}", 344);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**bar***");
+            Helpers.LogValue("CommonMark", "_*foo*_");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13327,6 +13342,8 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // However, strong emphasis within strong emphasisis possible without
+        // switching delimiters:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -13336,18 +13353,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo**
+            //     ****foo****
             //
             // Should be rendered as:
-            //     <p>*<strong>foo</strong></p>
+            //     <p><strong><strong>foo</strong></strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("***foo**");
-            var expected = Helpers.Normalize("<p>*<strong>foo</strong></p>");
+            var commonMark = Helpers.Normalize("****foo****");
+            var expected = Helpers.Normalize("<p><strong><strong>foo</strong></strong></p>");
             Helpers.Log("Example {0}", 345);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo**");
+            Helpers.LogValue("CommonMark", "****foo****");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13367,18 +13384,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo *bar*
+            //     ____foo____
             //
             // Should be rendered as:
-            //     <p>***foo <em>bar</em></p>
+            //     <p><strong><strong>foo</strong></strong></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("***foo *bar*");
-            var expected = Helpers.Normalize("<p>***foo <em>bar</em></p>");
+            var commonMark = Helpers.Normalize("____foo____");
+            var expected = Helpers.Normalize("<p><strong><strong>foo</strong></strong></p>");
             Helpers.Log("Example {0}", 346);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo *bar*");
+            Helpers.LogValue("CommonMark", "____foo____");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13389,13 +13406,109 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // The following cases illustrate rule 13:
+        // Rule 13 can be applied to arbitrarily long sequences of
+        // delimiters:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
         public void Example347()
         {
             // Example 347
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     ******foo******
+            //
+            // Should be rendered as:
+            //     <p><strong><strong><strong>foo</strong></strong></strong></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("******foo******");
+            var expected = Helpers.Normalize("<p><strong><strong><strong>foo</strong></strong></strong></p>");
+            Helpers.Log("Example {0}", 347);
+            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "******foo******");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        // Rule 14:
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example348()
+        {
+            // Example 348
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     ***foo***
+            //
+            // Should be rendered as:
+            //     <p><strong><em>foo</em></strong></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("***foo***");
+            var expected = Helpers.Normalize("<p><strong><em>foo</em></strong></p>");
+            Helpers.Log("Example {0}", 348);
+            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "***foo***");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example349()
+        {
+            // Example 349
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     _____foo_____
+            //
+            // Should be rendered as:
+            //     <p><strong><strong><em>foo</em></strong></strong></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("_____foo_____");
+            var expected = Helpers.Normalize("<p><strong><strong><em>foo</em></strong></strong></p>");
+            Helpers.Log("Example {0}", 349);
+            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "_____foo_____");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        // Rule 15:
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example350()
+        {
+            // Example 350
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -13407,7 +13520,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("*foo _bar* baz_");
             var expected = Helpers.Normalize("<p><em>foo _bar</em> baz_</p>");
-            Helpers.Log("Example {0}", 347);
+            Helpers.Log("Example {0}", 350);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "*foo _bar* baz_");
@@ -13424,24 +13537,24 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example348()
+        public void Example351()
         {
-            // Example 348
+            // Example 351
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo bar* baz**
+            //     **foo*bar**
             //
             // Should be rendered as:
-            //     <p><em><em>foo bar</em> baz</em>*</p>
+            //     <p><em><em>foo</em>bar</em>*</p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("**foo bar* baz**");
-            var expected = Helpers.Normalize("<p><em><em>foo bar</em> baz</em>*</p>");
-            Helpers.Log("Example {0}", 348);
+            var commonMark = Helpers.Normalize("**foo*bar**");
+            var expected = Helpers.Normalize("<p><em><em>foo</em>bar</em>*</p>");
+            Helpers.Log("Example {0}", 351);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo bar* baz**");
+            Helpers.LogValue("CommonMark", "**foo*bar**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13452,13 +13565,13 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // The following cases illustrate rule 14:
+        // Rule 16:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example349()
+        public void Example352()
         {
-            // Example 349
+            // Example 352
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -13470,104 +13583,10 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("**foo **bar baz**");
             var expected = Helpers.Normalize("<p>**foo <strong>bar baz</strong></p>");
-            Helpers.Log("Example {0}", 349);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo **bar baz**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Emphasis and strong emphasis")]
-        //[Timeout(1000)]
-        public void Example350()
-        {
-            // Example 350
-            // Section: Inlines - Emphasis and strong emphasis
-            //
-            // The following CommonMark:
-            //     *foo *bar baz*
-            //
-            // Should be rendered as:
-            //     <p>*foo <em>bar baz</em></p>
-
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo *bar baz*");
-            var expected = Helpers.Normalize("<p>*foo <em>bar baz</em></p>");
-            Helpers.Log("Example {0}", 350);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo *bar baz*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
-        }
-
-        // The following cases illustrate rule 15:
-        [TestMethod]
-        [TestCategory("Inlines - Emphasis and strong emphasis")]
-        //[Timeout(1000)]
-        public void Example351()
-        {
-            // Example 351
-            // Section: Inlines - Emphasis and strong emphasis
-            //
-            // The following CommonMark:
-            //     *[foo*](bar)
-            //
-            // Should be rendered as:
-            //     <p>*<a href="bar">foo*</a></p>
-
-            // Arrange
-            var commonMark = Helpers.Normalize("*[foo*](bar)");
-            var expected = Helpers.Normalize("<p>*<a href=\"bar\">foo*</a></p>");
-            Helpers.Log("Example {0}", 351);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*[foo*](bar)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Emphasis and strong emphasis")]
-        //[Timeout(1000)]
-        public void Example352()
-        {
-            // Example 352
-            // Section: Inlines - Emphasis and strong emphasis
-            //
-            // The following CommonMark:
-            //     *![foo*](bar)
-            //
-            // Should be rendered as:
-            //     <p>*<img src="bar" alt="foo*" /></p>
-
-            // Arrange
-            var commonMark = Helpers.Normalize("*![foo*](bar)");
-            var expected = Helpers.Normalize("<p>*<img src=\"bar\" alt=\"foo*\" /></p>");
             Helpers.Log("Example {0}", 352);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*![foo*](bar)");
+            Helpers.LogValue("CommonMark", "**foo **bar baz**");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13587,6 +13606,100 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
+            //     *foo *bar baz*
+            //
+            // Should be rendered as:
+            //     <p>*foo <em>bar baz</em></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("*foo *bar baz*");
+            var expected = Helpers.Normalize("<p>*foo <em>bar baz</em></p>");
+            Helpers.Log("Example {0}", 353);
+            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "*foo *bar baz*");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        // Rule 17:
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example354()
+        {
+            // Example 354
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     *[bar*](/url)
+            //
+            // Should be rendered as:
+            //     <p>*<a href="/url">bar*</a></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("*[bar*](/url)");
+            var expected = Helpers.Normalize("<p>*<a href=\"/url\">bar*</a></p>");
+            Helpers.Log("Example {0}", 354);
+            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "*[bar*](/url)");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example355()
+        {
+            // Example 355
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     _foo [bar_](/url)
+            //
+            // Should be rendered as:
+            //     <p>_foo <a href="/url">bar_</a></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("_foo [bar_](/url)");
+            var expected = Helpers.Normalize("<p>_foo <a href=\"/url\">bar_</a></p>");
+            Helpers.Log("Example {0}", 355);
+            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "_foo [bar_](/url)");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example356()
+        {
+            // Example 356
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
             //     *<img src="foo" title="*"/>
             //
             // Should be rendered as:
@@ -13595,7 +13708,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("*<img src=\"foo\" title=\"*\"/>");
             var expected = Helpers.Normalize("<p>*<img src=\"foo\" title=\"*\"/></p>");
-            Helpers.Log("Example {0}", 353);
+            Helpers.Log("Example {0}", 356);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "*<img src=\"foo\" title=\"*\"/>");
@@ -13612,24 +13725,179 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example354()
+        public void Example357()
         {
-            // Example 354
+            // Example 357
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *a`a*`
+            //     **<a href="**">
             //
             // Should be rendered as:
-            //     <p>*a<code>a*</code></p>
+            //     <p>**<a href="**"></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("*a`a*`");
-            var expected = Helpers.Normalize("<p>*a<code>a*</code></p>");
-            Helpers.Log("Example {0}", 354);
+            var commonMark = Helpers.Normalize("**<a href=\"**\">");
+            var expected = Helpers.Normalize("<p>**<a href=\"**\"></p>");
+            Helpers.Log("Example {0}", 357);
             Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "*a`a*`");
+            Helpers.LogValue("CommonMark", "**<a href=\"**\">");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example358()
+        {
+            // Example 358
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     __<a href="__">
+            //
+            // Should be rendered as:
+            //     <p>__<a href="__"></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("__<a href=\"__\">");
+            var expected = Helpers.Normalize("<p>__<a href=\"__\"></p>");
+            Helpers.Log("Example {0}", 358);
+            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "__<a href=\"__\">");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example359()
+        {
+            // Example 359
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     *a `*`*
+            //
+            // Should be rendered as:
+            //     <p><em>a <code>*</code></em></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("*a `*`*");
+            var expected = Helpers.Normalize("<p><em>a <code>*</code></em></p>");
+            Helpers.Log("Example {0}", 359);
+            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "*a `*`*");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example360()
+        {
+            // Example 360
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     _a `_`_
+            //
+            // Should be rendered as:
+            //     <p><em>a <code>_</code></em></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("_a `_`_");
+            var expected = Helpers.Normalize("<p><em>a <code>_</code></em></p>");
+            Helpers.Log("Example {0}", 360);
+            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "_a `_`_");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example361()
+        {
+            // Example 361
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     **a<http://foo.bar?q=**>
+            //
+            // Should be rendered as:
+            //     <p>**a<a href="http://foo.bar?q=**">http://foo.bar?q=**</a></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("**a<http://foo.bar?q=**>");
+            var expected = Helpers.Normalize("<p>**a<a href=\"http://foo.bar?q=**\">http://foo.bar?q=**</a></p>");
+            Helpers.Log("Example {0}", 361);
+            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "**a<http://foo.bar?q=**>");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example362()
+        {
+            // Example 362
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     __a<http://foo.bar?q=__>
+            //
+            // Should be rendered as:
+            //     <p>__a<a href="http://foo.bar?q=__">http://foo.bar?q=__</a></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("__a<http://foo.bar?q=__>");
+            var expected = Helpers.Normalize("<p>__a<a href=\"http://foo.bar?q=__\">http://foo.bar?q=__</a></p>");
+            Helpers.Log("Example {0}", 362);
+            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "__a<http://foo.bar?q=__>");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -13708,9 +13976,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example355()
+        public void Example363()
         {
-            // Example 355
+            // Example 363
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -13722,7 +13990,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](/uri \"title\")");
             var expected = Helpers.Normalize("<p><a href=\"/uri\" title=\"title\">link</a></p>");
-            Helpers.Log("Example {0}", 355);
+            Helpers.Log("Example {0}", 363);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](/uri \"title\")");
@@ -13740,9 +14008,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example356()
+        public void Example364()
         {
-            // Example 356
+            // Example 364
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -13754,7 +14022,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](/uri)");
             var expected = Helpers.Normalize("<p><a href=\"/uri\">link</a></p>");
-            Helpers.Log("Example {0}", 356);
+            Helpers.Log("Example {0}", 364);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](/uri)");
@@ -13772,9 +14040,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example357()
+        public void Example365()
         {
-            // Example 357
+            // Example 365
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -13786,7 +14054,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link]()");
             var expected = Helpers.Normalize("<p><a href=\"\">link</a></p>");
-            Helpers.Log("Example {0}", 357);
+            Helpers.Log("Example {0}", 365);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link]()");
@@ -13803,9 +14071,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example358()
+        public void Example366()
         {
-            // Example 358
+            // Example 366
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -13817,7 +14085,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](<>)");
             var expected = Helpers.Normalize("<p><a href=\"\">link</a></p>");
-            Helpers.Log("Example {0}", 358);
+            Helpers.Log("Example {0}", 366);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](<>)");
@@ -13836,9 +14104,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example359()
+        public void Example367()
         {
-            // Example 359
+            // Example 367
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -13850,7 +14118,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](/my uri)");
             var expected = Helpers.Normalize("<p>[link](/my uri)</p>");
-            Helpers.Log("Example {0}", 359);
+            Helpers.Log("Example {0}", 367);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](/my uri)");
@@ -13867,9 +14135,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example360()
+        public void Example368()
         {
-            // Example 360
+            // Example 368
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -13881,7 +14149,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](</my uri>)");
             var expected = Helpers.Normalize("<p><a href=\"/my%20uri\">link</a></p>");
-            Helpers.Log("Example {0}", 360);
+            Helpers.Log("Example {0}", 368);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](</my uri>)");
@@ -13899,9 +14167,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example361()
+        public void Example369()
         {
-            // Example 361
+            // Example 369
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -13915,7 +14183,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](foo\nbar)");
             var expected = Helpers.Normalize("<p>[link](foo\nbar)</p>");
-            Helpers.Log("Example {0}", 361);
+            Helpers.Log("Example {0}", 369);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](foo\nbar)");
@@ -13933,9 +14201,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example362()
+        public void Example370()
         {
-            // Example 362
+            // Example 370
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -13947,7 +14215,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link]((foo)and(bar))");
             var expected = Helpers.Normalize("<p><a href=\"(foo)and(bar)\">link</a></p>");
-            Helpers.Log("Example {0}", 362);
+            Helpers.Log("Example {0}", 370);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link]((foo)and(bar))");
@@ -13966,9 +14234,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example363()
+        public void Example371()
         {
-            // Example 363
+            // Example 371
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -13980,7 +14248,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](foo(and(bar)))");
             var expected = Helpers.Normalize("<p>[link](foo(and(bar)))</p>");
-            Helpers.Log("Example {0}", 363);
+            Helpers.Log("Example {0}", 371);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](foo(and(bar)))");
@@ -13997,9 +14265,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example364()
+        public void Example372()
         {
-            // Example 364
+            // Example 372
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14011,7 +14279,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](foo(and\\(bar\\)))");
             var expected = Helpers.Normalize("<p><a href=\"foo(and(bar))\">link</a></p>");
-            Helpers.Log("Example {0}", 364);
+            Helpers.Log("Example {0}", 372);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](foo(and\\(bar\\)))");
@@ -14028,9 +14296,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example365()
+        public void Example373()
         {
-            // Example 365
+            // Example 373
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14042,7 +14310,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](<foo(and(bar))>)");
             var expected = Helpers.Normalize("<p><a href=\"foo(and(bar))\">link</a></p>");
-            Helpers.Log("Example {0}", 365);
+            Helpers.Log("Example {0}", 373);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](<foo(and(bar))>)");
@@ -14061,9 +14329,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example366()
+        public void Example374()
         {
-            // Example 366
+            // Example 374
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14075,7 +14343,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](foo\\)\\:)");
             var expected = Helpers.Normalize("<p><a href=\"foo):\">link</a></p>");
-            Helpers.Log("Example {0}", 366);
+            Helpers.Log("Example {0}", 374);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](foo\\)\\:)");
@@ -14096,9 +14364,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example367()
+        public void Example375()
         {
-            // Example 367
+            // Example 375
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14110,7 +14378,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](foo%20b&auml;)");
             var expected = Helpers.Normalize("<p><a href=\"foo%20b%C3%A4\">link</a></p>");
-            Helpers.Log("Example {0}", 367);
+            Helpers.Log("Example {0}", 375);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](foo%20b&auml;)");
@@ -14130,9 +14398,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example368()
+        public void Example376()
         {
-            // Example 368
+            // Example 376
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14144,7 +14412,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](\"title\")");
             var expected = Helpers.Normalize("<p><a href=\"%22title%22\">link</a></p>");
-            Helpers.Log("Example {0}", 368);
+            Helpers.Log("Example {0}", 376);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](\"title\")");
@@ -14162,9 +14430,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example369()
+        public void Example377()
         {
-            // Example 369
+            // Example 377
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14180,7 +14448,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](/url \"title\")\n[link](/url 'title')\n[link](/url (title))");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a></p>");
-            Helpers.Log("Example {0}", 369);
+            Helpers.Log("Example {0}", 377);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](/url \"title\")\n[link](/url 'title')\n[link](/url (title))");
@@ -14198,9 +14466,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example370()
+        public void Example378()
         {
-            // Example 370
+            // Example 378
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14212,7 +14480,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](/url \"title \\\"&quot;\")");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title &quot;&quot;\">link</a></p>");
-            Helpers.Log("Example {0}", 370);
+            Helpers.Log("Example {0}", 378);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](/url \"title \\\"&quot;\")");
@@ -14230,9 +14498,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example371()
+        public void Example379()
         {
-            // Example 371
+            // Example 379
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14244,7 +14512,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](/url \"title \"and\" title\")");
             var expected = Helpers.Normalize("<p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>");
-            Helpers.Log("Example {0}", 371);
+            Helpers.Log("Example {0}", 379);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](/url \"title \"and\" title\")");
@@ -14262,9 +14530,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example372()
+        public void Example380()
         {
-            // Example 372
+            // Example 380
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14276,7 +14544,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](/url 'title \"and\" title')");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title &quot;and&quot; title\">link</a></p>");
-            Helpers.Log("Example {0}", 372);
+            Helpers.Log("Example {0}", 380);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](/url 'title \"and\" title')");
@@ -14308,9 +14576,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example373()
+        public void Example381()
         {
-            // Example 373
+            // Example 381
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14323,7 +14591,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link](   /uri\n  \"title\"  )");
             var expected = Helpers.Normalize("<p><a href=\"/uri\" title=\"title\">link</a></p>");
-            Helpers.Log("Example {0}", 373);
+            Helpers.Log("Example {0}", 381);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link](   /uri\n  \"title\"  )");
@@ -14342,9 +14610,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example374()
+        public void Example382()
         {
-            // Example 374
+            // Example 382
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14356,7 +14624,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[link] (/uri)");
             var expected = Helpers.Normalize("<p>[link] (/uri)</p>");
-            Helpers.Log("Example {0}", 374);
+            Helpers.Log("Example {0}", 382);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[link] (/uri)");
@@ -14375,9 +14643,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example375()
+        public void Example383()
         {
-            // Example 375
+            // Example 383
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14389,7 +14657,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo <bar attr=\"](baz)\">");
             var expected = Helpers.Normalize("<p>[foo <bar attr=\"](baz)\"></p>");
-            Helpers.Log("Example {0}", 375);
+            Helpers.Log("Example {0}", 383);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo <bar attr=\"](baz)\">");
@@ -14427,9 +14695,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example376()
+        public void Example384()
         {
-            // Example 376
+            // Example 384
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14443,7 +14711,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo][bar]\n\n[bar]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 376);
+            Helpers.Log("Example {0}", 384);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo][bar]\n\n[bar]: /url \"title\"");
@@ -14461,9 +14729,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example377()
+        public void Example385()
         {
-            // Example 377
+            // Example 385
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14477,7 +14745,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[*foo\\!*][bar]\n\n[bar]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\"><em>foo!</em></a></p>");
-            Helpers.Log("Example {0}", 377);
+            Helpers.Log("Example {0}", 385);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[*foo\\!*][bar]\n\n[bar]: /url \"title\"");
@@ -14495,9 +14763,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example378()
+        public void Example386()
         {
-            // Example 378
+            // Example 386
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14511,7 +14779,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo][BaR]\n\n[bar]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 378);
+            Helpers.Log("Example {0}", 386);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo][BaR]\n\n[bar]: /url \"title\"");
@@ -14529,9 +14797,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example379()
+        public void Example387()
         {
-            // Example 379
+            // Example 387
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14545,7 +14813,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[Толпой][Толпой] is a Russian word.\n\n[ТОЛПОЙ]: /url");
             var expected = Helpers.Normalize("<p><a href=\"/url\">Толпой</a> is a Russian word.</p>");
-            Helpers.Log("Example {0}", 379);
+            Helpers.Log("Example {0}", 387);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[Толпой][Толпой] is a Russian word.\n\n[ТОЛПОЙ]: /url");
@@ -14564,9 +14832,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example380()
+        public void Example388()
         {
-            // Example 380
+            // Example 388
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14581,7 +14849,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[Foo\n  bar]: /url\n\n[Baz][Foo bar]");
             var expected = Helpers.Normalize("<p><a href=\"/url\">Baz</a></p>");
-            Helpers.Log("Example {0}", 380);
+            Helpers.Log("Example {0}", 388);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[Foo\n  bar]: /url\n\n[Baz][Foo bar]");
@@ -14599,9 +14867,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example381()
+        public void Example389()
         {
-            // Example 381
+            // Example 389
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14615,7 +14883,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo] [bar]\n\n[bar]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 381);
+            Helpers.Log("Example {0}", 389);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo] [bar]\n\n[bar]: /url \"title\"");
@@ -14632,9 +14900,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example382()
+        public void Example390()
         {
-            // Example 382
+            // Example 390
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14649,7 +14917,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo]\n[bar]\n\n[bar]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 382);
+            Helpers.Log("Example {0}", 390);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo]\n[bar]\n\n[bar]: /url \"title\"");
@@ -14668,9 +14936,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example383()
+        public void Example391()
         {
-            // Example 383
+            // Example 391
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14686,7 +14954,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo]: /url1\n\n[foo]: /url2\n\n[bar][foo]");
             var expected = Helpers.Normalize("<p><a href=\"/url1\">bar</a></p>");
-            Helpers.Log("Example {0}", 383);
+            Helpers.Log("Example {0}", 391);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo]: /url1\n\n[foo]: /url2\n\n[bar][foo]");
@@ -14706,9 +14974,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example384()
+        public void Example392()
         {
-            // Example 384
+            // Example 392
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14722,7 +14990,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[bar][foo\\!]\n\n[foo!]: /url");
             var expected = Helpers.Normalize("<p>[bar][foo!]</p>");
-            Helpers.Log("Example {0}", 384);
+            Helpers.Log("Example {0}", 392);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[bar][foo\\!]\n\n[foo!]: /url");
@@ -14747,9 +15015,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example385()
+        public void Example393()
         {
-            // Example 385
+            // Example 393
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14763,7 +15031,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo][]\n\n[foo]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 385);
+            Helpers.Log("Example {0}", 393);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo][]\n\n[foo]: /url \"title\"");
@@ -14780,9 +15048,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example386()
+        public void Example394()
         {
-            // Example 386
+            // Example 394
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14796,7 +15064,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[*foo* bar][]\n\n[*foo* bar]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\"><em>foo</em> bar</a></p>");
-            Helpers.Log("Example {0}", 386);
+            Helpers.Log("Example {0}", 394);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[*foo* bar][]\n\n[*foo* bar]: /url \"title\"");
@@ -14814,9 +15082,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example387()
+        public void Example395()
         {
-            // Example 387
+            // Example 395
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14830,7 +15098,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[Foo][]\n\n[foo]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">Foo</a></p>");
-            Helpers.Log("Example {0}", 387);
+            Helpers.Log("Example {0}", 395);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[Foo][]\n\n[foo]: /url \"title\"");
@@ -14849,9 +15117,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example388()
+        public void Example396()
         {
-            // Example 388
+            // Example 396
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14866,7 +15134,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo] \n[]\n\n[foo]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 388);
+            Helpers.Log("Example {0}", 396);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo] \n[]\n\n[foo]: /url \"title\"");
@@ -14892,9 +15160,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example389()
+        public void Example397()
         {
-            // Example 389
+            // Example 397
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14908,7 +15176,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo]\n\n[foo]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 389);
+            Helpers.Log("Example {0}", 397);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo]\n\n[foo]: /url \"title\"");
@@ -14925,9 +15193,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example390()
+        public void Example398()
         {
-            // Example 390
+            // Example 398
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14941,7 +15209,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[*foo* bar]\n\n[*foo* bar]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\"><em>foo</em> bar</a></p>");
-            Helpers.Log("Example {0}", 390);
+            Helpers.Log("Example {0}", 398);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[*foo* bar]\n\n[*foo* bar]: /url \"title\"");
@@ -14958,9 +15226,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example391()
+        public void Example399()
         {
-            // Example 391
+            // Example 399
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -14974,7 +15242,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[[*foo* bar]]\n\n[*foo* bar]: /url \"title\"");
             var expected = Helpers.Normalize("<p>[<a href=\"/url\" title=\"title\"><em>foo</em> bar</a>]</p>");
-            Helpers.Log("Example {0}", 391);
+            Helpers.Log("Example {0}", 399);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[[*foo* bar]]\n\n[*foo* bar]: /url \"title\"");
@@ -14992,9 +15260,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example392()
+        public void Example400()
         {
-            // Example 392
+            // Example 400
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -15008,7 +15276,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[Foo]\n\n[foo]: /url \"title\"");
             var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">Foo</a></p>");
-            Helpers.Log("Example {0}", 392);
+            Helpers.Log("Example {0}", 400);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[Foo]\n\n[foo]: /url \"title\"");
@@ -15027,9 +15295,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example393()
+        public void Example401()
         {
-            // Example 393
+            // Example 401
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -15043,7 +15311,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("\\[foo]\n\n[foo]: /url \"title\"");
             var expected = Helpers.Normalize("<p>[foo]</p>");
-            Helpers.Log("Example {0}", 393);
+            Helpers.Log("Example {0}", 401);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "\\[foo]\n\n[foo]: /url \"title\"");
@@ -15062,9 +15330,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example394()
+        public void Example402()
         {
-            // Example 394
+            // Example 402
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -15078,7 +15346,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo*]: /url\n\n*[foo*]");
             var expected = Helpers.Normalize("<p>*<a href=\"/url\">foo*</a></p>");
-            Helpers.Log("Example {0}", 394);
+            Helpers.Log("Example {0}", 402);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo*]: /url\n\n*[foo*]");
@@ -15097,9 +15365,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example395()
+        public void Example403()
         {
-            // Example 395
+            // Example 403
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -15113,7 +15381,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo`]: /url\n\n[foo`]`");
             var expected = Helpers.Normalize("<p>[foo<code>]</code></p>");
-            Helpers.Log("Example {0}", 395);
+            Helpers.Log("Example {0}", 403);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo`]: /url\n\n[foo`]`");
@@ -15131,9 +15399,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example396()
+        public void Example404()
         {
-            // Example 396
+            // Example 404
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -15147,7 +15415,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[[[foo]]]\n\n[[[foo]]]: /url");
             var expected = Helpers.Normalize("<p><a href=\"/url\">[[foo]]</a></p>");
-            Helpers.Log("Example {0}", 396);
+            Helpers.Log("Example {0}", 404);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[[[foo]]]\n\n[[[foo]]]: /url");
@@ -15164,9 +15432,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example397()
+        public void Example405()
         {
-            // Example 397
+            // Example 405
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -15181,7 +15449,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[[[foo]]]\n\n[[[foo]]]: /url1\n[foo]: /url2");
             var expected = Helpers.Normalize("<p><a href=\"/url1\">[[foo]]</a></p>");
-            Helpers.Log("Example {0}", 397);
+            Helpers.Log("Example {0}", 405);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[[[foo]]]\n\n[[[foo]]]: /url1\n[foo]: /url2");
@@ -15199,9 +15467,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example398()
+        public void Example406()
         {
-            // Example 398
+            // Example 406
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -15215,7 +15483,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[\\[foo]\n\n[\\[foo]: /url");
             var expected = Helpers.Normalize("<p><a href=\"/url\">[foo</a></p>");
-            Helpers.Log("Example {0}", 398);
+            Helpers.Log("Example {0}", 406);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[\\[foo]\n\n[\\[foo]: /url");
@@ -15233,9 +15501,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example399()
+        public void Example407()
         {
-            // Example 399
+            // Example 407
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -15250,7 +15518,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo][bar]\n\n[foo]: /url1\n[bar]: /url2");
             var expected = Helpers.Normalize("<p><a href=\"/url2\">foo</a></p>");
-            Helpers.Log("Example {0}", 399);
+            Helpers.Log("Example {0}", 407);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo][bar]\n\n[foo]: /url1\n[bar]: /url2");
@@ -15269,9 +15537,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example400()
+        public void Example408()
         {
-            // Example 400
+            // Example 408
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -15285,7 +15553,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo][bar][baz]\n\n[baz]: /url");
             var expected = Helpers.Normalize("<p>[foo]<a href=\"/url\">bar</a></p>");
-            Helpers.Log("Example {0}", 400);
+            Helpers.Log("Example {0}", 408);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo][bar][baz]\n\n[baz]: /url");
@@ -15304,9 +15572,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example401()
+        public void Example409()
         {
-            // Example 401
+            // Example 409
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -15321,7 +15589,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo][bar][baz]\n\n[baz]: /url1\n[bar]: /url2");
             var expected = Helpers.Normalize("<p><a href=\"/url2\">foo</a><a href=\"/url1\">baz</a></p>");
-            Helpers.Log("Example {0}", 401);
+            Helpers.Log("Example {0}", 409);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo][bar][baz]\n\n[baz]: /url1\n[bar]: /url2");
@@ -15340,9 +15608,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example402()
+        public void Example410()
         {
-            // Example 402
+            // Example 410
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -15357,7 +15625,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("[foo][bar][baz]\n\n[baz]: /url1\n[foo]: /url2");
             var expected = Helpers.Normalize("<p>[foo]<a href=\"/url1\">bar</a></p>");
-            Helpers.Log("Example {0}", 402);
+            Helpers.Log("Example {0}", 410);
             Helpers.Log("Section: {0}", "Inlines - Links");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "[foo][bar][baz]\n\n[baz]: /url1\n[foo]: /url2");
@@ -15380,9 +15648,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example403()
+        public void Example411()
         {
-            // Example 403
+            // Example 411
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -15394,267 +15662,10 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("![foo](/url \"title\")");
             var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 403);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo](/url \"title\")");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Images")]
-        //[Timeout(1000)]
-        public void Example404()
-        {
-            // Example 404
-            // Section: Inlines - Images
-            //
-            // The following CommonMark:
-            //     ![foo *bar*]
-            //     
-            //     [foo *bar*]: train.jpg "train & tracks"
-            //
-            // Should be rendered as:
-            //     <p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
-
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
-            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo &lt;em&gt;bar&lt;/em&gt;\" title=\"train &amp; tracks\" /></p>");
-            Helpers.Log("Example {0}", 404);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Images")]
-        //[Timeout(1000)]
-        public void Example405()
-        {
-            // Example 405
-            // Section: Inlines - Images
-            //
-            // The following CommonMark:
-            //     ![foo *bar*][]
-            //     
-            //     [foo *bar*]: train.jpg "train & tracks"
-            //
-            // Should be rendered as:
-            //     <p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
-
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
-            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo &lt;em&gt;bar&lt;/em&gt;\" title=\"train &amp; tracks\" /></p>");
-            Helpers.Log("Example {0}", 405);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Images")]
-        //[Timeout(1000)]
-        public void Example406()
-        {
-            // Example 406
-            // Section: Inlines - Images
-            //
-            // The following CommonMark:
-            //     ![foo *bar*][foobar]
-            //     
-            //     [FOOBAR]: train.jpg "train & tracks"
-            //
-            // Should be rendered as:
-            //     <p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
-
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"");
-            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo &lt;em&gt;bar&lt;/em&gt;\" title=\"train &amp; tracks\" /></p>");
-            Helpers.Log("Example {0}", 406);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Images")]
-        //[Timeout(1000)]
-        public void Example407()
-        {
-            // Example 407
-            // Section: Inlines - Images
-            //
-            // The following CommonMark:
-            //     ![foo](train.jpg)
-            //
-            // Should be rendered as:
-            //     <p><img src="train.jpg" alt="foo" /></p>
-
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo](train.jpg)");
-            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo\" /></p>");
-            Helpers.Log("Example {0}", 407);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo](train.jpg)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Images")]
-        //[Timeout(1000)]
-        public void Example408()
-        {
-            // Example 408
-            // Section: Inlines - Images
-            //
-            // The following CommonMark:
-            //     My ![foo bar](/path/to/train.jpg  "title"   )
-            //
-            // Should be rendered as:
-            //     <p>My <img src="/path/to/train.jpg" alt="foo bar" title="title" /></p>
-
-            // Arrange
-            var commonMark = Helpers.Normalize("My ![foo bar](/path/to/train.jpg  \"title\"   )");
-            var expected = Helpers.Normalize("<p>My <img src=\"/path/to/train.jpg\" alt=\"foo bar\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 408);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "My ![foo bar](/path/to/train.jpg  \"title\"   )");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Images")]
-        //[Timeout(1000)]
-        public void Example409()
-        {
-            // Example 409
-            // Section: Inlines - Images
-            //
-            // The following CommonMark:
-            //     ![foo](<url>)
-            //
-            // Should be rendered as:
-            //     <p><img src="url" alt="foo" /></p>
-
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo](<url>)");
-            var expected = Helpers.Normalize("<p><img src=\"url\" alt=\"foo\" /></p>");
-            Helpers.Log("Example {0}", 409);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo](<url>)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Images")]
-        //[Timeout(1000)]
-        public void Example410()
-        {
-            // Example 410
-            // Section: Inlines - Images
-            //
-            // The following CommonMark:
-            //     ![](/url)
-            //
-            // Should be rendered as:
-            //     <p><img src="/url" alt="" /></p>
-
-            // Arrange
-            var commonMark = Helpers.Normalize("![](/url)");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"\" /></p>");
-            Helpers.Log("Example {0}", 410);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![](/url)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
-        }
-
-        // Reference-style:
-        [TestMethod]
-        [TestCategory("Inlines - Images")]
-        //[Timeout(1000)]
-        public void Example411()
-        {
-            // Example 411
-            // Section: Inlines - Images
-            //
-            // The following CommonMark:
-            //     ![foo] [bar]
-            //     
-            //     [bar]: /url
-            //
-            // Should be rendered as:
-            //     <p><img src="/url" alt="foo" /></p>
-
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo] [bar]\n\n[bar]: /url");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" /></p>");
             Helpers.Log("Example {0}", 411);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo] [bar]\n\n[bar]: /url");
+            Helpers.LogValue("CommonMark", "![foo](/url \"title\")");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -15674,20 +15685,20 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     ![foo] [bar]
+            //     ![foo *bar*]
             //     
-            //     [BAR]: /url
+            //     [foo *bar*]: train.jpg "train & tracks"
             //
             // Should be rendered as:
-            //     <p><img src="/url" alt="foo" /></p>
+            //     <p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("![foo] [bar]\n\n[BAR]: /url");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" /></p>");
+            var commonMark = Helpers.Normalize("![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
+            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo &lt;em&gt;bar&lt;/em&gt;\" title=\"train &amp; tracks\" /></p>");
             Helpers.Log("Example {0}", 412);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo] [bar]\n\n[BAR]: /url");
+            Helpers.LogValue("CommonMark", "![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -15698,7 +15709,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // Collapsed:
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
@@ -15708,20 +15718,20 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     ![foo][]
+            //     ![foo *bar*][]
             //     
-            //     [foo]: /url "title"
+            //     [foo *bar*]: train.jpg "train & tracks"
             //
             // Should be rendered as:
-            //     <p><img src="/url" alt="foo" title="title" /></p>
+            //     <p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("![foo][]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
+            var commonMark = Helpers.Normalize("![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
+            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo &lt;em&gt;bar&lt;/em&gt;\" title=\"train &amp; tracks\" /></p>");
             Helpers.Log("Example {0}", 413);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo][]\n\n[foo]: /url \"title\"");
+            Helpers.LogValue("CommonMark", "![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -15741,20 +15751,20 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     ![*foo* bar][]
+            //     ![foo *bar*][foobar]
             //     
-            //     [*foo* bar]: /url "title"
+            //     [FOOBAR]: train.jpg "train & tracks"
             //
             // Should be rendered as:
-            //     <p><img src="/url" alt="&lt;em&gt;foo&lt;/em&gt; bar" title="title" /></p>
+            //     <p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("![*foo* bar][]\n\n[*foo* bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"&lt;em&gt;foo&lt;/em&gt; bar\" title=\"title\" /></p>");
+            var commonMark = Helpers.Normalize("![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"");
+            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo &lt;em&gt;bar&lt;/em&gt;\" title=\"train &amp; tracks\" /></p>");
             Helpers.Log("Example {0}", 414);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "![*foo* bar][]\n\n[*foo* bar]: /url \"title\"");
+            Helpers.LogValue("CommonMark", "![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -15765,7 +15775,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // The labels are case-insensitive:
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
@@ -15775,20 +15784,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     ![Foo][]
-            //     
-            //     [foo]: /url "title"
+            //     ![foo](train.jpg)
             //
             // Should be rendered as:
-            //     <p><img src="/url" alt="Foo" title="title" /></p>
+            //     <p><img src="train.jpg" alt="foo" /></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("![Foo][]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>");
+            var commonMark = Helpers.Normalize("![foo](train.jpg)");
+            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo\" /></p>");
             Helpers.Log("Example {0}", 415);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "![Foo][]\n\n[foo]: /url \"title\"");
+            Helpers.LogValue("CommonMark", "![foo](train.jpg)");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -15799,8 +15806,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // As with full reference links, whitespace is allowed
-        // between the two sets of brackets:
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
@@ -15810,21 +15815,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     ![foo] 
-            //     []
-            //     
-            //     [foo]: /url "title"
+            //     My ![foo bar](/path/to/train.jpg  "title"   )
             //
             // Should be rendered as:
-            //     <p><img src="/url" alt="foo" title="title" /></p>
+            //     <p>My <img src="/path/to/train.jpg" alt="foo bar" title="title" /></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("![foo] \n[]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
+            var commonMark = Helpers.Normalize("My ![foo bar](/path/to/train.jpg  \"title\"   )");
+            var expected = Helpers.Normalize("<p>My <img src=\"/path/to/train.jpg\" alt=\"foo bar\" title=\"title\" /></p>");
             Helpers.Log("Example {0}", 416);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo] \n[]\n\n[foo]: /url \"title\"");
+            Helpers.LogValue("CommonMark", "My ![foo bar](/path/to/train.jpg  \"title\"   )");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -15835,7 +15837,6 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
-        // Shortcut:
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
@@ -15845,20 +15846,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     ![foo]
-            //     
-            //     [foo]: /url "title"
+            //     ![foo](<url>)
             //
             // Should be rendered as:
-            //     <p><img src="/url" alt="foo" title="title" /></p>
+            //     <p><img src="url" alt="foo" /></p>
 
             // Arrange
-            var commonMark = Helpers.Normalize("![foo]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
+            var commonMark = Helpers.Normalize("![foo](<url>)");
+            var expected = Helpers.Normalize("<p><img src=\"url\" alt=\"foo\" /></p>");
             Helpers.Log("Example {0}", 417);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo]\n\n[foo]: /url \"title\"");
+            Helpers.LogValue("CommonMark", "![foo](<url>)");
             Helpers.LogValue("Expected", expected);
 
             // Act
@@ -15878,6 +15877,275 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
+            //     ![](/url)
+            //
+            // Should be rendered as:
+            //     <p><img src="/url" alt="" /></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("![](/url)");
+            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"\" /></p>");
+            Helpers.Log("Example {0}", 418);
+            Helpers.Log("Section: {0}", "Inlines - Images");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "![](/url)");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        // Reference-style:
+        [TestMethod]
+        [TestCategory("Inlines - Images")]
+        //[Timeout(1000)]
+        public void Example419()
+        {
+            // Example 419
+            // Section: Inlines - Images
+            //
+            // The following CommonMark:
+            //     ![foo] [bar]
+            //     
+            //     [bar]: /url
+            //
+            // Should be rendered as:
+            //     <p><img src="/url" alt="foo" /></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("![foo] [bar]\n\n[bar]: /url");
+            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" /></p>");
+            Helpers.Log("Example {0}", 419);
+            Helpers.Log("Section: {0}", "Inlines - Images");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "![foo] [bar]\n\n[bar]: /url");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Images")]
+        //[Timeout(1000)]
+        public void Example420()
+        {
+            // Example 420
+            // Section: Inlines - Images
+            //
+            // The following CommonMark:
+            //     ![foo] [bar]
+            //     
+            //     [BAR]: /url
+            //
+            // Should be rendered as:
+            //     <p><img src="/url" alt="foo" /></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("![foo] [bar]\n\n[BAR]: /url");
+            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" /></p>");
+            Helpers.Log("Example {0}", 420);
+            Helpers.Log("Section: {0}", "Inlines - Images");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "![foo] [bar]\n\n[BAR]: /url");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        // Collapsed:
+        [TestMethod]
+        [TestCategory("Inlines - Images")]
+        //[Timeout(1000)]
+        public void Example421()
+        {
+            // Example 421
+            // Section: Inlines - Images
+            //
+            // The following CommonMark:
+            //     ![foo][]
+            //     
+            //     [foo]: /url "title"
+            //
+            // Should be rendered as:
+            //     <p><img src="/url" alt="foo" title="title" /></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("![foo][]\n\n[foo]: /url \"title\"");
+            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
+            Helpers.Log("Example {0}", 421);
+            Helpers.Log("Section: {0}", "Inlines - Images");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "![foo][]\n\n[foo]: /url \"title\"");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Images")]
+        //[Timeout(1000)]
+        public void Example422()
+        {
+            // Example 422
+            // Section: Inlines - Images
+            //
+            // The following CommonMark:
+            //     ![*foo* bar][]
+            //     
+            //     [*foo* bar]: /url "title"
+            //
+            // Should be rendered as:
+            //     <p><img src="/url" alt="&lt;em&gt;foo&lt;/em&gt; bar" title="title" /></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("![*foo* bar][]\n\n[*foo* bar]: /url \"title\"");
+            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"&lt;em&gt;foo&lt;/em&gt; bar\" title=\"title\" /></p>");
+            Helpers.Log("Example {0}", 422);
+            Helpers.Log("Section: {0}", "Inlines - Images");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "![*foo* bar][]\n\n[*foo* bar]: /url \"title\"");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        // The labels are case-insensitive:
+        [TestMethod]
+        [TestCategory("Inlines - Images")]
+        //[Timeout(1000)]
+        public void Example423()
+        {
+            // Example 423
+            // Section: Inlines - Images
+            //
+            // The following CommonMark:
+            //     ![Foo][]
+            //     
+            //     [foo]: /url "title"
+            //
+            // Should be rendered as:
+            //     <p><img src="/url" alt="Foo" title="title" /></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("![Foo][]\n\n[foo]: /url \"title\"");
+            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>");
+            Helpers.Log("Example {0}", 423);
+            Helpers.Log("Section: {0}", "Inlines - Images");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "![Foo][]\n\n[foo]: /url \"title\"");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        // As with full reference links, whitespace is allowed
+        // between the two sets of brackets:
+        [TestMethod]
+        [TestCategory("Inlines - Images")]
+        //[Timeout(1000)]
+        public void Example424()
+        {
+            // Example 424
+            // Section: Inlines - Images
+            //
+            // The following CommonMark:
+            //     ![foo] 
+            //     []
+            //     
+            //     [foo]: /url "title"
+            //
+            // Should be rendered as:
+            //     <p><img src="/url" alt="foo" title="title" /></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("![foo] \n[]\n\n[foo]: /url \"title\"");
+            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
+            Helpers.Log("Example {0}", 424);
+            Helpers.Log("Section: {0}", "Inlines - Images");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "![foo] \n[]\n\n[foo]: /url \"title\"");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        // Shortcut:
+        [TestMethod]
+        [TestCategory("Inlines - Images")]
+        //[Timeout(1000)]
+        public void Example425()
+        {
+            // Example 425
+            // Section: Inlines - Images
+            //
+            // The following CommonMark:
+            //     ![foo]
+            //     
+            //     [foo]: /url "title"
+            //
+            // Should be rendered as:
+            //     <p><img src="/url" alt="foo" title="title" /></p>
+
+            // Arrange
+            var commonMark = Helpers.Normalize("![foo]\n\n[foo]: /url \"title\"");
+            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
+            Helpers.Log("Example {0}", 425);
+            Helpers.Log("Section: {0}", "Inlines - Images");
+            Helpers.Log();
+            Helpers.LogValue("CommonMark", "![foo]\n\n[foo]: /url \"title\"");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Images")]
+        //[Timeout(1000)]
+        public void Example426()
+        {
+            // Example 426
+            // Section: Inlines - Images
+            //
+            // The following CommonMark:
             //     ![*foo* bar]
             //     
             //     [*foo* bar]: /url "title"
@@ -15888,7 +16156,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("![*foo* bar]\n\n[*foo* bar]: /url \"title\"");
             var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"&lt;em&gt;foo&lt;/em&gt; bar\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 418);
+            Helpers.Log("Example {0}", 426);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "![*foo* bar]\n\n[*foo* bar]: /url \"title\"");
@@ -15905,9 +16173,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example419()
+        public void Example427()
         {
-            // Example 419
+            // Example 427
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -15921,7 +16189,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("![[foo]]\n\n[[foo]]: /url \"title\"");
             var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"[foo]\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 419);
+            Helpers.Log("Example {0}", 427);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "![[foo]]\n\n[[foo]]: /url \"title\"");
@@ -15939,9 +16207,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example420()
+        public void Example428()
         {
-            // Example 420
+            // Example 428
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -15955,7 +16223,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("![Foo]\n\n[foo]: /url \"title\"");
             var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 420);
+            Helpers.Log("Example {0}", 428);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "![Foo]\n\n[foo]: /url \"title\"");
@@ -15974,9 +16242,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example421()
+        public void Example429()
         {
-            // Example 421
+            // Example 429
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -15990,7 +16258,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("\\!\\[foo]\n\n[foo]: /url \"title\"");
             var expected = Helpers.Normalize("<p>![foo]</p>");
-            Helpers.Log("Example {0}", 421);
+            Helpers.Log("Example {0}", 429);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "\\!\\[foo]\n\n[foo]: /url \"title\"");
@@ -16009,9 +16277,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example422()
+        public void Example430()
         {
-            // Example 422
+            // Example 430
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -16025,7 +16293,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("\\![foo]\n\n[foo]: /url \"title\"");
             var expected = Helpers.Normalize("<p>!<a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 422);
+            Helpers.Log("Example {0}", 430);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "\\![foo]\n\n[foo]: /url \"title\"");
@@ -16086,9 +16354,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example423()
+        public void Example431()
         {
-            // Example 423
+            // Example 431
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16100,7 +16368,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<http://foo.bar.baz>");
             var expected = Helpers.Normalize("<p><a href=\"http://foo.bar.baz\">http://foo.bar.baz</a></p>");
-            Helpers.Log("Example {0}", 423);
+            Helpers.Log("Example {0}", 431);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<http://foo.bar.baz>");
@@ -16117,9 +16385,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example424()
+        public void Example432()
         {
-            // Example 424
+            // Example 432
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16131,7 +16399,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<http://foo.bar.baz?q=hello&id=22&boolean>");
             var expected = Helpers.Normalize("<p><a href=\"http://foo.bar.baz?q=hello&amp;id=22&amp;boolean\">http://foo.bar.baz?q=hello&amp;id=22&amp;boolean</a></p>");
-            Helpers.Log("Example {0}", 424);
+            Helpers.Log("Example {0}", 432);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<http://foo.bar.baz?q=hello&id=22&boolean>");
@@ -16148,9 +16416,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example425()
+        public void Example433()
         {
-            // Example 425
+            // Example 433
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16162,7 +16430,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<irc://foo.bar:2233/baz>");
             var expected = Helpers.Normalize("<p><a href=\"irc://foo.bar:2233/baz\">irc://foo.bar:2233/baz</a></p>");
-            Helpers.Log("Example {0}", 425);
+            Helpers.Log("Example {0}", 433);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<irc://foo.bar:2233/baz>");
@@ -16180,9 +16448,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example426()
+        public void Example434()
         {
-            // Example 426
+            // Example 434
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16194,7 +16462,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<MAILTO:FOO@BAR.BAZ>");
             var expected = Helpers.Normalize("<p><a href=\"MAILTO:FOO@BAR.BAZ\">MAILTO:FOO@BAR.BAZ</a></p>");
-            Helpers.Log("Example {0}", 426);
+            Helpers.Log("Example {0}", 434);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<MAILTO:FOO@BAR.BAZ>");
@@ -16212,9 +16480,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example427()
+        public void Example435()
         {
-            // Example 427
+            // Example 435
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16226,7 +16494,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<http://foo.bar/baz bim>");
             var expected = Helpers.Normalize("<p>&lt;http://foo.bar/baz bim&gt;</p>");
-            Helpers.Log("Example {0}", 427);
+            Helpers.Log("Example {0}", 435);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<http://foo.bar/baz bim>");
@@ -16257,9 +16525,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example428()
+        public void Example436()
         {
-            // Example 428
+            // Example 436
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16271,7 +16539,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<foo@bar.example.com>");
             var expected = Helpers.Normalize("<p><a href=\"mailto:foo@bar.example.com\">foo@bar.example.com</a></p>");
-            Helpers.Log("Example {0}", 428);
+            Helpers.Log("Example {0}", 436);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<foo@bar.example.com>");
@@ -16288,9 +16556,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example429()
+        public void Example437()
         {
-            // Example 429
+            // Example 437
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16302,7 +16570,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<foo+special@Bar.baz-bar0.com>");
             var expected = Helpers.Normalize("<p><a href=\"mailto:foo+special@Bar.baz-bar0.com\">foo+special@Bar.baz-bar0.com</a></p>");
-            Helpers.Log("Example {0}", 429);
+            Helpers.Log("Example {0}", 437);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<foo+special@Bar.baz-bar0.com>");
@@ -16320,9 +16588,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example430()
+        public void Example438()
         {
-            // Example 430
+            // Example 438
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16334,7 +16602,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<>");
             var expected = Helpers.Normalize("<p>&lt;&gt;</p>");
-            Helpers.Log("Example {0}", 430);
+            Helpers.Log("Example {0}", 438);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<>");
@@ -16351,9 +16619,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example431()
+        public void Example439()
         {
-            // Example 431
+            // Example 439
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16365,7 +16633,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<heck://bing.bong>");
             var expected = Helpers.Normalize("<p>&lt;heck://bing.bong&gt;</p>");
-            Helpers.Log("Example {0}", 431);
+            Helpers.Log("Example {0}", 439);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<heck://bing.bong>");
@@ -16382,9 +16650,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example432()
+        public void Example440()
         {
-            // Example 432
+            // Example 440
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16396,7 +16664,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("< http://foo.bar >");
             var expected = Helpers.Normalize("<p>&lt; http://foo.bar &gt;</p>");
-            Helpers.Log("Example {0}", 432);
+            Helpers.Log("Example {0}", 440);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "< http://foo.bar >");
@@ -16413,9 +16681,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example433()
+        public void Example441()
         {
-            // Example 433
+            // Example 441
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16427,7 +16695,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<foo.bar.baz>");
             var expected = Helpers.Normalize("<p>&lt;foo.bar.baz&gt;</p>");
-            Helpers.Log("Example {0}", 433);
+            Helpers.Log("Example {0}", 441);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<foo.bar.baz>");
@@ -16444,9 +16712,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example434()
+        public void Example442()
         {
-            // Example 434
+            // Example 442
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16458,7 +16726,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<localhost:5001/foo>");
             var expected = Helpers.Normalize("<p>&lt;localhost:5001/foo&gt;</p>");
-            Helpers.Log("Example {0}", 434);
+            Helpers.Log("Example {0}", 442);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<localhost:5001/foo>");
@@ -16475,9 +16743,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example435()
+        public void Example443()
         {
-            // Example 435
+            // Example 443
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16489,7 +16757,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("http://example.com");
             var expected = Helpers.Normalize("<p>http://example.com</p>");
-            Helpers.Log("Example {0}", 435);
+            Helpers.Log("Example {0}", 443);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "http://example.com");
@@ -16506,9 +16774,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example436()
+        public void Example444()
         {
-            // Example 436
+            // Example 444
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -16520,7 +16788,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo@bar.example.com");
             var expected = Helpers.Normalize("<p>foo@bar.example.com</p>");
-            Helpers.Log("Example {0}", 436);
+            Helpers.Log("Example {0}", 444);
             Helpers.Log("Section: {0}", "Inlines - Autolinks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo@bar.example.com");
@@ -16614,9 +16882,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example437()
+        public void Example445()
         {
-            // Example 437
+            // Example 445
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16628,7 +16896,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a><bab><c2c>");
             var expected = Helpers.Normalize("<p><a><bab><c2c></p>");
-            Helpers.Log("Example {0}", 437);
+            Helpers.Log("Example {0}", 445);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a><bab><c2c>");
@@ -16646,9 +16914,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example438()
+        public void Example446()
         {
-            // Example 438
+            // Example 446
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16660,7 +16928,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a/><b2/>");
             var expected = Helpers.Normalize("<p><a/><b2/></p>");
-            Helpers.Log("Example {0}", 438);
+            Helpers.Log("Example {0}", 446);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a/><b2/>");
@@ -16678,9 +16946,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example439()
+        public void Example447()
         {
-            // Example 439
+            // Example 447
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16694,7 +16962,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a  /><b2\ndata=\"foo\" >");
             var expected = Helpers.Normalize("<p><a  /><b2\ndata=\"foo\" ></p>");
-            Helpers.Log("Example {0}", 439);
+            Helpers.Log("Example {0}", 447);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a  /><b2\ndata=\"foo\" >");
@@ -16712,9 +16980,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example440()
+        public void Example448()
         {
-            // Example 440
+            // Example 448
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16728,7 +16996,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />");
             var expected = Helpers.Normalize("<p><a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 /></p>");
-            Helpers.Log("Example {0}", 440);
+            Helpers.Log("Example {0}", 448);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />");
@@ -16746,9 +17014,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example441()
+        public void Example449()
         {
-            // Example 441
+            // Example 449
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16760,7 +17028,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<33> <__>");
             var expected = Helpers.Normalize("<p>&lt;33&gt; &lt;__&gt;</p>");
-            Helpers.Log("Example {0}", 441);
+            Helpers.Log("Example {0}", 449);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<33> <__>");
@@ -16778,9 +17046,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example442()
+        public void Example450()
         {
-            // Example 442
+            // Example 450
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16792,7 +17060,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a h*#ref=\"hi\">");
             var expected = Helpers.Normalize("<p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>");
-            Helpers.Log("Example {0}", 442);
+            Helpers.Log("Example {0}", 450);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a h*#ref=\"hi\">");
@@ -16810,9 +17078,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example443()
+        public void Example451()
         {
-            // Example 443
+            // Example 451
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16824,7 +17092,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a href=\"hi'> <a href=hi'>");
             var expected = Helpers.Normalize("<p>&lt;a href=&quot;hi'&gt; &lt;a href=hi'&gt;</p>");
-            Helpers.Log("Example {0}", 443);
+            Helpers.Log("Example {0}", 451);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a href=\"hi'> <a href=hi'>");
@@ -16842,9 +17110,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example444()
+        public void Example452()
         {
-            // Example 444
+            // Example 452
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16858,7 +17126,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("< a><\nfoo><bar/ >");
             var expected = Helpers.Normalize("<p>&lt; a&gt;&lt;\nfoo&gt;&lt;bar/ &gt;</p>");
-            Helpers.Log("Example {0}", 444);
+            Helpers.Log("Example {0}", 452);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "< a><\nfoo><bar/ >");
@@ -16876,9 +17144,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example445()
+        public void Example453()
         {
-            // Example 445
+            // Example 453
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16890,7 +17158,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a href='bar'title=title>");
             var expected = Helpers.Normalize("<p>&lt;a href='bar'title=title&gt;</p>");
-            Helpers.Log("Example {0}", 445);
+            Helpers.Log("Example {0}", 453);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a href='bar'title=title>");
@@ -16908,9 +17176,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example446()
+        public void Example454()
         {
-            // Example 446
+            // Example 454
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16924,7 +17192,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("</a>\n</foo >");
             var expected = Helpers.Normalize("<p></a>\n</foo ></p>");
-            Helpers.Log("Example {0}", 446);
+            Helpers.Log("Example {0}", 454);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "</a>\n</foo >");
@@ -16942,9 +17210,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example447()
+        public void Example455()
         {
-            // Example 447
+            // Example 455
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16956,7 +17224,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("</a href=\"foo\">");
             var expected = Helpers.Normalize("<p>&lt;/a href=&quot;foo&quot;&gt;</p>");
-            Helpers.Log("Example {0}", 447);
+            Helpers.Log("Example {0}", 455);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "</a href=\"foo\">");
@@ -16974,9 +17242,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example448()
+        public void Example456()
         {
-            // Example 448
+            // Example 456
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -16990,7 +17258,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo <!-- this is a\ncomment - with hyphen -->");
             var expected = Helpers.Normalize("<p>foo <!-- this is a\ncomment - with hyphen --></p>");
-            Helpers.Log("Example {0}", 448);
+            Helpers.Log("Example {0}", 456);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo <!-- this is a\ncomment - with hyphen -->");
@@ -17007,9 +17275,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example449()
+        public void Example457()
         {
-            // Example 449
+            // Example 457
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -17021,7 +17289,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo <!-- not a comment -- two hyphens -->");
             var expected = Helpers.Normalize("<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>");
-            Helpers.Log("Example {0}", 449);
+            Helpers.Log("Example {0}", 457);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo <!-- not a comment -- two hyphens -->");
@@ -17039,9 +17307,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example450()
+        public void Example458()
         {
-            // Example 450
+            // Example 458
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -17053,7 +17321,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo <?php echo $a; ?>");
             var expected = Helpers.Normalize("<p>foo <?php echo $a; ?></p>");
-            Helpers.Log("Example {0}", 450);
+            Helpers.Log("Example {0}", 458);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo <?php echo $a; ?>");
@@ -17071,9 +17339,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example451()
+        public void Example459()
         {
-            // Example 451
+            // Example 459
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -17085,7 +17353,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo <!ELEMENT br EMPTY>");
             var expected = Helpers.Normalize("<p>foo <!ELEMENT br EMPTY></p>");
-            Helpers.Log("Example {0}", 451);
+            Helpers.Log("Example {0}", 459);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo <!ELEMENT br EMPTY>");
@@ -17103,9 +17371,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example452()
+        public void Example460()
         {
-            // Example 452
+            // Example 460
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -17117,7 +17385,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo <![CDATA[>&<]]>");
             var expected = Helpers.Normalize("<p>foo <![CDATA[>&<]]></p>");
-            Helpers.Log("Example {0}", 452);
+            Helpers.Log("Example {0}", 460);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo <![CDATA[>&<]]>");
@@ -17135,9 +17403,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example453()
+        public void Example461()
         {
-            // Example 453
+            // Example 461
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -17149,7 +17417,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a href=\"&ouml;\">");
             var expected = Helpers.Normalize("<p><a href=\"&ouml;\"></p>");
-            Helpers.Log("Example {0}", 453);
+            Helpers.Log("Example {0}", 461);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a href=\"&ouml;\">");
@@ -17167,9 +17435,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example454()
+        public void Example462()
         {
-            // Example 454
+            // Example 462
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -17181,7 +17449,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a href=\"\\*\">");
             var expected = Helpers.Normalize("<p><a href=\"\\*\"></p>");
-            Helpers.Log("Example {0}", 454);
+            Helpers.Log("Example {0}", 462);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a href=\"\\*\">");
@@ -17198,9 +17466,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example455()
+        public void Example463()
         {
-            // Example 455
+            // Example 463
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -17212,7 +17480,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a href=\"\\\"\">");
             var expected = Helpers.Normalize("<p>&lt;a href=&quot;&quot;&quot;&gt;</p>");
-            Helpers.Log("Example {0}", 455);
+            Helpers.Log("Example {0}", 463);
             Helpers.Log("Section: {0}", "Inlines - Raw HTML");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a href=\"\\\"\">");
@@ -17235,9 +17503,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example456()
+        public void Example464()
         {
-            // Example 456
+            // Example 464
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -17251,7 +17519,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo  \nbaz");
             var expected = Helpers.Normalize("<p>foo<br />\nbaz</p>");
-            Helpers.Log("Example {0}", 456);
+            Helpers.Log("Example {0}", 464);
             Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo  \nbaz");
@@ -17270,9 +17538,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example457()
+        public void Example465()
         {
-            // Example 457
+            // Example 465
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -17286,7 +17554,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo\\\nbaz");
             var expected = Helpers.Normalize("<p>foo<br />\nbaz</p>");
-            Helpers.Log("Example {0}", 457);
+            Helpers.Log("Example {0}", 465);
             Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo\\\nbaz");
@@ -17304,9 +17572,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example458()
+        public void Example466()
         {
-            // Example 458
+            // Example 466
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -17320,7 +17588,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo       \nbaz");
             var expected = Helpers.Normalize("<p>foo<br />\nbaz</p>");
-            Helpers.Log("Example {0}", 458);
+            Helpers.Log("Example {0}", 466);
             Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo       \nbaz");
@@ -17338,9 +17606,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example459()
+        public void Example467()
         {
-            // Example 459
+            // Example 467
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -17354,7 +17622,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo  \n     bar");
             var expected = Helpers.Normalize("<p>foo<br />\nbar</p>");
-            Helpers.Log("Example {0}", 459);
+            Helpers.Log("Example {0}", 467);
             Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo  \n     bar");
@@ -17371,9 +17639,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example460()
+        public void Example468()
         {
-            // Example 460
+            // Example 468
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -17387,7 +17655,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo\\\n     bar");
             var expected = Helpers.Normalize("<p>foo<br />\nbar</p>");
-            Helpers.Log("Example {0}", 460);
+            Helpers.Log("Example {0}", 468);
             Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo\\\n     bar");
@@ -17406,9 +17674,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example461()
+        public void Example469()
         {
-            // Example 461
+            // Example 469
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -17422,7 +17690,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("*foo  \nbar*");
             var expected = Helpers.Normalize("<p><em>foo<br />\nbar</em></p>");
-            Helpers.Log("Example {0}", 461);
+            Helpers.Log("Example {0}", 469);
             Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "*foo  \nbar*");
@@ -17439,9 +17707,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example462()
+        public void Example470()
         {
-            // Example 462
+            // Example 470
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -17455,7 +17723,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("*foo\\\nbar*");
             var expected = Helpers.Normalize("<p><em>foo<br />\nbar</em></p>");
-            Helpers.Log("Example {0}", 462);
+            Helpers.Log("Example {0}", 470);
             Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "*foo\\\nbar*");
@@ -17473,9 +17741,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example463()
+        public void Example471()
         {
-            // Example 463
+            // Example 471
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -17488,7 +17756,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("`code  \nspan`");
             var expected = Helpers.Normalize("<p><code>code span</code></p>");
-            Helpers.Log("Example {0}", 463);
+            Helpers.Log("Example {0}", 471);
             Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "`code  \nspan`");
@@ -17505,9 +17773,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example464()
+        public void Example472()
         {
-            // Example 464
+            // Example 472
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -17520,7 +17788,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("`code\\\nspan`");
             var expected = Helpers.Normalize("<p><code>code\\ span</code></p>");
-            Helpers.Log("Example {0}", 464);
+            Helpers.Log("Example {0}", 472);
             Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "`code\\\nspan`");
@@ -17538,9 +17806,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example465()
+        public void Example473()
         {
-            // Example 465
+            // Example 473
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -17554,7 +17822,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a href=\"foo  \nbar\">");
             var expected = Helpers.Normalize("<p><a href=\"foo  \nbar\"></p>");
-            Helpers.Log("Example {0}", 465);
+            Helpers.Log("Example {0}", 473);
             Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a href=\"foo  \nbar\">");
@@ -17571,9 +17839,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example466()
+        public void Example474()
         {
-            // Example 466
+            // Example 474
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -17587,7 +17855,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("<a href=\"foo\\\nbar\">");
             var expected = Helpers.Normalize("<p><a href=\"foo\\\nbar\"></p>");
-            Helpers.Log("Example {0}", 466);
+            Helpers.Log("Example {0}", 474);
             Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "<a href=\"foo\\\nbar\">");
@@ -17611,9 +17879,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Soft line breaks")]
         //[Timeout(1000)]
-        public void Example467()
+        public void Example475()
         {
-            // Example 467
+            // Example 475
             // Section: Inlines - Soft line breaks
             //
             // The following CommonMark:
@@ -17627,7 +17895,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo\nbaz");
             var expected = Helpers.Normalize("<p>foo\nbaz</p>");
-            Helpers.Log("Example {0}", 467);
+            Helpers.Log("Example {0}", 475);
             Helpers.Log("Section: {0}", "Inlines - Soft line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo\nbaz");
@@ -17646,9 +17914,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Soft line breaks")]
         //[Timeout(1000)]
-        public void Example468()
+        public void Example476()
         {
-            // Example 468
+            // Example 476
             // Section: Inlines - Soft line breaks
             //
             // The following CommonMark:
@@ -17662,7 +17930,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("foo \n baz");
             var expected = Helpers.Normalize("<p>foo\nbaz</p>");
-            Helpers.Log("Example {0}", 468);
+            Helpers.Log("Example {0}", 476);
             Helpers.Log("Section: {0}", "Inlines - Soft line breaks");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "foo \n baz");
@@ -17689,9 +17957,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Strings")]
         //[Timeout(1000)]
-        public void Example469()
+        public void Example477()
         {
-            // Example 469
+            // Example 477
             // Section: Inlines - Strings
             //
             // The following CommonMark:
@@ -17703,7 +17971,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("hello $.;'there");
             var expected = Helpers.Normalize("<p>hello $.;'there</p>");
-            Helpers.Log("Example {0}", 469);
+            Helpers.Log("Example {0}", 477);
             Helpers.Log("Section: {0}", "Inlines - Strings");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "hello $.;'there");
@@ -17720,9 +17988,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Strings")]
         //[Timeout(1000)]
-        public void Example470()
+        public void Example478()
         {
-            // Example 470
+            // Example 478
             // Section: Inlines - Strings
             //
             // The following CommonMark:
@@ -17734,7 +18002,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("Foo χρῆν");
             var expected = Helpers.Normalize("<p>Foo χρῆν</p>");
-            Helpers.Log("Example {0}", 470);
+            Helpers.Log("Example {0}", 478);
             Helpers.Log("Section: {0}", "Inlines - Strings");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "Foo χρῆν");
@@ -17752,9 +18020,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Strings")]
         //[Timeout(1000)]
-        public void Example471()
+        public void Example479()
         {
-            // Example 471
+            // Example 479
             // Section: Inlines - Strings
             //
             // The following CommonMark:
@@ -17766,7 +18034,7 @@ namespace CommonMark.Tests.Specification
             // Arrange
             var commonMark = Helpers.Normalize("Multiple     spaces");
             var expected = Helpers.Normalize("<p>Multiple     spaces</p>");
-            Helpers.Log("Example {0}", 471);
+            Helpers.Log("Example {0}", 479);
             Helpers.Log("Section: {0}", "Inlines - Strings");
             Helpers.Log();
             Helpers.LogValue("CommonMark", "Multiple     spaces");

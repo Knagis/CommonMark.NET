@@ -313,7 +313,7 @@ namespace CommonMark.Parser
 
             subj.Position = (startpos += numdelims);
 
-            if (numdelims == 0 || numdelims > 3)
+            if (numdelims == 0)
             {
                 can_open = false;
                 can_close = false;
@@ -327,8 +327,8 @@ namespace CommonMark.Parser
 
             if (c == '_')
             {
-                can_open = can_open && !char.IsLetterOrDigit(char_before);
-                can_close = can_close && !char.IsLetterOrDigit(char_after);
+                can_open = can_open && !Utilities.IsAsciiLetterOrDigit(char_before);
+                can_close = can_close && !Utilities.IsAsciiLetterOrDigit(char_after);
             }
 
             return numdelims;
@@ -355,11 +355,17 @@ namespace CommonMark.Parser
                 }
 
                 // calculate the actual number of delimeters used from this closer
-                var useDelims = istack.DelimeterCount;
-                if (useDelims == 3) useDelims = numdelims == 3 ? 1 : numdelims;
-                else if (useDelims > numdelims) useDelims = 1;
+                //var useDelims = ;
+                //if (useDelims == 3) useDelims = numdelims == 3 ? 1 : numdelims;
+                //else if (useDelims > numdelims) useDelims = 1;
+                int useDelims;
+                var openerDelims = istack.DelimeterCount;
+                if (numdelims < 3 || openerDelims < 3)
+                    useDelims = numdelims <= openerDelims ? numdelims : openerDelims; 
+                else 
+                    useDelims = numdelims % 2 == 0 ? 2 : 1;
 
-                if (istack.DelimeterCount == useDelims)
+                if (openerDelims == useDelims)
                 {
                     // the opener is completely used up - remove the stack entry and reuse the inline element
                     var inl = istack.StartingInline;
@@ -388,7 +394,10 @@ namespace CommonMark.Parser
                 if (useDelims < numdelims)
                 {
                     subj.Position = subj.Position - numdelims + useDelims;
-                    return HandleEmphasis(subj, c);
+
+                    // use recursion only if it will not be very deep.
+                    if (numdelims < 10)
+                        return HandleEmphasis(subj, c);
                 }
 
                 return make_str(string.Empty);
