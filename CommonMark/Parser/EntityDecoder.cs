@@ -9,7 +9,7 @@ namespace CommonMark.Parser
         /// <summary>
         /// Decodes the given HTML entity to the matching Unicode characters.
         /// </summary>
-        /// <param name="entity">The entity without <c>&</c> and <c>;</c> symbols, for example, <c>copy</c>.</param>
+        /// <param name="entity">The entity without <c>&amp;</c> and <c>;</c> symbols, for example, <c>copy</c>.</param>
         /// <returns>The unicode character set or <c>null</c> if the entity was not recognized.</returns>
         public static string DecodeEntity(string entity)
         {
