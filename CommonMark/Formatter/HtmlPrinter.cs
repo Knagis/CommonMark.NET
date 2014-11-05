@@ -9,7 +9,7 @@ namespace CommonMark.Formatter
     internal static class HtmlPrinter
     {
         private static readonly char[] EscapeHtmlCharacters = new[] { '&', '<', '>', '"' };
-        private static readonly string HexCharacters = "0123456789ABCDEF";
+        private const string HexCharacters = "0123456789ABCDEF";
 
         private static readonly bool[] UrlSafeCharacters = new[] {
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
