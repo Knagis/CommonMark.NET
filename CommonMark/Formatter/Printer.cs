@@ -150,59 +150,54 @@ namespace CommonMark.Formatter
         // Prettyprint an inline list, for debugging.
         public static void print_inlines(System.IO.TextWriter writer, Inline ils, int indent, int depth)
         {
-            if (depth > 100)
-                throw new CommonMarkException("The document contains inline elements nested more than 100 levels deep which is not supported.");
-
             while (ils != null)
             {
-                /*
-                // we add 11 extra spaces for the line/column info
-                for (int i=0; i < 11; i++) {
-                  putchar(' ');
-                }
-                putchar('|');
-                putchar(' ');
-                */
-                for (int i = 0; i < indent; i++)
-                {
-                    writer.Write(' ');
-                }
+                writer.Write(new string(' ', indent));
+
                 switch (ils.Tag)
                 {
                     case InlineTag.String:
                         writer.WriteLine("str {0}", format_str(ils.LiteralContent));
                         break;
+
                     case InlineTag.LineBreak:
                         writer.WriteLine("linebreak");
                         break;
+
                     case InlineTag.SoftBreak:
                         writer.WriteLine("softbreak");
                         break;
+
                     case InlineTag.Code:
                         writer.WriteLine("code {0}", format_str(ils.LiteralContent));
                         break;
+
                     case InlineTag.RawHtml:
                         writer.WriteLine("html {0}", format_str(ils.LiteralContent));
                         break;
+
                     case InlineTag.Link:
                         writer.WriteLine("link url={0} title={1}",
                                format_str(ils.Linkable.Url),
                                format_str(ils.Linkable.Title));
                         print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
                         break;
+
                     case InlineTag.Image:
                         writer.WriteLine("image url={0} title={1}",
                                format_str(ils.Linkable.Url),
                                format_str(ils.Linkable.Title));
                         print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
                         break;
+
                     case InlineTag.Strong:
                         writer.WriteLine("strong");
-                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
+                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
                         break;
+
                     case InlineTag.Emphasis:
                         writer.WriteLine("emph");
-                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
+                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
                         break;
                 }
                 ils = ils.NextSibling;
