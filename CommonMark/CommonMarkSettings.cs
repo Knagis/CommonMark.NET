@@ -14,11 +14,35 @@ namespace CommonMark
         /// </summary>
         public OutputFormat OutputFormat { get; set; }
 
+        private Func<string, string> _uriResolver;
         /// <summary>
         /// Gets or sets the delegate that is used to resolve addresses during rendering process. Can be used to process application relative URLs (<c>~/foo/bar</c>).
         /// </summary>
         /// <example><code>CommonMarkSettings.Default.UriResolver = VirtualPathUtility.ToAbsolute;</code></example>
-        public Func<string, string> UriResolver { get; set; }
+        public Func<string, string> UriResolver 
+        {
+            get { return this._uriResolver; }
+            set 
+            {
+                if (value != null)
+                {
+                    var orig = value;
+                    value = x =>
+                    {
+                        try
+                        {
+                            return orig(x);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new CommonMarkException("An error occurred while executing the CommonMarkSettings.UriResolver delegate. View inner exception for details.", ex);
+                        }
+                    };
+                }
+
+                this._uriResolver = value;
+            }
+        }
 
         private static readonly CommonMarkSettings _default = new CommonMarkSettings();
 

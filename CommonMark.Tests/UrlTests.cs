@@ -66,5 +66,30 @@ namespace CommonMark.Tests
             Helpers.LogValue("Actual", actual);
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
+
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        public void CustomUriResolverException()
+        {
+            // Arrange
+            var commonMark = Helpers.Normalize("foo␣**[a](~/temp)**␣[b][c]␣\r\n\r\n[c]:␣~/bar");
+            var expected = Helpers.Normalize("<p>foo <strong><a href=\"/app/dir/temp\">a</a></strong> <a href=\"/app/dir/bar\">b</a></p>");
+            var settings = CommonMarkSettings.Default.Clone();
+
+            settings.UriResolver = url => { throw new ArgumentNullException(); };
+
+            Helpers.LogValue("CommonMark", "foo␣**[a](~/temp)**␣[b][c]␣\r\n\r\n[c]:␣~/bar");
+            Helpers.LogValue("Expected", expected);
+
+            // Act
+            try
+            {
+                var actual = CommonMarkConverter.Convert(commonMark, settings);
+            }
+            catch(CommonMarkException)
+            {
+                // expected
+            }
+        }
     }
 }
