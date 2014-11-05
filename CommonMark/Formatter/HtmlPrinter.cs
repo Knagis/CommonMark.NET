@@ -28,6 +28,9 @@ namespace CommonMark.Formatter
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
         private static void EscapeUrl(string input, System.IO.TextWriter target)
         {
+            if (input == null)
+                return;
+
             char c;
             int lastPos = 0;
             char[] buffer = input.ToCharArray();
@@ -79,6 +82,9 @@ namespace CommonMark.Formatter
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
         private static void EscapeHtml(string input, System.IO.TextWriter target)
         {
+            if (input == null)
+                return;
+
             int pos = 0;
             int lastPos = 0;
             char[] buffer = null;
@@ -131,7 +137,7 @@ namespace CommonMark.Formatter
 
                 if (buffer == null || buffer.Length < part.Length)
                     buffer = new char[part.Length];
-                
+
                 part.Source.CopyTo(part.StartIndex, buffer, 0, part.Length);
 
                 lastPos = pos = part.StartIndex;
@@ -323,6 +329,8 @@ namespace CommonMark.Formatter
         private static void InlinesToHtmlEncodedText(HtmlTextWriter writer, Inline inline, CommonMarkSettings settings, Stack<InlineStackEntry> stack)
         {
             var uriResolver = settings.UriResolver;
+            bool withinLink = false;
+            bool stackWithinLink = false; 
             bool visitChildren;
             string stackLiteral = null;
             var origStackCount = stack.Count;
@@ -356,24 +364,35 @@ namespace CommonMark.Formatter
                         break;
 
                     case InlineTag.Link:
-                        writer.Write("&lt;a href=&quot;");
-                        if (uriResolver != null)
-                            EscapeUrl(uriResolver(inline.Linkable.Url), writer);
-                        else
-                            EscapeUrl(inline.Linkable.Url, writer);
-
-                        writer.Write("&quot;");
-                        if (inline.Linkable.Title.Length > 0)
+                        if (withinLink)
                         {
-                            writer.Write(" title=&quot;");
-                            EscapeHtml(inline.Linkable.Title, writer);
-                            writer.Write("&quot;");
+                            writer.Write('[');
+                            stackLiteral = "]";
+                            visitChildren = true;
+                            stackWithinLink = withinLink;
                         }
+                        else
+                        {
+                            writer.Write("&lt;a href=&quot;");
+                            if (uriResolver != null)
+                                EscapeUrl(uriResolver(inline.Linkable.Url), writer);
+                            else
+                                EscapeUrl(inline.Linkable.Url, writer);
 
-                        writer.Write("&gt;");
+                            writer.Write("&quot;");
+                            if (inline.Linkable.Title.Length > 0)
+                            {
+                                writer.Write(" title=&quot;");
+                                EscapeHtml(inline.Linkable.Title, writer);
+                                writer.Write("&quot;");
+                            }
 
-                        visitChildren = true;
-                        stackLiteral = "&lt;/a&gt;";
+                            writer.Write("&gt;");
+
+                            visitChildren = true;
+                            stackWithinLink = true;
+                            stackLiteral = "&lt;/a&gt;";
+                        }
                         break;
 
                     case InlineTag.Image:
@@ -398,12 +417,14 @@ namespace CommonMark.Formatter
                     case InlineTag.Strong:
                         writer.Write("&lt;strong&gt;");
                         stackLiteral = "&lt;/strong&gt;";
+                        stackWithinLink = withinLink;
                         visitChildren = true;
                         break;
 
                     case InlineTag.Emphasis:
                         writer.Write("&lt;em&gt;");
                         stackLiteral = "&lt;/em&gt;";
+                        stackWithinLink = withinLink;
                         visitChildren = true;
                         break;
 
@@ -413,8 +434,9 @@ namespace CommonMark.Formatter
 
                 if (visitChildren)
                 {
-                    stack.Push(new InlineStackEntry(stackLiteral, inline.NextSibling));
+                    stack.Push(new InlineStackEntry(stackLiteral, inline.NextSibling, withinLink));
 
+                    withinLink = stackWithinLink;
                     inline = inline.FirstChild;
                 }
                 else if (inline.NextSibling != null)
@@ -426,11 +448,12 @@ namespace CommonMark.Formatter
                     inline = null;
                 }
 
-                while (inline == null && stack.Count > origStackCount)
+                while (inline == null && stack.Count > 0)
                 {
                     var entry = stack.Pop();
                     writer.Write(entry.Literal);
                     inline = entry.Target;
+                    withinLink = entry.IsWithinLink;
                 }
             }
         }
@@ -441,6 +464,8 @@ namespace CommonMark.Formatter
         private static void InlinesToHtml(HtmlTextWriter writer, Inline inline, CommonMarkSettings settings, Stack<InlineStackEntry> stack)
         {
             var uriResolver = settings.UriResolver;
+            bool withinLink = false;
+            bool stackWithinLink = false;
             bool visitChildren;
             string stackLiteral = null;
 
@@ -473,24 +498,35 @@ namespace CommonMark.Formatter
                         break;
 
                     case InlineTag.Link:
-                        writer.Write("<a href=\"");
-                        if (uriResolver != null)
-                            EscapeUrl(uriResolver(inline.Linkable.Url), writer);
-                        else
-                            EscapeUrl(inline.Linkable.Url, writer);
-
-                        writer.Write('\"');
-                        if (inline.Linkable.Title.Length > 0)
+                        if (withinLink)
                         {
-                            writer.Write(" title=\"");
-                            EscapeHtml(inline.Linkable.Title, writer);
-                            writer.Write('\"');
+                            writer.Write('[');
+                            stackLiteral = "]";
+                            stackWithinLink = withinLink;
+                            visitChildren = true;
                         }
-                        
-                        writer.Write('>');
+                        else
+                        {
+                            writer.Write("<a href=\"");
+                            if (uriResolver != null)
+                                EscapeUrl(uriResolver(inline.Linkable.Url), writer);
+                            else
+                                EscapeUrl(inline.Linkable.Url, writer);
 
-                        visitChildren = true;
-                        stackLiteral = "</a>";
+                            writer.Write('\"');
+                            if (!string.IsNullOrEmpty(inline.Linkable.Title))
+                            {
+                                writer.Write(" title=\"");
+                                EscapeHtml(inline.Linkable.Title, writer);
+                                writer.Write('\"');
+                            }
+
+                            writer.Write('>');
+
+                            visitChildren = true;
+                            stackWithinLink = true;
+                            stackLiteral = "</a>";
+                        }
                         break;
 
                     case InlineTag.Image:
@@ -515,6 +551,7 @@ namespace CommonMark.Formatter
                     case InlineTag.Strong:
                         writer.Write("<strong>");
                         stackLiteral = "</strong>";
+                        stackWithinLink = withinLink;
                         visitChildren = true;
                         break;
 
@@ -522,6 +559,7 @@ namespace CommonMark.Formatter
                         writer.Write("<em>");
                         stackLiteral = "</em>";
                         visitChildren = true;
+                        stackWithinLink = withinLink;
                         break;
 
                     default:
@@ -530,7 +568,9 @@ namespace CommonMark.Formatter
 
                 if (visitChildren)
                 {
-                    stack.Push(new InlineStackEntry(stackLiteral, inline.NextSibling));
+                    stack.Push(new InlineStackEntry(stackLiteral, inline.NextSibling, withinLink));
+
+                    withinLink = stackWithinLink;
                     inline = inline.FirstChild;
                 }
                 else if (inline.NextSibling != null)
@@ -547,6 +587,7 @@ namespace CommonMark.Formatter
                     var entry = stack.Pop();
                     writer.Write(entry.Literal);
                     inline = entry.Target;
+                    withinLink = entry.IsWithinLink;
                 }
             }
         }
@@ -567,10 +608,12 @@ namespace CommonMark.Formatter
         {
             public readonly string Literal;
             public readonly Inline Target;
-            public InlineStackEntry(string literal, Inline target)
+            public readonly bool IsWithinLink;
+            public InlineStackEntry(string literal, Inline target, bool isWithinLink)
             {
                 this.Literal = literal;
                 this.Target = target;
+                this.IsWithinLink = isWithinLink;
             }
         }
     }

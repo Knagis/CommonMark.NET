@@ -9,6 +9,9 @@ namespace CommonMark.Formatter
     {
         private static string format_str(string s)
         {
+            if (s == null)
+                return string.Empty;
+
             int pos = 0;
             int len = s.Length;
             StringBuilder result = new StringBuilder();
@@ -118,15 +121,15 @@ namespace CommonMark.Formatter
 
                     default:
                         throw new CommonMarkException("Block type " + block.Tag + " is not supported.", block);
-                }
+            }
 
                 if (block.InlineContent != null)
                 {
                     PrintInlines(writer, block.InlineContent, indent + 2, inlineStack);
-                }
+        }
 
                 if (block.FirstChild != null)
-                {
+        {
                     if (block.NextSibling != null)
                         stack.Push(new BlockStackEntry(indent, block.NextSibling));
 
@@ -138,7 +141,7 @@ namespace CommonMark.Formatter
                     block = block.NextSibling;
                 }
                 else if (stack.Count > 0)
-                {
+            {
                     var entry = stack.Pop();
                     indent = entry.Indent;
                     block = entry.Target;
@@ -151,7 +154,7 @@ namespace CommonMark.Formatter
         }
 
         private static void PrintInlines(System.IO.TextWriter writer, Inline inline, int indent, Stack<InlineStackEntry> stack)
-        {
+                {
             while (inline != null)
             {
                 writer.Write(new string(' ', indent));
