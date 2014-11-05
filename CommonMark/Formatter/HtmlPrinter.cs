@@ -331,7 +331,7 @@ namespace CommonMark.Formatter
                         }
 
                         writer.Write("&gt;");
-                        InlinesToHtml(writer, ils.Linkable.Label, settings, depth + 1);
+                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
                         writer.Write("&lt;/a&gt;");
                         break;
 
@@ -343,7 +343,7 @@ namespace CommonMark.Formatter
                             EscapeUrl(ils.Linkable.Url, writer);
 
                         writer.Write("&quot; alt=&quot;");
-                        InlinesToHtmlEncodedText(writer, ils.Linkable.Label, settings, depth + 1);
+                        InlinesToHtmlEncodedText(writer, ils.FirstChild, settings, depth + 1);
                         writer.Write("&quot;");
                         if (ils.Linkable.Title.Length > 0)
                         {
@@ -425,7 +425,7 @@ namespace CommonMark.Formatter
                         }
                         
                         writer.Write('>');
-                        InlinesToHtml(writer, ils.Linkable.Label, settings, depth + 1);
+                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
                         writer.Write("</a>");
                         break;
 
@@ -437,7 +437,7 @@ namespace CommonMark.Formatter
                             EscapeUrl(ils.Linkable.Url, writer);
 
                         writer.Write("\" alt=\"");
-                        InlinesToHtmlEncodedText(writer, ils.Linkable.Label, settings, depth + 1);
+                        InlinesToHtmlEncodedText(writer, ils.FirstChild, settings, depth + 1);
                         writer.Write("\"");
                         if (ils.Linkable.Title.Length > 0)
                         {

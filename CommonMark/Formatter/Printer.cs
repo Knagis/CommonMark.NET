@@ -180,14 +180,14 @@ namespace CommonMark.Formatter
                         writer.WriteLine("link url={0} title={1}",
                                format_str(ils.Linkable.Url),
                                format_str(ils.Linkable.Title));
-                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
+                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
                         break;
 
                     case InlineTag.Image:
                         writer.WriteLine("image url={0} title={1}",
                                format_str(ils.Linkable.Url),
                                format_str(ils.Linkable.Title));
-                        print_inlines(writer, ils.Linkable.Label, indent + 2, depth + 1);
+                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
                         break;
 
                     case InlineTag.Strong:

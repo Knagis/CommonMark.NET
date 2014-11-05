@@ -58,7 +58,7 @@ namespace CommonMark.Parser
         {
             Inline e = new Inline();
             e.Tag = t;
-            e.Linkable.Label = label;
+            e.FirstChild = label;
             e.Linkable.Url = url;
             e.Linkable.Title = title;
             return e;
