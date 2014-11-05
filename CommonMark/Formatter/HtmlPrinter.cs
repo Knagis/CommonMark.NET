@@ -165,37 +165,44 @@ namespace CommonMark.Formatter
         /// Convert a block list to HTML.  Returns 0 on success, and sets result.
         /// </summary>
         /// <remarks>Orig: blocks_to_html</remarks>
-        public static void BlocksToHtml(System.IO.TextWriter writer, Block b, CommonMarkSettings settings)
+        public static void BlocksToHtml(System.IO.TextWriter writer, Block block, CommonMarkSettings settings)
         {
             using (var wrapper = new HtmlTextWriter(writer))
-                BlocksToHtmlInner(wrapper, b, settings, false, 0);
+                BlocksToHtmlInner(wrapper, block, settings);
         }
 
-        /// <remarks>Orig: blocks_to_html_inner</remarks>
-        private static void BlocksToHtmlInner(HtmlTextWriter writer, Block b, CommonMarkSettings settings, bool tight, int depth)
+        private static void BlocksToHtmlInner(HtmlTextWriter writer, Block block, CommonMarkSettings settings)
         {
-            if (depth > 100)
-                throw new CommonMarkException("The document contains block elements nested more than 100 levels deep which is not supported.");
+            var stack = new Stack<BlockStackEntry>();
+            var inlineStack = new Stack<InlineStackEntry>();
+            bool visitChildren;
+            string stackLiteral = null;
+            bool stackTight = false;
+            bool tight = false;
 
             string tag;
-            while (b != null)
+            while (block != null)
             {
-                switch (b.Tag)
+                visitChildren = false;
+
+                switch (block.Tag)
                 {
                     case BlockTag.Document:
-                        BlocksToHtmlInner(writer, b.FirstChild, settings, false, depth + 1);
+                        stackLiteral = null;
+                        stackTight = false;
+                        visitChildren = true;
                         break;
 
                     case BlockTag.Paragraph:
                         if (tight)
                         {
-                            InlinesToHtml(writer, b.InlineContent, settings, 0);
+                            InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
                         }
                         else
                         {
                             writer.EnsureLine();
                             writer.Write("<p>");
-                            InlinesToHtml(writer, b.InlineContent, settings, 0);
+                            InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
                             writer.WriteLine("</p>");
                         }
                         break;
@@ -203,63 +210,69 @@ namespace CommonMark.Formatter
                     case BlockTag.BlockQuote:
                         writer.EnsureLine();
                         writer.WriteLine("<blockquote>");
-                        BlocksToHtmlInner(writer, b.FirstChild, settings, false, depth + 1);
-                        writer.WriteLine("</blockquote>");
+
+                        stackLiteral = "</blockquote>" + Environment.NewLine;
+                        stackTight = false;
+                        visitChildren = true;
                         break;
 
                     case BlockTag.ListItem:
                         writer.EnsureLine();
                         writer.Write("<li>");
-                        BlocksToHtmlInner(writer, b.FirstChild, settings, tight, depth + 1);
-                        writer.WriteLine("</li>");
+
+                        stackLiteral = "</li>" + Environment.NewLine;
+                        stackTight = tight;
+                        visitChildren = true;
                         break;
 
                     case BlockTag.List:
                         // make sure a list starts at the beginning of the line:
                         writer.EnsureLine();
-                        var data = b.ListData;
+                        var data = block.ListData;
                         tag = data.ListType == ListType.Bullet ? "ul" : "ol";
                         writer.Write("<" + tag);
                         if (data.Start != 1)
                             writer.Write(" start=\"" + data.Start.ToString(System.Globalization.CultureInfo.InvariantCulture) + "\"");
                         writer.WriteLine(">");
-                        BlocksToHtmlInner(writer, b.FirstChild, settings, data.IsTight, depth + 1);
-                        writer.WriteLine("</" + tag + ">");
+
+                        stackLiteral = "</" + tag + ">" + Environment.NewLine;
+                        stackTight = data.IsTight;
+                        visitChildren = true;
                         break;
 
                     case BlockTag.AtxHeader:
                     case BlockTag.SETextHeader:
-                        tag = "h" + b.HeaderLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                        tag = "h" + block.HeaderLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
                         writer.EnsureLine();
                         writer.Write("<" + tag + ">");
-                        InlinesToHtml(writer, b.InlineContent, settings, 0);
+                        InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
                         writer.WriteLine("</" + tag + ">");
                         break;
 
                     case BlockTag.IndentedCode:
                         writer.EnsureLine();
                         writer.Write("<pre><code>");
-                        EscapeHtml(b.StringContent, writer);
+                        EscapeHtml(block.StringContent, writer);
                         writer.WriteLine("</code></pre>");
                         break;
 
                     case BlockTag.FencedCode:
                         writer.EnsureLine();
                         writer.Write("<pre><code");
-                        if (b.FencedCodeData.Info.Length > 0)
+                        if (block.FencedCodeData.Info.Length > 0)
                         {
-                            string[] info_words = b.FencedCodeData.Info.Split(new[] { ' ' });
+                            string[] info_words = block.FencedCodeData.Info.Split(new[] { ' ' });
                             writer.Write(" class=\"language-");
                             EscapeHtml(info_words[0], writer);
                             writer.Write("\"");
                         }
                         writer.Write(">");
-                        EscapeHtml(b.StringContent, writer);
+                        EscapeHtml(block.StringContent, writer);
                         writer.WriteLine("</code></pre>");
                         break;
 
                     case BlockTag.HtmlBlock:
-                        b.StringContent.WriteTo(writer);
+                        block.StringContent.WriteTo(writer);
                         break;
 
                     case BlockTag.HorizontalRuler:
@@ -270,9 +283,33 @@ namespace CommonMark.Formatter
                         break;
 
                     default:
-                        throw new CommonMarkException("Block type " + b.Tag + " is not supported.", b);
+                        throw new CommonMarkException("Block type " + block.Tag + " is not supported.", block);
                 }
-                b = b.NextSibling;
+
+                if (visitChildren)
+                {
+                    stack.Push(new BlockStackEntry(stackLiteral, block.NextSibling, tight));
+
+                    tight = stackTight;
+                    block = block.FirstChild;
+                }
+                else if (block.NextSibling != null)
+                {
+                    block = block.NextSibling;
+                }
+                else
+                {
+                    block = null;
+                }
+
+                while (block == null && stack.Count > 0)
+                {
+                    var entry = stack.Pop();
+
+                    writer.Write(entry.Literal);
+                    tight = entry.IsTight;
+                    block = entry.Target;
+                }
             }
         }
 
@@ -283,18 +320,21 @@ namespace CommonMark.Formatter
         /// Waiting for https://github.com/jgm/CommonMark/issues/145 to be resolved - this method is only
         /// used for image ALT attribute and it might be rewritten to output plain text instead.
         /// </remarks>
-        private static void InlinesToHtmlEncodedText(HtmlTextWriter writer, Inline ils, CommonMarkSettings settings, int depth)
+        private static void InlinesToHtmlEncodedText(HtmlTextWriter writer, Inline inline, CommonMarkSettings settings, Stack<InlineStackEntry> stack)
         {
-            if (depth > 100)
-                throw new CommonMarkException("The document contains inline elements nested more than 100 levels deep which is not supported.");
-
             var uriResolver = settings.UriResolver;
-            while (ils != null)
+            bool visitChildren;
+            string stackLiteral = null;
+            var origStackCount = stack.Count;
+
+            while (inline != null)
             {
-                switch (ils.Tag)
+                visitChildren = false;
+
+                switch (inline.Tag)
                 {
                     case InlineTag.String:
-                        EscapeHtml(ils.LiteralContent, writer);
+                        EscapeHtml(inline.LiteralContent, writer);
                         break;
 
                     case InlineTag.LineBreak:
@@ -307,48 +347,49 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Code:
                         writer.Write("&lt;code&gt;");
-                        EscapeHtml(ils.LiteralContent, writer);
+                        EscapeHtml(inline.LiteralContent, writer);
                         writer.Write("&lt;/code&gt;");
                         break;
 
                     case InlineTag.RawHtml:
-                        writer.Write(ils.LiteralContent);
+                        writer.Write(inline.LiteralContent);
                         break;
 
                     case InlineTag.Link:
                         writer.Write("&lt;a href=&quot;");
                         if (uriResolver != null)
-                            EscapeUrl(uriResolver(ils.Linkable.Url), writer);
+                            EscapeUrl(uriResolver(inline.Linkable.Url), writer);
                         else
-                            EscapeUrl(ils.Linkable.Url, writer);
+                            EscapeUrl(inline.Linkable.Url, writer);
 
                         writer.Write("&quot;");
-                        if (ils.Linkable.Title.Length > 0)
+                        if (inline.Linkable.Title.Length > 0)
                         {
                             writer.Write(" title=&quot;");
-                            EscapeHtml(ils.Linkable.Title, writer);
+                            EscapeHtml(inline.Linkable.Title, writer);
                             writer.Write("&quot;");
                         }
 
                         writer.Write("&gt;");
-                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
-                        writer.Write("&lt;/a&gt;");
+
+                        visitChildren = true;
+                        stackLiteral = "&lt;/a&gt;";
                         break;
 
                     case InlineTag.Image:
                         writer.Write("&lt;img src=&quot;");
                         if (uriResolver != null)
-                            EscapeUrl(uriResolver(ils.Linkable.Url), writer);
+                            EscapeUrl(uriResolver(inline.Linkable.Url), writer);
                         else
-                            EscapeUrl(ils.Linkable.Url, writer);
+                            EscapeUrl(inline.Linkable.Url, writer);
 
                         writer.Write("&quot; alt=&quot;");
-                        InlinesToHtmlEncodedText(writer, ils.FirstChild, settings, depth + 1);
+                        InlinesToHtmlEncodedText(writer, inline.FirstChild, settings, stack);
                         writer.Write("&quot;");
-                        if (ils.Linkable.Title.Length > 0)
+                        if (inline.Linkable.Title.Length > 0)
                         {
                             writer.Write(" title=&quot;");
-                            EscapeHtml(ils.Linkable.Title, writer);
+                            EscapeHtml(inline.Linkable.Title, writer);
                             writer.Write("&quot;");
                         }
                         writer.Write(" /&gt;");
@@ -356,39 +397,61 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Strong:
                         writer.Write("&lt;strong&gt;");
-                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
-                        writer.Write("&lt;/strong&gt;");
+                        stackLiteral = "&lt;/strong&gt;";
+                        visitChildren = true;
                         break;
 
                     case InlineTag.Emphasis:
                         writer.Write("&lt;em&gt;");
-                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
-                        writer.Write("&lt;/em&gt;");
+                        stackLiteral = "&lt;/em&gt;";
+                        visitChildren = true;
                         break;
 
                     default:
-                        throw new CommonMarkException("Inline type " + ils.Tag + " is not supported.", ils);
+                        throw new CommonMarkException("Inline type " + inline.Tag + " is not supported.", inline);
                 }
-                ils = ils.NextSibling;
-            }
 
+                if (visitChildren)
+                {
+                    stack.Push(new InlineStackEntry(stackLiteral, inline.NextSibling));
+
+                    inline = inline.FirstChild;
+                }
+                else if (inline.NextSibling != null)
+                {
+                    inline = inline.NextSibling;
+                }
+                else
+                {
+                    inline = null;
+                }
+
+                while (inline == null && stack.Count > origStackCount)
+                {
+                    var entry = stack.Pop();
+                    writer.Write(entry.Literal);
+                    inline = entry.Target;
+                }
+            }
         }
 
         /// <summary>
         /// Writes the inline list to the given writer as HTML code. 
         /// </summary>
-        private static void InlinesToHtml(HtmlTextWriter writer, Inline ils, CommonMarkSettings settings, int depth)
+        private static void InlinesToHtml(HtmlTextWriter writer, Inline inline, CommonMarkSettings settings, Stack<InlineStackEntry> stack)
         {
-            if (depth > 100)
-                throw new CommonMarkException("The document contains inline elements nested more than 100 levels deep which is not supported.");
-
             var uriResolver = settings.UriResolver;
-            while (ils != null)
+            bool visitChildren;
+            string stackLiteral = null;
+
+            while (inline != null)
             {
-                switch (ils.Tag)
+                visitChildren = false;
+
+                switch (inline.Tag)
                 {
                     case InlineTag.String:
-                        EscapeHtml(ils.LiteralContent, writer);
+                        EscapeHtml(inline.LiteralContent, writer);
                         break;
 
                     case InlineTag.LineBreak:
@@ -401,48 +464,49 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Code:
                         writer.Write("<code>");
-                        EscapeHtml(ils.LiteralContent, writer);
+                        EscapeHtml(inline.LiteralContent, writer);
                         writer.Write("</code>");
                         break;
 
                     case InlineTag.RawHtml:
-                        writer.Write(ils.LiteralContent);
+                        writer.Write(inline.LiteralContent);
                         break;
 
                     case InlineTag.Link:
                         writer.Write("<a href=\"");
                         if (uriResolver != null)
-                            EscapeUrl(uriResolver(ils.Linkable.Url), writer);
+                            EscapeUrl(uriResolver(inline.Linkable.Url), writer);
                         else
-                            EscapeUrl(ils.Linkable.Url, writer);
+                            EscapeUrl(inline.Linkable.Url, writer);
 
                         writer.Write('\"');
-                        if (ils.Linkable.Title.Length > 0)
+                        if (inline.Linkable.Title.Length > 0)
                         {
                             writer.Write(" title=\"");
-                            EscapeHtml(ils.Linkable.Title, writer);
+                            EscapeHtml(inline.Linkable.Title, writer);
                             writer.Write('\"');
                         }
                         
                         writer.Write('>');
-                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
-                        writer.Write("</a>");
+
+                        visitChildren = true;
+                        stackLiteral = "</a>";
                         break;
 
                     case InlineTag.Image:
                         writer.Write("<img src=\"");
                         if (uriResolver != null)
-                            EscapeUrl(uriResolver(ils.Linkable.Url), writer);
+                            EscapeUrl(uriResolver(inline.Linkable.Url), writer);
                         else
-                            EscapeUrl(ils.Linkable.Url, writer);
+                            EscapeUrl(inline.Linkable.Url, writer);
 
                         writer.Write("\" alt=\"");
-                        InlinesToHtmlEncodedText(writer, ils.FirstChild, settings, depth + 1);
+                        InlinesToHtmlEncodedText(writer, inline.FirstChild, settings, stack);
                         writer.Write("\"");
-                        if (ils.Linkable.Title.Length > 0)
+                        if (inline.Linkable.Title.Length > 0)
                         {
                             writer.Write(" title=\"");
-                            EscapeHtml(ils.Linkable.Title, writer);
+                            EscapeHtml(inline.Linkable.Title, writer);
                             writer.Write("\"");
                         }
                         writer.Write(" />");
@@ -450,20 +514,63 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Strong:
                         writer.Write("<strong>");
-                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
-                        writer.Write("</strong>");
+                        stackLiteral = "</strong>";
+                        visitChildren = true;
                         break;
 
                     case InlineTag.Emphasis:
                         writer.Write("<em>");
-                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
-                        writer.Write("</em>");
+                        stackLiteral = "</em>";
+                        visitChildren = true;
                         break;
 
                     default:
-                        throw new CommonMarkException("Inline type " + ils.Tag + " is not supported.", ils);
+                        throw new CommonMarkException("Inline type " + inline.Tag + " is not supported.", inline);
                 }
-                ils = ils.NextSibling;
+
+                if (visitChildren)
+                {
+                    stack.Push(new InlineStackEntry(stackLiteral, inline.NextSibling));
+                    inline = inline.FirstChild;
+                }
+                else if (inline.NextSibling != null)
+                {
+                    inline = inline.NextSibling;
+                }
+                else
+                {
+                    inline = null;
+                }
+
+                while (inline == null && stack.Count > 0)
+                {
+                    var entry = stack.Pop();
+                    writer.Write(entry.Literal);
+                    inline = entry.Target;
+                }
+            }
+        }
+
+        private struct BlockStackEntry
+        {
+            public readonly string Literal;
+            public readonly Block Target;
+            public readonly bool IsTight;
+            public BlockStackEntry(string literal, Block target, bool isTight)
+            {
+                this.Literal = literal;
+                this.Target = target;
+                this.IsTight = isTight;
+            }
+        }
+        private struct InlineStackEntry
+        {
+            public readonly string Literal;
+            public readonly Inline Target;
+            public InlineStackEntry(string literal, Inline target)
+            {
+                this.Literal = literal;
+                this.Target = target;
             }
         }
     }
