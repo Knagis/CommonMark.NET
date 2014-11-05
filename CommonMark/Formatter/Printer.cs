@@ -38,38 +38,33 @@ namespace CommonMark.Formatter
             return result.ToString();
         }
 
-        // Functions to pretty-print inline and block lists, for debugging.
-        // Prettyprint an inline list, for debugging.
-        public static void print_blocks(System.IO.TextWriter writer, Block b, int indent, int depth)
+        /// <summary>
+        /// Write the block data to the given writer.
+        /// </summary>
+        public static void PrintBlocks(System.IO.TextWriter writer, Block block, int indent)
         {
-            if (depth > 100)
-                throw new CommonMarkException("The document contains block elements nested more than 100 levels deep which is not supported.");
+            var stack = new Stack<BlockStackEntry>();
 
-            ListData data;
-            while (b != null)
+            while (block != null)
             {
-                // printf("%3d %3d %3d| ", b.start_line, b.start_column, b.end_line);
-                for (int i = 0; i < indent; i++)
-                {
-                    writer.Write(' ');
-                }
-                switch (b.Tag)
+                writer.Write(new string(' ', indent));
+
+                switch (block.Tag)
                 {
                     case BlockTag.Document:
                         writer.WriteLine("document");
-                        print_blocks(writer, b.FirstChild, indent + 2, depth + 1);
                         break;
+
                     case BlockTag.BlockQuote:
                         writer.WriteLine("block_quote");
-                        print_blocks(writer, b.FirstChild, indent + 2, depth + 1);
                         break;
+
                     case BlockTag.ListItem:
-                        data = b.ListData;
                         writer.WriteLine("list_item");
-                        print_blocks(writer, b.FirstChild, indent + 2, depth + 1);
                         break;
+
                     case BlockTag.List:
-                        data = b.ListData;
+                        var data = block.ListData;
                         if (data.ListType == ListType.Ordered)
                         {
                             writer.WriteLine("list (type=ordered tight={0} start={1} delim={2})",
@@ -83,42 +78,72 @@ namespace CommonMark.Formatter
                                  data.IsTight,
                                  data.BulletChar);
                         }
-                        print_blocks(writer, b.FirstChild, indent + 2, depth + 1);
                         break;
+
                     case BlockTag.AtxHeader:
-                        writer.WriteLine("atx_header (level={0})", b.HeaderLevel);
-                        print_inlines(writer, b.InlineContent, indent + 2, depth + 1);
+                        writer.WriteLine("atx_header (level={0})", block.HeaderLevel);
+                        print_inlines(writer, block.InlineContent, indent + 2, 0);
                         break;
+
                     case BlockTag.SETextHeader:
-                        writer.WriteLine("setext_header (level={0})", b.HeaderLevel);
-                        print_inlines(writer, b.InlineContent, indent + 2, depth + 1);
+                        writer.WriteLine("setext_header (level={0})", block.HeaderLevel);
+                        print_inlines(writer, block.InlineContent, indent + 2, 0);
                         break;
+
                     case BlockTag.Paragraph:
                         writer.WriteLine("paragraph");
-                        print_inlines(writer, b.InlineContent, indent + 2, depth + 1);
+                        print_inlines(writer, block.InlineContent, indent + 2, 0);
                         break;
+
                     case BlockTag.HorizontalRuler:
                         writer.WriteLine("hrule");
                         break;
+
                     case BlockTag.IndentedCode:
-                        writer.WriteLine("indented_code {0}", format_str(b.StringContent.ToString()));
+                        writer.WriteLine("indented_code {0}", format_str(block.StringContent.ToString()));
                         break;
+
                     case BlockTag.FencedCode:
                         writer.WriteLine("fenced_code length={0} info={1} {2}",
-                               b.FencedCodeData.FenceLength,
-                               format_str(b.FencedCodeData.Info),
-                               format_str(b.StringContent.ToString()));
+                               block.FencedCodeData.FenceLength,
+                               format_str(block.FencedCodeData.Info),
+                               format_str(block.StringContent.ToString()));
                         break;
+
                     case BlockTag.HtmlBlock:
-                        writer.WriteLine("html_block {0}", format_str(b.StringContent.ToString()));
+                        writer.WriteLine("html_block {0}", format_str(block.StringContent.ToString()));
                         break;
+
                     case BlockTag.ReferenceDefinition:
                         writer.WriteLine("reference_def");
                         break;
+
                     default:
-                        throw new CommonMarkException("Block type " + b.Tag + " is not supported.", b);
+                        throw new CommonMarkException("Block type " + block.Tag + " is not supported.", block);
                 }
-                b = b.NextSibling;
+
+                if (block.FirstChild != null)
+                {
+                    if (block.NextSibling != null)
+                        stack.Push(new BlockStackEntry(indent, block.NextSibling));
+
+                    indent += 2;
+                    block = block.FirstChild;
+                }
+                else if (block.NextSibling != null)
+                {
+                    block = block.NextSibling;
+                }
+                else if (stack.Count > 0)
+                {
+                    var entry = stack.Pop();
+                    indent = entry.Indent;
+                    block = entry.Target;
+                }
+                else
+                {
+                    block = null;
+                }
             }
         }
 
@@ -181,6 +206,17 @@ namespace CommonMark.Formatter
                         break;
                 }
                 ils = ils.NextSibling;
+            }
+        }
+
+        private struct BlockStackEntry
+        {
+            public readonly int Indent;
+            public readonly Block Target;
+            public BlockStackEntry(int indent, Block target)
+            {
+                this.Indent = indent;
+                this.Target = target;
             }
         }
     }
