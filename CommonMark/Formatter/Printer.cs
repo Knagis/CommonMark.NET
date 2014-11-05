@@ -44,6 +44,7 @@ namespace CommonMark.Formatter
         public static void PrintBlocks(System.IO.TextWriter writer, Block block, int indent)
         {
             var stack = new Stack<BlockStackEntry>();
+            var inlineStack = new Stack<InlineStackEntry>();
 
             while (block != null)
             {
@@ -82,17 +83,14 @@ namespace CommonMark.Formatter
 
                     case BlockTag.AtxHeader:
                         writer.WriteLine("atx_header (level={0})", block.HeaderLevel);
-                        print_inlines(writer, block.InlineContent, indent + 2, 0);
                         break;
 
                     case BlockTag.SETextHeader:
                         writer.WriteLine("setext_header (level={0})", block.HeaderLevel);
-                        print_inlines(writer, block.InlineContent, indent + 2, 0);
                         break;
 
                     case BlockTag.Paragraph:
                         writer.WriteLine("paragraph");
-                        print_inlines(writer, block.InlineContent, indent + 2, 0);
                         break;
 
                     case BlockTag.HorizontalRuler:
@@ -122,6 +120,11 @@ namespace CommonMark.Formatter
                         throw new CommonMarkException("Block type " + block.Tag + " is not supported.", block);
                 }
 
+                if (block.InlineContent != null)
+                {
+                    PrintInlines(writer, block.InlineContent, indent + 2, inlineStack);
+                }
+
                 if (block.FirstChild != null)
                 {
                     if (block.NextSibling != null)
@@ -147,17 +150,16 @@ namespace CommonMark.Formatter
             }
         }
 
-        // Prettyprint an inline list, for debugging.
-        public static void print_inlines(System.IO.TextWriter writer, Inline ils, int indent, int depth)
+        private static void PrintInlines(System.IO.TextWriter writer, Inline inline, int indent, Stack<InlineStackEntry> stack)
         {
-            while (ils != null)
+            while (inline != null)
             {
                 writer.Write(new string(' ', indent));
 
-                switch (ils.Tag)
+                switch (inline.Tag)
                 {
                     case InlineTag.String:
-                        writer.WriteLine("str {0}", format_str(ils.LiteralContent));
+                        writer.WriteLine("str {0}", format_str(inline.LiteralContent));
                         break;
 
                     case InlineTag.LineBreak:
@@ -169,38 +171,56 @@ namespace CommonMark.Formatter
                         break;
 
                     case InlineTag.Code:
-                        writer.WriteLine("code {0}", format_str(ils.LiteralContent));
+                        writer.WriteLine("code {0}", format_str(inline.LiteralContent));
                         break;
 
                     case InlineTag.RawHtml:
-                        writer.WriteLine("html {0}", format_str(ils.LiteralContent));
+                        writer.WriteLine("html {0}", format_str(inline.LiteralContent));
                         break;
 
                     case InlineTag.Link:
                         writer.WriteLine("link url={0} title={1}",
-                               format_str(ils.Linkable.Url),
-                               format_str(ils.Linkable.Title));
-                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
+                               format_str(inline.Linkable.Url),
+                               format_str(inline.Linkable.Title));
                         break;
 
                     case InlineTag.Image:
                         writer.WriteLine("image url={0} title={1}",
-                               format_str(ils.Linkable.Url),
-                               format_str(ils.Linkable.Title));
-                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
+                               format_str(inline.Linkable.Url),
+                               format_str(inline.Linkable.Title));
                         break;
 
                     case InlineTag.Strong:
                         writer.WriteLine("strong");
-                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
                         break;
 
                     case InlineTag.Emphasis:
                         writer.WriteLine("emph");
-                        print_inlines(writer, ils.FirstChild, indent + 2, depth + 1);
                         break;
                 }
-                ils = ils.NextSibling;
+
+                if (inline.FirstChild != null)
+                {
+                    if (inline.NextSibling != null)
+                        stack.Push(new InlineStackEntry(indent, inline.NextSibling));
+
+                    indent += 2;
+                    inline = inline.FirstChild;
+                }
+                else if (inline.NextSibling != null)
+                {
+                    inline = inline.NextSibling;
+                }
+                else if (stack.Count > 0)
+                {
+                    var entry = stack.Pop();
+                    indent = entry.Indent;
+                    inline = entry.Target;
+                }
+                else
+                {
+                    inline = null;
+                }
             }
         }
 
@@ -209,6 +229,16 @@ namespace CommonMark.Formatter
             public readonly int Indent;
             public readonly Block Target;
             public BlockStackEntry(int indent, Block target)
+            {
+                this.Indent = indent;
+                this.Target = target;
+            }
+        }
+        private struct InlineStackEntry
+        {
+            public readonly int Indent;
+            public readonly Inline Target;
+            public InlineStackEntry(int indent, Inline target)
             {
                 this.Indent = indent;
                 this.Target = target;
