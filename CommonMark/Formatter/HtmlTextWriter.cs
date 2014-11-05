@@ -120,11 +120,18 @@ namespace CommonMark.Formatter
             this._inner.Write(value);
         }
 
-        public bool EndsWithNewline { get { return this._last == '\n'; } }
-
         public override Encoding Encoding
         {
             get { return Encoding.UTF8; }
+        }
+
+        /// <summary>
+        /// Adds a newline if the writer does not currently end with a newline.
+        /// </summary>
+        public virtual void EnsureLine()
+        {
+            if (this._last != '\n')
+                this.WriteLine();
         }
     }
 }

@@ -162,16 +162,6 @@ namespace CommonMark.Formatter
         }
 
         /// <summary>
-        /// Adds a newline if the writer does not currently end with a newline.
-        /// </summary>
-        /// <remarks>Orig: cr</remarks>
-        private static void EnsureNewlineEnding(HtmlTextWriter writer)
-        {
-            if (!writer.EndsWithNewline)
-                writer.WriteLine();
-        }
-
-        /// <summary>
         /// Convert a block list to HTML.  Returns 0 on success, and sets result.
         /// </summary>
         /// <remarks>Orig: blocks_to_html</remarks>
@@ -203,7 +193,7 @@ namespace CommonMark.Formatter
                         }
                         else
                         {
-                            EnsureNewlineEnding(writer);
+                            writer.EnsureLine();
                             writer.Write("<p>");
                             InlinesToHtml(writer, b.InlineContent, settings, 0);
                             writer.WriteLine("</p>");
@@ -211,28 +201,22 @@ namespace CommonMark.Formatter
                         break;
 
                     case BlockTag.BlockQuote:
-                        EnsureNewlineEnding(writer);
+                        writer.EnsureLine();
                         writer.WriteLine("<blockquote>");
                         BlocksToHtmlInner(writer, b.FirstChild, settings, false, depth + 1);
                         writer.WriteLine("</blockquote>");
                         break;
 
                     case BlockTag.ListItem:
-                        EnsureNewlineEnding(writer);
+                        writer.EnsureLine();
                         writer.Write("<li>");
-                        using (var sb = new System.IO.StringWriter())
-                        using (var sbw = new HtmlTextWriter(sb))
-                        {
-                            BlocksToHtmlInner(sbw, b.FirstChild, settings, tight, depth + 1);
-                            sbw.Flush();
-                            writer.Write(sb.ToString().TrimEnd());
-                        }
+                        BlocksToHtmlInner(writer, b.FirstChild, settings, tight, depth + 1);
                         writer.WriteLine("</li>");
                         break;
 
                     case BlockTag.List:
                         // make sure a list starts at the beginning of the line:
-                        EnsureNewlineEnding(writer);
+                        writer.EnsureLine();
                         var data = b.ListData;
                         tag = data.ListType == ListType.Bullet ? "ul" : "ol";
                         writer.Write("<" + tag);
@@ -246,21 +230,21 @@ namespace CommonMark.Formatter
                     case BlockTag.AtxHeader:
                     case BlockTag.SETextHeader:
                         tag = "h" + b.HeaderLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
-                        EnsureNewlineEnding(writer);
+                        writer.EnsureLine();
                         writer.Write("<" + tag + ">");
                         InlinesToHtml(writer, b.InlineContent, settings, 0);
                         writer.WriteLine("</" + tag + ">");
                         break;
 
                     case BlockTag.IndentedCode:
-                        EnsureNewlineEnding(writer);
+                        writer.EnsureLine();
                         writer.Write("<pre><code>");
                         EscapeHtml(b.StringContent, writer);
                         writer.WriteLine("</code></pre>");
                         break;
 
                     case BlockTag.FencedCode:
-                        EnsureNewlineEnding(writer);
+                        writer.EnsureLine();
                         writer.Write("<pre><code");
                         if (b.FencedCodeData.Info.Length > 0)
                         {
@@ -293,9 +277,106 @@ namespace CommonMark.Formatter
         }
 
         /// <summary>
-        /// Convert an inline list to HTML.  Returns 0 on success, and sets result.
+        /// Writes the inline list to the given writer as HTML code that is HTML-encoded (for use in attribute values). 
         /// </summary>
-        /// <remarks>Orig: inlines_to_html</remarks>
+        /// <remarks>
+        /// Waiting for https://github.com/jgm/CommonMark/issues/145 to be resolved - this method is only
+        /// used for image ALT attribute and it might be rewritten to output plain text instead.
+        /// </remarks>
+        private static void InlinesToHtmlEncodedText(HtmlTextWriter writer, Inline ils, CommonMarkSettings settings, int depth)
+        {
+            if (depth > 100)
+                throw new CommonMarkException("The document contains inline elements nested more than 100 levels deep which is not supported.");
+
+            var uriResolver = settings.UriResolver;
+            while (ils != null)
+            {
+                switch (ils.Tag)
+                {
+                    case InlineTag.String:
+                        EscapeHtml(ils.LiteralContent, writer);
+                        break;
+
+                    case InlineTag.LineBreak:
+                        writer.WriteLine("&lt;br /&gt;");
+                        break;
+
+                    case InlineTag.SoftBreak:
+                        writer.WriteLine();
+                        break;
+
+                    case InlineTag.Code:
+                        writer.Write("&lt;code&gt;");
+                        EscapeHtml(ils.LiteralContent, writer);
+                        writer.Write("&lt;/code&gt;");
+                        break;
+
+                    case InlineTag.RawHtml:
+                        writer.Write(ils.LiteralContent);
+                        break;
+
+                    case InlineTag.Link:
+                        writer.Write("&lt;a href=&quot;");
+                        if (uriResolver != null)
+                            EscapeUrl(uriResolver(ils.Linkable.Url), writer);
+                        else
+                            EscapeUrl(ils.Linkable.Url, writer);
+
+                        writer.Write("&quot;");
+                        if (ils.Linkable.Title.Length > 0)
+                        {
+                            writer.Write(" title=&quot;");
+                            EscapeHtml(ils.Linkable.Title, writer);
+                            writer.Write("&quot;");
+                        }
+
+                        writer.Write("&gt;");
+                        InlinesToHtml(writer, ils.Linkable.Label, settings, depth + 1);
+                        writer.Write("&lt;/a&gt;");
+                        break;
+
+                    case InlineTag.Image:
+                        writer.Write("&lt;img src=&quot;");
+                        if (uriResolver != null)
+                            EscapeUrl(uriResolver(ils.Linkable.Url), writer);
+                        else
+                            EscapeUrl(ils.Linkable.Url, writer);
+
+                        writer.Write("&quot; alt=&quot;");
+                        InlinesToHtmlEncodedText(writer, ils.Linkable.Label, settings, depth + 1);
+                        writer.Write("&quot;");
+                        if (ils.Linkable.Title.Length > 0)
+                        {
+                            writer.Write(" title=&quot;");
+                            EscapeHtml(ils.Linkable.Title, writer);
+                            writer.Write("&quot;");
+                        }
+                        writer.Write(" /&gt;");
+                        break;
+
+                    case InlineTag.Strong:
+                        writer.Write("&lt;strong&gt;");
+                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
+                        writer.Write("&lt;/strong&gt;");
+                        break;
+
+                    case InlineTag.Emphasis:
+                        writer.Write("&lt;em&gt;");
+                        InlinesToHtml(writer, ils.FirstChild, settings, depth + 1);
+                        writer.Write("&lt;/em&gt;");
+                        break;
+
+                    default:
+                        throw new CommonMarkException("Inline type " + ils.Tag + " is not supported.", ils);
+                }
+                ils = ils.NextSibling;
+            }
+
+        }
+
+        /// <summary>
+        /// Writes the inline list to the given writer as HTML code. 
+        /// </summary>
         private static void InlinesToHtml(HtmlTextWriter writer, Inline ils, CommonMarkSettings settings, int depth)
         {
             if (depth > 100)
@@ -356,13 +437,7 @@ namespace CommonMark.Formatter
                             EscapeUrl(ils.Linkable.Url, writer);
 
                         writer.Write("\" alt=\"");
-                        using (var sb = new System.IO.StringWriter())
-                        using (var sbw = new HtmlTextWriter(sb))
-                        {
-                            InlinesToHtml(sbw, ils.Linkable.Label, settings, depth + 1);
-                            sbw.Flush();
-                            EscapeHtml(sb.ToString(), writer);
-                        }
+                        InlinesToHtmlEncodedText(writer, ils.Linkable.Label, settings, depth + 1);
                         writer.Write("\"");
                         if (ils.Linkable.Title.Length > 0)
                         {

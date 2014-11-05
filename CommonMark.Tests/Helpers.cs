@@ -42,46 +42,30 @@ namespace CommonMark.Tests
 
         public static string Tidy(string html)
         {
-            var result = new StringBuilder();
-            var inPre = false;
-            html = html.Replace("\r", "");
+            html = html.Replace("\r", "").Trim();
+
+            // collapse spaces and newlines before </li> and after <li>
+            html = Regex.Replace(html, @"\s+</li>", "</li>");
+            html = Regex.Replace(html, @"<li>\s+", "<li>");
 
             // needed to compare UTF-32 characters
             html = html.Normalize(NormalizationForm.FormKD);
+            return html;
 
-            foreach (var line in html.Split('\n'))
-            {
-                if (Regex.IsMatch(line, @"<pre"))
-                {
-                    inPre = true;
-                }
-                if (Regex.IsMatch(line, @"</pre"))
-                {
-                    inPre = false;
-                }
-                if (inPre)
-                {
-                    result.AppendLine(line);
-                }
-                else
-                {
-                    var tidyLine = line;
-                    // remove leading spaces
-                    tidyLine = Regex.Replace(line, @"^ +", "");
-                    // remove trailing spaces
-                    tidyLine = Regex.Replace(line, @" +$", "");
-                    // collapse consecutive spaces
-                    tidyLine = Regex.Replace(line, @" +", " ");
-                    // collapse space before /> in tag
-                    tidyLine = Regex.Replace(line, @" +/>", "/>");
-                    // skip blank line
-                    if (tidyLine != "")
-                    {
-                        result.AppendLine(tidyLine);
-                    }
-                }
-            }
-            return result.ToString();
+            ////var result = new StringBuilder();
+            ////var inPre = false;
+            ////foreach (var line in html.Split('\n'))
+            ////{
+            ////    if (Regex.IsMatch(line, @"<pre"))
+            ////        inPre = true;
+            ////    if (Regex.IsMatch(line, @"</pre"))
+            ////        inPre = false;
+            ////    if (inPre)
+            ////        result.AppendLine(line);
+            ////    else
+            ////        result.AppendLine(line.Trim());
+            ////}
+            ////return result.ToString();
         }
 
         public static void Log()
