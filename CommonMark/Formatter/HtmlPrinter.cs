@@ -320,15 +320,11 @@ namespace CommonMark.Formatter
         }
 
         /// <summary>
-        /// Writes the inline list to the given writer as HTML code that is HTML-encoded (for use in attribute values). 
+        /// Writes the inline list to the given writer as plain text (without any HTML tags).
         /// </summary>
-        /// <remarks>
-        /// Waiting for https://github.com/jgm/CommonMark/issues/145 to be resolved - this method is only
-        /// used for image ALT attribute and it might be rewritten to output plain text instead.
-        /// </remarks>
-        private static void InlinesToHtmlEncodedText(HtmlTextWriter writer, Inline inline, CommonMarkSettings settings, Stack<InlineStackEntry> stack)
+        /// <seealso cref="https://github.com/jgm/CommonMark/issues/145"/>
+        private static void InlinesToPlainText(HtmlTextWriter writer, Inline inline, CommonMarkSettings settings, Stack<InlineStackEntry> stack)
         {
-            var uriResolver = settings.UriResolver;
             bool withinLink = false;
             bool stackWithinLink = false; 
             bool visitChildren;
@@ -342,25 +338,14 @@ namespace CommonMark.Formatter
                 switch (inline.Tag)
                 {
                     case InlineTag.String:
+                    case InlineTag.Code:
+                    case InlineTag.RawHtml:
                         EscapeHtml(inline.LiteralContent, writer);
                         break;
 
                     case InlineTag.LineBreak:
-                        writer.WriteLine("&lt;br /&gt;");
-                        break;
-
                     case InlineTag.SoftBreak:
                         writer.WriteLine();
-                        break;
-
-                    case InlineTag.Code:
-                        writer.Write("&lt;code&gt;");
-                        EscapeHtml(inline.LiteralContent, writer);
-                        writer.Write("&lt;/code&gt;");
-                        break;
-
-                    case InlineTag.RawHtml:
-                        writer.Write(inline.LiteralContent);
                         break;
 
                     case InlineTag.Link:
@@ -373,57 +358,21 @@ namespace CommonMark.Formatter
                         }
                         else
                         {
-                            writer.Write("&lt;a href=&quot;");
-                            if (uriResolver != null)
-                                EscapeUrl(uriResolver(inline.Linkable.Url), writer);
-                            else
-                                EscapeUrl(inline.Linkable.Url, writer);
-
-                            writer.Write("&quot;");
-                            if (inline.Linkable.Title.Length > 0)
-                            {
-                                writer.Write(" title=&quot;");
-                                EscapeHtml(inline.Linkable.Title, writer);
-                                writer.Write("&quot;");
-                            }
-
-                            writer.Write("&gt;");
-
                             visitChildren = true;
                             stackWithinLink = true;
-                            stackLiteral = "&lt;/a&gt;";
+                            stackLiteral = string.Empty;
                         }
                         break;
 
                     case InlineTag.Image:
-                        writer.Write("&lt;img src=&quot;");
-                        if (uriResolver != null)
-                            EscapeUrl(uriResolver(inline.Linkable.Url), writer);
-                        else
-                            EscapeUrl(inline.Linkable.Url, writer);
-
-                        writer.Write("&quot; alt=&quot;");
-                        InlinesToHtmlEncodedText(writer, inline.FirstChild, settings, stack);
-                        writer.Write("&quot;");
-                        if (inline.Linkable.Title.Length > 0)
-                        {
-                            writer.Write(" title=&quot;");
-                            EscapeHtml(inline.Linkable.Title, writer);
-                            writer.Write("&quot;");
-                        }
-                        writer.Write(" /&gt;");
+                        visitChildren = true;
+                        stackWithinLink = true;
+                        stackLiteral = string.Empty;
                         break;
 
                     case InlineTag.Strong:
-                        writer.Write("&lt;strong&gt;");
-                        stackLiteral = "&lt;/strong&gt;";
-                        stackWithinLink = withinLink;
-                        visitChildren = true;
-                        break;
-
                     case InlineTag.Emphasis:
-                        writer.Write("&lt;em&gt;");
-                        stackLiteral = "&lt;/em&gt;";
+                        stackLiteral = string.Empty;
                         stackWithinLink = withinLink;
                         visitChildren = true;
                         break;
@@ -537,7 +486,7 @@ namespace CommonMark.Formatter
                             EscapeUrl(inline.Linkable.Url, writer);
 
                         writer.Write("\" alt=\"");
-                        InlinesToHtmlEncodedText(writer, inline.FirstChild, settings, stack);
+                        InlinesToPlainText(writer, inline.FirstChild, settings, stack);
                         writer.Write("\"");
                         if (inline.Linkable.Title.Length > 0)
                         {

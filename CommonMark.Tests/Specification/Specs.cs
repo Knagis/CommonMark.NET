@@ -15,8 +15,8 @@ namespace CommonMark.Tests.Specification
         // title: CommonMark Spec
         // author:
         // - John MacFarlane
-        // version: 0.9
-        // date: 2014-11-04
+        // version: 0.10
+        // date: 2014-11-06
         // ...
         //
         // # Introduction
@@ -15642,9 +15642,9 @@ namespace CommonMark.Tests.Specification
         // ## Images
         //
         // An (unescaped) exclamation mark (`!`) followed by a reference or
-        // inline link will be parsed as an image.  The link label will be
-        // used as the image's alt text, and the link title, if any, will
-        // be used as the image's title.
+        // inline link will be parsed as an image.  The plain string content
+        // of the link label will be used as the image's alt text, and the link
+        // title, if any, will be used as the image's title.
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
@@ -15690,11 +15690,11 @@ namespace CommonMark.Tests.Specification
             //     [foo *bar*]: train.jpg "train & tracks"
             //
             // Should be rendered as:
-            //     <p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
+            //     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 
             // Arrange
             var commonMark = Helpers.Normalize("![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
-            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo &lt;em&gt;bar&lt;/em&gt;\" title=\"train &amp; tracks\" /></p>");
+            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
             Helpers.Log("Example {0}", 412);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
@@ -15709,6 +15709,9 @@ namespace CommonMark.Tests.Specification
             Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
         }
 
+        // Note that in the above example, the alt text is `foo bar`, not `foo
+        // *bar*` or `foo <em>bar</em>` or `foo &lt;em&gt;bar&lt;/em&gt;`.  Only
+        // the plain string content is rendered, without formatting.
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
@@ -15723,11 +15726,11 @@ namespace CommonMark.Tests.Specification
             //     [foo *bar*]: train.jpg "train & tracks"
             //
             // Should be rendered as:
-            //     <p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
+            //     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 
             // Arrange
             var commonMark = Helpers.Normalize("![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
-            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo &lt;em&gt;bar&lt;/em&gt;\" title=\"train &amp; tracks\" /></p>");
+            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
             Helpers.Log("Example {0}", 413);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
@@ -15756,11 +15759,11 @@ namespace CommonMark.Tests.Specification
             //     [FOOBAR]: train.jpg "train & tracks"
             //
             // Should be rendered as:
-            //     <p><img src="train.jpg" alt="foo &lt;em&gt;bar&lt;/em&gt;" title="train &amp; tracks" /></p>
+            //     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 
             // Arrange
             var commonMark = Helpers.Normalize("![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"");
-            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo &lt;em&gt;bar&lt;/em&gt;\" title=\"train &amp; tracks\" /></p>");
+            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
             Helpers.Log("Example {0}", 414);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
@@ -16014,11 +16017,11 @@ namespace CommonMark.Tests.Specification
             //     [*foo* bar]: /url "title"
             //
             // Should be rendered as:
-            //     <p><img src="/url" alt="&lt;em&gt;foo&lt;/em&gt; bar" title="title" /></p>
+            //     <p><img src="/url" alt="foo bar" title="title" /></p>
 
             // Arrange
             var commonMark = Helpers.Normalize("![*foo* bar][]\n\n[*foo* bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"&lt;em&gt;foo&lt;/em&gt; bar\" title=\"title\" /></p>");
+            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>");
             Helpers.Log("Example {0}", 422);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();
@@ -16151,11 +16154,11 @@ namespace CommonMark.Tests.Specification
             //     [*foo* bar]: /url "title"
             //
             // Should be rendered as:
-            //     <p><img src="/url" alt="&lt;em&gt;foo&lt;/em&gt; bar" title="title" /></p>
+            //     <p><img src="/url" alt="foo bar" title="title" /></p>
 
             // Arrange
             var commonMark = Helpers.Normalize("![*foo* bar]\n\n[*foo* bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"&lt;em&gt;foo&lt;/em&gt; bar\" title=\"title\" /></p>");
+            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>");
             Helpers.Log("Example {0}", 426);
             Helpers.Log("Section: {0}", "Inlines - Images");
             Helpers.Log();

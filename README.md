@@ -1,6 +1,6 @@
 # CommonMark.NET
 
-Implementation of [CommonMark] [1] specification (version 0.9) in C# for converting Markdown documents to HTML.
+Implementation of [CommonMark] [1] specification (version 0.10) in C# for converting Markdown documents to HTML.
 
 The current version of the library is also [available on NuGet] [nuget].
 
@@ -56,6 +56,12 @@ following results:
 
 This benchmark is very simple and tests the processing of the CommonMark specification document itself (a 
 115 KB file). The results are provided just for a high-level comparison.
+
+## Reliability
+
+The parser uses algorithms that completely avoid recursion so even specifically crafted input documents
+will not cause exceptions and will be rendered correctly. This is important because a `StackOverflowException`
+cannot be caught and will bring down the entire process.
 
 ## References
 
