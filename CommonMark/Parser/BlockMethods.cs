@@ -209,25 +209,46 @@ namespace CommonMark.Parser
         }
 
 
-        // Walk through block and all children, recursively, parsing
-        // string content into inline content where appropriate.
-        public static void process_inlines(Block cur, Dictionary<string, Reference> refmap)
+        /// <summary>
+        /// Walk through the block, its children and siblings, parsing string content into inline content where appropriate.
+        /// </summary>
+        /// <param name="block">The document level block from which to start the processing.</param>
+        /// <param name="refmap">The reference mapping used when parsing links.</param>
+        public static void ProcessInlines(Block block, Dictionary<string, Reference> refmap)
         {
-            var tag = cur.Tag;
-            if (tag == BlockTag.Paragraph || tag == BlockTag.AtxHeader || tag == BlockTag.SETextHeader)
-            {
-                if (cur.StringContent != null)
-                {
-                    cur.InlineContent = InlineMethods.parse_inlines(cur.StringContent.ToString(), refmap);
-                    cur.StringContent = null;
-                }
-            }
+            var stack = new Stack<Block>();
 
-            var child = cur.FirstChild;
-            while (child != null)
+            while (block != null)
             {
-                process_inlines(child, refmap);
-                child = child.NextSibling;
+                var tag = block.Tag;
+                if (tag == BlockTag.Paragraph || tag == BlockTag.AtxHeader || tag == BlockTag.SETextHeader)
+                {
+                    if (block.StringContent != null)
+                    {
+                        block.InlineContent = InlineMethods.parse_inlines(block.StringContent.ToString(), refmap);
+                        block.StringContent = null;
+                    }
+                }
+
+                if (block.FirstChild != null)
+                {
+                    if (block.NextSibling != null)
+                        stack.Push(block.NextSibling);
+
+                    block = block.FirstChild;
+                }
+                else if (block.NextSibling != null)
+                {
+                    block = block.NextSibling;
+                }
+                else if (stack.Count > 0)
+                {
+                    block = stack.Pop();
+                }
+                else
+                {
+                    block = null;
+                }
             }
         }
 
