@@ -147,6 +147,9 @@ namespace CommonMark.Parser
                 else if (subj != null)
                     subj.LastPendingInline = first.Previous;
 
+                if (first == last)
+                    return;
+
                 first = first.Next;
                 last = last.Previous;
             }

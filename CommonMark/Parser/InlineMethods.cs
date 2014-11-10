@@ -471,6 +471,16 @@ namespace CommonMark.Parser
                 inl.Linkable.Url = details.Url;
                 inl.Linkable.Title = details.Title;
 
+                // since there cannot be nested links, remove any other link openers before this
+                var temp = opener.Previous;
+                while (temp != null && temp.Priority <= InlineStack.InlineStackPriority.Links)
+                {
+                    var xtemp = temp.Previous;
+                    if (temp.Delimeter == '[' && temp.Flags == opener.Flags)
+                        InlineStack.RemoveStackEntry(temp, null, temp);
+                    temp = xtemp;
+                }
+
                 InlineStack.RemoveStackEntry(opener, subj, closer);
 
                 if (subj != null)
