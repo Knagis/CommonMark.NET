@@ -9,6 +9,7 @@ namespace CommonMark.Parser
     {
         private static readonly char[] SpecialCharacters = new[] { '\n', '\\', '`', '&', '_', '*', '[', ']', '<', '!' };
         private static readonly char[] WhiteSpaceCharacters = new[] { '\n', ' ' };
+        private static readonly char[] BracketSpecialCharacters = new[] { '\\', ']', '[' };
 
         /// <summary>
         /// Collapses internal whitespace to single space, removes leading/trailing whitespace, folds case.
@@ -443,7 +444,7 @@ namespace CommonMark.Parser
             // move past the '['
             subj.Position++;
 
-            var inlText = make_str("[");
+            var inlText = make_str(isImage ? "![" : "[");
 
             var istack = new InlineStack();
             istack.Delimeter = '[';
@@ -1035,7 +1036,6 @@ namespace CommonMark.Parser
         /// 2. [a link *with emphasized ](/url) text*        /// </summary>
         private static StringPart? ParseReferenceLabel(Subject subj)
         {
-            int nestlevel = 0;
             var startPos = subj.Position;
             var source = subj.Buffer;
             var len = source.Length;
@@ -1063,43 +1063,33 @@ namespace CommonMark.Parser
 
             var labelStartPos = subj.Position;
 
-            subj.Position = source.IndexOfAny(SpecialCharacters, subj.Position);
-            while (subj.Position > -1 && ((c = source[subj.Position]) != ']' || nestlevel > 0))
+            len = subj.Position + Reference.MaximumReferenceLabelLength;
+            if (len > source.Length)
+                len = source.Length;
+
+            subj.Position = source.IndexOfAny(BracketSpecialCharacters, subj.Position, len - subj.Position);
+            while (subj.Position > -1)
             {
-                subj.Position++;
-                switch (c)
+                c = source[subj.Position];
+                if (c == '\\')
                 {
-                    case '`':
-                        handle_backticks(subj);
+                    subj.Position += 2;
+                    if (subj.Position >= len)
                         break;
 
-                    case '<':
-                        handle_pointy_brace(subj);
-                        break;
-
-                    case '[':
-                        nestlevel++;
-                        break;
-
-                    case ']':
-                        nestlevel--;
-                        break;
-
-                    case '\\':
-                        if (Utilities.IsAsciiSymbol(source[subj.Position]))
-                            subj.Position++;
-                        break;
+                    subj.Position = source.IndexOfAny(BracketSpecialCharacters, subj.Position, len - subj.Position);
                 }
-
-                subj.Position = source.IndexOfAny(SpecialCharacters, subj.Position);
+                else if (c == '[')
+                {
+                    break;
+                }
+                else
+                {
+                    var label = new StringPart(source, labelStartPos, subj.Position - labelStartPos);
+                    subj.Position++;
+                    return label;
+                }
             }
-
-            if (c == ']')
-            {
-                var label = new StringPart(source, labelStartPos, subj.Position - labelStartPos);
-                subj.Position++;
-                return label;
-        }
 
             subj.Position = startPos;
             return null;
