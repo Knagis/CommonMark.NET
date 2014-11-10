@@ -397,7 +397,7 @@ namespace CommonMark.Formatter
                     inline = null;
                 }
 
-                while (inline == null && stack.Count > 0)
+                while (inline == null && stack.Count > origStackCount)
                 {
                     var entry = stack.Pop();
                     writer.Write(entry.Literal);
