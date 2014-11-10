@@ -567,9 +567,10 @@ namespace CommonMark.Parser
 
             var nextChar = subj.Buffer[subj.Position];
 
-            if (Utilities.IsAsciiSymbol(nextChar))
+            if (Utilities.IsEscapableSymbol(nextChar))
             {
                 // only ascii symbols and newline can be escaped
+                // the exception is the unicode bullet char since it can be used for defining list items
                 advance(subj);
                 return make_str(nextChar.ToString());
             }
@@ -676,7 +677,7 @@ namespace CommonMark.Parser
                         break;
 
                     c = url[searchPos];
-                    if (Utilities.IsAsciiSymbol(c))
+                    if (Utilities.IsEscapableSymbol(c))
                     {
                         if (sb == null) sb = new StringBuilder(url.Length);
                         sb.Append(url, lastPos, searchPos - lastPos - 1);
