@@ -620,6 +620,7 @@ namespace CommonMark.Parser
             // on an empty list item.
             container.IsLastLineBlank = (blank &&
                                           container.Tag != BlockTag.BlockQuote &&
+                                          container.Tag != BlockTag.SETextHeader &&
                                           container.Tag != BlockTag.FencedCode &&
                                           !(container.Tag == BlockTag.ListItem &&
                                             container.FirstChild == null &&
