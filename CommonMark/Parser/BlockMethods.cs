@@ -413,6 +413,9 @@ namespace CommonMark.Parser
                         {
                             // a header can never contain more than one line
                             all_matched = false;
+                            if (blank)
+                                container.IsLastLineBlank = true;
+
                             break;
                         }
 
@@ -432,7 +435,10 @@ namespace CommonMark.Parser
                     case BlockTag.HtmlBlock:
                         {
                             if (blank)
+                            {
+                                container.IsLastLineBlank = true;
                                 all_matched = false;
+                            }
 
                             break;
                         }
