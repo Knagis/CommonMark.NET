@@ -14,6 +14,11 @@ namespace CommonMark
         /// </summary>
         public OutputFormat OutputFormat { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether soft line breaks should be rendered as hard line breaks.
+        /// </summary>
+        public bool RenderSoftLineBreaksAsLineBreaks { get; set; }
+
         private Func<string, string> _uriResolver;
         /// <summary>
         /// Gets or sets the delegate that is used to resolve addresses during rendering process. Can be used to process application relative URLs (<c>~/foo/bar</c>).
