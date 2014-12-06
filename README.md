@@ -31,8 +31,7 @@ both .NET 2.0 and .NET 4.0 Portable Class Library that targets .NET Framework 4.
 Windows Phone 8.1, Windows Phone Silverlight 8, Xamarin.Android and Xamarin.iOS. A special .NET 4.5 build is
 also created that hints certain optimizations to the runtime that were not available in earlier versions.
 
-For working with the source code you will need Visual Studio 2013.3. Note that Express for Windows is the
-only free edition that supports PCL projects.
+For working with the source code you will need Visual Studio 2013.3 or newer.
 
 ## Performance
 
