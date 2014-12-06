@@ -433,7 +433,10 @@ namespace CommonMark.Formatter
                         break;
 
                     case InlineTag.SoftBreak:
-                        writer.WriteLine();
+                        if (settings.RenderSoftLineBreaksAsLineBreaks)
+                            writer.WriteLine("<br />");
+                        else
+                            writer.WriteLine();
                         break;
 
                     case InlineTag.Code:
