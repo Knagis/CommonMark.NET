@@ -2,8 +2,8 @@
 title: CommonMark Spec
 author:
 - John MacFarlane
-version: 0.12
-date: 2014-11-10
+version: 0.13
+date: 2014-12-10
 ...
 
 # Introduction
@@ -170,10 +170,10 @@ as a "syntax error," the divergence often isn't discovered right away.
 This document attempts to specify Markdown syntax unambiguously.
 It contains many examples with side-by-side Markdown and
 HTML.  These are intended to double as conformance tests.  An
-accompanying script `runtests.py` can be used to run the tests
+accompanying script `spec_tests.py` can be used to run the tests
 against any Markdown program:
 
-    python runtests.py --spec spec.txt --program PROGRAM
+    python test/spec_tests.py --spec spec.txt --program PROGRAM
 
 Since this document describes how Markdown is to be parsed into
 an abstract syntax tree, it would have made sense to use an abstract
@@ -189,16 +189,60 @@ Markdown, which can then be converted into other formats.
 
 In the examples, the `→` character is used to represent tabs.
 
-# Preprocessing
+# Preliminaries
+
+## Characters and lines
+
+The input is a sequence of zero or more [lines](#line).
 
 A [line](@line)
 is a sequence of zero or more [characters](#character) followed by a
-line ending (CR, LF, or CRLF) or by the end of file.
+[line ending](#line-ending) or by the end of file.
 
 A [character](@character) is a unicode code point.
 This spec does not specify an encoding; it thinks of lines as composed
 of characters rather than bytes.  A conforming parser may be limited
 to a certain encoding.
+
+A [line ending](@line-ending) is, depending on the platform, a
+newline (`U+000A`), carriage return (`U+000D`), or
+carriage return + newline.
+
+For security reasons, a conforming parser must strip or replace the
+Unicode character `U+0000`.
+
+A line containing no characters, or a line containing only spaces
+(`U+0020`) or tabs (`U+0009`), is called a [blank line](@blank-line).
+
+The following definitions of character classes will be used in this spec:
+
+A [whitespace character](@whitespace-character) is a space
+(`U+0020`), tab (`U+0009`), carriage return (`U+000D`), or
+newline (`U+000A`).
+
+[Whitespace](@whitespace) is a sequence of one or more [whitespace
+characters](#whitespace-character).
+
+A [unicode whitespace character](@unicode-whitespace-character) is
+any code point in the unicode `Zs` class, or a tab (`U+0009`),
+carriage return (`U+000D`), newline (`U+000A`), or form feed
+(`U+000C`).
+
+[Unicode whitespace](@unicode-whitespace) is a sequence of one
+or more [unicode whitespace characters](#unicode-whitespace-character).
+
+A [non-space character](@non-space-character) is anything but `U+0020`.
+
+A [punctuation character](@punctuation-character) is anything in
+the unicode classes `Pc`, `Pd`, `Pe`,` `Pf`, `Pi`, `Po`, or `Ps`.
+
+An [ASCII punctuation character](@ascii-punctuation-character)
+is a [punctuation character](#punctuation-character) in the
+ASCII class: that is, `!`, `"`, `#`, `$`, `%`, `&`, `'`, `(`, `)`,
+`*`, `+`, `,`, `-`, `.`, `/`, `:`, `;`, `<`, `=`, `>`, `?`, `@`,
+`[`, `\`, `]`, `^`, `_`, `` ` ``, `{`, `|`, `}`, or `~`.
+
+## Tab expansion
 
 Tabs in lines are expanded to spaces, with a tab stop of 4 characters:
 
@@ -217,11 +261,6 @@ Tabs in lines are expanded to spaces, with a tab stop of 4 characters:
 ὐ   a
 </code></pre>
 .
-
-Line endings are replaced by newline characters (LF).
-
-A line containing no characters, or a line containing only spaces (after
-tab expansion), is called a [blank line](@blank-line).
 
 # Blocks and inlines
 
@@ -391,7 +430,8 @@ a------
 <p>---a---</p>
 .
 
-It is required that all of the non-space characters be the same.
+It is required that all of the
+[non-space characters](#non-space-character) be the same.
 So, this is not a horizontal rule:
 
 .
@@ -945,17 +985,18 @@ use backslash escapes:
 
 ## Indented code blocks
 
-An [indented code block](@indented-code-block)
-is composed of one or more
+An [indented code block](@indented-code-block) is composed of one or more
 [indented chunks](#indented-chunk) separated by blank lines.
-An [indented chunk](@indented-chunk)
-is a sequence of non-blank lines, each indented four or more
-spaces.  An indented code block cannot interrupt a paragraph, so
-if it occurs before or after a paragraph, there must be an
-intervening blank line.  The contents of the code block are
-the literal contents of the lines, including trailing newlines,
-minus four spaces of indentation. An indented code block has no
-attributes.
+An [indented chunk](@indented-chunk) is a sequence of non-blank lines,
+each indented four or more spaces. The contents of the code block are
+the literal contents of the lines, including trailing
+[line endings](#line-ending), minus four spaces of indentation.
+An indented code block has no attributes.
+
+An indented code block cannot interrupt a paragraph, so there must be
+a blank line between a paragraph and a following indented code block.
+(A blank line is not needed, however, between a code block and a following
+paragraph.)
 
 .
     a simple
@@ -1746,14 +1787,14 @@ So there is no important loss of expressive power with the new rule.
 ## Link reference definitions
 
 A [link reference definition](@link-reference-definition)
-consists of a [link
-label](#link-label), indented up to three spaces, followed
-by a colon (`:`), optional blank space (including up to one
-newline), a [link destination](#link-destination), optional
-blank space (including up to one newline), and an optional [link
+consists of a [link label](#link-label), indented up to three spaces, followed
+by a colon (`:`), optional [whitespace](#whitespace) (including up to one
+[line ending](#line-ending)), a [link destination](#link-destination),
+optional [whitespace](#whitespace) (including up to one
+[line ending](#line-ending)), and an optional [link
 title](#link-title), which if it is present must be separated
-from the [link destination](#link-destination) by whitespace.
-No further non-space characters may occur on the line.
+from the [link destination](#link-destination) by [whitespace](#whitespace).
+No further [non-space characters](#non-space-character) may occur on the line.
 
 A [link reference-definition](#link-reference-definition)
 does not correspond to a structural element of a document.  Instead, it
@@ -1870,7 +1911,7 @@ It contributes nothing to the document.
 .
 
 This is not a link reference definition, because there are
-non-space characters after the title:
+[non-space characters](#non-space-character) after the title:
 
 .
 [foo]: /url "title" ok
@@ -2129,7 +2170,8 @@ The following rules define [block quotes](@block-quote):
 2.  **Laziness.**  If a string of lines *Ls* constitute a [block
     quote](#block-quote) with contents *Bs*, then the result of deleting
     the initial [block quote marker](#block-quote-marker) from one or
-    more lines in which the next non-space character after the [block
+    more lines in which the next
+    [non-space character](#non-space-character) after the [block
     quote marker](#block-quote-marker) is [paragraph continuation
     text](#paragraph-continuation-text) is a block quote with *Bs* as
     its content.
@@ -2490,7 +2532,8 @@ is a sequence of one of more digits (`0-9`), followed by either a
 The following rules define [list items](@list-item):
 
 1.  **Basic case.**  If a sequence of lines *Ls* constitute a sequence of
-    blocks *Bs* starting with a non-space character and not separated
+    blocks *Bs* starting with a [non-space character](#non-space-character)
+    and not separated
     from each other by more than one blank line, and *M* is a list
     marker *M* of width *W* followed by 0 < *N* < 5 spaces, then the result
     of prepending *M* and the following spaces to the first line of
@@ -2968,7 +3011,7 @@ Four spaces indent gives a code block:
 4.  **Laziness.**  If a string of lines *Ls* constitute a [list
     item](#list-item) with contents *Bs*, then the result of deleting
     some or all of the indentation from one or more lines in which the
-    next non-space character after the indentation is
+    next [non-space character](#non-space-character) after the indentation is
     [paragraph continuation text](#paragraph-continuation-text) is a
     list item with the same contents and attributes.  The unindented
     lines are called
@@ -4170,11 +4213,11 @@ A [backtick string](@backtick-string)
 is a string of one or more backtick characters (`` ` ``) that is neither
 preceded nor followed by a backtick.
 
-A [code span](@code-span) begins with a backtick string and ends with a backtick
-string of equal length.  The contents of the code span are the
-characters between the two backtick strings, with leading and trailing
-spaces and newlines removed, and consecutive spaces and newlines
-collapsed to single spaces.
+A [code span](@code-span) begins with a backtick string and ends with
+a backtick string of equal length.  The contents of the code span are
+the characters between the two backtick strings, with leading and
+trailing spaces and [line endings](#line-ending) removed, and
+[whitespace](#whitespace) collapsed to single spaces.
 
 This is a simple code span:
 
@@ -4202,7 +4245,7 @@ spaces:
 <p><code>``</code></p>
 .
 
-Newlines are treated like spaces:
+[Line endings](#line-ending) are treated like spaces:
 
 .
 ``
@@ -4212,8 +4255,8 @@ foo
 <p><code>foo</code></p>
 .
 
-Interior spaces and newlines are collapsed into single spaces, just
-as they would be by a browser:
+Interior spaces and [line endings](#line-ending) are collapsed into
+single spaces, just as they would be by a browser:
 
 .
 `foo   bar
@@ -4227,13 +4270,13 @@ anyway?  A:  Because we might be targeting a non-HTML format, and we
 shouldn't rely on HTML-specific rendering assumptions.
 
 (Existing implementations differ in their treatment of internal
-spaces and newlines.  Some, including `Markdown.pl` and
-`showdown`, convert an internal newline into a `<br />` tag.
-But this makes things difficult for those who like to hard-wrap
-their paragraphs, since a line break in the midst of a code
-span will cause an unintended line break in the output.  Others
-just leave internal spaces as they are, which is fine if only
-HTML is being targeted.)
+spaces and [line endings](#line-ending).  Some, including `Markdown.pl` and
+`showdown`, convert an internal [line ending](#line-ending) into a
+`<br />` tag.  But this makes things difficult for those who like to
+hard-wrap their paragraphs, since a line break in the midst of a code
+span will cause an unintended line break in the output.  Others just
+leave internal spaces as they are, which is fine if only HTML is being
+targeted.)
 
 .
 `foo `` bar`
@@ -4347,39 +4390,107 @@ internal emphasis: foo*bar*baz
 no emphasis: foo_bar_baz
 ```
 
-The following rules capture all of these patterns, while allowing
-for efficient parsing strategies that do not backtrack:
+The rules given below capture all of these patterns, while allowing
+for efficient parsing strategies that do not backtrack.
+
+First, some definitions.  A [delimiter run](@delimiter-run) is either
+a sequence of one or more `*` characters that is not preceded or
+followed by a `*` character, or a sequence of one or more `_`
+characters that is not preceded or followed by a `_` character.
+
+A [left-flanking delimiter run](@right-facing-delimiter-run) is
+a [delimiter run](#delimiter-run) that is (a) not followed by [unicode
+whitespace](#unicode-whitespace), and (b) either not followed by a
+[punctuation character](#punctuation-character), or
+preceded by [unicode whitespace](#unicode-whitespace) or
+a [punctuation character](#punctuation-character).
+
+A [right-flanking delimiter run](@left-facing-delimiter-run) is
+a [delimiter run](#delimiter-run) that is (a) not preceded by [unicode
+whitespace](#unicode-whitespace), and (b) either not preceded by a
+[punctuation character](#punctuation-character), or
+followed by [unicode whitespace](#unicode-whitespace) or
+a [punctuation character](#punctuation-character).
+
+Here are some examples of delimiter runs.
+
+  - left-flanking but not right-flanking:
+
+    ```
+    ***abc
+      _abc
+    **"abc"
+     _"abc"
+    ```
+
+  - right-flanking but not left-flanking:
+
+    ```
+    abc***
+      abc_
+    "abc"**
+     _"abc"
+    ```
+
+  - Both right and right-flanking:
+
+    ```
+    abc***def
+    "abc"_"def"
+    ```
+
+  - Neither right nor right-flanking:
+
+    ```
+    abc *** def
+    a _ b
+    ```
+
+(The idea of distinguishing left-flanking and right-flanking
+delimiter runs based on the character before and the character
+after comes from Roopesh Chander's
+[vfmd](http://www.vfmd.org/vfmd-spec/specification/#procedure-for-identifying-emphasis-tags).
+vfmd uses the terminology "emphasis indicator string" instead of "delimiter
+run," and its rules for distinguishing left- and right-flanking runs
+are a bit more complex than the ones given here.)
+
+The following rules define emphasis and strong emphasis:
 
 1.  A single `*` character [can open emphasis](@can-open-emphasis)
-    iff it is not followed by
-    whitespace.
+    iff it is part of a
+    [left-flanking delimiter run](#right-facing-delimiter-run).
 
 2.  A single `_` character [can open emphasis](#can-open-emphasis) iff
-    it is not followed by whitespace and it is not preceded by an
-    ASCII alphanumeric character.
+    it is part of a
+    [left-flanking delimiter run](#right-facing-delimiter-run)
+    and is not preceded by an ASCII alphanumeric character.
 
 3.  A single `*` character [can close emphasis](@can-close-emphasis)
-    iff it is not preceded by whitespace.
+    iff it is part of a
+    [left-flanking delimiter run](#right-facing-delimiter-run).
 
-4.  A single `_` character [can close emphasis](#can-close-emphasis) iff
-    it is not preceded by whitespace and it is not followed by an
-    ASCII alphanumeric character.
+4.  A single `_` character [can close emphasis](#can-close-emphasis)
+    iff it is part of a
+    [left-flanking delimiter run](#right-facing-delimiter-run).
+    and it is not followed by an ASCII alphanumeric character.
 
 5.  A double `**` [can open strong emphasis](@can-open-strong-emphasis)
-    iff it is not followed by
-    whitespace.
+    iff it is part of a
+    [left-flanking delimiter run](#right-facing-delimiter-run).
 
 6.  A double `__` [can open strong emphasis](#can-open-strong-emphasis)
-    iff it is not followed by whitespace and it is not preceded by an
-    ASCII alphanumeric character.
+    iff it is part of a
+    [left-flanking delimiter run](#right-facing-delimiter-run)
+    and is not preceded by an ASCII alphanumeric character.
 
 7.  A double `**` [can close strong emphasis](@can-close-strong-emphasis)
-    iff it is not preceded by
-    whitespace.
+    iff it is part of a
+    [right-flanking delimiter run](#right-facing-delimiter-run).
 
 8.  A double `__` [can close strong emphasis](#can-close-strong-emphasis)
-    iff it is not preceded by whitespace and it is not followed by an
-    ASCII alphanumeric character.
+    iff it is part of a
+    [right-flanking delimiter run](#right-facing-delimiter-run).
+    and is not followed by an ASCII alphanumeric character.
 
 9.  Emphasis begins with a delimiter that [can open
     emphasis](#can-open-emphasis) and ends with a delimiter that [can close
@@ -4447,12 +4558,31 @@ Rule 1:
 .
 
 This is not emphasis, because the opening `*` is followed by
-whitespace:
+whitespace, and hence not part of a [left-flanking delimiter
+run](#right-facing-delimiter-run):
 
 .
 a * foo bar*
 .
 <p>a * foo bar*</p>
+.
+
+This is not emphasis, because the opening `*` is preceded
+by an alphanumeric and followed by punctuation, and hence
+not part of a [left-flanking delimiter run](#right-facing-delimiter-run):
+
+.
+a*"foo"*
+.
+<p>a*&quot;foo&quot;*</p>
+.
+
+Unicode nonbreaking spaces count as whitespace, too:
+
+.
+* a *
+.
+<p>* a *</p>
 .
 
 Intraword emphasis with `*` is permitted:
@@ -4486,6 +4616,15 @@ _ foo bar_
 <p>_ foo bar_</p>
 .
 
+This is not emphasis, because the opening `_` is preceded
+by an alphanumeric and followed by punctuation:
+
+.
+a_"foo"_
+.
+<p>a_&quot;foo&quot;_</p>
+.
+
 Emphasis with `_` is not allowed inside ASCII words:
 
 .
@@ -4510,6 +4649,15 @@ But it is permitted inside non-ASCII words:
 
 Rule 3:
 
+This is not emphasis, because the closing delimiter does
+not match the opening delimiter:
+
+.
+_foo*
+.
+<p>_foo*</p>
+.
+
 This is not emphasis, because the closing `*` is preceded by
 whitespace:
 
@@ -4517,6 +4665,26 @@ whitespace:
 *foo bar *
 .
 <p>*foo bar *</p>
+.
+
+This is not emphasis, because the second `*` is
+preceded by punctuation and followed by an alphanumeric
+(hence it is not part of a [right-flanking delimiter
+run](#left-facing-delimiter-run):
+
+.
+*(*foo)
+.
+<p>*(*foo)</p>
+.
+
+The point of this restriction is more easily appreciated
+with this example:
+
+.
+*(*foo*)*
+.
+<p><em>(<em>foo</em>)</em></p>
 .
 
 Intraword emphasis with `*` is allowed:
@@ -4539,7 +4707,24 @@ _foo bar _
 <p>_foo bar _</p>
 .
 
-Intraword emphasis:
+This is not emphasis, because the second `_` is
+preceded by punctuation and followed by an alphanumeric:
+
+.
+_(_foo)
+.
+<p>_(_foo)</p>
+.
+
+This is emphasis within emphasis:
+
+.
+_(_foo_)_
+.
+<p><em>(<em>foo</em>)</em></p>
+.
+
+Intraword emphasis is disallowed for `_`:
 
 .
 _foo_bar
@@ -4576,6 +4761,16 @@ followed by whitespace:
 <p>** foo bar**</p>
 .
 
+This is not strong emphasis, because the opening `**` is preceded
+by an alphanumeric and followed by punctuation, and hence
+not part of a [left-flanking delimiter run](#right-facing-delimiter-run):
+
+.
+a**"foo"**
+.
+<p>a**&quot;foo&quot;**</p>
+.
+
 Intraword strong emphasis with `**` is permitted:
 
 .
@@ -4601,7 +4796,16 @@ __ foo bar__
 <p>__ foo bar__</p>
 .
 
-Intraword emphasis examples:
+This is not strong emphasis, because the opening `__` is preceded
+by an alphanumeric and followed by punctuation:
+
+.
+a__"foo"__
+.
+<p>a__&quot;foo&quot;__</p>
+.
+
+Intraword strong emphasis is forbidden with `__`:
 
 .
 foo__bar__
@@ -4641,6 +4845,38 @@ by whitespace:
 (Nor can it be interpreted as an emphasized `*foo bar *`, because of
 Rule 11.)
 
+This is not strong emphasis, because the second `**` is
+preceded by punctuation and followed by an alphanumeric:
+
+.
+**(**foo)
+.
+<p>**(**foo)</p>
+.
+
+The point of this restriction is more easily appreciated
+with these examples:
+
+.
+*(**foo**)*
+.
+<p><em>(<strong>foo</strong>)</em></p>
+.
+
+.
+**Gomphocarpus (*Gomphocarpus physocarpus*, syn.
+*Asclepias physocarpa*)**
+.
+<p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.
+<em>Asclepias physocarpa</em>)</strong></p>
+.
+
+.
+**foo "*bar*" foo**
+.
+<p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>
+.
+
 Intraword emphasis:
 
 .
@@ -4660,7 +4896,25 @@ __foo bar __
 <p>__foo bar __</p>
 .
 
-Intraword strong emphasis examples:
+This is not strong emphasis, because the second `__` is
+preceded by punctuation and followed by an alphanumeric:
+
+.
+__(__foo)
+.
+<p>__(__foo)</p>
+.
+
+The point of this restriction is more easily appreciated
+with this example:
+
+.
+_(__foo__)_
+.
+<p><em>(<strong>foo</strong>)</em></p>
+.
+
+Intraword strong emphasis is forbidden with `__`:
 
 .
 __foo__bar
@@ -6599,8 +6853,8 @@ baz
 baz</p>
 .
 
-For a more visible alternative, a backslash before the newline may be
-used instead of two spaces:
+For a more visible alternative, a backslash before the
+[line ending](#line-ending) may be used instead of two spaces:
 
 .
 foo\
@@ -6723,9 +6977,10 @@ foo
 
 A regular line break (not in a code span or HTML tag) that is not
 preceded by two or more spaces is parsed as a softbreak.  (A
-softbreak may be rendered in HTML either as a newline or as a space.
-The result will be the same in browsers. In the examples here, a
-newline will be used.)
+softbreak may be rendered in HTML either as a
+[line ending](#line-ending) or as a space. The result will be the same
+in browsers. In the examples here, a [line ending](#line-ending) will
+be used.)
 
 .
 foo
@@ -6752,10 +7007,10 @@ line break or as a space.
 A renderer may also provide an option to render soft line breaks
 as hard line breaks.
 
-## Strings
+## Textual content
 
 Any characters not given an interpretation by the above rules will
-be parsed as string content.
+be parsed as plain textual content.
 
 .
 hello $.;'there
@@ -6960,9 +7215,9 @@ document
           str "aliquando id"
 ```
 
-Notice how the newline in the first paragraph has been parsed as
-a `softbreak`, and the asterisks in the first list item have become
-an `emph`.
+Notice how the [line ending](#line-ending) in the first paragraph has
+been parsed as a `softbreak`, and the asterisks in the first list item
+have become an `emph`.
 
 The document can be rendered as HTML, or in any other format, given
 an appropriate renderer.

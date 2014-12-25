@@ -303,20 +303,18 @@ namespace CommonMark.Parser
         }
 
         /// <summary>
-        /// Scan ***, **, or * and return number scanned, or 0.
+        /// Scans the subject for a series of the given emphasis character, testing if they could open and/or close
+        /// an emphasis element.
         /// </summary>
-        static int scan_delims(Subject subj, char c, out bool can_open, out bool can_close)
+        private static int ScanEmphasisDelimeters(Subject subj, char c, out bool can_open, out bool can_close)
         {
             int numdelims = 0;
             char char_before, char_after;
             int startpos = subj.Position;
             int len = subj.Buffer.Length;
 
-            char_before = startpos == 0 ? '\n' : subj.Buffer[startpos - 1];
             while (startpos + numdelims < len && subj.Buffer[startpos + numdelims] == c)
                 numdelims++;
-
-            subj.Position = (startpos += numdelims);
 
             if (numdelims == 0)
             {
@@ -325,10 +323,17 @@ namespace CommonMark.Parser
                 return numdelims;
             }
 
+            char_before = startpos == 0 ? '\n' : subj.Buffer[startpos - 1];
+            subj.Position = (startpos += numdelims);
             char_after = len == startpos ? '\n' : subj.Buffer[startpos];
 
-            can_open = char_after != ' ' && char_after != '\n';
-            can_close = char_before != ' ' && char_before != '\n';
+            bool beforeIsSpace, beforeIsPunctuation, afterIsSpace, afterIsPunctuation;
+
+            Utilities.CheckUnicodeCategory(char_before, out beforeIsSpace, out beforeIsPunctuation);
+            Utilities.CheckUnicodeCategory(char_after, out afterIsSpace, out afterIsPunctuation);
+            
+            can_open = !afterIsSpace && !(afterIsPunctuation && !beforeIsSpace && !beforeIsPunctuation);
+            can_close = !beforeIsSpace && !(beforeIsPunctuation && !afterIsSpace && !afterIsPunctuation);
 
             if (c == '_')
             {
@@ -397,7 +402,7 @@ namespace CommonMark.Parser
         private static Inline HandleEmphasis(Subject subj, char c)
         {
             bool can_open, can_close;
-            var numdelims = scan_delims(subj, c, out can_open, out can_close);
+            var numdelims = ScanEmphasisDelimeters(subj, c, out can_open, out can_close);
 
             if (can_close)
             {
