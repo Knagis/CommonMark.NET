@@ -273,21 +273,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>foo baz     bim
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("→foo→baz→→bim");
-            var expected = Helpers.Normalize("<pre><code>foo baz     bim\n</code></pre>");
-            Helpers.Log("Example {0}", 1);
-            Helpers.Log("Section: {0}", "Preliminaries - Tab expansion");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "→foo→baz→→bim");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 1, "Preliminaries - Tab expansion");
+			Helpers.ExecuteTest("→foo→baz→→bim", "<pre><code>foo baz     bim\n</code></pre>");
         }
 
         [TestMethod]
@@ -307,21 +294,8 @@ namespace CommonMark.Tests.Specification
             //     ὐ   a
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    a→a\n    ὐ→a");
-            var expected = Helpers.Normalize("<pre><code>a   a\nὐ   a\n</code></pre>");
-            Helpers.Log("Example {0}", 2);
-            Helpers.Log("Section: {0}", "Preliminaries - Tab expansion");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    a→a\n    ὐ→a");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 2, "Preliminaries - Tab expansion");
+			Helpers.ExecuteTest("    a→a\n    ὐ→a", "<pre><code>a   a\nὐ   a\n</code></pre>");
         }
 
         // # Blocks and inlines
@@ -356,21 +330,8 @@ namespace CommonMark.Tests.Specification
             //     <li>two`</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- `one\n- two`");
-            var expected = Helpers.Normalize("<ul>\n<li>`one</li>\n<li>two`</li>\n</ul>");
-            Helpers.Log("Example {0}", 3);
-            Helpers.Log("Section: {0}", "Blocks and inlines - Precedence");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- `one\n- two`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 3, "Blocks and inlines - Precedence");
+			Helpers.ExecuteTest("- `one\n- two`", "<ul>\n<li>`one</li>\n<li>two`</li>\n</ul>");
         }
 
         // This means that parsing can proceed in two steps:  first, the block
@@ -418,21 +379,8 @@ namespace CommonMark.Tests.Specification
             //     <hr />
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("***\n---\n___");
-            var expected = Helpers.Normalize("<hr />\n<hr />\n<hr />");
-            Helpers.Log("Example {0}", 4);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "***\n---\n___");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 4, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("***\n---\n___", "<hr />\n<hr />\n<hr />");
         }
 
         // Wrong characters:
@@ -450,21 +398,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>+++</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("+++");
-            var expected = Helpers.Normalize("<p>+++</p>");
-            Helpers.Log("Example {0}", 5);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "+++");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 5, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("+++", "<p>+++</p>");
         }
 
         [TestMethod]
@@ -481,21 +416,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>===</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("===");
-            var expected = Helpers.Normalize("<p>===</p>");
-            Helpers.Log("Example {0}", 6);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "===");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 6, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("===", "<p>===</p>");
         }
 
         // Not enough characters:
@@ -517,21 +439,8 @@ namespace CommonMark.Tests.Specification
             //     **
             //     __</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("--\n**\n__");
-            var expected = Helpers.Normalize("<p>--\n**\n__</p>");
-            Helpers.Log("Example {0}", 7);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "--\n**\n__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 7, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("--\n**\n__", "<p>--\n**\n__</p>");
         }
 
         // One to three spaces indent are allowed:
@@ -553,21 +462,8 @@ namespace CommonMark.Tests.Specification
             //     <hr />
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize(" ***\n  ***\n   ***");
-            var expected = Helpers.Normalize("<hr />\n<hr />\n<hr />");
-            Helpers.Log("Example {0}", 8);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", " ***\n  ***\n   ***");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 8, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest(" ***\n  ***\n   ***", "<hr />\n<hr />\n<hr />");
         }
 
         // Four spaces is too many:
@@ -586,21 +482,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>***
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    ***");
-            var expected = Helpers.Normalize("<pre><code>***\n</code></pre>");
-            Helpers.Log("Example {0}", 9);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    ***");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 9, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("    ***", "<pre><code>***\n</code></pre>");
         }
 
         [TestMethod]
@@ -619,21 +502,8 @@ namespace CommonMark.Tests.Specification
             //     <p>Foo
             //     ***</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\n    ***");
-            var expected = Helpers.Normalize("<p>Foo\n***</p>");
-            Helpers.Log("Example {0}", 10);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\n    ***");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 10, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("Foo\n    ***", "<p>Foo\n***</p>");
         }
 
         // More than three characters may be used:
@@ -651,21 +521,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_____________________________________");
-            var expected = Helpers.Normalize("<hr />");
-            Helpers.Log("Example {0}", 11);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_____________________________________");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 11, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("_____________________________________", "<hr />");
         }
 
         // Spaces are allowed between the characters:
@@ -683,21 +540,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize(" - - -");
-            var expected = Helpers.Normalize("<hr />");
-            Helpers.Log("Example {0}", 12);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", " - - -");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 12, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest(" - - -", "<hr />");
         }
 
         [TestMethod]
@@ -714,21 +558,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize(" **  * ** * ** * **");
-            var expected = Helpers.Normalize("<hr />");
-            Helpers.Log("Example {0}", 13);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", " **  * ** * ** * **");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 13, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest(" **  * ** * ** * **", "<hr />");
         }
 
         [TestMethod]
@@ -745,21 +576,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("-     -      -      -");
-            var expected = Helpers.Normalize("<hr />");
-            Helpers.Log("Example {0}", 14);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "-     -      -      -");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 14, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("-     -      -      -", "<hr />");
         }
 
         // Spaces are allowed at the end:
@@ -777,21 +595,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- - - -    ");
-            var expected = Helpers.Normalize("<hr />");
-            Helpers.Log("Example {0}", 15);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- - - -    ");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 15, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("- - - -    ", "<hr />");
         }
 
         // However, no other characters may occur in the line:
@@ -815,21 +620,8 @@ namespace CommonMark.Tests.Specification
             //     <p>a------</p>
             //     <p>---a---</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_ _ _ _ a\n\na------\n\n---a---");
-            var expected = Helpers.Normalize("<p>_ _ _ _ a</p>\n<p>a------</p>\n<p>---a---</p>");
-            Helpers.Log("Example {0}", 16);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_ _ _ _ a\n\na------\n\n---a---");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 16, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("_ _ _ _ a\n\na------\n\n---a---", "<p>_ _ _ _ a</p>\n<p>a------</p>\n<p>---a---</p>");
         }
 
         // It is required that all of the
@@ -849,21 +641,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>-</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(" *-*");
-            var expected = Helpers.Normalize("<p><em>-</em></p>");
-            Helpers.Log("Example {0}", 17);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", " *-*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 17, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest(" *-*", "<p><em>-</em></p>");
         }
 
         // Horizontal rules do not need blank lines before or after:
@@ -889,21 +668,8 @@ namespace CommonMark.Tests.Specification
             //     <li>bar</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n***\n- bar");
-            var expected = Helpers.Normalize("<ul>\n<li>foo</li>\n</ul>\n<hr />\n<ul>\n<li>bar</li>\n</ul>");
-            Helpers.Log("Example {0}", 18);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n***\n- bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 18, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("- foo\n***\n- bar", "<ul>\n<li>foo</li>\n</ul>\n<hr />\n<ul>\n<li>bar</li>\n</ul>");
         }
 
         // Horizontal rules can interrupt a paragraph:
@@ -925,21 +691,8 @@ namespace CommonMark.Tests.Specification
             //     <hr />
             //     <p>bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\n***\nbar");
-            var expected = Helpers.Normalize("<p>Foo</p>\n<hr />\n<p>bar</p>");
-            Helpers.Log("Example {0}", 19);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\n***\nbar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 19, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("Foo\n***\nbar", "<p>Foo</p>\n<hr />\n<p>bar</p>");
         }
 
         // If a line of dashes that meets the above conditions for being a
@@ -964,21 +717,8 @@ namespace CommonMark.Tests.Specification
             //     <h2>Foo</h2>
             //     <p>bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\n---\nbar");
-            var expected = Helpers.Normalize("<h2>Foo</h2>\n<p>bar</p>");
-            Helpers.Log("Example {0}", 20);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\n---\nbar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 20, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("Foo\n---\nbar", "<h2>Foo</h2>\n<p>bar</p>");
         }
 
         // When both a horizontal rule and a list item are possible
@@ -1005,21 +745,8 @@ namespace CommonMark.Tests.Specification
             //     <li>Bar</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("* Foo\n* * *\n* Bar");
-            var expected = Helpers.Normalize("<ul>\n<li>Foo</li>\n</ul>\n<hr />\n<ul>\n<li>Bar</li>\n</ul>");
-            Helpers.Log("Example {0}", 21);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "* Foo\n* * *\n* Bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 21, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("* Foo\n* * *\n* Bar", "<ul>\n<li>Foo</li>\n</ul>\n<hr />\n<ul>\n<li>Bar</li>\n</ul>");
         }
 
         // If you want a horizontal rule in a list item, use a different bullet:
@@ -1043,21 +770,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- Foo\n- * * *");
-            var expected = Helpers.Normalize("<ul>\n<li>Foo</li>\n<li>\n<hr />\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 22);
-            Helpers.Log("Section: {0}", "Leaf blocks - Horizontal rules");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- Foo\n- * * *");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 22, "Leaf blocks - Horizontal rules");
+			Helpers.ExecuteTest("- Foo\n- * * *", "<ul>\n<li>Foo</li>\n<li>\n<hr />\n</li>\n</ul>");
         }
 
         // ## ATX headers
@@ -1098,21 +812,8 @@ namespace CommonMark.Tests.Specification
             //     <h5>foo</h5>
             //     <h6>foo</h6>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("# foo\n## foo\n### foo\n#### foo\n##### foo\n###### foo");
-            var expected = Helpers.Normalize("<h1>foo</h1>\n<h2>foo</h2>\n<h3>foo</h3>\n<h4>foo</h4>\n<h5>foo</h5>\n<h6>foo</h6>");
-            Helpers.Log("Example {0}", 23);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "# foo\n## foo\n### foo\n#### foo\n##### foo\n###### foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 23, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("# foo\n## foo\n### foo\n#### foo\n##### foo\n###### foo", "<h1>foo</h1>\n<h2>foo</h2>\n<h3>foo</h3>\n<h4>foo</h4>\n<h5>foo</h5>\n<h6>foo</h6>");
         }
 
         // More than six `#` characters is not a header:
@@ -1130,21 +831,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>####### foo</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("####### foo");
-            var expected = Helpers.Normalize("<p>####### foo</p>");
-            Helpers.Log("Example {0}", 24);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "####### foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 24, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("####### foo", "<p>####### foo</p>");
         }
 
         // A space is required between the `#` characters and the header's
@@ -1166,21 +854,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>#5 bolt</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("#5 bolt");
-            var expected = Helpers.Normalize("<p>#5 bolt</p>");
-            Helpers.Log("Example {0}", 25);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "#5 bolt");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 25, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("#5 bolt", "<p>#5 bolt</p>");
         }
 
         // This is not a header, because the first `#` is escaped:
@@ -1198,21 +873,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>## foo</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("\\## foo");
-            var expected = Helpers.Normalize("<p>## foo</p>");
-            Helpers.Log("Example {0}", 26);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "\\## foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 26, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("\\## foo", "<p>## foo</p>");
         }
 
         // Contents are parsed as inlines:
@@ -1230,21 +892,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <h1>foo <em>bar</em> *baz*</h1>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("# foo *bar* \\*baz\\*");
-            var expected = Helpers.Normalize("<h1>foo <em>bar</em> *baz*</h1>");
-            Helpers.Log("Example {0}", 27);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "# foo *bar* \\*baz\\*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 27, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("# foo *bar* \\*baz\\*", "<h1>foo <em>bar</em> *baz*</h1>");
         }
 
         // Leading and trailing blanks are ignored in parsing inline content:
@@ -1262,21 +911,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <h1>foo</h1>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("#                  foo                     ");
-            var expected = Helpers.Normalize("<h1>foo</h1>");
-            Helpers.Log("Example {0}", 28);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "#                  foo                     ");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 28, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("#                  foo                     ", "<h1>foo</h1>");
         }
 
         // One to three spaces indentation are allowed:
@@ -1298,21 +934,8 @@ namespace CommonMark.Tests.Specification
             //     <h2>foo</h2>
             //     <h1>foo</h1>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(" ### foo\n  ## foo\n   # foo");
-            var expected = Helpers.Normalize("<h3>foo</h3>\n<h2>foo</h2>\n<h1>foo</h1>");
-            Helpers.Log("Example {0}", 29);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", " ### foo\n  ## foo\n   # foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 29, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest(" ### foo\n  ## foo\n   # foo", "<h3>foo</h3>\n<h2>foo</h2>\n<h1>foo</h1>");
         }
 
         // Four spaces are too much:
@@ -1331,21 +954,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code># foo
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    # foo");
-            var expected = Helpers.Normalize("<pre><code># foo\n</code></pre>");
-            Helpers.Log("Example {0}", 30);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    # foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 30, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("    # foo", "<pre><code># foo\n</code></pre>");
         }
 
         [TestMethod]
@@ -1364,21 +974,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo
             //     # bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo\n    # bar");
-            var expected = Helpers.Normalize("<p>foo\n# bar</p>");
-            Helpers.Log("Example {0}", 31);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo\n    # bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 31, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("foo\n    # bar", "<p>foo\n# bar</p>");
         }
 
         // A closing sequence of `#` characters is optional:
@@ -1398,21 +995,8 @@ namespace CommonMark.Tests.Specification
             //     <h2>foo</h2>
             //     <h3>bar</h3>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("## foo ##\n  ###   bar    ###");
-            var expected = Helpers.Normalize("<h2>foo</h2>\n<h3>bar</h3>");
-            Helpers.Log("Example {0}", 32);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "## foo ##\n  ###   bar    ###");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 32, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("## foo ##\n  ###   bar    ###", "<h2>foo</h2>\n<h3>bar</h3>");
         }
 
         // It need not be the same length as the opening sequence:
@@ -1432,21 +1016,8 @@ namespace CommonMark.Tests.Specification
             //     <h1>foo</h1>
             //     <h5>foo</h5>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("# foo ##################################\n##### foo ##");
-            var expected = Helpers.Normalize("<h1>foo</h1>\n<h5>foo</h5>");
-            Helpers.Log("Example {0}", 33);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "# foo ##################################\n##### foo ##");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 33, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("# foo ##################################\n##### foo ##", "<h1>foo</h1>\n<h5>foo</h5>");
         }
 
         // Spaces are allowed after the closing sequence:
@@ -1464,21 +1035,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <h3>foo</h3>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("### foo ###     ");
-            var expected = Helpers.Normalize("<h3>foo</h3>");
-            Helpers.Log("Example {0}", 34);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "### foo ###     ");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 34, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("### foo ###     ", "<h3>foo</h3>");
         }
 
         // A sequence of `#` characters with a nonspace character following it
@@ -1498,21 +1056,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <h3>foo ### b</h3>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("### foo ### b");
-            var expected = Helpers.Normalize("<h3>foo ### b</h3>");
-            Helpers.Log("Example {0}", 35);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "### foo ### b");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 35, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("### foo ### b", "<h3>foo ### b</h3>");
         }
 
         // The closing sequence must be preceded by a space:
@@ -1530,21 +1075,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <h1>foo#</h1>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("# foo#");
-            var expected = Helpers.Normalize("<h1>foo#</h1>");
-            Helpers.Log("Example {0}", 36);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "# foo#");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 36, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("# foo#", "<h1>foo#</h1>");
         }
 
         // Backslash-escaped `#` characters do not count as part
@@ -1567,21 +1099,8 @@ namespace CommonMark.Tests.Specification
             //     <h2>foo ###</h2>
             //     <h1>foo #</h1>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("### foo \\###\n## foo #\\##\n# foo \\#");
-            var expected = Helpers.Normalize("<h3>foo ###</h3>\n<h2>foo ###</h2>\n<h1>foo #</h1>");
-            Helpers.Log("Example {0}", 37);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "### foo \\###\n## foo #\\##\n# foo \\#");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 37, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("### foo \\###\n## foo #\\##\n# foo \\#", "<h3>foo ###</h3>\n<h2>foo ###</h2>\n<h1>foo #</h1>");
         }
 
         // ATX headers need not be separated from surrounding content by blank
@@ -1604,21 +1123,8 @@ namespace CommonMark.Tests.Specification
             //     <h2>foo</h2>
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("****\n## foo\n****");
-            var expected = Helpers.Normalize("<hr />\n<h2>foo</h2>\n<hr />");
-            Helpers.Log("Example {0}", 38);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "****\n## foo\n****");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 38, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("****\n## foo\n****", "<hr />\n<h2>foo</h2>\n<hr />");
         }
 
         [TestMethod]
@@ -1639,21 +1145,8 @@ namespace CommonMark.Tests.Specification
             //     <h1>baz</h1>
             //     <p>Bar foo</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo bar\n# baz\nBar foo");
-            var expected = Helpers.Normalize("<p>Foo bar</p>\n<h1>baz</h1>\n<p>Bar foo</p>");
-            Helpers.Log("Example {0}", 39);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo bar\n# baz\nBar foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 39, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("Foo bar\n# baz\nBar foo", "<p>Foo bar</p>\n<h1>baz</h1>\n<p>Bar foo</p>");
         }
 
         // ATX headers can be empty:
@@ -1675,21 +1168,8 @@ namespace CommonMark.Tests.Specification
             //     <h1></h1>
             //     <h3></h3>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("## \n#\n### ###");
-            var expected = Helpers.Normalize("<h2></h2>\n<h1></h1>\n<h3></h3>");
-            Helpers.Log("Example {0}", 40);
-            Helpers.Log("Section: {0}", "Leaf blocks - ATX headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "## \n#\n### ###");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 40, "Leaf blocks - ATX headers");
+			Helpers.ExecuteTest("## \n#\n### ###", "<h2></h2>\n<h1></h1>\n<h3></h3>");
         }
 
         // ## Setext headers
@@ -1733,21 +1213,8 @@ namespace CommonMark.Tests.Specification
             //     <h1>Foo <em>bar</em></h1>
             //     <h2>Foo <em>bar</em></h2>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo *bar*\n=========\n\nFoo *bar*\n---------");
-            var expected = Helpers.Normalize("<h1>Foo <em>bar</em></h1>\n<h2>Foo <em>bar</em></h2>");
-            Helpers.Log("Example {0}", 41);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo *bar*\n=========\n\nFoo *bar*\n---------");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 41, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("Foo *bar*\n=========\n\nFoo *bar*\n---------", "<h1>Foo <em>bar</em></h1>\n<h2>Foo <em>bar</em></h2>");
         }
 
         // The underlining can be any length:
@@ -1770,21 +1237,8 @@ namespace CommonMark.Tests.Specification
             //     <h2>Foo</h2>
             //     <h1>Foo</h1>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\n-------------------------\n\nFoo\n=");
-            var expected = Helpers.Normalize("<h2>Foo</h2>\n<h1>Foo</h1>");
-            Helpers.Log("Example {0}", 42);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\n-------------------------\n\nFoo\n=");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 42, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("Foo\n-------------------------\n\nFoo\n=", "<h2>Foo</h2>\n<h1>Foo</h1>");
         }
 
         // The header content can be indented up to three spaces, and need
@@ -1812,21 +1266,8 @@ namespace CommonMark.Tests.Specification
             //     <h2>Foo</h2>
             //     <h1>Foo</h1>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("   Foo\n---\n\n  Foo\n-----\n\n  Foo\n  ===");
-            var expected = Helpers.Normalize("<h2>Foo</h2>\n<h2>Foo</h2>\n<h1>Foo</h1>");
-            Helpers.Log("Example {0}", 43);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "   Foo\n---\n\n  Foo\n-----\n\n  Foo\n  ===");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 43, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("   Foo\n---\n\n  Foo\n-----\n\n  Foo\n  ===", "<h2>Foo</h2>\n<h2>Foo</h2>\n<h1>Foo</h1>");
         }
 
         // Four spaces indent is too much:
@@ -1853,21 +1294,8 @@ namespace CommonMark.Tests.Specification
             //     </code></pre>
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    Foo\n    ---\n\n    Foo\n---");
-            var expected = Helpers.Normalize("<pre><code>Foo\n---\n\nFoo\n</code></pre>\n<hr />");
-            Helpers.Log("Example {0}", 44);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    Foo\n    ---\n\n    Foo\n---");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 44, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("    Foo\n    ---\n\n    Foo\n---", "<pre><code>Foo\n---\n\nFoo\n</code></pre>\n<hr />");
         }
 
         // The setext header underline can be indented up to three spaces, and
@@ -1887,21 +1315,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <h2>Foo</h2>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\n   ----      ");
-            var expected = Helpers.Normalize("<h2>Foo</h2>");
-            Helpers.Log("Example {0}", 45);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\n   ----      ");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 45, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("Foo\n   ----      ", "<h2>Foo</h2>");
         }
 
         // Four spaces is too much:
@@ -1921,21 +1336,8 @@ namespace CommonMark.Tests.Specification
             //     <p>Foo
             //     ---</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\n     ---");
-            var expected = Helpers.Normalize("<p>Foo\n---</p>");
-            Helpers.Log("Example {0}", 46);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\n     ---");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 46, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("Foo\n     ---", "<p>Foo\n---</p>");
         }
 
         // The setext header underline cannot contain internal spaces:
@@ -1960,21 +1362,8 @@ namespace CommonMark.Tests.Specification
             //     <p>Foo</p>
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\n= =\n\nFoo\n--- -");
-            var expected = Helpers.Normalize("<p>Foo\n= =</p>\n<p>Foo</p>\n<hr />");
-            Helpers.Log("Example {0}", 47);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\n= =\n\nFoo\n--- -");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 47, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("Foo\n= =\n\nFoo\n--- -", "<p>Foo\n= =</p>\n<p>Foo</p>\n<hr />");
         }
 
         // Trailing spaces in the content line do not cause a line break:
@@ -1993,21 +1382,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <h2>Foo</h2>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo  \n-----");
-            var expected = Helpers.Normalize("<h2>Foo</h2>");
-            Helpers.Log("Example {0}", 48);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo  \n-----");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 48, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("Foo  \n-----", "<h2>Foo</h2>");
         }
 
         // Nor does a backslash at the end:
@@ -2026,21 +1402,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <h2>Foo\</h2>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\\\n----");
-            var expected = Helpers.Normalize("<h2>Foo\\</h2>");
-            Helpers.Log("Example {0}", 49);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\\\n----");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 49, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("Foo\\\n----", "<h2>Foo\\</h2>");
         }
 
         // Since indicators of block structure take precedence over
@@ -2068,21 +1431,8 @@ namespace CommonMark.Tests.Specification
             //     <h2>&lt;a title=&quot;a lot</h2>
             //     <p>of dashes&quot;/&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`Foo\n----\n`\n\n<a title=\"a lot\n---\nof dashes\"/>");
-            var expected = Helpers.Normalize("<h2>`Foo</h2>\n<p>`</p>\n<h2>&lt;a title=&quot;a lot</h2>\n<p>of dashes&quot;/&gt;</p>");
-            Helpers.Log("Example {0}", 50);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`Foo\n----\n`\n\n<a title=\"a lot\n---\nof dashes\"/>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 50, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("`Foo\n----\n`\n\n<a title=\"a lot\n---\nof dashes\"/>", "<h2>`Foo</h2>\n<p>`</p>\n<h2>&lt;a title=&quot;a lot</h2>\n<p>of dashes&quot;/&gt;</p>");
         }
 
         // The setext header underline cannot be a [lazy continuation
@@ -2105,21 +1455,8 @@ namespace CommonMark.Tests.Specification
             //     </blockquote>
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> Foo\n---");
-            var expected = Helpers.Normalize("<blockquote>\n<p>Foo</p>\n</blockquote>\n<hr />");
-            Helpers.Log("Example {0}", 51);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> Foo\n---");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 51, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("> Foo\n---", "<blockquote>\n<p>Foo</p>\n</blockquote>\n<hr />");
         }
 
         [TestMethod]
@@ -2140,21 +1477,8 @@ namespace CommonMark.Tests.Specification
             //     </ul>
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- Foo\n---");
-            var expected = Helpers.Normalize("<ul>\n<li>Foo</li>\n</ul>\n<hr />");
-            Helpers.Log("Example {0}", 52);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- Foo\n---");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 52, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("- Foo\n---", "<ul>\n<li>Foo</li>\n</ul>\n<hr />");
         }
 
         // A setext header cannot interrupt a paragraph:
@@ -2183,21 +1507,8 @@ namespace CommonMark.Tests.Specification
             //     Bar
             //     ===</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\nBar\n---\n\nFoo\nBar\n===");
-            var expected = Helpers.Normalize("<p>Foo\nBar</p>\n<hr />\n<p>Foo\nBar\n===</p>");
-            Helpers.Log("Example {0}", 53);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\nBar\n---\n\nFoo\nBar\n===");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 53, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("Foo\nBar\n---\n\nFoo\nBar\n===", "<p>Foo\nBar</p>\n<hr />\n<p>Foo\nBar\n===</p>");
         }
 
         // But in general a blank line is not required before or after:
@@ -2223,21 +1534,8 @@ namespace CommonMark.Tests.Specification
             //     <h2>Bar</h2>
             //     <p>Baz</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("---\nFoo\n---\nBar\n---\nBaz");
-            var expected = Helpers.Normalize("<hr />\n<h2>Foo</h2>\n<h2>Bar</h2>\n<p>Baz</p>");
-            Helpers.Log("Example {0}", 54);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "---\nFoo\n---\nBar\n---\nBaz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 54, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("---\nFoo\n---\nBar\n---\nBaz", "<hr />\n<h2>Foo</h2>\n<h2>Bar</h2>\n<p>Baz</p>");
         }
 
         // Setext headers cannot be empty:
@@ -2255,21 +1553,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>====</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("====");
-            var expected = Helpers.Normalize("<p>====</p>");
-            Helpers.Log("Example {0}", 55);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "====");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 55, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("====", "<p>====</p>");
         }
 
         // Setext header text lines must not be interpretable as block
@@ -2291,21 +1576,8 @@ namespace CommonMark.Tests.Specification
             //     <hr />
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("---\n---");
-            var expected = Helpers.Normalize("<hr />\n<hr />");
-            Helpers.Log("Example {0}", 56);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "---\n---");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 56, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("---\n---", "<hr />\n<hr />");
         }
 
         [TestMethod]
@@ -2326,21 +1598,8 @@ namespace CommonMark.Tests.Specification
             //     </ul>
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n-----");
-            var expected = Helpers.Normalize("<ul>\n<li>foo</li>\n</ul>\n<hr />");
-            Helpers.Log("Example {0}", 57);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n-----");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 57, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("- foo\n-----", "<ul>\n<li>foo</li>\n</ul>\n<hr />");
         }
 
         [TestMethod]
@@ -2360,21 +1619,8 @@ namespace CommonMark.Tests.Specification
             //     </code></pre>
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    foo\n---");
-            var expected = Helpers.Normalize("<pre><code>foo\n</code></pre>\n<hr />");
-            Helpers.Log("Example {0}", 58);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    foo\n---");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 58, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("    foo\n---", "<pre><code>foo\n</code></pre>\n<hr />");
         }
 
         [TestMethod]
@@ -2395,21 +1641,8 @@ namespace CommonMark.Tests.Specification
             //     </blockquote>
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> foo\n-----");
-            var expected = Helpers.Normalize("<blockquote>\n<p>foo</p>\n</blockquote>\n<hr />");
-            Helpers.Log("Example {0}", 59);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> foo\n-----");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 59, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("> foo\n-----", "<blockquote>\n<p>foo</p>\n</blockquote>\n<hr />");
         }
 
         // If you want a header with `> foo` as its literal text, you can
@@ -2429,21 +1662,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <h2>&gt; foo</h2>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("\\> foo\n------");
-            var expected = Helpers.Normalize("<h2>&gt; foo</h2>");
-            Helpers.Log("Example {0}", 60);
-            Helpers.Log("Section: {0}", "Leaf blocks - Setext headers");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "\\> foo\n------");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 60, "Leaf blocks - Setext headers");
+			Helpers.ExecuteTest("\\> foo\n------", "<h2>&gt; foo</h2>");
         }
 
         // ## Indented code blocks
@@ -2477,21 +1697,8 @@ namespace CommonMark.Tests.Specification
             //       indented code block
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    a simple\n      indented code block");
-            var expected = Helpers.Normalize("<pre><code>a simple\n  indented code block\n</code></pre>");
-            Helpers.Log("Example {0}", 61);
-            Helpers.Log("Section: {0}", "Leaf blocks - Indented code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    a simple\n      indented code block");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 61, "Leaf blocks - Indented code blocks");
+			Helpers.ExecuteTest("    a simple\n      indented code block", "<pre><code>a simple\n  indented code block\n</code></pre>");
         }
 
         // The contents are literal text, and do not get parsed as Markdown:
@@ -2516,21 +1723,8 @@ namespace CommonMark.Tests.Specification
             //     - one
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    <a/>\n    *hi*\n\n    - one");
-            var expected = Helpers.Normalize("<pre><code>&lt;a/&gt;\n*hi*\n\n- one\n</code></pre>");
-            Helpers.Log("Example {0}", 62);
-            Helpers.Log("Section: {0}", "Leaf blocks - Indented code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    <a/>\n    *hi*\n\n    - one");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 62, "Leaf blocks - Indented code blocks");
+			Helpers.ExecuteTest("    <a/>\n    *hi*\n\n    - one", "<pre><code>&lt;a/&gt;\n*hi*\n\n- one\n</code></pre>");
         }
 
         // Here we have three chunks separated by blank lines:
@@ -2561,21 +1755,8 @@ namespace CommonMark.Tests.Specification
             //     chunk3
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    chunk1\n\n    chunk2\n  \n \n \n    chunk3");
-            var expected = Helpers.Normalize("<pre><code>chunk1\n\nchunk2\n\n\n\nchunk3\n</code></pre>");
-            Helpers.Log("Example {0}", 63);
-            Helpers.Log("Section: {0}", "Leaf blocks - Indented code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    chunk1\n\n    chunk2\n  \n \n \n    chunk3");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 63, "Leaf blocks - Indented code blocks");
+			Helpers.ExecuteTest("    chunk1\n\n    chunk2\n  \n \n \n    chunk3", "<pre><code>chunk1\n\nchunk2\n\n\n\nchunk3\n</code></pre>");
         }
 
         // Any initial spaces beyond four will be included in the content, even
@@ -2599,21 +1780,8 @@ namespace CommonMark.Tests.Specification
             //       chunk2
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    chunk1\n      \n      chunk2");
-            var expected = Helpers.Normalize("<pre><code>chunk1\n  \n  chunk2\n</code></pre>");
-            Helpers.Log("Example {0}", 64);
-            Helpers.Log("Section: {0}", "Leaf blocks - Indented code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    chunk1\n      \n      chunk2");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 64, "Leaf blocks - Indented code blocks");
+			Helpers.ExecuteTest("    chunk1\n      \n      chunk2", "<pre><code>chunk1\n  \n  chunk2\n</code></pre>");
         }
 
         // An indented code block cannot interrupt a paragraph.  (This
@@ -2635,21 +1803,8 @@ namespace CommonMark.Tests.Specification
             //     <p>Foo
             //     bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\n    bar\n");
-            var expected = Helpers.Normalize("<p>Foo\nbar</p>");
-            Helpers.Log("Example {0}", 65);
-            Helpers.Log("Section: {0}", "Leaf blocks - Indented code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\n    bar\n");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 65, "Leaf blocks - Indented code blocks");
+			Helpers.ExecuteTest("Foo\n    bar\n", "<p>Foo\nbar</p>");
         }
 
         // However, any non-blank line with fewer than four leading spaces ends
@@ -2672,21 +1827,8 @@ namespace CommonMark.Tests.Specification
             //     </code></pre>
             //     <p>bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    foo\nbar");
-            var expected = Helpers.Normalize("<pre><code>foo\n</code></pre>\n<p>bar</p>");
-            Helpers.Log("Example {0}", 66);
-            Helpers.Log("Section: {0}", "Leaf blocks - Indented code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    foo\nbar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 66, "Leaf blocks - Indented code blocks");
+			Helpers.ExecuteTest("    foo\nbar", "<pre><code>foo\n</code></pre>\n<p>bar</p>");
         }
 
         // And indented code can occur immediately before and after other kinds of
@@ -2716,21 +1858,8 @@ namespace CommonMark.Tests.Specification
             //     </code></pre>
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("# Header\n    foo\nHeader\n------\n    foo\n----");
-            var expected = Helpers.Normalize("<h1>Header</h1>\n<pre><code>foo\n</code></pre>\n<h2>Header</h2>\n<pre><code>foo\n</code></pre>\n<hr />");
-            Helpers.Log("Example {0}", 67);
-            Helpers.Log("Section: {0}", "Leaf blocks - Indented code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "# Header\n    foo\nHeader\n------\n    foo\n----");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 67, "Leaf blocks - Indented code blocks");
+			Helpers.ExecuteTest("# Header\n    foo\nHeader\n------\n    foo\n----", "<h1>Header</h1>\n<pre><code>foo\n</code></pre>\n<h2>Header</h2>\n<pre><code>foo\n</code></pre>\n<hr />");
         }
 
         // The first line can be indented more than four spaces:
@@ -2751,21 +1880,8 @@ namespace CommonMark.Tests.Specification
             //     bar
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("        foo\n    bar");
-            var expected = Helpers.Normalize("<pre><code>    foo\nbar\n</code></pre>");
-            Helpers.Log("Example {0}", 68);
-            Helpers.Log("Section: {0}", "Leaf blocks - Indented code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "        foo\n    bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 68, "Leaf blocks - Indented code blocks");
+			Helpers.ExecuteTest("        foo\n    bar", "<pre><code>    foo\nbar\n</code></pre>");
         }
 
         // Blank lines preceding or following an indented code block
@@ -2788,21 +1904,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>foo
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    \n    foo\n    \n");
-            var expected = Helpers.Normalize("<pre><code>foo\n</code></pre>");
-            Helpers.Log("Example {0}", 69);
-            Helpers.Log("Section: {0}", "Leaf blocks - Indented code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    \n    foo\n    \n");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 69, "Leaf blocks - Indented code blocks");
+			Helpers.ExecuteTest("    \n    foo\n    \n", "<pre><code>foo\n</code></pre>");
         }
 
         // Trailing spaces are included in the code block's content:
@@ -2821,21 +1924,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>foo  
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    foo  ");
-            var expected = Helpers.Normalize("<pre><code>foo  \n</code></pre>");
-            Helpers.Log("Example {0}", 70);
-            Helpers.Log("Section: {0}", "Leaf blocks - Indented code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    foo  ");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 70, "Leaf blocks - Indented code blocks");
+			Helpers.ExecuteTest("    foo  ", "<pre><code>foo  \n</code></pre>");
         }
 
         // ## Fenced code blocks
@@ -2902,21 +1992,8 @@ namespace CommonMark.Tests.Specification
             //      &gt;
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("```\n<\n >\n```");
-            var expected = Helpers.Normalize("<pre><code>&lt;\n &gt;\n</code></pre>");
-            Helpers.Log("Example {0}", 71);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "```\n<\n >\n```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 71, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("```\n<\n >\n```", "<pre><code>&lt;\n &gt;\n</code></pre>");
         }
 
         // With tildes:
@@ -2939,21 +2016,8 @@ namespace CommonMark.Tests.Specification
             //      &gt;
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("~~~\n<\n >\n~~~");
-            var expected = Helpers.Normalize("<pre><code>&lt;\n &gt;\n</code></pre>");
-            Helpers.Log("Example {0}", 72);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "~~~\n<\n >\n~~~");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 72, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("~~~\n<\n >\n~~~", "<pre><code>&lt;\n &gt;\n</code></pre>");
         }
 
         // The closing code fence must use the same character as the opening
@@ -2977,21 +2041,8 @@ namespace CommonMark.Tests.Specification
             //     ~~~
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("```\naaa\n~~~\n```");
-            var expected = Helpers.Normalize("<pre><code>aaa\n~~~\n</code></pre>");
-            Helpers.Log("Example {0}", 73);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "```\naaa\n~~~\n```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 73, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("```\naaa\n~~~\n```", "<pre><code>aaa\n~~~\n</code></pre>");
         }
 
         [TestMethod]
@@ -3013,21 +2064,8 @@ namespace CommonMark.Tests.Specification
             //     ```
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("~~~\naaa\n```\n~~~");
-            var expected = Helpers.Normalize("<pre><code>aaa\n```\n</code></pre>");
-            Helpers.Log("Example {0}", 74);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "~~~\naaa\n```\n~~~");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 74, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("~~~\naaa\n```\n~~~", "<pre><code>aaa\n```\n</code></pre>");
         }
 
         // The closing code fence must be at least as long as the opening fence:
@@ -3050,21 +2088,8 @@ namespace CommonMark.Tests.Specification
             //     ```
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("````\naaa\n```\n``````");
-            var expected = Helpers.Normalize("<pre><code>aaa\n```\n</code></pre>");
-            Helpers.Log("Example {0}", 75);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "````\naaa\n```\n``````");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 75, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("````\naaa\n```\n``````", "<pre><code>aaa\n```\n</code></pre>");
         }
 
         [TestMethod]
@@ -3086,21 +2111,8 @@ namespace CommonMark.Tests.Specification
             //     ~~~
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("~~~~\naaa\n~~~\n~~~~");
-            var expected = Helpers.Normalize("<pre><code>aaa\n~~~\n</code></pre>");
-            Helpers.Log("Example {0}", 76);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "~~~~\naaa\n~~~\n~~~~");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 76, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("~~~~\naaa\n~~~\n~~~~", "<pre><code>aaa\n~~~\n</code></pre>");
         }
 
         // Unclosed code blocks are closed by the end of the document:
@@ -3118,21 +2130,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <pre><code></code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("```");
-            var expected = Helpers.Normalize("<pre><code></code></pre>");
-            Helpers.Log("Example {0}", 77);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 77, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("```", "<pre><code></code></pre>");
         }
 
         [TestMethod]
@@ -3155,21 +2154,8 @@ namespace CommonMark.Tests.Specification
             //     aaa
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`````\n\n```\naaa");
-            var expected = Helpers.Normalize("<pre><code>\n```\naaa\n</code></pre>");
-            Helpers.Log("Example {0}", 78);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`````\n\n```\naaa");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 78, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("`````\n\n```\naaa", "<pre><code>\n```\naaa\n</code></pre>");
         }
 
         // A code block can have all empty lines as its content:
@@ -3192,21 +2178,8 @@ namespace CommonMark.Tests.Specification
             //       
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("```\n\n  \n```");
-            var expected = Helpers.Normalize("<pre><code>\n  \n</code></pre>");
-            Helpers.Log("Example {0}", 79);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "```\n\n  \n```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 79, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("```\n\n  \n```", "<pre><code>\n  \n</code></pre>");
         }
 
         // A code block can be empty:
@@ -3225,21 +2198,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <pre><code></code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("```\n```");
-            var expected = Helpers.Normalize("<pre><code></code></pre>");
-            Helpers.Log("Example {0}", 80);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "```\n```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 80, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("```\n```", "<pre><code></code></pre>");
         }
 
         // Fences can be indented.  If the opening fence is indented,
@@ -3264,21 +2224,8 @@ namespace CommonMark.Tests.Specification
             //     aaa
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(" ```\n aaa\naaa\n```");
-            var expected = Helpers.Normalize("<pre><code>aaa\naaa\n</code></pre>");
-            Helpers.Log("Example {0}", 81);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", " ```\n aaa\naaa\n```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 81, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest(" ```\n aaa\naaa\n```", "<pre><code>aaa\naaa\n</code></pre>");
         }
 
         [TestMethod]
@@ -3302,21 +2249,8 @@ namespace CommonMark.Tests.Specification
             //     aaa
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("  ```\naaa\n  aaa\naaa\n  ```");
-            var expected = Helpers.Normalize("<pre><code>aaa\naaa\naaa\n</code></pre>");
-            Helpers.Log("Example {0}", 82);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "  ```\naaa\n  aaa\naaa\n  ```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 82, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("  ```\naaa\n  aaa\naaa\n  ```", "<pre><code>aaa\naaa\naaa\n</code></pre>");
         }
 
         [TestMethod]
@@ -3340,21 +2274,8 @@ namespace CommonMark.Tests.Specification
             //     aaa
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("   ```\n   aaa\n    aaa\n  aaa\n   ```");
-            var expected = Helpers.Normalize("<pre><code>aaa\n aaa\naaa\n</code></pre>");
-            Helpers.Log("Example {0}", 83);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "   ```\n   aaa\n    aaa\n  aaa\n   ```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 83, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("   ```\n   aaa\n    aaa\n  aaa\n   ```", "<pre><code>aaa\n aaa\naaa\n</code></pre>");
         }
 
         // Four spaces indentation produces an indented code block:
@@ -3377,21 +2298,8 @@ namespace CommonMark.Tests.Specification
             //     ```
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    ```\n    aaa\n    ```");
-            var expected = Helpers.Normalize("<pre><code>```\naaa\n```\n</code></pre>");
-            Helpers.Log("Example {0}", 84);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    ```\n    aaa\n    ```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 84, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("    ```\n    aaa\n    ```", "<pre><code>```\naaa\n```\n</code></pre>");
         }
 
         // Closing fences may be indented by 0-3 spaces, and their indentation
@@ -3413,21 +2321,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>aaa
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("```\naaa\n  ```");
-            var expected = Helpers.Normalize("<pre><code>aaa\n</code></pre>");
-            Helpers.Log("Example {0}", 85);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "```\naaa\n  ```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 85, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("```\naaa\n  ```", "<pre><code>aaa\n</code></pre>");
         }
 
         [TestMethod]
@@ -3447,21 +2342,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>aaa
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("   ```\naaa\n  ```");
-            var expected = Helpers.Normalize("<pre><code>aaa\n</code></pre>");
-            Helpers.Log("Example {0}", 86);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "   ```\naaa\n  ```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 86, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("   ```\naaa\n  ```", "<pre><code>aaa\n</code></pre>");
         }
 
         // This is not a closing fence, because it is indented 4 spaces:
@@ -3483,21 +2365,8 @@ namespace CommonMark.Tests.Specification
             //         ```
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("```\naaa\n    ```");
-            var expected = Helpers.Normalize("<pre><code>aaa\n    ```\n</code></pre>");
-            Helpers.Log("Example {0}", 87);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "```\naaa\n    ```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 87, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("```\naaa\n    ```", "<pre><code>aaa\n    ```\n</code></pre>");
         }
 
         // Code fences (opening and closing) cannot contain internal spaces:
@@ -3517,21 +2386,8 @@ namespace CommonMark.Tests.Specification
             //     <p><code></code>
             //     aaa</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("``` ```\naaa");
-            var expected = Helpers.Normalize("<p><code></code>\naaa</p>");
-            Helpers.Log("Example {0}", 88);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "``` ```\naaa");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 88, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("``` ```\naaa", "<p><code></code>\naaa</p>");
         }
 
         [TestMethod]
@@ -3552,21 +2408,8 @@ namespace CommonMark.Tests.Specification
             //     ~~~ ~~
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("~~~~~~\naaa\n~~~ ~~");
-            var expected = Helpers.Normalize("<pre><code>aaa\n~~~ ~~\n</code></pre>");
-            Helpers.Log("Example {0}", 89);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "~~~~~~\naaa\n~~~ ~~");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 89, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("~~~~~~\naaa\n~~~ ~~", "<pre><code>aaa\n~~~ ~~\n</code></pre>");
         }
 
         // Fenced code blocks can interrupt paragraphs, and can be followed
@@ -3592,21 +2435,8 @@ namespace CommonMark.Tests.Specification
             //     </code></pre>
             //     <p>baz</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo\n```\nbar\n```\nbaz");
-            var expected = Helpers.Normalize("<p>foo</p>\n<pre><code>bar\n</code></pre>\n<p>baz</p>");
-            Helpers.Log("Example {0}", 90);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo\n```\nbar\n```\nbaz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 90, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("foo\n```\nbar\n```\nbaz", "<p>foo</p>\n<pre><code>bar\n</code></pre>\n<p>baz</p>");
         }
 
         // Other blocks can also occur before and after fenced code blocks
@@ -3633,21 +2463,8 @@ namespace CommonMark.Tests.Specification
             //     </code></pre>
             //     <h1>baz</h1>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo\n---\n~~~\nbar\n~~~\n# baz");
-            var expected = Helpers.Normalize("<h2>foo</h2>\n<pre><code>bar\n</code></pre>\n<h1>baz</h1>");
-            Helpers.Log("Example {0}", 91);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo\n---\n~~~\nbar\n~~~\n# baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 91, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("foo\n---\n~~~\nbar\n~~~\n# baz", "<h2>foo</h2>\n<pre><code>bar\n</code></pre>\n<h1>baz</h1>");
         }
 
         // An [info string](#info-string) can be provided after the opening code fence.
@@ -3675,21 +2492,8 @@ namespace CommonMark.Tests.Specification
             //     end
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("```ruby\ndef foo(x)\n  return 3\nend\n```");
-            var expected = Helpers.Normalize("<pre><code class=\"language-ruby\">def foo(x)\n  return 3\nend\n</code></pre>");
-            Helpers.Log("Example {0}", 92);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "```ruby\ndef foo(x)\n  return 3\nend\n```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 92, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("```ruby\ndef foo(x)\n  return 3\nend\n```", "<pre><code class=\"language-ruby\">def foo(x)\n  return 3\nend\n</code></pre>");
         }
 
         [TestMethod]
@@ -3713,21 +2517,8 @@ namespace CommonMark.Tests.Specification
             //     end
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("~~~~    ruby startline=3 $%@#$\ndef foo(x)\n  return 3\nend\n~~~~~~~");
-            var expected = Helpers.Normalize("<pre><code class=\"language-ruby\">def foo(x)\n  return 3\nend\n</code></pre>");
-            Helpers.Log("Example {0}", 93);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "~~~~    ruby startline=3 $%@#$\ndef foo(x)\n  return 3\nend\n~~~~~~~");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 93, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("~~~~    ruby startline=3 $%@#$\ndef foo(x)\n  return 3\nend\n~~~~~~~", "<pre><code class=\"language-ruby\">def foo(x)\n  return 3\nend\n</code></pre>");
         }
 
         [TestMethod]
@@ -3745,21 +2536,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <pre><code class="language-;"></code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("````;\n````");
-            var expected = Helpers.Normalize("<pre><code class=\"language-;\"></code></pre>");
-            Helpers.Log("Example {0}", 94);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "````;\n````");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 94, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("````;\n````", "<pre><code class=\"language-;\"></code></pre>");
         }
 
         // Info strings for backtick code blocks cannot contain backticks:
@@ -3779,21 +2557,8 @@ namespace CommonMark.Tests.Specification
             //     <p><code>aa</code>
             //     foo</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("``` aa ```\nfoo");
-            var expected = Helpers.Normalize("<p><code>aa</code>\nfoo</p>");
-            Helpers.Log("Example {0}", 95);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "``` aa ```\nfoo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 95, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("``` aa ```\nfoo", "<p><code>aa</code>\nfoo</p>");
         }
 
         // Closing code fences cannot have info strings:
@@ -3814,21 +2579,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>``` aaa
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("```\n``` aaa\n```");
-            var expected = Helpers.Normalize("<pre><code>``` aaa\n</code></pre>");
-            Helpers.Log("Example {0}", 96);
-            Helpers.Log("Section: {0}", "Leaf blocks - Fenced code blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "```\n``` aaa\n```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 96, "Leaf blocks - Fenced code blocks");
+			Helpers.ExecuteTest("```\n``` aaa\n```", "<pre><code>``` aaa\n</code></pre>");
         }
 
         // ## HTML blocks
@@ -3884,21 +2636,8 @@ namespace CommonMark.Tests.Specification
             //     </table>
             //     <p>okay.</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<table>\n  <tr>\n    <td>\n           hi\n    </td>\n  </tr>\n</table>\n\nokay.");
-            var expected = Helpers.Normalize("<table>\n  <tr>\n    <td>\n           hi\n    </td>\n  </tr>\n</table>\n<p>okay.</p>");
-            Helpers.Log("Example {0}", 97);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<table>\n  <tr>\n    <td>\n           hi\n    </td>\n  </tr>\n</table>\n\nokay.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 97, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("<table>\n  <tr>\n    <td>\n           hi\n    </td>\n  </tr>\n</table>\n\nokay.", "<table>\n  <tr>\n    <td>\n           hi\n    </td>\n  </tr>\n</table>\n<p>okay.</p>");
         }
 
         [TestMethod]
@@ -3919,21 +2658,8 @@ namespace CommonMark.Tests.Specification
             //       *hello*
             //              <foo><a>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(" <div>\n  *hello*\n         <foo><a>");
-            var expected = Helpers.Normalize(" <div>\n  *hello*\n         <foo><a>");
-            Helpers.Log("Example {0}", 98);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", " <div>\n  *hello*\n         <foo><a>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 98, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest(" <div>\n  *hello*\n         <foo><a>", " <div>\n  *hello*\n         <foo><a>");
         }
 
         // Here we have two HTML blocks with a Markdown paragraph between them:
@@ -3957,21 +2683,8 @@ namespace CommonMark.Tests.Specification
             //     <p><em>Markdown</em></p>
             //     </DIV>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<DIV CLASS=\"foo\">\n\n*Markdown*\n\n</DIV>");
-            var expected = Helpers.Normalize("<DIV CLASS=\"foo\">\n<p><em>Markdown</em></p>\n</DIV>");
-            Helpers.Log("Example {0}", 99);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<DIV CLASS=\"foo\">\n\n*Markdown*\n\n</DIV>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 99, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("<DIV CLASS=\"foo\">\n\n*Markdown*\n\n</DIV>", "<DIV CLASS=\"foo\">\n<p><em>Markdown</em></p>\n</DIV>");
         }
 
         // In the following example, what looks like a Markdown code block
@@ -3997,21 +2710,8 @@ namespace CommonMark.Tests.Specification
             //     int x = 33;
             //     ```
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<div></div>\n``` c\nint x = 33;\n```");
-            var expected = Helpers.Normalize("<div></div>\n``` c\nint x = 33;\n```");
-            Helpers.Log("Example {0}", 100);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<div></div>\n``` c\nint x = 33;\n```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 100, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("<div></div>\n``` c\nint x = 33;\n```", "<div></div>\n``` c\nint x = 33;\n```");
         }
 
         // A comment:
@@ -4033,21 +2733,8 @@ namespace CommonMark.Tests.Specification
             //     bar
             //        baz -->
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<!-- Foo\nbar\n   baz -->");
-            var expected = Helpers.Normalize("<!-- Foo\nbar\n   baz -->");
-            Helpers.Log("Example {0}", 101);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<!-- Foo\nbar\n   baz -->");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 101, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("<!-- Foo\nbar\n   baz -->", "<!-- Foo\nbar\n   baz -->");
         }
 
         // A processing instruction:
@@ -4069,21 +2756,8 @@ namespace CommonMark.Tests.Specification
             //       echo '>';
             //     ?>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<?php\n  echo '>';\n?>");
-            var expected = Helpers.Normalize("<?php\n  echo '>';\n?>");
-            Helpers.Log("Example {0}", 102);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<?php\n  echo '>';\n?>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 102, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("<?php\n  echo '>';\n?>", "<?php\n  echo '>';\n?>");
         }
 
         // CDATA:
@@ -4125,21 +2799,8 @@ namespace CommonMark.Tests.Specification
             //     }
             //     ]]>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<![CDATA[\nfunction matchwo(a,b)\n{\nif (a < b && a < 0) then\n  {\n  return 1;\n  }\nelse\n  {\n  return 0;\n  }\n}\n]]>");
-            var expected = Helpers.Normalize("<![CDATA[\nfunction matchwo(a,b)\n{\nif (a < b && a < 0) then\n  {\n  return 1;\n  }\nelse\n  {\n  return 0;\n  }\n}\n]]>");
-            Helpers.Log("Example {0}", 103);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<![CDATA[\nfunction matchwo(a,b)\n{\nif (a < b && a < 0) then\n  {\n  return 1;\n  }\nelse\n  {\n  return 0;\n  }\n}\n]]>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 103, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("<![CDATA[\nfunction matchwo(a,b)\n{\nif (a < b && a < 0) then\n  {\n  return 1;\n  }\nelse\n  {\n  return 0;\n  }\n}\n]]>", "<![CDATA[\nfunction matchwo(a,b)\n{\nif (a < b && a < 0) then\n  {\n  return 1;\n  }\nelse\n  {\n  return 0;\n  }\n}\n]]>");
         }
 
         // The opening tag can be indented 1-3 spaces, but not 4:
@@ -4161,21 +2822,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>&lt;!-- foo --&gt;
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("  <!-- foo -->\n\n    <!-- foo -->");
-            var expected = Helpers.Normalize("  <!-- foo -->\n<pre><code>&lt;!-- foo --&gt;\n</code></pre>");
-            Helpers.Log("Example {0}", 104);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "  <!-- foo -->\n\n    <!-- foo -->");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 104, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("  <!-- foo -->\n\n    <!-- foo -->", "  <!-- foo -->\n<pre><code>&lt;!-- foo --&gt;\n</code></pre>");
         }
 
         // An HTML block can interrupt a paragraph, and need not be preceded
@@ -4200,21 +2848,8 @@ namespace CommonMark.Tests.Specification
             //     bar
             //     </div>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\n<div>\nbar\n</div>");
-            var expected = Helpers.Normalize("<p>Foo</p>\n<div>\nbar\n</div>");
-            Helpers.Log("Example {0}", 105);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\n<div>\nbar\n</div>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 105, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("Foo\n<div>\nbar\n</div>", "<p>Foo</p>\n<div>\nbar\n</div>");
         }
 
         // However, a following blank line is always needed, except at the end of
@@ -4239,21 +2874,8 @@ namespace CommonMark.Tests.Specification
             //     </div>
             //     *foo*
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<div>\nbar\n</div>\n*foo*");
-            var expected = Helpers.Normalize("<div>\nbar\n</div>\n*foo*");
-            Helpers.Log("Example {0}", 106);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<div>\nbar\n</div>\n*foo*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 106, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("<div>\nbar\n</div>\n*foo*", "<div>\nbar\n</div>\n*foo*");
         }
 
         // An incomplete HTML block tag may also start an HTML block:
@@ -4273,21 +2895,8 @@ namespace CommonMark.Tests.Specification
             //     <div class
             //     foo
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<div class\nfoo");
-            var expected = Helpers.Normalize("<div class\nfoo");
-            Helpers.Log("Example {0}", 107);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<div class\nfoo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 107, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("<div class\nfoo", "<div class\nfoo");
         }
 
         // This rule differs from John Gruber's original Markdown syntax
@@ -4337,21 +2946,8 @@ namespace CommonMark.Tests.Specification
             //     <p><em>Emphasized</em> text.</p>
             //     </div>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<div>\n\n*Emphasized* text.\n\n</div>");
-            var expected = Helpers.Normalize("<div>\n<p><em>Emphasized</em> text.</p>\n</div>");
-            Helpers.Log("Example {0}", 108);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<div>\n\n*Emphasized* text.\n\n</div>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 108, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("<div>\n\n*Emphasized* text.\n\n</div>", "<div>\n<p><em>Emphasized</em> text.</p>\n</div>");
         }
 
         // Compare:
@@ -4373,21 +2969,8 @@ namespace CommonMark.Tests.Specification
             //     *Emphasized* text.
             //     </div>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<div>\n*Emphasized* text.\n</div>");
-            var expected = Helpers.Normalize("<div>\n*Emphasized* text.\n</div>");
-            Helpers.Log("Example {0}", 109);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<div>\n*Emphasized* text.\n</div>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 109, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("<div>\n*Emphasized* text.\n</div>", "<div>\n*Emphasized* text.\n</div>");
         }
 
         // Some Markdown implementations have adopted a convention of
@@ -4430,21 +3013,8 @@ namespace CommonMark.Tests.Specification
             //     </tr>
             //     </table>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<table>\n\n<tr>\n\n<td>\nHi\n</td>\n\n</tr>\n\n</table>");
-            var expected = Helpers.Normalize("<table>\n<tr>\n<td>\nHi\n</td>\n</tr>\n</table>");
-            Helpers.Log("Example {0}", 110);
-            Helpers.Log("Section: {0}", "Leaf blocks - HTML blocks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<table>\n\n<tr>\n\n<td>\nHi\n</td>\n\n</tr>\n\n</table>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 110, "Leaf blocks - HTML blocks");
+			Helpers.ExecuteTest("<table>\n\n<tr>\n\n<td>\nHi\n</td>\n\n</tr>\n\n</table>", "<table>\n<tr>\n<td>\nHi\n</td>\n</tr>\n</table>");
         }
 
         // Moreover, blank lines are usually not necessary and can be
@@ -4487,21 +3057,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]: /url \"title\"\n\n[foo]");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 111);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]: /url \"title\"\n\n[foo]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 111, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[foo]: /url \"title\"\n\n[foo]", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         [TestMethod]
@@ -4522,21 +3079,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="the title">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("   [foo]: \n      /url  \n           'the title'  \n\n[foo]");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"the title\">foo</a></p>");
-            Helpers.Log("Example {0}", 112);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "   [foo]: \n      /url  \n           'the title'  \n\n[foo]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 112, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("   [foo]: \n      /url  \n           'the title'  \n\n[foo]", "<p><a href=\"/url\" title=\"the title\">foo</a></p>");
         }
 
         [TestMethod]
@@ -4555,21 +3099,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="my_(url)" title="title (with parens)">Foo*bar]</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[Foo*bar\\]]:my_(url) 'title (with parens)'\n\n[Foo*bar\\]]");
-            var expected = Helpers.Normalize("<p><a href=\"my_(url)\" title=\"title (with parens)\">Foo*bar]</a></p>");
-            Helpers.Log("Example {0}", 113);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[Foo*bar\\]]:my_(url) 'title (with parens)'\n\n[Foo*bar\\]]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 113, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[Foo*bar\\]]:my_(url) 'title (with parens)'\n\n[Foo*bar\\]]", "<p><a href=\"my_(url)\" title=\"title (with parens)\">Foo*bar]</a></p>");
         }
 
         [TestMethod]
@@ -4590,21 +3121,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="my%20url" title="title">Foo bar</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[Foo bar]:\n<my url>\n'title'\n\n[Foo bar]");
-            var expected = Helpers.Normalize("<p><a href=\"my%20url\" title=\"title\">Foo bar</a></p>");
-            Helpers.Log("Example {0}", 114);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[Foo bar]:\n<my url>\n'title'\n\n[Foo bar]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 114, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[Foo bar]:\n<my url>\n'title'\n\n[Foo bar]", "<p><a href=\"my%20url\" title=\"title\">Foo bar</a></p>");
         }
 
         // The title may be omitted:
@@ -4625,21 +3143,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]:\n/url\n\n[foo]");
-            var expected = Helpers.Normalize("<p><a href=\"/url\">foo</a></p>");
-            Helpers.Log("Example {0}", 115);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]:\n/url\n\n[foo]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 115, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[foo]:\n/url\n\n[foo]", "<p><a href=\"/url\">foo</a></p>");
         }
 
         // The link destination may not be omitted:
@@ -4660,21 +3165,8 @@ namespace CommonMark.Tests.Specification
             //     <p>[foo]:</p>
             //     <p>[foo]</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]:\n\n[foo]");
-            var expected = Helpers.Normalize("<p>[foo]:</p>\n<p>[foo]</p>");
-            Helpers.Log("Example {0}", 116);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]:\n\n[foo]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 116, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[foo]:\n\n[foo]", "<p>[foo]:</p>\n<p>[foo]</p>");
         }
 
         // A link can come before its corresponding definition:
@@ -4694,21 +3186,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="url">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]\n\n[foo]: url");
-            var expected = Helpers.Normalize("<p><a href=\"url\">foo</a></p>");
-            Helpers.Log("Example {0}", 117);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]\n\n[foo]: url");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 117, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[foo]\n\n[foo]: url", "<p><a href=\"url\">foo</a></p>");
         }
 
         // If there are several matching definitions, the first one takes
@@ -4730,21 +3209,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="first">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]\n\n[foo]: first\n[foo]: second");
-            var expected = Helpers.Normalize("<p><a href=\"first\">foo</a></p>");
-            Helpers.Log("Example {0}", 118);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]\n\n[foo]: first\n[foo]: second");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 118, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[foo]\n\n[foo]: first\n[foo]: second", "<p><a href=\"first\">foo</a></p>");
         }
 
         // As noted in the section on [Links], matching of labels is
@@ -4765,21 +3231,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url">Foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[FOO]: /url\n\n[Foo]");
-            var expected = Helpers.Normalize("<p><a href=\"/url\">Foo</a></p>");
-            Helpers.Log("Example {0}", 119);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[FOO]: /url\n\n[Foo]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 119, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[FOO]: /url\n\n[Foo]", "<p><a href=\"/url\">Foo</a></p>");
         }
 
         [TestMethod]
@@ -4798,21 +3251,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/%CF%86%CE%BF%CF%85">αγω</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[ΑΓΩ]: /φου\n\n[αγω]");
-            var expected = Helpers.Normalize("<p><a href=\"/%CF%86%CE%BF%CF%85\">αγω</a></p>");
-            Helpers.Log("Example {0}", 120);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[ΑΓΩ]: /φου\n\n[αγω]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 120, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[ΑΓΩ]: /φου\n\n[αγω]", "<p><a href=\"/%CF%86%CE%BF%CF%85\">αγω</a></p>");
         }
 
         // Here is a link reference definition with no corresponding link.
@@ -4831,21 +3271,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]: /url");
-            var expected = Helpers.Normalize("");
-            Helpers.Log("Example {0}", 121);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]: /url");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 121, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[foo]: /url", "");
         }
 
         // This is not a link reference definition, because there are
@@ -4864,21 +3291,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo]: /url &quot;title&quot; ok</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]: /url \"title\" ok");
-            var expected = Helpers.Normalize("<p>[foo]: /url &quot;title&quot; ok</p>");
-            Helpers.Log("Example {0}", 122);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]: /url \"title\" ok");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 122, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[foo]: /url \"title\" ok", "<p>[foo]: /url &quot;title&quot; ok</p>");
         }
 
         // This is not a link reference definition, because it is indented
@@ -4901,21 +3315,8 @@ namespace CommonMark.Tests.Specification
             //     </code></pre>
             //     <p>[foo]</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    [foo]: /url \"title\"\n\n[foo]");
-            var expected = Helpers.Normalize("<pre><code>[foo]: /url &quot;title&quot;\n</code></pre>\n<p>[foo]</p>");
-            Helpers.Log("Example {0}", 123);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    [foo]: /url \"title\"\n\n[foo]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 123, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("    [foo]: /url \"title\"\n\n[foo]", "<pre><code>[foo]: /url &quot;title&quot;\n</code></pre>\n<p>[foo]</p>");
         }
 
         // This is not a link reference definition, because it occurs inside
@@ -4940,21 +3341,8 @@ namespace CommonMark.Tests.Specification
             //     </code></pre>
             //     <p>[foo]</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("```\n[foo]: /url\n```\n\n[foo]");
-            var expected = Helpers.Normalize("<pre><code>[foo]: /url\n</code></pre>\n<p>[foo]</p>");
-            Helpers.Log("Example {0}", 124);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "```\n[foo]: /url\n```\n\n[foo]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 124, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("```\n[foo]: /url\n```\n\n[foo]", "<pre><code>[foo]: /url\n</code></pre>\n<p>[foo]</p>");
         }
 
         // A [link reference definition](#link-reference-definition) cannot
@@ -4978,21 +3366,8 @@ namespace CommonMark.Tests.Specification
             //     [bar]: /baz</p>
             //     <p>[bar]</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\n[bar]: /baz\n\n[bar]");
-            var expected = Helpers.Normalize("<p>Foo\n[bar]: /baz</p>\n<p>[bar]</p>");
-            Helpers.Log("Example {0}", 125);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\n[bar]: /baz\n\n[bar]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 125, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("Foo\n[bar]: /baz\n\n[bar]", "<p>Foo\n[bar]: /baz</p>\n<p>[bar]</p>");
         }
 
         // However, it can directly follow other block elements, such as headers
@@ -5016,21 +3391,8 @@ namespace CommonMark.Tests.Specification
             //     <p>bar</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("# [Foo]\n[foo]: /url\n> bar");
-            var expected = Helpers.Normalize("<h1><a href=\"/url\">Foo</a></h1>\n<blockquote>\n<p>bar</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 126);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "# [Foo]\n[foo]: /url\n> bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 126, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("# [Foo]\n[foo]: /url\n> bar", "<h1><a href=\"/url\">Foo</a></h1>\n<blockquote>\n<p>bar</p>\n</blockquote>");
         }
 
         // Several [link references](#link-reference) can occur one after another,
@@ -5058,21 +3420,8 @@ namespace CommonMark.Tests.Specification
             //     <a href="/bar-url" title="bar">bar</a>,
             //     <a href="/baz-url">baz</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]: /foo-url \"foo\"\n[bar]: /bar-url\n  \"bar\"\n[baz]: /baz-url\n\n[foo],\n[bar],\n[baz]");
-            var expected = Helpers.Normalize("<p><a href=\"/foo-url\" title=\"foo\">foo</a>,\n<a href=\"/bar-url\" title=\"bar\">bar</a>,\n<a href=\"/baz-url\">baz</a></p>");
-            Helpers.Log("Example {0}", 127);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]: /foo-url \"foo\"\n[bar]: /bar-url\n  \"bar\"\n[baz]: /baz-url\n\n[foo],\n[bar],\n[baz]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 127, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[foo]: /foo-url \"foo\"\n[bar]: /bar-url\n  \"bar\"\n[baz]: /baz-url\n\n[foo],\n[bar],\n[baz]", "<p><a href=\"/foo-url\" title=\"foo\">foo</a>,\n<a href=\"/bar-url\" title=\"bar\">bar</a>,\n<a href=\"/baz-url\">baz</a></p>");
         }
 
         // [Link reference definitions](#link-reference-definition) can occur
@@ -5097,21 +3446,8 @@ namespace CommonMark.Tests.Specification
             //     <blockquote>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]\n\n> [foo]: /url");
-            var expected = Helpers.Normalize("<p><a href=\"/url\">foo</a></p>\n<blockquote>\n</blockquote>");
-            Helpers.Log("Example {0}", 128);
-            Helpers.Log("Section: {0}", "Leaf blocks - Link reference definitions");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]\n\n> [foo]: /url");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 128, "Leaf blocks - Link reference definitions");
+			Helpers.ExecuteTest("[foo]\n\n> [foo]: /url", "<p><a href=\"/url\">foo</a></p>\n<blockquote>\n</blockquote>");
         }
 
         // ## Paragraphs
@@ -5141,21 +3477,8 @@ namespace CommonMark.Tests.Specification
             //     <p>aaa</p>
             //     <p>bbb</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("aaa\n\nbbb");
-            var expected = Helpers.Normalize("<p>aaa</p>\n<p>bbb</p>");
-            Helpers.Log("Example {0}", 129);
-            Helpers.Log("Section: {0}", "Leaf blocks - Paragraphs");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "aaa\n\nbbb");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 129, "Leaf blocks - Paragraphs");
+			Helpers.ExecuteTest("aaa\n\nbbb", "<p>aaa</p>\n<p>bbb</p>");
         }
 
         // Paragraphs can contain multiple lines, but no blank lines:
@@ -5180,21 +3503,8 @@ namespace CommonMark.Tests.Specification
             //     <p>ccc
             //     ddd</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("aaa\nbbb\n\nccc\nddd");
-            var expected = Helpers.Normalize("<p>aaa\nbbb</p>\n<p>ccc\nddd</p>");
-            Helpers.Log("Example {0}", 130);
-            Helpers.Log("Section: {0}", "Leaf blocks - Paragraphs");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "aaa\nbbb\n\nccc\nddd");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 130, "Leaf blocks - Paragraphs");
+			Helpers.ExecuteTest("aaa\nbbb\n\nccc\nddd", "<p>aaa\nbbb</p>\n<p>ccc\nddd</p>");
         }
 
         // Multiple blank lines between paragraph have no effect:
@@ -5216,21 +3526,8 @@ namespace CommonMark.Tests.Specification
             //     <p>aaa</p>
             //     <p>bbb</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("aaa\n\n\nbbb");
-            var expected = Helpers.Normalize("<p>aaa</p>\n<p>bbb</p>");
-            Helpers.Log("Example {0}", 131);
-            Helpers.Log("Section: {0}", "Leaf blocks - Paragraphs");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "aaa\n\n\nbbb");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 131, "Leaf blocks - Paragraphs");
+			Helpers.ExecuteTest("aaa\n\n\nbbb", "<p>aaa</p>\n<p>bbb</p>");
         }
 
         // Leading spaces are skipped:
@@ -5250,21 +3547,8 @@ namespace CommonMark.Tests.Specification
             //     <p>aaa
             //     bbb</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("  aaa\n bbb");
-            var expected = Helpers.Normalize("<p>aaa\nbbb</p>");
-            Helpers.Log("Example {0}", 132);
-            Helpers.Log("Section: {0}", "Leaf blocks - Paragraphs");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "  aaa\n bbb");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 132, "Leaf blocks - Paragraphs");
+			Helpers.ExecuteTest("  aaa\n bbb", "<p>aaa\nbbb</p>");
         }
 
         // Lines after the first may be indented any amount, since indented
@@ -5287,21 +3571,8 @@ namespace CommonMark.Tests.Specification
             //     bbb
             //     ccc</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("aaa\n             bbb\n                                       ccc");
-            var expected = Helpers.Normalize("<p>aaa\nbbb\nccc</p>");
-            Helpers.Log("Example {0}", 133);
-            Helpers.Log("Section: {0}", "Leaf blocks - Paragraphs");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "aaa\n             bbb\n                                       ccc");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 133, "Leaf blocks - Paragraphs");
+			Helpers.ExecuteTest("aaa\n             bbb\n                                       ccc", "<p>aaa\nbbb\nccc</p>");
         }
 
         // However, the first line may be indented at most three spaces,
@@ -5322,21 +3593,8 @@ namespace CommonMark.Tests.Specification
             //     <p>aaa
             //     bbb</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("   aaa\nbbb");
-            var expected = Helpers.Normalize("<p>aaa\nbbb</p>");
-            Helpers.Log("Example {0}", 134);
-            Helpers.Log("Section: {0}", "Leaf blocks - Paragraphs");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "   aaa\nbbb");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 134, "Leaf blocks - Paragraphs");
+			Helpers.ExecuteTest("   aaa\nbbb", "<p>aaa\nbbb</p>");
         }
 
         [TestMethod]
@@ -5356,21 +3614,8 @@ namespace CommonMark.Tests.Specification
             //     </code></pre>
             //     <p>bbb</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    aaa\nbbb");
-            var expected = Helpers.Normalize("<pre><code>aaa\n</code></pre>\n<p>bbb</p>");
-            Helpers.Log("Example {0}", 135);
-            Helpers.Log("Section: {0}", "Leaf blocks - Paragraphs");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    aaa\nbbb");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 135, "Leaf blocks - Paragraphs");
+			Helpers.ExecuteTest("    aaa\nbbb", "<pre><code>aaa\n</code></pre>\n<p>bbb</p>");
         }
 
         // Final spaces are stripped before inline parsing, so a paragraph
@@ -5392,21 +3637,8 @@ namespace CommonMark.Tests.Specification
             //     <p>aaa<br />
             //     bbb</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("aaa     \nbbb     ");
-            var expected = Helpers.Normalize("<p>aaa<br />\nbbb</p>");
-            Helpers.Log("Example {0}", 136);
-            Helpers.Log("Section: {0}", "Leaf blocks - Paragraphs");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "aaa     \nbbb     ");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 136, "Leaf blocks - Paragraphs");
+			Helpers.ExecuteTest("aaa     \nbbb     ", "<p>aaa<br />\nbbb</p>");
         }
 
         // ## Blank lines
@@ -5438,21 +3670,8 @@ namespace CommonMark.Tests.Specification
             //     <p>aaa</p>
             //     <h1>aaa</h1>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("  \n\naaa\n  \n\n# aaa\n\n  ");
-            var expected = Helpers.Normalize("<p>aaa</p>\n<h1>aaa</h1>");
-            Helpers.Log("Example {0}", 137);
-            Helpers.Log("Section: {0}", "Leaf blocks - Blank lines");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "  \n\naaa\n  \n\n# aaa\n\n  ");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 137, "Leaf blocks - Blank lines");
+			Helpers.ExecuteTest("  \n\naaa\n  \n\n# aaa\n\n  ", "<p>aaa</p>\n<h1>aaa</h1>");
         }
 
         // # Container blocks
@@ -5527,21 +3746,8 @@ namespace CommonMark.Tests.Specification
             //     baz</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> # Foo\n> bar\n> baz");
-            var expected = Helpers.Normalize("<blockquote>\n<h1>Foo</h1>\n<p>bar\nbaz</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 138);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> # Foo\n> bar\n> baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 138, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> # Foo\n> bar\n> baz", "<blockquote>\n<h1>Foo</h1>\n<p>bar\nbaz</p>\n</blockquote>");
         }
 
         // The spaces after the `>` characters can be omitted:
@@ -5565,21 +3771,8 @@ namespace CommonMark.Tests.Specification
             //     baz</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("># Foo\n>bar\n> baz");
-            var expected = Helpers.Normalize("<blockquote>\n<h1>Foo</h1>\n<p>bar\nbaz</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 139);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "># Foo\n>bar\n> baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 139, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("># Foo\n>bar\n> baz", "<blockquote>\n<h1>Foo</h1>\n<p>bar\nbaz</p>\n</blockquote>");
         }
 
         // The `>` characters can be indented 1-3 spaces:
@@ -5603,21 +3796,8 @@ namespace CommonMark.Tests.Specification
             //     baz</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("   > # Foo\n   > bar\n > baz");
-            var expected = Helpers.Normalize("<blockquote>\n<h1>Foo</h1>\n<p>bar\nbaz</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 140);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "   > # Foo\n   > bar\n > baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 140, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("   > # Foo\n   > bar\n > baz", "<blockquote>\n<h1>Foo</h1>\n<p>bar\nbaz</p>\n</blockquote>");
         }
 
         // Four spaces gives us a code block:
@@ -5640,21 +3820,8 @@ namespace CommonMark.Tests.Specification
             //     &gt; baz
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    > # Foo\n    > bar\n    > baz");
-            var expected = Helpers.Normalize("<pre><code>&gt; # Foo\n&gt; bar\n&gt; baz\n</code></pre>");
-            Helpers.Log("Example {0}", 141);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    > # Foo\n    > bar\n    > baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 141, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("    > # Foo\n    > bar\n    > baz", "<pre><code>&gt; # Foo\n&gt; bar\n&gt; baz\n</code></pre>");
         }
 
         // The Laziness clause allows us to omit the `>` before a
@@ -5679,21 +3846,8 @@ namespace CommonMark.Tests.Specification
             //     baz</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> # Foo\n> bar\nbaz");
-            var expected = Helpers.Normalize("<blockquote>\n<h1>Foo</h1>\n<p>bar\nbaz</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 142);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> # Foo\n> bar\nbaz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 142, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> # Foo\n> bar\nbaz", "<blockquote>\n<h1>Foo</h1>\n<p>bar\nbaz</p>\n</blockquote>");
         }
 
         // A block quote can contain some lazy and some non-lazy
@@ -5718,21 +3872,8 @@ namespace CommonMark.Tests.Specification
             //     foo</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> bar\nbaz\n> foo");
-            var expected = Helpers.Normalize("<blockquote>\n<p>bar\nbaz\nfoo</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 143);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> bar\nbaz\n> foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 143, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> bar\nbaz\n> foo", "<blockquote>\n<p>bar\nbaz\nfoo</p>\n</blockquote>");
         }
 
         // Laziness only applies to lines that are continuations of
@@ -5756,21 +3897,8 @@ namespace CommonMark.Tests.Specification
             //     </blockquote>
             //     <hr />
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> foo\n---");
-            var expected = Helpers.Normalize("<blockquote>\n<p>foo</p>\n</blockquote>\n<hr />");
-            Helpers.Log("Example {0}", 144);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> foo\n---");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 144, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> foo\n---", "<blockquote>\n<p>foo</p>\n</blockquote>\n<hr />");
         }
 
         [TestMethod]
@@ -5795,21 +3923,8 @@ namespace CommonMark.Tests.Specification
             //     <li>bar</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> - foo\n- bar");
-            var expected = Helpers.Normalize("<blockquote>\n<ul>\n<li>foo</li>\n</ul>\n</blockquote>\n<ul>\n<li>bar</li>\n</ul>");
-            Helpers.Log("Example {0}", 145);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> - foo\n- bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 145, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> - foo\n- bar", "<blockquote>\n<ul>\n<li>foo</li>\n</ul>\n</blockquote>\n<ul>\n<li>bar</li>\n</ul>");
         }
 
         [TestMethod]
@@ -5832,21 +3947,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>bar
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(">     foo\n    bar");
-            var expected = Helpers.Normalize("<blockquote>\n<pre><code>foo\n</code></pre>\n</blockquote>\n<pre><code>bar\n</code></pre>");
-            Helpers.Log("Example {0}", 146);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", ">     foo\n    bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 146, "Container blocks - Block quotes");
+			Helpers.ExecuteTest(">     foo\n    bar", "<blockquote>\n<pre><code>foo\n</code></pre>\n</blockquote>\n<pre><code>bar\n</code></pre>");
         }
 
         [TestMethod]
@@ -5869,21 +3971,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo</p>
             //     <pre><code></code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> ```\nfoo\n```");
-            var expected = Helpers.Normalize("<blockquote>\n<pre><code></code></pre>\n</blockquote>\n<p>foo</p>\n<pre><code></code></pre>");
-            Helpers.Log("Example {0}", 147);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> ```\nfoo\n```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 147, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> ```\nfoo\n```", "<blockquote>\n<pre><code></code></pre>\n</blockquote>\n<p>foo</p>\n<pre><code></code></pre>");
         }
 
         // A block quote can be empty:
@@ -5902,21 +3991,8 @@ namespace CommonMark.Tests.Specification
             //     <blockquote>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(">");
-            var expected = Helpers.Normalize("<blockquote>\n</blockquote>");
-            Helpers.Log("Example {0}", 148);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", ">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 148, "Container blocks - Block quotes");
+			Helpers.ExecuteTest(">", "<blockquote>\n</blockquote>");
         }
 
         [TestMethod]
@@ -5936,21 +4012,8 @@ namespace CommonMark.Tests.Specification
             //     <blockquote>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(">\n>  \n> ");
-            var expected = Helpers.Normalize("<blockquote>\n</blockquote>");
-            Helpers.Log("Example {0}", 149);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", ">\n>  \n> ");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 149, "Container blocks - Block quotes");
+			Helpers.ExecuteTest(">\n>  \n> ", "<blockquote>\n</blockquote>");
         }
 
         // A block quote can have initial or final blank lines:
@@ -5972,21 +4035,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(">\n> foo\n>  ");
-            var expected = Helpers.Normalize("<blockquote>\n<p>foo</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 150);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", ">\n> foo\n>  ");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 150, "Container blocks - Block quotes");
+			Helpers.ExecuteTest(">\n> foo\n>  ", "<blockquote>\n<p>foo</p>\n</blockquote>");
         }
 
         // A blank line always separates block quotes:
@@ -6011,21 +4061,8 @@ namespace CommonMark.Tests.Specification
             //     <p>bar</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> foo\n\n> bar");
-            var expected = Helpers.Normalize("<blockquote>\n<p>foo</p>\n</blockquote>\n<blockquote>\n<p>bar</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 151);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> foo\n\n> bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 151, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> foo\n\n> bar", "<blockquote>\n<p>foo</p>\n</blockquote>\n<blockquote>\n<p>bar</p>\n</blockquote>");
         }
 
         // (Most current Markdown implementations, including John Gruber's
@@ -6053,21 +4090,8 @@ namespace CommonMark.Tests.Specification
             //     bar</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> foo\n> bar");
-            var expected = Helpers.Normalize("<blockquote>\n<p>foo\nbar</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 152);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> foo\n> bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 152, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> foo\n> bar", "<blockquote>\n<p>foo\nbar</p>\n</blockquote>");
         }
 
         // To get a block quote with two paragraphs, use:
@@ -6090,21 +4114,8 @@ namespace CommonMark.Tests.Specification
             //     <p>bar</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> foo\n>\n> bar");
-            var expected = Helpers.Normalize("<blockquote>\n<p>foo</p>\n<p>bar</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 153);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> foo\n>\n> bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 153, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> foo\n>\n> bar", "<blockquote>\n<p>foo</p>\n<p>bar</p>\n</blockquote>");
         }
 
         // Block quotes can interrupt paragraphs:
@@ -6126,21 +4137,8 @@ namespace CommonMark.Tests.Specification
             //     <p>bar</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo\n> bar");
-            var expected = Helpers.Normalize("<p>foo</p>\n<blockquote>\n<p>bar</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 154);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo\n> bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 154, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("foo\n> bar", "<p>foo</p>\n<blockquote>\n<p>bar</p>\n</blockquote>");
         }
 
         // In general, blank lines are not needed before or after block
@@ -6167,21 +4165,8 @@ namespace CommonMark.Tests.Specification
             //     <p>bbb</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> aaa\n***\n> bbb");
-            var expected = Helpers.Normalize("<blockquote>\n<p>aaa</p>\n</blockquote>\n<hr />\n<blockquote>\n<p>bbb</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 155);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> aaa\n***\n> bbb");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 155, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> aaa\n***\n> bbb", "<blockquote>\n<p>aaa</p>\n</blockquote>\n<hr />\n<blockquote>\n<p>bbb</p>\n</blockquote>");
         }
 
         // However, because of laziness, a blank line is needed between
@@ -6204,21 +4189,8 @@ namespace CommonMark.Tests.Specification
             //     baz</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> bar\nbaz");
-            var expected = Helpers.Normalize("<blockquote>\n<p>bar\nbaz</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 156);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> bar\nbaz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 156, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> bar\nbaz", "<blockquote>\n<p>bar\nbaz</p>\n</blockquote>");
         }
 
         [TestMethod]
@@ -6240,21 +4212,8 @@ namespace CommonMark.Tests.Specification
             //     </blockquote>
             //     <p>baz</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> bar\n\nbaz");
-            var expected = Helpers.Normalize("<blockquote>\n<p>bar</p>\n</blockquote>\n<p>baz</p>");
-            Helpers.Log("Example {0}", 157);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> bar\n\nbaz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 157, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> bar\n\nbaz", "<blockquote>\n<p>bar</p>\n</blockquote>\n<p>baz</p>");
         }
 
         [TestMethod]
@@ -6276,21 +4235,8 @@ namespace CommonMark.Tests.Specification
             //     </blockquote>
             //     <p>baz</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> bar\n>\nbaz");
-            var expected = Helpers.Normalize("<blockquote>\n<p>bar</p>\n</blockquote>\n<p>baz</p>");
-            Helpers.Log("Example {0}", 158);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> bar\n>\nbaz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 158, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> bar\n>\nbaz", "<blockquote>\n<p>bar</p>\n</blockquote>\n<p>baz</p>");
         }
 
         // It is a consequence of the Laziness rule that any number
@@ -6318,21 +4264,8 @@ namespace CommonMark.Tests.Specification
             //     </blockquote>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> > > foo\nbar");
-            var expected = Helpers.Normalize("<blockquote>\n<blockquote>\n<blockquote>\n<p>foo\nbar</p>\n</blockquote>\n</blockquote>\n</blockquote>");
-            Helpers.Log("Example {0}", 159);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> > > foo\nbar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 159, "Container blocks - Block quotes");
+			Helpers.ExecuteTest("> > > foo\nbar", "<blockquote>\n<blockquote>\n<blockquote>\n<p>foo\nbar</p>\n</blockquote>\n</blockquote>\n</blockquote>");
         }
 
         [TestMethod]
@@ -6359,21 +4292,8 @@ namespace CommonMark.Tests.Specification
             //     </blockquote>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(">>> foo\n> bar\n>>baz");
-            var expected = Helpers.Normalize("<blockquote>\n<blockquote>\n<blockquote>\n<p>foo\nbar\nbaz</p>\n</blockquote>\n</blockquote>\n</blockquote>");
-            Helpers.Log("Example {0}", 160);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", ">>> foo\n> bar\n>>baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 160, "Container blocks - Block quotes");
+			Helpers.ExecuteTest(">>> foo\n> bar\n>>baz", "<blockquote>\n<blockquote>\n<blockquote>\n<p>foo\nbar\nbaz</p>\n</blockquote>\n</blockquote>\n</blockquote>");
         }
 
         // When including an indented code block in a block quote,
@@ -6402,21 +4322,8 @@ namespace CommonMark.Tests.Specification
             //     <p>not code</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(">     code\n\n>    not code");
-            var expected = Helpers.Normalize("<blockquote>\n<pre><code>code\n</code></pre>\n</blockquote>\n<blockquote>\n<p>not code</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 161);
-            Helpers.Log("Section: {0}", "Container blocks - Block quotes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", ">     code\n\n>    not code");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 161, "Container blocks - Block quotes");
+			Helpers.ExecuteTest(">     code\n\n>    not code", "<blockquote>\n<pre><code>code\n</code></pre>\n</blockquote>\n<blockquote>\n<p>not code</p>\n</blockquote>");
         }
 
         // ## List items
@@ -6472,21 +4379,8 @@ namespace CommonMark.Tests.Specification
             //     <p>A block quote.</p>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("A paragraph\nwith two lines.\n\n    indented code\n\n> A block quote.");
-            var expected = Helpers.Normalize("<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>");
-            Helpers.Log("Example {0}", 162);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "A paragraph\nwith two lines.\n\n    indented code\n\n> A block quote.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 162, "Container blocks - List items");
+			Helpers.ExecuteTest("A paragraph\nwith two lines.\n\n    indented code\n\n> A block quote.", "<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>");
         }
 
         // And let *M* be the marker `1.`, and *N* = 2.  Then rule #1 says
@@ -6521,21 +4415,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("1.  A paragraph\n    with two lines.\n\n        indented code\n\n    > A block quote.");
-            var expected = Helpers.Normalize("<ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>");
-            Helpers.Log("Example {0}", 163);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "1.  A paragraph\n    with two lines.\n\n        indented code\n\n    > A block quote.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 163, "Container blocks - List items");
+			Helpers.ExecuteTest("1.  A paragraph\n    with two lines.\n\n        indented code\n\n    > A block quote.", "<ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>");
         }
 
         // The most important thing to notice is that the position of
@@ -6567,21 +4448,8 @@ namespace CommonMark.Tests.Specification
             //     </ul>
             //     <p>two</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- one\n\n two");
-            var expected = Helpers.Normalize("<ul>\n<li>one</li>\n</ul>\n<p>two</p>");
-            Helpers.Log("Example {0}", 164);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- one\n\n two");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 164, "Container blocks - List items");
+			Helpers.ExecuteTest("- one\n\n two", "<ul>\n<li>one</li>\n</ul>\n<p>two</p>");
         }
 
         [TestMethod]
@@ -6605,21 +4473,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- one\n\n  two");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 165);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- one\n\n  two");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 165, "Container blocks - List items");
+			Helpers.ExecuteTest("- one\n\n  two", "<ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>");
         }
 
         [TestMethod]
@@ -6642,21 +4497,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code> two
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(" -    one\n\n     two");
-            var expected = Helpers.Normalize("<ul>\n<li>one</li>\n</ul>\n<pre><code> two\n</code></pre>");
-            Helpers.Log("Example {0}", 166);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", " -    one\n\n     two");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 166, "Container blocks - List items");
+			Helpers.ExecuteTest(" -    one\n\n     two", "<ul>\n<li>one</li>\n</ul>\n<pre><code> two\n</code></pre>");
         }
 
         [TestMethod]
@@ -6680,21 +4522,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(" -    one\n\n      two");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 167);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", " -    one\n\n      two");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 167, "Container blocks - List items");
+			Helpers.ExecuteTest(" -    one\n\n      two", "<ul>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ul>");
         }
 
         // It is tempting to think of this in terms of columns:  the continuation
@@ -6729,21 +4558,8 @@ namespace CommonMark.Tests.Specification
             //     </blockquote>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("   > > 1.  one\n>>\n>>     two");
-            var expected = Helpers.Normalize("<blockquote>\n<blockquote>\n<ol>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ol>\n</blockquote>\n</blockquote>");
-            Helpers.Log("Example {0}", 168);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "   > > 1.  one\n>>\n>>     two");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 168, "Container blocks - List items");
+			Helpers.ExecuteTest("   > > 1.  one\n>>\n>>     two", "<blockquote>\n<blockquote>\n<ol>\n<li>\n<p>one</p>\n<p>two</p>\n</li>\n</ol>\n</blockquote>\n</blockquote>");
         }
 
         // Here `two` occurs in the same column as the list marker `1.`,
@@ -6777,21 +4593,8 @@ namespace CommonMark.Tests.Specification
             //     </blockquote>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(">>- one\n>>\n  >  > two");
-            var expected = Helpers.Normalize("<blockquote>\n<blockquote>\n<ul>\n<li>one</li>\n</ul>\n<p>two</p>\n</blockquote>\n</blockquote>");
-            Helpers.Log("Example {0}", 169);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", ">>- one\n>>\n  >  > two");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 169, "Container blocks - List items");
+			Helpers.ExecuteTest(">>- one\n>>\n  >  > two", "<blockquote>\n<blockquote>\n<ul>\n<li>one</li>\n</ul>\n<p>two</p>\n</blockquote>\n</blockquote>");
         }
 
         // A list item may not contain blocks that are separated by more than
@@ -6843,21 +4646,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n\n  bar\n\n- foo\n\n\n  bar\n\n- ```\n  foo\n\n\n  bar\n  ```");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n<p>bar</p>\n<ul>\n<li>\n<pre><code>foo\n\n\nbar\n</code></pre>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 170);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n\n  bar\n\n- foo\n\n\n  bar\n\n- ```\n  foo\n\n\n  bar\n  ```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 170, "Container blocks - List items");
+			Helpers.ExecuteTest("- foo\n\n  bar\n\n- foo\n\n\n  bar\n\n- ```\n  foo\n\n\n  bar\n  ```", "<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n<p>bar</p>\n<ul>\n<li>\n<pre><code>foo\n\n\nbar\n</code></pre>\n</li>\n</ul>");
         }
 
         // A list item may contain any kind of block:
@@ -6893,21 +4683,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("1.  foo\n\n    ```\n    bar\n    ```\n\n    baz\n\n    > bam");
-            var expected = Helpers.Normalize("<ol>\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n<p>baz</p>\n<blockquote>\n<p>bam</p>\n</blockquote>\n</li>\n</ol>");
-            Helpers.Log("Example {0}", 171);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "1.  foo\n\n    ```\n    bar\n    ```\n\n    baz\n\n    > bam");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 171, "Container blocks - List items");
+			Helpers.ExecuteTest("1.  foo\n\n    ```\n    bar\n    ```\n\n    baz\n\n    > bam", "<ol>\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n<p>baz</p>\n<blockquote>\n<p>bam</p>\n</blockquote>\n</li>\n</ol>");
         }
 
         // 2.  **Item starting with indented code.**  If a sequence of lines *Ls*
@@ -6947,21 +4724,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n\n      bar");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 172);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n\n      bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 172, "Container blocks - List items");
+			Helpers.ExecuteTest("- foo\n\n      bar", "<ul>\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n</li>\n</ul>");
         }
 
         // And in this case it is 11 spaces:
@@ -6987,21 +4751,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("  10.  foo\n\n           bar");
-            var expected = Helpers.Normalize("<ol start=\"10\">\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n</li>\n</ol>");
-            Helpers.Log("Example {0}", 173);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "  10.  foo\n\n           bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 173, "Container blocks - List items");
+			Helpers.ExecuteTest("  10.  foo\n\n           bar", "<ol start=\"10\">\n<li>\n<p>foo</p>\n<pre><code>bar\n</code></pre>\n</li>\n</ol>");
         }
 
         // If the *first* block in the list item is an indented code block,
@@ -7029,21 +4780,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>more code
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    indented code\n\nparagraph\n\n    more code");
-            var expected = Helpers.Normalize("<pre><code>indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>");
-            Helpers.Log("Example {0}", 174);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    indented code\n\nparagraph\n\n    more code");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 174, "Container blocks - List items");
+			Helpers.ExecuteTest("    indented code\n\nparagraph\n\n    more code", "<pre><code>indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>");
         }
 
         [TestMethod]
@@ -7072,21 +4810,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("1.     indented code\n\n   paragraph\n\n       more code");
-            var expected = Helpers.Normalize("<ol>\n<li>\n<pre><code>indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>\n</li>\n</ol>");
-            Helpers.Log("Example {0}", 175);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "1.     indented code\n\n   paragraph\n\n       more code");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 175, "Container blocks - List items");
+			Helpers.ExecuteTest("1.     indented code\n\n   paragraph\n\n       more code", "<ol>\n<li>\n<pre><code>indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>\n</li>\n</ol>");
         }
 
         // Note that an additional space indent is interpreted as space
@@ -7117,21 +4842,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("1.      indented code\n\n   paragraph\n\n       more code");
-            var expected = Helpers.Normalize("<ol>\n<li>\n<pre><code> indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>\n</li>\n</ol>");
-            Helpers.Log("Example {0}", 176);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "1.      indented code\n\n   paragraph\n\n       more code");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 176, "Container blocks - List items");
+			Helpers.ExecuteTest("1.      indented code\n\n   paragraph\n\n       more code", "<ol>\n<li>\n<pre><code> indented code\n</code></pre>\n<p>paragraph</p>\n<pre><code>more code\n</code></pre>\n</li>\n</ol>");
         }
 
         // Note that rules #1 and #2 only apply to two cases:  (a) cases
@@ -7157,21 +4869,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo</p>
             //     <p>bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("   foo\n\nbar");
-            var expected = Helpers.Normalize("<p>foo</p>\n<p>bar</p>");
-            Helpers.Log("Example {0}", 177);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "   foo\n\nbar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 177, "Container blocks - List items");
+			Helpers.ExecuteTest("   foo\n\nbar", "<p>foo</p>\n<p>bar</p>");
         }
 
         [TestMethod]
@@ -7193,21 +4892,8 @@ namespace CommonMark.Tests.Specification
             //     </ul>
             //     <p>bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("-    foo\n\n  bar");
-            var expected = Helpers.Normalize("<ul>\n<li>foo</li>\n</ul>\n<p>bar</p>");
-            Helpers.Log("Example {0}", 178);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "-    foo\n\n  bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 178, "Container blocks - List items");
+			Helpers.ExecuteTest("-    foo\n\n  bar", "<ul>\n<li>foo</li>\n</ul>\n<p>bar</p>");
         }
 
         // This is not a significant restriction, because when a block begins
@@ -7235,21 +4921,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("-  foo\n\n   bar");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 179);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "-  foo\n\n   bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 179, "Container blocks - List items");
+			Helpers.ExecuteTest("-  foo\n\n   bar", "<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>");
         }
 
         // 3.  **Indentation.**  If a sequence of lines *Ls* constitutes a list item
@@ -7288,21 +4961,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize(" 1.  A paragraph\n     with two lines.\n\n         indented code\n\n     > A block quote.");
-            var expected = Helpers.Normalize("<ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>");
-            Helpers.Log("Example {0}", 180);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", " 1.  A paragraph\n     with two lines.\n\n         indented code\n\n     > A block quote.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 180, "Container blocks - List items");
+			Helpers.ExecuteTest(" 1.  A paragraph\n     with two lines.\n\n         indented code\n\n     > A block quote.", "<ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>");
         }
 
         // Indented two spaces:
@@ -7335,21 +4995,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("  1.  A paragraph\n      with two lines.\n\n          indented code\n\n      > A block quote.");
-            var expected = Helpers.Normalize("<ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>");
-            Helpers.Log("Example {0}", 181);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "  1.  A paragraph\n      with two lines.\n\n          indented code\n\n      > A block quote.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 181, "Container blocks - List items");
+			Helpers.ExecuteTest("  1.  A paragraph\n      with two lines.\n\n          indented code\n\n      > A block quote.", "<ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>");
         }
 
         // Indented three spaces:
@@ -7382,21 +5029,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("   1.  A paragraph\n       with two lines.\n\n           indented code\n\n       > A block quote.");
-            var expected = Helpers.Normalize("<ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>");
-            Helpers.Log("Example {0}", 182);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "   1.  A paragraph\n       with two lines.\n\n           indented code\n\n       > A block quote.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 182, "Container blocks - List items");
+			Helpers.ExecuteTest("   1.  A paragraph\n       with two lines.\n\n           indented code\n\n       > A block quote.", "<ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>");
         }
 
         // Four spaces indent gives a code block:
@@ -7425,21 +5059,8 @@ namespace CommonMark.Tests.Specification
             //         &gt; A block quote.
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    1.  A paragraph\n        with two lines.\n\n            indented code\n\n        > A block quote.");
-            var expected = Helpers.Normalize("<pre><code>1.  A paragraph\n    with two lines.\n\n        indented code\n\n    &gt; A block quote.\n</code></pre>");
-            Helpers.Log("Example {0}", 183);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    1.  A paragraph\n        with two lines.\n\n            indented code\n\n        > A block quote.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 183, "Container blocks - List items");
+			Helpers.ExecuteTest("    1.  A paragraph\n        with two lines.\n\n            indented code\n\n        > A block quote.", "<pre><code>1.  A paragraph\n    with two lines.\n\n        indented code\n\n    &gt; A block quote.\n</code></pre>");
         }
 
         // 4.  **Laziness.**  If a string of lines *Ls* constitute a [list
@@ -7482,21 +5103,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("  1.  A paragraph\nwith two lines.\n\n          indented code\n\n      > A block quote.");
-            var expected = Helpers.Normalize("<ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>");
-            Helpers.Log("Example {0}", 184);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "  1.  A paragraph\nwith two lines.\n\n          indented code\n\n      > A block quote.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 184, "Container blocks - List items");
+			Helpers.ExecuteTest("  1.  A paragraph\nwith two lines.\n\n          indented code\n\n      > A block quote.", "<ol>\n<li>\n<p>A paragraph\nwith two lines.</p>\n<pre><code>indented code\n</code></pre>\n<blockquote>\n<p>A block quote.</p>\n</blockquote>\n</li>\n</ol>");
         }
 
         // Indentation can be partially deleted:
@@ -7518,21 +5126,8 @@ namespace CommonMark.Tests.Specification
             //     with two lines.</li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("  1.  A paragraph\n    with two lines.");
-            var expected = Helpers.Normalize("<ol>\n<li>A paragraph\nwith two lines.</li>\n</ol>");
-            Helpers.Log("Example {0}", 185);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "  1.  A paragraph\n    with two lines.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 185, "Container blocks - List items");
+			Helpers.ExecuteTest("  1.  A paragraph\n    with two lines.", "<ol>\n<li>A paragraph\nwith two lines.</li>\n</ol>");
         }
 
         // These examples show how laziness can work in nested structures:
@@ -7560,21 +5155,8 @@ namespace CommonMark.Tests.Specification
             //     </ol>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> 1. > Blockquote\ncontinued here.");
-            var expected = Helpers.Normalize("<blockquote>\n<ol>\n<li>\n<blockquote>\n<p>Blockquote\ncontinued here.</p>\n</blockquote>\n</li>\n</ol>\n</blockquote>");
-            Helpers.Log("Example {0}", 186);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> 1. > Blockquote\ncontinued here.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 186, "Container blocks - List items");
+			Helpers.ExecuteTest("> 1. > Blockquote\ncontinued here.", "<blockquote>\n<ol>\n<li>\n<blockquote>\n<p>Blockquote\ncontinued here.</p>\n</blockquote>\n</li>\n</ol>\n</blockquote>");
         }
 
         [TestMethod]
@@ -7601,21 +5183,8 @@ namespace CommonMark.Tests.Specification
             //     </ol>
             //     </blockquote>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("> 1. > Blockquote\n> continued here.");
-            var expected = Helpers.Normalize("<blockquote>\n<ol>\n<li>\n<blockquote>\n<p>Blockquote\ncontinued here.</p>\n</blockquote>\n</li>\n</ol>\n</blockquote>");
-            Helpers.Log("Example {0}", 187);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "> 1. > Blockquote\n> continued here.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 187, "Container blocks - List items");
+			Helpers.ExecuteTest("> 1. > Blockquote\n> continued here.", "<blockquote>\n<ol>\n<li>\n<blockquote>\n<p>Blockquote\ncontinued here.</p>\n</blockquote>\n</li>\n</ol>\n</blockquote>");
         }
 
         // 5.  **That's all.** Nothing that is not counted as a list item by rules
@@ -7652,21 +5221,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n  - bar\n    - baz");
-            var expected = Helpers.Normalize("<ul>\n<li>foo\n<ul>\n<li>bar\n<ul>\n<li>baz</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 188);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n  - bar\n    - baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 188, "Container blocks - List items");
+			Helpers.ExecuteTest("- foo\n  - bar\n    - baz", "<ul>\n<li>foo\n<ul>\n<li>bar\n<ul>\n<li>baz</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>");
         }
 
         // One is not enough:
@@ -7690,21 +5246,8 @@ namespace CommonMark.Tests.Specification
             //     <li>baz</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n - bar\n  - baz");
-            var expected = Helpers.Normalize("<ul>\n<li>foo</li>\n<li>bar</li>\n<li>baz</li>\n</ul>");
-            Helpers.Log("Example {0}", 189);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n - bar\n  - baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 189, "Container blocks - List items");
+			Helpers.ExecuteTest("- foo\n - bar\n  - baz", "<ul>\n<li>foo</li>\n<li>bar</li>\n<li>baz</li>\n</ul>");
         }
 
         // Here we need four, because the list marker is wider:
@@ -7729,21 +5272,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("10) foo\n    - bar");
-            var expected = Helpers.Normalize("<ol start=\"10\">\n<li>foo\n<ul>\n<li>bar</li>\n</ul>\n</li>\n</ol>");
-            Helpers.Log("Example {0}", 190);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "10) foo\n    - bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 190, "Container blocks - List items");
+			Helpers.ExecuteTest("10) foo\n    - bar", "<ol start=\"10\">\n<li>foo\n<ul>\n<li>bar</li>\n</ul>\n</li>\n</ol>");
         }
 
         // Three is not enough:
@@ -7767,21 +5297,8 @@ namespace CommonMark.Tests.Specification
             //     <li>bar</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("10) foo\n   - bar");
-            var expected = Helpers.Normalize("<ol start=\"10\">\n<li>foo</li>\n</ol>\n<ul>\n<li>bar</li>\n</ul>");
-            Helpers.Log("Example {0}", 191);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "10) foo\n   - bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 191, "Container blocks - List items");
+			Helpers.ExecuteTest("10) foo\n   - bar", "<ol start=\"10\">\n<li>foo</li>\n</ol>\n<ul>\n<li>bar</li>\n</ul>");
         }
 
         // A list may be the first block in a list item:
@@ -7805,21 +5322,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- - foo");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<ul>\n<li>foo</li>\n</ul>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 192);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- - foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 192, "Container blocks - List items");
+			Helpers.ExecuteTest("- - foo", "<ul>\n<li>\n<ul>\n<li>foo</li>\n</ul>\n</li>\n</ul>");
         }
 
         [TestMethod]
@@ -7846,21 +5350,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("1. - 2. foo");
-            var expected = Helpers.Normalize("<ol>\n<li>\n<ul>\n<li>\n<ol start=\"2\">\n<li>foo</li>\n</ol>\n</li>\n</ul>\n</li>\n</ol>");
-            Helpers.Log("Example {0}", 193);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "1. - 2. foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 193, "Container blocks - List items");
+			Helpers.ExecuteTest("1. - 2. foo", "<ol>\n<li>\n<ul>\n<li>\n<ol start=\"2\">\n<li>foo</li>\n</ol>\n</li>\n</ul>\n</li>\n</ol>");
         }
 
         // A list item may be empty:
@@ -7884,21 +5375,8 @@ namespace CommonMark.Tests.Specification
             //     <li>bar</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n-\n- bar");
-            var expected = Helpers.Normalize("<ul>\n<li>foo</li>\n<li></li>\n<li>bar</li>\n</ul>");
-            Helpers.Log("Example {0}", 194);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n-\n- bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 194, "Container blocks - List items");
+			Helpers.ExecuteTest("- foo\n-\n- bar", "<ul>\n<li>foo</li>\n<li></li>\n<li>bar</li>\n</ul>");
         }
 
         [TestMethod]
@@ -7917,21 +5395,8 @@ namespace CommonMark.Tests.Specification
             //     <li></li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("-");
-            var expected = Helpers.Normalize("<ul>\n<li></li>\n</ul>");
-            Helpers.Log("Example {0}", 195);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "-");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 195, "Container blocks - List items");
+			Helpers.ExecuteTest("-", "<ul>\n<li></li>\n</ul>");
         }
 
         // A list item can contain a header:
@@ -7959,21 +5424,8 @@ namespace CommonMark.Tests.Specification
             //     baz</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- # Foo\n- Bar\n  ---\n  baz");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<h1>Foo</h1>\n</li>\n<li>\n<h2>Bar</h2>\nbaz</li>\n</ul>");
-            Helpers.Log("Example {0}", 196);
-            Helpers.Log("Section: {0}", "Container blocks - List items");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- # Foo\n- Bar\n  ---\n  baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 196, "Container blocks - List items");
+			Helpers.ExecuteTest("- # Foo\n- Bar\n  ---\n  baz", "<ul>\n<li>\n<h1>Foo</h1>\n</li>\n<li>\n<h2>Bar</h2>\nbaz</li>\n</ul>");
         }
 
         // ### Motivation
@@ -8217,21 +5669,8 @@ namespace CommonMark.Tests.Specification
             //     <li>baz</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n- bar\n+ baz");
-            var expected = Helpers.Normalize("<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<ul>\n<li>baz</li>\n</ul>");
-            Helpers.Log("Example {0}", 197);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n- bar\n+ baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 197, "Container blocks - Lists");
+			Helpers.ExecuteTest("- foo\n- bar\n+ baz", "<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<ul>\n<li>baz</li>\n</ul>");
         }
 
         [TestMethod]
@@ -8256,21 +5695,8 @@ namespace CommonMark.Tests.Specification
             //     <li>baz</li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("1. foo\n2. bar\n3) baz");
-            var expected = Helpers.Normalize("<ol>\n<li>foo</li>\n<li>bar</li>\n</ol>\n<ol start=\"3\">\n<li>baz</li>\n</ol>");
-            Helpers.Log("Example {0}", 198);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "1. foo\n2. bar\n3) baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 198, "Container blocks - Lists");
+			Helpers.ExecuteTest("1. foo\n2. bar\n3) baz", "<ol>\n<li>foo</li>\n<li>bar</li>\n</ol>\n<ol start=\"3\">\n<li>baz</li>\n</ol>");
         }
 
         // In CommonMark, a list can interrupt a paragraph. That is,
@@ -8296,21 +5722,8 @@ namespace CommonMark.Tests.Specification
             //     <li>baz</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo\n- bar\n- baz");
-            var expected = Helpers.Normalize("<p>Foo</p>\n<ul>\n<li>bar</li>\n<li>baz</li>\n</ul>");
-            Helpers.Log("Example {0}", 199);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo\n- bar\n- baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 199, "Container blocks - Lists");
+			Helpers.ExecuteTest("Foo\n- bar\n- baz", "<p>Foo</p>\n<ul>\n<li>bar</li>\n<li>baz</li>\n</ul>");
         }
 
         // `Markdown.pl` does not allow this, through fear of triggering a list
@@ -8333,21 +5746,8 @@ namespace CommonMark.Tests.Specification
             //     <li>The number of doors is 6.</li>
             //     </ol>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("The number of windows in my house is\n14.  The number of doors is 6.");
-            var expected = Helpers.Normalize("<p>The number of windows in my house is</p>\n<ol start=\"14\">\n<li>The number of doors is 6.</li>\n</ol>");
-            Helpers.Log("Example {0}", 200);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "The number of windows in my house is\n14.  The number of doors is 6.");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 200, "Container blocks - Lists");
+			Helpers.ExecuteTest("The number of windows in my house is\n14.  The number of doors is 6.", "<p>The number of windows in my house is</p>\n<ol start=\"14\">\n<li>The number of doors is 6.</li>\n</ol>");
         }
 
         // Oddly, `Markdown.pl` *does* allow a blockquote to interrupt a paragraph,
@@ -8433,21 +5833,8 @@ namespace CommonMark.Tests.Specification
             //     <li>baz</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n\n- bar\n\n\n- baz");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>foo</p>\n</li>\n<li>\n<p>bar</p>\n</li>\n</ul>\n<ul>\n<li>baz</li>\n</ul>");
-            Helpers.Log("Example {0}", 201);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n\n- bar\n\n\n- baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 201, "Container blocks - Lists");
+			Helpers.ExecuteTest("- foo\n\n- bar\n\n\n- baz", "<ul>\n<li>\n<p>foo</p>\n</li>\n<li>\n<p>bar</p>\n</li>\n</ul>\n<ul>\n<li>baz</li>\n</ul>");
         }
 
         // As illustrated above in the section on [list items](#list-item),
@@ -8477,21 +5864,8 @@ namespace CommonMark.Tests.Specification
             //     <li>baz</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n\n\n  bar\n- baz");
-            var expected = Helpers.Normalize("<ul>\n<li>foo</li>\n</ul>\n<p>bar</p>\n<ul>\n<li>baz</li>\n</ul>");
-            Helpers.Log("Example {0}", 202);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n\n\n  bar\n- baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 202, "Container blocks - Lists");
+			Helpers.ExecuteTest("- foo\n\n\n  bar\n- baz", "<ul>\n<li>foo</li>\n</ul>\n<p>bar</p>\n<ul>\n<li>baz</li>\n</ul>");
         }
 
         // Indeed, two blank lines will end *all* containing lists:
@@ -8526,21 +5900,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>  bim
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n  - bar\n    - baz\n\n\n      bim");
-            var expected = Helpers.Normalize("<ul>\n<li>foo\n<ul>\n<li>bar\n<ul>\n<li>baz</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n<pre><code>  bim\n</code></pre>");
-            Helpers.Log("Example {0}", 203);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n  - bar\n    - baz\n\n\n      bim");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 203, "Container blocks - Lists");
+			Helpers.ExecuteTest("- foo\n  - bar\n    - baz\n\n\n      bim", "<ul>\n<li>foo\n<ul>\n<li>bar\n<ul>\n<li>baz</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n<pre><code>  bim\n</code></pre>");
         }
 
         // Thus, two blank lines can be used to separate consecutive lists of
@@ -8573,21 +5934,8 @@ namespace CommonMark.Tests.Specification
             //     <li>bim</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- foo\n- bar\n\n\n- baz\n- bim");
-            var expected = Helpers.Normalize("<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<ul>\n<li>baz</li>\n<li>bim</li>\n</ul>");
-            Helpers.Log("Example {0}", 204);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- foo\n- bar\n\n\n- baz\n- bim");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 204, "Container blocks - Lists");
+			Helpers.ExecuteTest("- foo\n- bar\n\n\n- baz\n- bim", "<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n<ul>\n<li>baz</li>\n<li>bim</li>\n</ul>");
         }
 
         [TestMethod]
@@ -8621,21 +5969,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>code
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("-   foo\n\n    notcode\n\n-   foo\n\n\n    code");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>foo</p>\n<p>notcode</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n<pre><code>code\n</code></pre>");
-            Helpers.Log("Example {0}", 205);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "-   foo\n\n    notcode\n\n-   foo\n\n\n    code");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 205, "Container blocks - Lists");
+			Helpers.ExecuteTest("-   foo\n\n    notcode\n\n-   foo\n\n\n    code", "<ul>\n<li>\n<p>foo</p>\n<p>notcode</p>\n</li>\n<li>\n<p>foo</p>\n</li>\n</ul>\n<pre><code>code\n</code></pre>");
         }
 
         // List items need not be indented to the same level.  The following
@@ -8670,21 +6005,8 @@ namespace CommonMark.Tests.Specification
             //     <li>g</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- a\n - b\n  - c\n   - d\n  - e\n - f\n- g");
-            var expected = Helpers.Normalize("<ul>\n<li>a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li>\n<li>e</li>\n<li>f</li>\n<li>g</li>\n</ul>");
-            Helpers.Log("Example {0}", 206);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- a\n - b\n  - c\n   - d\n  - e\n - f\n- g");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 206, "Container blocks - Lists");
+			Helpers.ExecuteTest("- a\n - b\n  - c\n   - d\n  - e\n - f\n- g", "<ul>\n<li>a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li>\n<li>e</li>\n<li>f</li>\n<li>g</li>\n</ul>");
         }
 
         // This is a loose list, because there is a blank line between
@@ -8716,21 +6038,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- a\n- b\n\n- c");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>c</p>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 207);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- a\n- b\n\n- c");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 207, "Container blocks - Lists");
+			Helpers.ExecuteTest("- a\n- b\n\n- c", "<ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>c</p>\n</li>\n</ul>");
         }
 
         // So is this, with a empty second item:
@@ -8759,21 +6068,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("* a\n*\n\n* c");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>a</p>\n</li>\n<li></li>\n<li>\n<p>c</p>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 208);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "* a\n*\n\n* c");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 208, "Container blocks - Lists");
+			Helpers.ExecuteTest("* a\n*\n\n* c", "<ul>\n<li>\n<p>a</p>\n</li>\n<li></li>\n<li>\n<p>c</p>\n</li>\n</ul>");
         }
 
         // These are loose lists, even though there is no space between the items,
@@ -8808,21 +6104,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- a\n- b\n\n  c\n- d");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n<p>c</p>\n</li>\n<li>\n<p>d</p>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 209);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- a\n- b\n\n  c\n- d");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 209, "Container blocks - Lists");
+			Helpers.ExecuteTest("- a\n- b\n\n  c\n- d", "<ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n<p>c</p>\n</li>\n<li>\n<p>d</p>\n</li>\n</ul>");
         }
 
         [TestMethod]
@@ -8853,21 +6136,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- a\n- b\n\n  [ref]: /url\n- d");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>d</p>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 210);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- a\n- b\n\n  [ref]: /url\n- d");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 210, "Container blocks - Lists");
+			Helpers.ExecuteTest("- a\n- b\n\n  [ref]: /url\n- d", "<ul>\n<li>\n<p>a</p>\n</li>\n<li>\n<p>b</p>\n</li>\n<li>\n<p>d</p>\n</li>\n</ul>");
         }
 
         // This is a tight list, because the blank lines are in a code block:
@@ -8900,21 +6170,8 @@ namespace CommonMark.Tests.Specification
             //     <li>c</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- a\n- ```\n  b\n\n\n  ```\n- c");
-            var expected = Helpers.Normalize("<ul>\n<li>a</li>\n<li>\n<pre><code>b\n\n\n</code></pre>\n</li>\n<li>c</li>\n</ul>");
-            Helpers.Log("Example {0}", 211);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- a\n- ```\n  b\n\n\n  ```\n- c");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 211, "Container blocks - Lists");
+			Helpers.ExecuteTest("- a\n- ```\n  b\n\n\n  ```\n- c", "<ul>\n<li>a</li>\n<li>\n<pre><code>b\n\n\n</code></pre>\n</li>\n<li>c</li>\n</ul>");
         }
 
         // This is a tight list, because the blank line is between two
@@ -8948,21 +6205,8 @@ namespace CommonMark.Tests.Specification
             //     <li>d</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- a\n  - b\n\n    c\n- d");
-            var expected = Helpers.Normalize("<ul>\n<li>a\n<ul>\n<li>\n<p>b</p>\n<p>c</p>\n</li>\n</ul>\n</li>\n<li>d</li>\n</ul>");
-            Helpers.Log("Example {0}", 212);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- a\n  - b\n\n    c\n- d");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 212, "Container blocks - Lists");
+			Helpers.ExecuteTest("- a\n  - b\n\n    c\n- d", "<ul>\n<li>a\n<ul>\n<li>\n<p>b</p>\n<p>c</p>\n</li>\n</ul>\n</li>\n<li>d</li>\n</ul>");
         }
 
         // This is a tight list, because the blank line is inside the
@@ -8991,21 +6235,8 @@ namespace CommonMark.Tests.Specification
             //     <li>c</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("* a\n  > b\n  >\n* c");
-            var expected = Helpers.Normalize("<ul>\n<li>a\n<blockquote>\n<p>b</p>\n</blockquote>\n</li>\n<li>c</li>\n</ul>");
-            Helpers.Log("Example {0}", 213);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "* a\n  > b\n  >\n* c");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 213, "Container blocks - Lists");
+			Helpers.ExecuteTest("* a\n  > b\n  >\n* c", "<ul>\n<li>a\n<blockquote>\n<p>b</p>\n</blockquote>\n</li>\n<li>c</li>\n</ul>");
         }
 
         // This list is tight, because the consecutive block elements
@@ -9038,21 +6269,8 @@ namespace CommonMark.Tests.Specification
             //     <li>d</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- a\n  > b\n  ```\n  c\n  ```\n- d");
-            var expected = Helpers.Normalize("<ul>\n<li>a\n<blockquote>\n<p>b</p>\n</blockquote>\n<pre><code>c\n</code></pre>\n</li>\n<li>d</li>\n</ul>");
-            Helpers.Log("Example {0}", 214);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- a\n  > b\n  ```\n  c\n  ```\n- d");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 214, "Container blocks - Lists");
+			Helpers.ExecuteTest("- a\n  > b\n  ```\n  c\n  ```\n- d", "<ul>\n<li>a\n<blockquote>\n<p>b</p>\n</blockquote>\n<pre><code>c\n</code></pre>\n</li>\n<li>d</li>\n</ul>");
         }
 
         // A single-paragraph list is tight:
@@ -9072,21 +6290,8 @@ namespace CommonMark.Tests.Specification
             //     <li>a</li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- a");
-            var expected = Helpers.Normalize("<ul>\n<li>a</li>\n</ul>");
-            Helpers.Log("Example {0}", 215);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- a");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 215, "Container blocks - Lists");
+			Helpers.ExecuteTest("- a", "<ul>\n<li>a</li>\n</ul>");
         }
 
         [TestMethod]
@@ -9110,21 +6315,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- a\n  - b");
-            var expected = Helpers.Normalize("<ul>\n<li>a\n<ul>\n<li>b</li>\n</ul>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 216);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- a\n  - b");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 216, "Container blocks - Lists");
+			Helpers.ExecuteTest("- a\n  - b", "<ul>\n<li>a\n<ul>\n<li>b</li>\n</ul>\n</li>\n</ul>");
         }
 
         // Here the outer list is loose, the inner list tight:
@@ -9153,21 +6345,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("* foo\n  * bar\n\n  baz");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>foo</p>\n<ul>\n<li>bar</li>\n</ul>\n<p>baz</p>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 217);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "* foo\n  * bar\n\n  baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 217, "Container blocks - Lists");
+			Helpers.ExecuteTest("* foo\n  * bar\n\n  baz", "<ul>\n<li>\n<p>foo</p>\n<ul>\n<li>bar</li>\n</ul>\n<p>baz</p>\n</li>\n</ul>");
         }
 
         [TestMethod]
@@ -9205,21 +6384,8 @@ namespace CommonMark.Tests.Specification
             //     </li>
             //     </ul>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("- a\n  - b\n  - c\n\n- d\n  - e\n  - f");
-            var expected = Helpers.Normalize("<ul>\n<li>\n<p>a</p>\n<ul>\n<li>b</li>\n<li>c</li>\n</ul>\n</li>\n<li>\n<p>d</p>\n<ul>\n<li>e</li>\n<li>f</li>\n</ul>\n</li>\n</ul>");
-            Helpers.Log("Example {0}", 218);
-            Helpers.Log("Section: {0}", "Container blocks - Lists");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "- a\n  - b\n  - c\n\n- d\n  - e\n  - f");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 218, "Container blocks - Lists");
+			Helpers.ExecuteTest("- a\n  - b\n  - c\n\n- d\n  - e\n  - f", "<ul>\n<li>\n<p>a</p>\n<ul>\n<li>b</li>\n<li>c</li>\n</ul>\n</li>\n<li>\n<p>d</p>\n<ul>\n<li>e</li>\n<li>f</li>\n</ul>\n</li>\n</ul>");
         }
 
         // # Inlines
@@ -9241,21 +6407,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>hi</code>lo`</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`hi`lo`");
-            var expected = Helpers.Normalize("<p><code>hi</code>lo`</p>");
-            Helpers.Log("Example {0}", 219);
-            Helpers.Log("Section: {0}", "Inlines");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`hi`lo`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 219, "Inlines");
+			Helpers.ExecuteTest("`hi`lo`", "<p><code>hi</code>lo`</p>");
         }
 
         // `hi` is parsed as code, leaving the backtick at the end as a literal
@@ -9278,21 +6431,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\]^_`{|}~</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~");
-            var expected = Helpers.Normalize("<p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</p>");
-            Helpers.Log("Example {0}", 220);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 220, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("\\!\\\"\\#\\$\\%\\&\\'\\(\\)\\*\\+\\,\\-\\.\\/\\:\\;\\<\\=\\>\\?\\@\\[\\\\\\]\\^\\_\\`\\{\\|\\}\\~", "<p>!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</p>");
         }
 
         // Backslashes before other characters are treated as literal
@@ -9311,21 +6451,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>\   \A\a\ \3\φ\«</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("\\→\\A\\a\\ \\3\\φ\\«");
-            var expected = Helpers.Normalize("<p>\\   \\A\\a\\ \\3\\φ\\«</p>");
-            Helpers.Log("Example {0}", 221);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "\\→\\A\\a\\ \\3\\φ\\«");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 221, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("\\→\\A\\a\\ \\3\\φ\\«", "<p>\\   \\A\\a\\ \\3\\φ\\«</p>");
         }
 
         // Escaped characters are treated as regular characters and do
@@ -9358,21 +6485,8 @@ namespace CommonMark.Tests.Specification
             //     # not a header
             //     [foo]: /url &quot;not a reference&quot;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\. not a list\n\\* not a list\n\\# not a header\n\\[foo]: /url \"not a reference\"");
-            var expected = Helpers.Normalize("<p>*not emphasized*\n&lt;br/&gt; not a tag\n[not a link](/foo)\n`not code`\n1. not a list\n* not a list\n# not a header\n[foo]: /url &quot;not a reference&quot;</p>");
-            Helpers.Log("Example {0}", 222);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\. not a list\n\\* not a list\n\\# not a header\n\\[foo]: /url \"not a reference\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 222, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("\\*not emphasized*\n\\<br/> not a tag\n\\[not a link](/foo)\n\\`not code`\n1\\. not a list\n\\* not a list\n\\# not a header\n\\[foo]: /url \"not a reference\"", "<p>*not emphasized*\n&lt;br/&gt; not a tag\n[not a link](/foo)\n`not code`\n1. not a list\n* not a list\n# not a header\n[foo]: /url &quot;not a reference&quot;</p>");
         }
 
         // If a backslash is itself escaped, the following character is not:
@@ -9390,21 +6504,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>\<em>emphasis</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("\\\\*emphasis*");
-            var expected = Helpers.Normalize("<p>\\<em>emphasis</em></p>");
-            Helpers.Log("Example {0}", 223);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "\\\\*emphasis*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 223, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("\\\\*emphasis*", "<p>\\<em>emphasis</em></p>");
         }
 
         // A backslash at the end of the line is a [hard line
@@ -9425,21 +6526,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo<br />
             //     bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo\\\nbar");
-            var expected = Helpers.Normalize("<p>foo<br />\nbar</p>");
-            Helpers.Log("Example {0}", 224);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo\\\nbar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 224, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("foo\\\nbar", "<p>foo<br />\nbar</p>");
         }
 
         // Backslash escapes do not work in code blocks, code spans, autolinks, or
@@ -9458,21 +6546,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>\[\`</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`` \\[\\` ``");
-            var expected = Helpers.Normalize("<p><code>\\[\\`</code></p>");
-            Helpers.Log("Example {0}", 225);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`` \\[\\` ``");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 225, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("`` \\[\\` ``", "<p><code>\\[\\`</code></p>");
         }
 
         [TestMethod]
@@ -9490,21 +6565,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>\[\]
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    \\[\\]");
-            var expected = Helpers.Normalize("<pre><code>\\[\\]\n</code></pre>");
-            Helpers.Log("Example {0}", 226);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    \\[\\]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 226, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("    \\[\\]", "<pre><code>\\[\\]\n</code></pre>");
         }
 
         [TestMethod]
@@ -9524,21 +6586,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>\[\]
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("~~~\n\\[\\]\n~~~");
-            var expected = Helpers.Normalize("<pre><code>\\[\\]\n</code></pre>");
-            Helpers.Log("Example {0}", 227);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "~~~\n\\[\\]\n~~~");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 227, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("~~~\n\\[\\]\n~~~", "<pre><code>\\[\\]\n</code></pre>");
         }
 
         [TestMethod]
@@ -9555,21 +6604,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="http://example.com?find=%5C*">http://example.com?find=\*</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<http://example.com?find=\\*>");
-            var expected = Helpers.Normalize("<p><a href=\"http://example.com?find=%5C*\">http://example.com?find=\\*</a></p>");
-            Helpers.Log("Example {0}", 228);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<http://example.com?find=\\*>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 228, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("<http://example.com?find=\\*>", "<p><a href=\"http://example.com?find=%5C*\">http://example.com?find=\\*</a></p>");
         }
 
         [TestMethod]
@@ -9586,21 +6622,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/bar\/)"></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a href=\"/bar\\/)\">");
-            var expected = Helpers.Normalize("<p><a href=\"/bar\\/)\"></p>");
-            Helpers.Log("Example {0}", 229);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a href=\"/bar\\/)\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 229, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("<a href=\"/bar\\/)\">", "<p><a href=\"/bar\\/)\"></p>");
         }
 
         // But they work in all other contexts, including URLs and link titles,
@@ -9620,21 +6643,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/bar*" title="ti*tle">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo](/bar\\* \"ti\\*tle\")");
-            var expected = Helpers.Normalize("<p><a href=\"/bar*\" title=\"ti*tle\">foo</a></p>");
-            Helpers.Log("Example {0}", 230);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo](/bar\\* \"ti\\*tle\")");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 230, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("[foo](/bar\\* \"ti\\*tle\")", "<p><a href=\"/bar*\" title=\"ti*tle\">foo</a></p>");
         }
 
         [TestMethod]
@@ -9653,21 +6663,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/bar*" title="ti*tle">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]\n\n[foo]: /bar\\* \"ti\\*tle\"");
-            var expected = Helpers.Normalize("<p><a href=\"/bar*\" title=\"ti*tle\">foo</a></p>");
-            Helpers.Log("Example {0}", 231);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]\n\n[foo]: /bar\\* \"ti\\*tle\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 231, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("[foo]\n\n[foo]: /bar\\* \"ti\\*tle\"", "<p><a href=\"/bar*\" title=\"ti*tle\">foo</a></p>");
         }
 
         [TestMethod]
@@ -9687,21 +6684,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code class="language-foo+bar">foo
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("``` foo\\+bar\nfoo\n```");
-            var expected = Helpers.Normalize("<pre><code class=\"language-foo+bar\">foo\n</code></pre>");
-            Helpers.Log("Example {0}", 232);
-            Helpers.Log("Section: {0}", "Inlines - Backslash escapes");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "``` foo\\+bar\nfoo\n```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 232, "Inlines - Backslash escapes");
+			Helpers.ExecuteTest("``` foo\\+bar\nfoo\n```", "<pre><code class=\"language-foo+bar\">foo\n</code></pre>");
         }
 
         // ## Entities
@@ -9739,21 +6723,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>  &amp; © Æ Ď ¾ ℋ ⅆ ∲</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("&nbsp; &amp; &copy; &AElig; &Dcaron; &frac34; &HilbertSpace; &DifferentialD; &ClockwiseContourIntegral;");
-            var expected = Helpers.Normalize("<p>  &amp; © Æ Ď ¾ ℋ ⅆ ∲</p>");
-            Helpers.Log("Example {0}", 233);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "&nbsp; &amp; &copy; &AElig; &Dcaron; &frac34; &HilbertSpace; &DifferentialD; &ClockwiseContourIntegral;");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 233, "Inlines - Entities");
+			Helpers.ExecuteTest("&nbsp; &amp; &copy; &AElig; &Dcaron; &frac34; &HilbertSpace; &DifferentialD; &ClockwiseContourIntegral;", "<p>  &amp; © Æ Ď ¾ ℋ ⅆ ∲</p>");
         }
 
         // [Decimal entities](@decimal-entities)
@@ -9775,21 +6746,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p># Ӓ Ϡ �</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("&#35; &#1234; &#992; &#98765432;");
-            var expected = Helpers.Normalize("<p># Ӓ Ϡ �</p>");
-            Helpers.Log("Example {0}", 234);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "&#35; &#1234; &#992; &#98765432;");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 234, "Inlines - Entities");
+			Helpers.ExecuteTest("&#35; &#1234; &#992; &#98765432;", "<p># Ӓ Ϡ �</p>");
         }
 
         // [Hexadecimal entities](@hexadecimal-entities)
@@ -9809,21 +6767,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&quot; ആ ಫ</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("&#X22; &#XD06; &#xcab;");
-            var expected = Helpers.Normalize("<p>&quot; ആ ಫ</p>");
-            Helpers.Log("Example {0}", 235);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "&#X22; &#XD06; &#xcab;");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 235, "Inlines - Entities");
+			Helpers.ExecuteTest("&#X22; &#XD06; &#xcab;", "<p>&quot; ആ ಫ</p>");
         }
 
         // Here are some nonentities:
@@ -9841,21 +6786,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&amp;nbsp &amp;x; &amp;#; &amp;#x; &amp;ThisIsWayTooLongToBeAnEntityIsntIt; &amp;hi?;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("&nbsp &x; &#; &#x; &ThisIsWayTooLongToBeAnEntityIsntIt; &hi?;");
-            var expected = Helpers.Normalize("<p>&amp;nbsp &amp;x; &amp;#; &amp;#x; &amp;ThisIsWayTooLongToBeAnEntityIsntIt; &amp;hi?;</p>");
-            Helpers.Log("Example {0}", 236);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "&nbsp &x; &#; &#x; &ThisIsWayTooLongToBeAnEntityIsntIt; &hi?;");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 236, "Inlines - Entities");
+			Helpers.ExecuteTest("&nbsp &x; &#; &#x; &ThisIsWayTooLongToBeAnEntityIsntIt; &hi?;", "<p>&amp;nbsp &amp;x; &amp;#; &amp;#x; &amp;ThisIsWayTooLongToBeAnEntityIsntIt; &amp;hi?;</p>");
         }
 
         // Although HTML5 does accept some entities without a trailing semicolon
@@ -9875,21 +6807,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&amp;copy</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("&copy");
-            var expected = Helpers.Normalize("<p>&amp;copy</p>");
-            Helpers.Log("Example {0}", 237);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "&copy");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 237, "Inlines - Entities");
+			Helpers.ExecuteTest("&copy", "<p>&amp;copy</p>");
         }
 
         // Strings that are not on the list of HTML5 named entities are not
@@ -9908,21 +6827,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&amp;MadeUpEntity;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("&MadeUpEntity;");
-            var expected = Helpers.Normalize("<p>&amp;MadeUpEntity;</p>");
-            Helpers.Log("Example {0}", 238);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "&MadeUpEntity;");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 238, "Inlines - Entities");
+			Helpers.ExecuteTest("&MadeUpEntity;", "<p>&amp;MadeUpEntity;</p>");
         }
 
         // Entities are recognized in any context besides code spans or
@@ -9942,21 +6848,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="&ouml;&ouml;.html"></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a href=\"&ouml;&ouml;.html\">");
-            var expected = Helpers.Normalize("<p><a href=\"&ouml;&ouml;.html\"></p>");
-            Helpers.Log("Example {0}", 239);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a href=\"&ouml;&ouml;.html\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 239, "Inlines - Entities");
+			Helpers.ExecuteTest("<a href=\"&ouml;&ouml;.html\">", "<p><a href=\"&ouml;&ouml;.html\"></p>");
         }
 
         [TestMethod]
@@ -9973,21 +6866,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo](/f&ouml;&ouml; \"f&ouml;&ouml;\")");
-            var expected = Helpers.Normalize("<p><a href=\"/f%C3%B6%C3%B6\" title=\"föö\">foo</a></p>");
-            Helpers.Log("Example {0}", 240);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo](/f&ouml;&ouml; \"f&ouml;&ouml;\")");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 240, "Inlines - Entities");
+			Helpers.ExecuteTest("[foo](/f&ouml;&ouml; \"f&ouml;&ouml;\")", "<p><a href=\"/f%C3%B6%C3%B6\" title=\"föö\">foo</a></p>");
         }
 
         [TestMethod]
@@ -10006,21 +6886,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/f%C3%B6%C3%B6" title="föö">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]\n\n[foo]: /f&ouml;&ouml; \"f&ouml;&ouml;\"");
-            var expected = Helpers.Normalize("<p><a href=\"/f%C3%B6%C3%B6\" title=\"föö\">foo</a></p>");
-            Helpers.Log("Example {0}", 241);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]\n\n[foo]: /f&ouml;&ouml; \"f&ouml;&ouml;\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 241, "Inlines - Entities");
+			Helpers.ExecuteTest("[foo]\n\n[foo]: /f&ouml;&ouml; \"f&ouml;&ouml;\"", "<p><a href=\"/f%C3%B6%C3%B6\" title=\"föö\">foo</a></p>");
         }
 
         [TestMethod]
@@ -10040,21 +6907,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code class="language-föö">foo
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("``` f&ouml;&ouml;\nfoo\n```");
-            var expected = Helpers.Normalize("<pre><code class=\"language-föö\">foo\n</code></pre>");
-            Helpers.Log("Example {0}", 242);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "``` f&ouml;&ouml;\nfoo\n```");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 242, "Inlines - Entities");
+			Helpers.ExecuteTest("``` f&ouml;&ouml;\nfoo\n```", "<pre><code class=\"language-föö\">foo\n</code></pre>");
         }
 
         // Entities are treated as literal text in code spans and code blocks:
@@ -10072,21 +6926,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>f&amp;ouml;&amp;ouml;</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`f&ouml;&ouml;`");
-            var expected = Helpers.Normalize("<p><code>f&amp;ouml;&amp;ouml;</code></p>");
-            Helpers.Log("Example {0}", 243);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`f&ouml;&ouml;`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 243, "Inlines - Entities");
+			Helpers.ExecuteTest("`f&ouml;&ouml;`", "<p><code>f&amp;ouml;&amp;ouml;</code></p>");
         }
 
         [TestMethod]
@@ -10104,21 +6945,8 @@ namespace CommonMark.Tests.Specification
             //     <pre><code>f&amp;ouml;f&amp;ouml;
             //     </code></pre>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("    f&ouml;f&ouml;");
-            var expected = Helpers.Normalize("<pre><code>f&amp;ouml;f&amp;ouml;\n</code></pre>");
-            Helpers.Log("Example {0}", 244);
-            Helpers.Log("Section: {0}", "Inlines - Entities");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "    f&ouml;f&ouml;");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 244, "Inlines - Entities");
+			Helpers.ExecuteTest("    f&ouml;f&ouml;", "<pre><code>f&amp;ouml;f&amp;ouml;\n</code></pre>");
         }
 
         // ## Code span
@@ -10148,21 +6976,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`foo`");
-            var expected = Helpers.Normalize("<p><code>foo</code></p>");
-            Helpers.Log("Example {0}", 245);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`foo`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 245, "Inlines - Code span");
+			Helpers.ExecuteTest("`foo`", "<p><code>foo</code></p>");
         }
 
         // Here two backticks are used, because the code contains a backtick.
@@ -10181,21 +6996,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo ` bar</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`` foo ` bar  ``");
-            var expected = Helpers.Normalize("<p><code>foo ` bar</code></p>");
-            Helpers.Log("Example {0}", 246);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`` foo ` bar  ``");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 246, "Inlines - Code span");
+			Helpers.ExecuteTest("`` foo ` bar  ``", "<p><code>foo ` bar</code></p>");
         }
 
         // This example shows the motivation for stripping leading and trailing
@@ -10214,21 +7016,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>``</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("` `` `");
-            var expected = Helpers.Normalize("<p><code>``</code></p>");
-            Helpers.Log("Example {0}", 247);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "` `` `");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 247, "Inlines - Code span");
+			Helpers.ExecuteTest("` `` `", "<p><code>``</code></p>");
         }
 
         // [Line endings](#line-ending) are treated like spaces:
@@ -10248,21 +7037,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("``\nfoo\n``");
-            var expected = Helpers.Normalize("<p><code>foo</code></p>");
-            Helpers.Log("Example {0}", 248);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "``\nfoo\n``");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 248, "Inlines - Code span");
+			Helpers.ExecuteTest("``\nfoo\n``", "<p><code>foo</code></p>");
         }
 
         // Interior spaces and [line endings](#line-ending) are collapsed into
@@ -10282,21 +7058,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo bar baz</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`foo   bar\n  baz`");
-            var expected = Helpers.Normalize("<p><code>foo bar baz</code></p>");
-            Helpers.Log("Example {0}", 249);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`foo   bar\n  baz`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 249, "Inlines - Code span");
+			Helpers.ExecuteTest("`foo   bar\n  baz`", "<p><code>foo bar baz</code></p>");
         }
 
         // Q: Why not just leave the spaces, since browsers will collapse them
@@ -10325,21 +7088,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo `` bar</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`foo `` bar`");
-            var expected = Helpers.Normalize("<p><code>foo `` bar</code></p>");
-            Helpers.Log("Example {0}", 250);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`foo `` bar`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 250, "Inlines - Code span");
+			Helpers.ExecuteTest("`foo `` bar`", "<p><code>foo `` bar</code></p>");
         }
 
         // Note that backslash escapes do not work in code spans. All backslashes
@@ -10358,21 +7108,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo\</code>bar`</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`foo\\`bar`");
-            var expected = Helpers.Normalize("<p><code>foo\\</code>bar`</p>");
-            Helpers.Log("Example {0}", 251);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`foo\\`bar`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 251, "Inlines - Code span");
+			Helpers.ExecuteTest("`foo\\`bar`", "<p><code>foo\\</code>bar`</p>");
         }
 
         // Backslash escapes are never needed, because one can always choose a
@@ -10397,21 +7134,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*foo<code>*</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo`*`");
-            var expected = Helpers.Normalize("<p>*foo<code>*</code></p>");
-            Helpers.Log("Example {0}", 252);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo`*`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 252, "Inlines - Code span");
+			Helpers.ExecuteTest("*foo`*`", "<p>*foo<code>*</code></p>");
         }
 
         // And this is not parsed as a link:
@@ -10429,21 +7153,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[not a <code>link](/foo</code>)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[not a `link](/foo`)");
-            var expected = Helpers.Normalize("<p>[not a <code>link](/foo</code>)</p>");
-            Helpers.Log("Example {0}", 253);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[not a `link](/foo`)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 253, "Inlines - Code span");
+			Helpers.ExecuteTest("[not a `link](/foo`)", "<p>[not a <code>link](/foo</code>)</p>");
         }
 
         // But this is a link:
@@ -10461,21 +7172,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<http://foo.bar.`baz>`");
-            var expected = Helpers.Normalize("<p><a href=\"http://foo.bar.%60baz\">http://foo.bar.`baz</a>`</p>");
-            Helpers.Log("Example {0}", 254);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<http://foo.bar.`baz>`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 254, "Inlines - Code span");
+			Helpers.ExecuteTest("<http://foo.bar.`baz>`", "<p><a href=\"http://foo.bar.%60baz\">http://foo.bar.`baz</a>`</p>");
         }
 
         // And this is an HTML tag:
@@ -10493,21 +7191,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="`">`</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a href=\"`\">`");
-            var expected = Helpers.Normalize("<p><a href=\"`\">`</p>");
-            Helpers.Log("Example {0}", 255);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a href=\"`\">`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 255, "Inlines - Code span");
+			Helpers.ExecuteTest("<a href=\"`\">`", "<p><a href=\"`\">`</p>");
         }
 
         // When a backtick string is not closed by a matching backtick string,
@@ -10526,21 +7211,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>```foo``</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("```foo``");
-            var expected = Helpers.Normalize("<p>```foo``</p>");
-            Helpers.Log("Example {0}", 256);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "```foo``");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 256, "Inlines - Code span");
+			Helpers.ExecuteTest("```foo``", "<p>```foo``</p>");
         }
 
         [TestMethod]
@@ -10557,21 +7229,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>`foo</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`foo");
-            var expected = Helpers.Normalize("<p>`foo</p>");
-            Helpers.Log("Example {0}", 257);
-            Helpers.Log("Section: {0}", "Inlines - Code span");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 257, "Inlines - Code span");
+			Helpers.ExecuteTest("`foo", "<p>`foo</p>");
         }
 
         // ## Emphasis and strong emphasis
@@ -10791,21 +7450,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo bar</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo bar*");
-            var expected = Helpers.Normalize("<p><em>foo bar</em></p>");
-            Helpers.Log("Example {0}", 258);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo bar*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 258, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo bar*", "<p><em>foo bar</em></p>");
         }
 
         // This is not emphasis, because the opening `*` is followed by
@@ -10825,21 +7471,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>a * foo bar*</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("a * foo bar*");
-            var expected = Helpers.Normalize("<p>a * foo bar*</p>");
-            Helpers.Log("Example {0}", 259);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "a * foo bar*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 259, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("a * foo bar*", "<p>a * foo bar*</p>");
         }
 
         // This is not emphasis, because the opening `*` is preceded
@@ -10859,21 +7492,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>a*&quot;foo&quot;*</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("a*\"foo\"*");
-            var expected = Helpers.Normalize("<p>a*&quot;foo&quot;*</p>");
-            Helpers.Log("Example {0}", 260);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "a*\"foo\"*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 260, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("a*\"foo\"*", "<p>a*&quot;foo&quot;*</p>");
         }
 
         // Unicode nonbreaking spaces count as whitespace, too:
@@ -10891,21 +7511,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>* a *</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("* a *");
-            var expected = Helpers.Normalize("<p>* a *</p>");
-            Helpers.Log("Example {0}", 261);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "* a *");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 261, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("* a *", "<p>* a *</p>");
         }
 
         // Intraword emphasis with `*` is permitted:
@@ -10923,21 +7530,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo<em>bar</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo*bar*");
-            var expected = Helpers.Normalize("<p>foo<em>bar</em></p>");
-            Helpers.Log("Example {0}", 262);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo*bar*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 262, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo*bar*", "<p>foo<em>bar</em></p>");
         }
 
         [TestMethod]
@@ -10954,21 +7548,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>5<em>6</em>78</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("5*6*78");
-            var expected = Helpers.Normalize("<p>5<em>6</em>78</p>");
-            Helpers.Log("Example {0}", 263);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "5*6*78");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 263, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("5*6*78", "<p>5<em>6</em>78</p>");
         }
 
         // Rule 2:
@@ -10986,21 +7567,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo bar</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_foo bar_");
-            var expected = Helpers.Normalize("<p><em>foo bar</em></p>");
-            Helpers.Log("Example {0}", 264);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo bar_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 264, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_foo bar_", "<p><em>foo bar</em></p>");
         }
 
         // This is not emphasis, because the opening `*` is followed by
@@ -11019,21 +7587,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>_ foo bar_</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_ foo bar_");
-            var expected = Helpers.Normalize("<p>_ foo bar_</p>");
-            Helpers.Log("Example {0}", 265);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_ foo bar_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 265, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_ foo bar_", "<p>_ foo bar_</p>");
         }
 
         // This is not emphasis, because the opening `_` is preceded
@@ -11052,21 +7607,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>a_&quot;foo&quot;_</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("a_\"foo\"_");
-            var expected = Helpers.Normalize("<p>a_&quot;foo&quot;_</p>");
-            Helpers.Log("Example {0}", 266);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "a_\"foo\"_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 266, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("a_\"foo\"_", "<p>a_&quot;foo&quot;_</p>");
         }
 
         // Emphasis with `_` is not allowed inside ASCII words:
@@ -11084,21 +7626,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo_bar_</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo_bar_");
-            var expected = Helpers.Normalize("<p>foo_bar_</p>");
-            Helpers.Log("Example {0}", 267);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo_bar_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 267, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo_bar_", "<p>foo_bar_</p>");
         }
 
         [TestMethod]
@@ -11115,21 +7644,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>5_6_78</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("5_6_78");
-            var expected = Helpers.Normalize("<p>5_6_78</p>");
-            Helpers.Log("Example {0}", 268);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "5_6_78");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 268, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("5_6_78", "<p>5_6_78</p>");
         }
 
         // But it is permitted inside non-ASCII words:
@@ -11147,21 +7663,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>пристаням<em>стремятся</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("пристаням_стремятся_");
-            var expected = Helpers.Normalize("<p>пристаням<em>стремятся</em></p>");
-            Helpers.Log("Example {0}", 269);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "пристаням_стремятся_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 269, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("пристаням_стремятся_", "<p>пристаням<em>стремятся</em></p>");
         }
 
         // Rule 3:
@@ -11182,21 +7685,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>_foo*</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_foo*");
-            var expected = Helpers.Normalize("<p>_foo*</p>");
-            Helpers.Log("Example {0}", 270);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 270, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_foo*", "<p>_foo*</p>");
         }
 
         // This is not emphasis, because the closing `*` is preceded by
@@ -11215,21 +7705,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*foo bar *</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo bar *");
-            var expected = Helpers.Normalize("<p>*foo bar *</p>");
-            Helpers.Log("Example {0}", 271);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo bar *");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 271, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo bar *", "<p>*foo bar *</p>");
         }
 
         // This is not emphasis, because the second `*` is
@@ -11250,21 +7727,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*(*foo)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*(*foo)");
-            var expected = Helpers.Normalize("<p>*(*foo)</p>");
-            Helpers.Log("Example {0}", 272);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*(*foo)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 272, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*(*foo)", "<p>*(*foo)</p>");
         }
 
         // The point of this restriction is more easily appreciated
@@ -11283,21 +7747,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>(<em>foo</em>)</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*(*foo*)*");
-            var expected = Helpers.Normalize("<p><em>(<em>foo</em>)</em></p>");
-            Helpers.Log("Example {0}", 273);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*(*foo*)*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 273, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*(*foo*)*", "<p><em>(<em>foo</em>)</em></p>");
         }
 
         // Intraword emphasis with `*` is allowed:
@@ -11315,21 +7766,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo</em>bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo*bar");
-            var expected = Helpers.Normalize("<p><em>foo</em>bar</p>");
-            Helpers.Log("Example {0}", 274);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo*bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 274, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo*bar", "<p><em>foo</em>bar</p>");
         }
 
         // Rule 4:
@@ -11350,21 +7788,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>_foo bar _</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_foo bar _");
-            var expected = Helpers.Normalize("<p>_foo bar _</p>");
-            Helpers.Log("Example {0}", 275);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo bar _");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 275, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_foo bar _", "<p>_foo bar _</p>");
         }
 
         // This is not emphasis, because the second `_` is
@@ -11383,21 +7808,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>_(_foo)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_(_foo)");
-            var expected = Helpers.Normalize("<p>_(_foo)</p>");
-            Helpers.Log("Example {0}", 276);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_(_foo)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 276, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_(_foo)", "<p>_(_foo)</p>");
         }
 
         // This is emphasis within emphasis:
@@ -11415,21 +7827,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>(<em>foo</em>)</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_(_foo_)_");
-            var expected = Helpers.Normalize("<p><em>(<em>foo</em>)</em></p>");
-            Helpers.Log("Example {0}", 277);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_(_foo_)_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 277, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_(_foo_)_", "<p><em>(<em>foo</em>)</em></p>");
         }
 
         // Intraword emphasis is disallowed for `_`:
@@ -11447,21 +7846,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>_foo_bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_foo_bar");
-            var expected = Helpers.Normalize("<p>_foo_bar</p>");
-            Helpers.Log("Example {0}", 278);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo_bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 278, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_foo_bar", "<p>_foo_bar</p>");
         }
 
         [TestMethod]
@@ -11478,21 +7864,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>пристаням</em>стремятся</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_пристаням_стремятся");
-            var expected = Helpers.Normalize("<p><em>пристаням</em>стремятся</p>");
-            Helpers.Log("Example {0}", 279);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_пристаням_стремятся");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 279, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_пристаням_стремятся", "<p><em>пристаням</em>стремятся</p>");
         }
 
         [TestMethod]
@@ -11509,21 +7882,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo_bar_baz</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_foo_bar_baz_");
-            var expected = Helpers.Normalize("<p><em>foo_bar_baz</em></p>");
-            Helpers.Log("Example {0}", 280);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo_bar_baz_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 280, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_foo_bar_baz_", "<p><em>foo_bar_baz</em></p>");
         }
 
         // Rule 5:
@@ -11541,21 +7901,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo bar</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo bar**");
-            var expected = Helpers.Normalize("<p><strong>foo bar</strong></p>");
-            Helpers.Log("Example {0}", 281);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo bar**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 281, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo bar**", "<p><strong>foo bar</strong></p>");
         }
 
         // This is not strong emphasis, because the opening delimiter is
@@ -11574,21 +7921,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>** foo bar**</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("** foo bar**");
-            var expected = Helpers.Normalize("<p>** foo bar**</p>");
-            Helpers.Log("Example {0}", 282);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "** foo bar**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 282, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("** foo bar**", "<p>** foo bar**</p>");
         }
 
         // This is not strong emphasis, because the opening `**` is preceded
@@ -11608,21 +7942,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>a**&quot;foo&quot;**</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("a**\"foo\"**");
-            var expected = Helpers.Normalize("<p>a**&quot;foo&quot;**</p>");
-            Helpers.Log("Example {0}", 283);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "a**\"foo\"**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 283, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("a**\"foo\"**", "<p>a**&quot;foo&quot;**</p>");
         }
 
         // Intraword strong emphasis with `**` is permitted:
@@ -11640,21 +7961,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo<strong>bar</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo**bar**");
-            var expected = Helpers.Normalize("<p>foo<strong>bar</strong></p>");
-            Helpers.Log("Example {0}", 284);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo**bar**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 284, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo**bar**", "<p>foo<strong>bar</strong></p>");
         }
 
         // Rule 6:
@@ -11672,21 +7980,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo bar</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__foo bar__");
-            var expected = Helpers.Normalize("<p><strong>foo bar</strong></p>");
-            Helpers.Log("Example {0}", 285);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo bar__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 285, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__foo bar__", "<p><strong>foo bar</strong></p>");
         }
 
         // This is not strong emphasis, because the opening delimiter is
@@ -11705,21 +8000,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>__ foo bar__</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__ foo bar__");
-            var expected = Helpers.Normalize("<p>__ foo bar__</p>");
-            Helpers.Log("Example {0}", 286);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__ foo bar__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 286, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__ foo bar__", "<p>__ foo bar__</p>");
         }
 
         // This is not strong emphasis, because the opening `__` is preceded
@@ -11738,21 +8020,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>a__&quot;foo&quot;__</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("a__\"foo\"__");
-            var expected = Helpers.Normalize("<p>a__&quot;foo&quot;__</p>");
-            Helpers.Log("Example {0}", 287);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "a__\"foo\"__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 287, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("a__\"foo\"__", "<p>a__&quot;foo&quot;__</p>");
         }
 
         // Intraword strong emphasis is forbidden with `__`:
@@ -11770,21 +8039,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo__bar__</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo__bar__");
-            var expected = Helpers.Normalize("<p>foo__bar__</p>");
-            Helpers.Log("Example {0}", 288);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo__bar__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 288, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo__bar__", "<p>foo__bar__</p>");
         }
 
         [TestMethod]
@@ -11801,21 +8057,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>5__6__78</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("5__6__78");
-            var expected = Helpers.Normalize("<p>5__6__78</p>");
-            Helpers.Log("Example {0}", 289);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "5__6__78");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 289, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("5__6__78", "<p>5__6__78</p>");
         }
 
         [TestMethod]
@@ -11832,21 +8075,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>пристаням<strong>стремятся</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("пристаням__стремятся__");
-            var expected = Helpers.Normalize("<p>пристаням<strong>стремятся</strong></p>");
-            Helpers.Log("Example {0}", 290);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "пристаням__стремятся__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 290, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("пристаням__стремятся__", "<p>пристаням<strong>стремятся</strong></p>");
         }
 
         [TestMethod]
@@ -11863,21 +8093,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo, <strong>bar</strong>, baz</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__foo, __bar__, baz__");
-            var expected = Helpers.Normalize("<p><strong>foo, <strong>bar</strong>, baz</strong></p>");
-            Helpers.Log("Example {0}", 291);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo, __bar__, baz__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 291, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__foo, __bar__, baz__", "<p><strong>foo, <strong>bar</strong>, baz</strong></p>");
         }
 
         // Rule 7:
@@ -11898,21 +8115,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>**foo bar **</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo bar **");
-            var expected = Helpers.Normalize("<p>**foo bar **</p>");
-            Helpers.Log("Example {0}", 292);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo bar **");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 292, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo bar **", "<p>**foo bar **</p>");
         }
 
         // (Nor can it be interpreted as an emphasized `*foo bar *`, because of
@@ -11934,21 +8138,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>**(**foo)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**(**foo)");
-            var expected = Helpers.Normalize("<p>**(**foo)</p>");
-            Helpers.Log("Example {0}", 293);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**(**foo)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 293, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**(**foo)", "<p>**(**foo)</p>");
         }
 
         // The point of this restriction is more easily appreciated
@@ -11967,21 +8158,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>(<strong>foo</strong>)</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*(**foo**)*");
-            var expected = Helpers.Normalize("<p><em>(<strong>foo</strong>)</em></p>");
-            Helpers.Log("Example {0}", 294);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*(**foo**)*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 294, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*(**foo**)*", "<p><em>(<strong>foo</strong>)</em></p>");
         }
 
         [TestMethod]
@@ -12000,21 +8178,8 @@ namespace CommonMark.Tests.Specification
             //     <p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.
             //     <em>Asclepias physocarpa</em>)</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**Gomphocarpus (*Gomphocarpus physocarpus*, syn.\n*Asclepias physocarpa*)**");
-            var expected = Helpers.Normalize("<p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.\n<em>Asclepias physocarpa</em>)</strong></p>");
-            Helpers.Log("Example {0}", 295);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**Gomphocarpus (*Gomphocarpus physocarpus*, syn.\n*Asclepias physocarpa*)**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 295, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**Gomphocarpus (*Gomphocarpus physocarpus*, syn.\n*Asclepias physocarpa*)**", "<p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.\n<em>Asclepias physocarpa</em>)</strong></p>");
         }
 
         [TestMethod]
@@ -12031,21 +8196,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo \"*bar*\" foo**");
-            var expected = Helpers.Normalize("<p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>");
-            Helpers.Log("Example {0}", 296);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo \"*bar*\" foo**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 296, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo \"*bar*\" foo**", "<p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>");
         }
 
         // Intraword emphasis:
@@ -12063,21 +8215,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo</strong>bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo**bar");
-            var expected = Helpers.Normalize("<p><strong>foo</strong>bar</p>");
-            Helpers.Log("Example {0}", 297);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo**bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 297, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo**bar", "<p><strong>foo</strong>bar</p>");
         }
 
         // Rule 8:
@@ -12098,21 +8237,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>__foo bar __</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__foo bar __");
-            var expected = Helpers.Normalize("<p>__foo bar __</p>");
-            Helpers.Log("Example {0}", 298);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo bar __");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 298, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__foo bar __", "<p>__foo bar __</p>");
         }
 
         // This is not strong emphasis, because the second `__` is
@@ -12131,21 +8257,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>__(__foo)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__(__foo)");
-            var expected = Helpers.Normalize("<p>__(__foo)</p>");
-            Helpers.Log("Example {0}", 299);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__(__foo)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 299, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__(__foo)", "<p>__(__foo)</p>");
         }
 
         // The point of this restriction is more easily appreciated
@@ -12164,21 +8277,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>(<strong>foo</strong>)</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_(__foo__)_");
-            var expected = Helpers.Normalize("<p><em>(<strong>foo</strong>)</em></p>");
-            Helpers.Log("Example {0}", 300);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_(__foo__)_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 300, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_(__foo__)_", "<p><em>(<strong>foo</strong>)</em></p>");
         }
 
         // Intraword strong emphasis is forbidden with `__`:
@@ -12196,21 +8296,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>__foo__bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__foo__bar");
-            var expected = Helpers.Normalize("<p>__foo__bar</p>");
-            Helpers.Log("Example {0}", 301);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo__bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 301, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__foo__bar", "<p>__foo__bar</p>");
         }
 
         [TestMethod]
@@ -12227,21 +8314,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>пристаням</strong>стремятся</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__пристаням__стремятся");
-            var expected = Helpers.Normalize("<p><strong>пристаням</strong>стремятся</p>");
-            Helpers.Log("Example {0}", 302);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__пристаням__стремятся");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 302, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__пристаням__стремятся", "<p><strong>пристаням</strong>стремятся</p>");
         }
 
         [TestMethod]
@@ -12258,21 +8332,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo__bar__baz</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__foo__bar__baz__");
-            var expected = Helpers.Normalize("<p><strong>foo__bar__baz</strong></p>");
-            Helpers.Log("Example {0}", 303);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo__bar__baz__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 303, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__foo__bar__baz__", "<p><strong>foo__bar__baz</strong></p>");
         }
 
         // Rule 9:
@@ -12293,21 +8354,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo <a href="/url">bar</a></em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo [bar](/url)*");
-            var expected = Helpers.Normalize("<p><em>foo <a href=\"/url\">bar</a></em></p>");
-            Helpers.Log("Example {0}", 304);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo [bar](/url)*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 304, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo [bar](/url)*", "<p><em>foo <a href=\"/url\">bar</a></em></p>");
         }
 
         [TestMethod]
@@ -12326,21 +8374,8 @@ namespace CommonMark.Tests.Specification
             //     <p><em>foo
             //     bar</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo\nbar*");
-            var expected = Helpers.Normalize("<p><em>foo\nbar</em></p>");
-            Helpers.Log("Example {0}", 305);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo\nbar*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 305, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo\nbar*", "<p><em>foo\nbar</em></p>");
         }
 
         // In particular, emphasis and strong emphasis can be nested
@@ -12359,21 +8394,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo <strong>bar</strong> baz</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_foo __bar__ baz_");
-            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong> baz</em></p>");
-            Helpers.Log("Example {0}", 306);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo __bar__ baz_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 306, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_foo __bar__ baz_", "<p><em>foo <strong>bar</strong> baz</em></p>");
         }
 
         [TestMethod]
@@ -12390,21 +8412,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo <em>bar</em> baz</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_foo _bar_ baz_");
-            var expected = Helpers.Normalize("<p><em>foo <em>bar</em> baz</em></p>");
-            Helpers.Log("Example {0}", 307);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo _bar_ baz_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 307, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_foo _bar_ baz_", "<p><em>foo <em>bar</em> baz</em></p>");
         }
 
         [TestMethod]
@@ -12421,21 +8430,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em><em>foo</em> bar</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__foo_ bar_");
-            var expected = Helpers.Normalize("<p><em><em>foo</em> bar</em></p>");
-            Helpers.Log("Example {0}", 308);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo_ bar_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 308, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__foo_ bar_", "<p><em><em>foo</em> bar</em></p>");
         }
 
         [TestMethod]
@@ -12452,21 +8448,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo <em>bar</em></em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo *bar**");
-            var expected = Helpers.Normalize("<p><em>foo <em>bar</em></em></p>");
-            Helpers.Log("Example {0}", 309);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo *bar**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 309, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo *bar**", "<p><em>foo <em>bar</em></em></p>");
         }
 
         [TestMethod]
@@ -12483,21 +8466,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo <strong>bar</strong> baz</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo **bar** baz*");
-            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong> baz</em></p>");
-            Helpers.Log("Example {0}", 310);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo **bar** baz*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 310, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo **bar** baz*", "<p><em>foo <strong>bar</strong> baz</em></p>");
         }
 
         // But note:
@@ -12515,21 +8485,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo</em><em>bar</em><em>baz</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo**bar**baz*");
-            var expected = Helpers.Normalize("<p><em>foo</em><em>bar</em><em>baz</em></p>");
-            Helpers.Log("Example {0}", 311);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo**bar**baz*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 311, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo**bar**baz*", "<p><em>foo</em><em>bar</em><em>baz</em></p>");
         }
 
         // The difference is that in the preceding case,
@@ -12549,21 +8506,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em><strong>foo</strong> bar</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("***foo** bar*");
-            var expected = Helpers.Normalize("<p><em><strong>foo</strong> bar</em></p>");
-            Helpers.Log("Example {0}", 312);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo** bar*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 312, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("***foo** bar*", "<p><em><strong>foo</strong> bar</em></p>");
         }
 
         [TestMethod]
@@ -12580,21 +8524,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo <strong>bar</strong></em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo **bar***");
-            var expected = Helpers.Normalize("<p><em>foo <strong>bar</strong></em></p>");
-            Helpers.Log("Example {0}", 313);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo **bar***");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 313, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo **bar***", "<p><em>foo <strong>bar</strong></em></p>");
         }
 
         // Note, however, that in the following case we get no strong
@@ -12614,21 +8545,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo</em><em>bar</em>**</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo**bar***");
-            var expected = Helpers.Normalize("<p><em>foo</em><em>bar</em>**</p>");
-            Helpers.Log("Example {0}", 314);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo**bar***");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 314, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo**bar***", "<p><em>foo</em><em>bar</em>**</p>");
         }
 
         // Indefinite levels of nesting are possible:
@@ -12646,21 +8564,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo **bar *baz* bim** bop*");
-            var expected = Helpers.Normalize("<p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>");
-            Helpers.Log("Example {0}", 315);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo **bar *baz* bim** bop*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 315, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo **bar *baz* bim** bop*", "<p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>");
         }
 
         [TestMethod]
@@ -12677,21 +8582,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo <a href="/url"><em>bar</em></a></em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo [*bar*](/url)*");
-            var expected = Helpers.Normalize("<p><em>foo <a href=\"/url\"><em>bar</em></a></em></p>");
-            Helpers.Log("Example {0}", 316);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo [*bar*](/url)*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 316, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo [*bar*](/url)*", "<p><em>foo <a href=\"/url\"><em>bar</em></a></em></p>");
         }
 
         // There can be no empty emphasis or strong emphasis:
@@ -12709,21 +8601,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>** is not an empty emphasis</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("** is not an empty emphasis");
-            var expected = Helpers.Normalize("<p>** is not an empty emphasis</p>");
-            Helpers.Log("Example {0}", 317);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "** is not an empty emphasis");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 317, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("** is not an empty emphasis", "<p>** is not an empty emphasis</p>");
         }
 
         [TestMethod]
@@ -12740,21 +8619,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>**** is not an empty strong emphasis</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**** is not an empty strong emphasis");
-            var expected = Helpers.Normalize("<p>**** is not an empty strong emphasis</p>");
-            Helpers.Log("Example {0}", 318);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**** is not an empty strong emphasis");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 318, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**** is not an empty strong emphasis", "<p>**** is not an empty strong emphasis</p>");
         }
 
         // Rule 10:
@@ -12775,21 +8641,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo <a href="/url">bar</a></strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo [bar](/url)**");
-            var expected = Helpers.Normalize("<p><strong>foo <a href=\"/url\">bar</a></strong></p>");
-            Helpers.Log("Example {0}", 319);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo [bar](/url)**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 319, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo [bar](/url)**", "<p><strong>foo <a href=\"/url\">bar</a></strong></p>");
         }
 
         [TestMethod]
@@ -12808,21 +8661,8 @@ namespace CommonMark.Tests.Specification
             //     <p><strong>foo
             //     bar</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo\nbar**");
-            var expected = Helpers.Normalize("<p><strong>foo\nbar</strong></p>");
-            Helpers.Log("Example {0}", 320);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo\nbar**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 320, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo\nbar**", "<p><strong>foo\nbar</strong></p>");
         }
 
         // In particular, emphasis and strong emphasis can be nested
@@ -12841,21 +8681,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo <em>bar</em> baz</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__foo _bar_ baz__");
-            var expected = Helpers.Normalize("<p><strong>foo <em>bar</em> baz</strong></p>");
-            Helpers.Log("Example {0}", 321);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo _bar_ baz__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 321, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__foo _bar_ baz__", "<p><strong>foo <em>bar</em> baz</strong></p>");
         }
 
         [TestMethod]
@@ -12872,21 +8699,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo <strong>bar</strong> baz</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__foo __bar__ baz__");
-            var expected = Helpers.Normalize("<p><strong>foo <strong>bar</strong> baz</strong></p>");
-            Helpers.Log("Example {0}", 322);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo __bar__ baz__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 322, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__foo __bar__ baz__", "<p><strong>foo <strong>bar</strong> baz</strong></p>");
         }
 
         [TestMethod]
@@ -12903,21 +8717,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong><strong>foo</strong> bar</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("____foo__ bar__");
-            var expected = Helpers.Normalize("<p><strong><strong>foo</strong> bar</strong></p>");
-            Helpers.Log("Example {0}", 323);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "____foo__ bar__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 323, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("____foo__ bar__", "<p><strong><strong>foo</strong> bar</strong></p>");
         }
 
         [TestMethod]
@@ -12934,21 +8735,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo <strong>bar</strong></strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo **bar****");
-            var expected = Helpers.Normalize("<p><strong>foo <strong>bar</strong></strong></p>");
-            Helpers.Log("Example {0}", 324);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo **bar****");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 324, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo **bar****", "<p><strong>foo <strong>bar</strong></strong></p>");
         }
 
         [TestMethod]
@@ -12965,21 +8753,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo <em>bar</em> baz</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo *bar* baz**");
-            var expected = Helpers.Normalize("<p><strong>foo <em>bar</em> baz</strong></p>");
-            Helpers.Log("Example {0}", 325);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo *bar* baz**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 325, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo *bar* baz**", "<p><strong>foo <em>bar</em> baz</strong></p>");
         }
 
         // But note:
@@ -12997,21 +8772,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em><em>foo</em>bar</em>baz**</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo*bar*baz**");
-            var expected = Helpers.Normalize("<p><em><em>foo</em>bar</em>baz**</p>");
-            Helpers.Log("Example {0}", 326);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo*bar*baz**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 326, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo*bar*baz**", "<p><em><em>foo</em>bar</em>baz**</p>");
         }
 
         // The difference is that in the preceding case,
@@ -13031,21 +8793,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong><em>foo</em> bar</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("***foo* bar**");
-            var expected = Helpers.Normalize("<p><strong><em>foo</em> bar</strong></p>");
-            Helpers.Log("Example {0}", 327);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo* bar**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 327, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("***foo* bar**", "<p><strong><em>foo</em> bar</strong></p>");
         }
 
         [TestMethod]
@@ -13062,21 +8811,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo <em>bar</em></strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo *bar***");
-            var expected = Helpers.Normalize("<p><strong>foo <em>bar</em></strong></p>");
-            Helpers.Log("Example {0}", 328);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo *bar***");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 328, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo *bar***", "<p><strong>foo <em>bar</em></strong></p>");
         }
 
         // Indefinite levels of nesting are possible:
@@ -13096,21 +8832,8 @@ namespace CommonMark.Tests.Specification
             //     <p><strong>foo <em>bar <strong>baz</strong>
             //     bim</em> bop</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo *bar **baz**\nbim* bop**");
-            var expected = Helpers.Normalize("<p><strong>foo <em>bar <strong>baz</strong>\nbim</em> bop</strong></p>");
-            Helpers.Log("Example {0}", 329);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo *bar **baz**\nbim* bop**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 329, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo *bar **baz**\nbim* bop**", "<p><strong>foo <em>bar <strong>baz</strong>\nbim</em> bop</strong></p>");
         }
 
         [TestMethod]
@@ -13127,21 +8850,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo <a href="/url"><em>bar</em></a></strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo [*bar*](/url)**");
-            var expected = Helpers.Normalize("<p><strong>foo <a href=\"/url\"><em>bar</em></a></strong></p>");
-            Helpers.Log("Example {0}", 330);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo [*bar*](/url)**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 330, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo [*bar*](/url)**", "<p><strong>foo <a href=\"/url\"><em>bar</em></a></strong></p>");
         }
 
         // There can be no empty emphasis or strong emphasis:
@@ -13159,21 +8869,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>__ is not an empty emphasis</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__ is not an empty emphasis");
-            var expected = Helpers.Normalize("<p>__ is not an empty emphasis</p>");
-            Helpers.Log("Example {0}", 331);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__ is not an empty emphasis");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 331, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__ is not an empty emphasis", "<p>__ is not an empty emphasis</p>");
         }
 
         [TestMethod]
@@ -13190,21 +8887,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>____ is not an empty strong emphasis</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("____ is not an empty strong emphasis");
-            var expected = Helpers.Normalize("<p>____ is not an empty strong emphasis</p>");
-            Helpers.Log("Example {0}", 332);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "____ is not an empty strong emphasis");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 332, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("____ is not an empty strong emphasis", "<p>____ is not an empty strong emphasis</p>");
         }
 
         // Rule 11:
@@ -13222,21 +8906,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo ***</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo ***");
-            var expected = Helpers.Normalize("<p>foo ***</p>");
-            Helpers.Log("Example {0}", 333);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo ***");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 333, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo ***", "<p>foo ***</p>");
         }
 
         [TestMethod]
@@ -13253,21 +8924,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo <em>*</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo *\\**");
-            var expected = Helpers.Normalize("<p>foo <em>*</em></p>");
-            Helpers.Log("Example {0}", 334);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo *\\**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 334, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo *\\**", "<p>foo <em>*</em></p>");
         }
 
         [TestMethod]
@@ -13284,21 +8942,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo <em>_</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo *_*");
-            var expected = Helpers.Normalize("<p>foo <em>_</em></p>");
-            Helpers.Log("Example {0}", 335);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo *_*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 335, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo *_*", "<p>foo <em>_</em></p>");
         }
 
         [TestMethod]
@@ -13315,21 +8960,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo *****</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo *****");
-            var expected = Helpers.Normalize("<p>foo *****</p>");
-            Helpers.Log("Example {0}", 336);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo *****");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 336, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo *****", "<p>foo *****</p>");
         }
 
         [TestMethod]
@@ -13346,21 +8978,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo <strong>*</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo **\\***");
-            var expected = Helpers.Normalize("<p>foo <strong>*</strong></p>");
-            Helpers.Log("Example {0}", 337);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo **\\***");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 337, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo **\\***", "<p>foo <strong>*</strong></p>");
         }
 
         [TestMethod]
@@ -13377,21 +8996,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo <strong>_</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo **_**");
-            var expected = Helpers.Normalize("<p>foo <strong>_</strong></p>");
-            Helpers.Log("Example {0}", 338);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo **_**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 338, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo **_**", "<p>foo <strong>_</strong></p>");
         }
 
         // Note that when delimiters do not match evenly, Rule 11 determines
@@ -13411,21 +9017,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*<em>foo</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo*");
-            var expected = Helpers.Normalize("<p>*<em>foo</em></p>");
-            Helpers.Log("Example {0}", 339);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 339, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo*", "<p>*<em>foo</em></p>");
         }
 
         [TestMethod]
@@ -13442,21 +9035,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo</em>*</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo**");
-            var expected = Helpers.Normalize("<p><em>foo</em>*</p>");
-            Helpers.Log("Example {0}", 340);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 340, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo**", "<p><em>foo</em>*</p>");
         }
 
         [TestMethod]
@@ -13473,21 +9053,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*<strong>foo</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("***foo**");
-            var expected = Helpers.Normalize("<p>*<strong>foo</strong></p>");
-            Helpers.Log("Example {0}", 341);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 341, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("***foo**", "<p>*<strong>foo</strong></p>");
         }
 
         [TestMethod]
@@ -13504,21 +9071,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>***<em>foo</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("****foo*");
-            var expected = Helpers.Normalize("<p>***<em>foo</em></p>");
-            Helpers.Log("Example {0}", 342);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "****foo*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 342, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("****foo*", "<p>***<em>foo</em></p>");
         }
 
         [TestMethod]
@@ -13535,21 +9089,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo</strong>*</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo***");
-            var expected = Helpers.Normalize("<p><strong>foo</strong>*</p>");
-            Helpers.Log("Example {0}", 343);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo***");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 343, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo***", "<p><strong>foo</strong>*</p>");
         }
 
         [TestMethod]
@@ -13566,21 +9107,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo</em>***</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo****");
-            var expected = Helpers.Normalize("<p><em>foo</em>***</p>");
-            Helpers.Log("Example {0}", 344);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo****");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 344, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo****", "<p><em>foo</em>***</p>");
         }
 
         // Rule 12:
@@ -13598,21 +9126,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo ___</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo ___");
-            var expected = Helpers.Normalize("<p>foo ___</p>");
-            Helpers.Log("Example {0}", 345);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo ___");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 345, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo ___", "<p>foo ___</p>");
         }
 
         [TestMethod]
@@ -13629,21 +9144,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo <em>_</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo _\\__");
-            var expected = Helpers.Normalize("<p>foo <em>_</em></p>");
-            Helpers.Log("Example {0}", 346);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo _\\__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 346, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo _\\__", "<p>foo <em>_</em></p>");
         }
 
         [TestMethod]
@@ -13660,21 +9162,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo <em>*</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo _*_");
-            var expected = Helpers.Normalize("<p>foo <em>*</em></p>");
-            Helpers.Log("Example {0}", 347);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo _*_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 347, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo _*_", "<p>foo <em>*</em></p>");
         }
 
         [TestMethod]
@@ -13691,21 +9180,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo _____</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo _____");
-            var expected = Helpers.Normalize("<p>foo _____</p>");
-            Helpers.Log("Example {0}", 348);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo _____");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 348, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo _____", "<p>foo _____</p>");
         }
 
         [TestMethod]
@@ -13722,21 +9198,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo <strong>_</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo __\\___");
-            var expected = Helpers.Normalize("<p>foo <strong>_</strong></p>");
-            Helpers.Log("Example {0}", 349);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo __\\___");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 349, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo __\\___", "<p>foo <strong>_</strong></p>");
         }
 
         [TestMethod]
@@ -13753,21 +9216,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo <strong>*</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo __*__");
-            var expected = Helpers.Normalize("<p>foo <strong>*</strong></p>");
-            Helpers.Log("Example {0}", 350);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo __*__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 350, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo __*__", "<p>foo <strong>*</strong></p>");
         }
 
         [TestMethod]
@@ -13784,21 +9234,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>_<em>foo</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__foo_");
-            var expected = Helpers.Normalize("<p>_<em>foo</em></p>");
-            Helpers.Log("Example {0}", 351);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 351, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__foo_", "<p>_<em>foo</em></p>");
         }
 
         // Note that when delimiters do not match evenly, Rule 12 determines
@@ -13818,21 +9255,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo</em>_</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_foo__");
-            var expected = Helpers.Normalize("<p><em>foo</em>_</p>");
-            Helpers.Log("Example {0}", 352);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 352, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_foo__", "<p><em>foo</em>_</p>");
         }
 
         [TestMethod]
@@ -13849,21 +9273,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>_<strong>foo</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("___foo__");
-            var expected = Helpers.Normalize("<p>_<strong>foo</strong></p>");
-            Helpers.Log("Example {0}", 353);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "___foo__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 353, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("___foo__", "<p>_<strong>foo</strong></p>");
         }
 
         [TestMethod]
@@ -13880,21 +9291,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>___<em>foo</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("____foo_");
-            var expected = Helpers.Normalize("<p>___<em>foo</em></p>");
-            Helpers.Log("Example {0}", 354);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "____foo_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 354, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("____foo_", "<p>___<em>foo</em></p>");
         }
 
         [TestMethod]
@@ -13911,21 +9309,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo</strong>_</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__foo___");
-            var expected = Helpers.Normalize("<p><strong>foo</strong>_</p>");
-            Helpers.Log("Example {0}", 355);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo___");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 355, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__foo___", "<p><strong>foo</strong>_</p>");
         }
 
         [TestMethod]
@@ -13942,21 +9327,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo</em>___</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_foo____");
-            var expected = Helpers.Normalize("<p><em>foo</em>___</p>");
-            Helpers.Log("Example {0}", 356);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo____");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 356, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_foo____", "<p><em>foo</em>___</p>");
         }
 
         // Rule 13 implies that if you want emphasis nested directly inside
@@ -13975,21 +9347,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo**");
-            var expected = Helpers.Normalize("<p><strong>foo</strong></p>");
-            Helpers.Log("Example {0}", 357);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 357, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo**", "<p><strong>foo</strong></p>");
         }
 
         [TestMethod]
@@ -14006,21 +9365,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em><em>foo</em></em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*_foo_*");
-            var expected = Helpers.Normalize("<p><em><em>foo</em></em></p>");
-            Helpers.Log("Example {0}", 358);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*_foo_*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 358, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*_foo_*", "<p><em><em>foo</em></em></p>");
         }
 
         [TestMethod]
@@ -14037,21 +9383,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__foo__");
-            var expected = Helpers.Normalize("<p><strong>foo</strong></p>");
-            Helpers.Log("Example {0}", 359);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__foo__");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 359, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__foo__", "<p><strong>foo</strong></p>");
         }
 
         [TestMethod]
@@ -14068,21 +9401,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em><em>foo</em></em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_*foo*_");
-            var expected = Helpers.Normalize("<p><em><em>foo</em></em></p>");
-            Helpers.Log("Example {0}", 360);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_*foo*_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 360, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_*foo*_", "<p><em><em>foo</em></em></p>");
         }
 
         // However, strong emphasis within strong emphasisis possible without
@@ -14101,21 +9421,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong><strong>foo</strong></strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("****foo****");
-            var expected = Helpers.Normalize("<p><strong><strong>foo</strong></strong></p>");
-            Helpers.Log("Example {0}", 361);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "****foo****");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 361, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("****foo****", "<p><strong><strong>foo</strong></strong></p>");
         }
 
         [TestMethod]
@@ -14132,21 +9439,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong><strong>foo</strong></strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("____foo____");
-            var expected = Helpers.Normalize("<p><strong><strong>foo</strong></strong></p>");
-            Helpers.Log("Example {0}", 362);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "____foo____");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 362, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("____foo____", "<p><strong><strong>foo</strong></strong></p>");
         }
 
         // Rule 13 can be applied to arbitrarily long sequences of
@@ -14165,21 +9459,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong><strong><strong>foo</strong></strong></strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("******foo******");
-            var expected = Helpers.Normalize("<p><strong><strong><strong>foo</strong></strong></strong></p>");
-            Helpers.Log("Example {0}", 363);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "******foo******");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 363, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("******foo******", "<p><strong><strong><strong>foo</strong></strong></strong></p>");
         }
 
         // Rule 14:
@@ -14197,21 +9478,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong><em>foo</em></strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("***foo***");
-            var expected = Helpers.Normalize("<p><strong><em>foo</em></strong></p>");
-            Helpers.Log("Example {0}", 364);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "***foo***");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 364, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("***foo***", "<p><strong><em>foo</em></strong></p>");
         }
 
         [TestMethod]
@@ -14228,21 +9496,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong><strong><em>foo</em></strong></strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_____foo_____");
-            var expected = Helpers.Normalize("<p><strong><strong><em>foo</em></strong></strong></p>");
-            Helpers.Log("Example {0}", 365);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_____foo_____");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 365, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_____foo_____", "<p><strong><strong><em>foo</em></strong></strong></p>");
         }
 
         // Rule 15:
@@ -14260,21 +9515,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo _bar</em> baz_</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo _bar* baz_");
-            var expected = Helpers.Normalize("<p><em>foo _bar</em> baz_</p>");
-            Helpers.Log("Example {0}", 366);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo _bar* baz_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 366, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo _bar* baz_", "<p><em>foo _bar</em> baz_</p>");
         }
 
         [TestMethod]
@@ -14291,21 +9533,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em><em>foo</em>bar</em>*</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo*bar**");
-            var expected = Helpers.Normalize("<p><em><em>foo</em>bar</em>*</p>");
-            Helpers.Log("Example {0}", 367);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo*bar**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 367, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo*bar**", "<p><em><em>foo</em>bar</em>*</p>");
         }
 
         // Rule 16:
@@ -14323,21 +9552,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>**foo <strong>bar baz</strong></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**foo **bar baz**");
-            var expected = Helpers.Normalize("<p>**foo <strong>bar baz</strong></p>");
-            Helpers.Log("Example {0}", 368);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**foo **bar baz**");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 368, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**foo **bar baz**", "<p>**foo <strong>bar baz</strong></p>");
         }
 
         [TestMethod]
@@ -14354,21 +9570,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*foo <em>bar baz</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo *bar baz*");
-            var expected = Helpers.Normalize("<p>*foo <em>bar baz</em></p>");
-            Helpers.Log("Example {0}", 369);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo *bar baz*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 369, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*foo *bar baz*", "<p>*foo <em>bar baz</em></p>");
         }
 
         // Rule 17:
@@ -14386,21 +9589,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*<a href="/url">bar*</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*[bar*](/url)");
-            var expected = Helpers.Normalize("<p>*<a href=\"/url\">bar*</a></p>");
-            Helpers.Log("Example {0}", 370);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*[bar*](/url)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 370, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*[bar*](/url)", "<p>*<a href=\"/url\">bar*</a></p>");
         }
 
         [TestMethod]
@@ -14417,21 +9607,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>_foo <a href="/url">bar_</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_foo [bar_](/url)");
-            var expected = Helpers.Normalize("<p>_foo <a href=\"/url\">bar_</a></p>");
-            Helpers.Log("Example {0}", 371);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_foo [bar_](/url)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 371, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_foo [bar_](/url)", "<p>_foo <a href=\"/url\">bar_</a></p>");
         }
 
         [TestMethod]
@@ -14448,21 +9625,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*<img src="foo" title="*"/></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*<img src=\"foo\" title=\"*\"/>");
-            var expected = Helpers.Normalize("<p>*<img src=\"foo\" title=\"*\"/></p>");
-            Helpers.Log("Example {0}", 372);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*<img src=\"foo\" title=\"*\"/>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 372, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*<img src=\"foo\" title=\"*\"/>", "<p>*<img src=\"foo\" title=\"*\"/></p>");
         }
 
         [TestMethod]
@@ -14479,21 +9643,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>**<a href="**"></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**<a href=\"**\">");
-            var expected = Helpers.Normalize("<p>**<a href=\"**\"></p>");
-            Helpers.Log("Example {0}", 373);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**<a href=\"**\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 373, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**<a href=\"**\">", "<p>**<a href=\"**\"></p>");
         }
 
         [TestMethod]
@@ -14510,21 +9661,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>__<a href="__"></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__<a href=\"__\">");
-            var expected = Helpers.Normalize("<p>__<a href=\"__\"></p>");
-            Helpers.Log("Example {0}", 374);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__<a href=\"__\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 374, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__<a href=\"__\">", "<p>__<a href=\"__\"></p>");
         }
 
         [TestMethod]
@@ -14541,21 +9679,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>a <code>*</code></em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*a `*`*");
-            var expected = Helpers.Normalize("<p><em>a <code>*</code></em></p>");
-            Helpers.Log("Example {0}", 375);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*a `*`*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 375, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*a `*`*", "<p><em>a <code>*</code></em></p>");
         }
 
         [TestMethod]
@@ -14572,21 +9697,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>a <code>_</code></em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("_a `_`_");
-            var expected = Helpers.Normalize("<p><em>a <code>_</code></em></p>");
-            Helpers.Log("Example {0}", 376);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "_a `_`_");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 376, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_a `_`_", "<p><em>a <code>_</code></em></p>");
         }
 
         [TestMethod]
@@ -14603,21 +9715,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>**a<a href="http://foo.bar?q=**">http://foo.bar?q=**</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("**a<http://foo.bar?q=**>");
-            var expected = Helpers.Normalize("<p>**a<a href=\"http://foo.bar?q=**\">http://foo.bar?q=**</a></p>");
-            Helpers.Log("Example {0}", 377);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "**a<http://foo.bar?q=**>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 377, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**a<http://foo.bar?q=**>", "<p>**a<a href=\"http://foo.bar?q=**\">http://foo.bar?q=**</a></p>");
         }
 
         [TestMethod]
@@ -14634,21 +9733,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>__a<a href="http://foo.bar?q=__">http://foo.bar?q=__</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("__a<http://foo.bar?q=__>");
-            var expected = Helpers.Normalize("<p>__a<a href=\"http://foo.bar?q=__\">http://foo.bar?q=__</a></p>");
-            Helpers.Log("Example {0}", 378);
-            Helpers.Log("Section: {0}", "Inlines - Emphasis and strong emphasis");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "__a<http://foo.bar?q=__>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 378, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("__a<http://foo.bar?q=__>", "<p>__a<a href=\"http://foo.bar?q=__\">http://foo.bar?q=__</a></p>");
         }
 
         // ## Links
@@ -14736,21 +9822,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri" title="title">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](/uri \"title\")");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\" title=\"title\">link</a></p>");
-            Helpers.Log("Example {0}", 379);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](/uri \"title\")");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 379, "Inlines - Links");
+			Helpers.ExecuteTest("[link](/uri \"title\")", "<p><a href=\"/uri\" title=\"title\">link</a></p>");
         }
 
         // The title may be omitted:
@@ -14768,21 +9841,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](/uri)");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\">link</a></p>");
-            Helpers.Log("Example {0}", 380);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](/uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 380, "Inlines - Links");
+			Helpers.ExecuteTest("[link](/uri)", "<p><a href=\"/uri\">link</a></p>");
         }
 
         // Both the title and the destination may be omitted:
@@ -14800,21 +9860,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link]()");
-            var expected = Helpers.Normalize("<p><a href=\"\">link</a></p>");
-            Helpers.Log("Example {0}", 381);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link]()");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 381, "Inlines - Links");
+			Helpers.ExecuteTest("[link]()", "<p><a href=\"\">link</a></p>");
         }
 
         [TestMethod]
@@ -14831,21 +9878,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](<>)");
-            var expected = Helpers.Normalize("<p><a href=\"\">link</a></p>");
-            Helpers.Log("Example {0}", 382);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](<>)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 382, "Inlines - Links");
+			Helpers.ExecuteTest("[link](<>)", "<p><a href=\"\">link</a></p>");
         }
 
         // If the destination contains spaces, it must be enclosed in pointy
@@ -14864,21 +9898,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[link](/my uri)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](/my uri)");
-            var expected = Helpers.Normalize("<p>[link](/my uri)</p>");
-            Helpers.Log("Example {0}", 383);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](/my uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 383, "Inlines - Links");
+			Helpers.ExecuteTest("[link](/my uri)", "<p>[link](/my uri)</p>");
         }
 
         [TestMethod]
@@ -14895,21 +9916,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/my%20uri">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](</my uri>)");
-            var expected = Helpers.Normalize("<p><a href=\"/my%20uri\">link</a></p>");
-            Helpers.Log("Example {0}", 384);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](</my uri>)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 384, "Inlines - Links");
+			Helpers.ExecuteTest("[link](</my uri>)", "<p><a href=\"/my%20uri\">link</a></p>");
         }
 
         // The destination cannot contain line breaks, even with pointy braces:
@@ -14929,21 +9937,8 @@ namespace CommonMark.Tests.Specification
             //     <p>[link](foo
             //     bar)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](foo\nbar)");
-            var expected = Helpers.Normalize("<p>[link](foo\nbar)</p>");
-            Helpers.Log("Example {0}", 385);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](foo\nbar)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 385, "Inlines - Links");
+			Helpers.ExecuteTest("[link](foo\nbar)", "<p>[link](foo\nbar)</p>");
         }
 
         // One level of balanced parentheses is allowed without escaping:
@@ -14961,21 +9956,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="(foo)and(bar)">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link]((foo)and(bar))");
-            var expected = Helpers.Normalize("<p><a href=\"(foo)and(bar)\">link</a></p>");
-            Helpers.Log("Example {0}", 386);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link]((foo)and(bar))");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 386, "Inlines - Links");
+			Helpers.ExecuteTest("[link]((foo)and(bar))", "<p><a href=\"(foo)and(bar)\">link</a></p>");
         }
 
         // However, if you have parentheses within parentheses, you need to escape
@@ -14994,21 +9976,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[link](foo(and(bar)))</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](foo(and(bar)))");
-            var expected = Helpers.Normalize("<p>[link](foo(and(bar)))</p>");
-            Helpers.Log("Example {0}", 387);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](foo(and(bar)))");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 387, "Inlines - Links");
+			Helpers.ExecuteTest("[link](foo(and(bar)))", "<p>[link](foo(and(bar)))</p>");
         }
 
         [TestMethod]
@@ -15025,21 +9994,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="foo(and(bar))">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](foo(and\\(bar\\)))");
-            var expected = Helpers.Normalize("<p><a href=\"foo(and(bar))\">link</a></p>");
-            Helpers.Log("Example {0}", 388);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](foo(and\\(bar\\)))");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 388, "Inlines - Links");
+			Helpers.ExecuteTest("[link](foo(and\\(bar\\)))", "<p><a href=\"foo(and(bar))\">link</a></p>");
         }
 
         [TestMethod]
@@ -15056,21 +10012,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="foo(and(bar))">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](<foo(and(bar))>)");
-            var expected = Helpers.Normalize("<p><a href=\"foo(and(bar))\">link</a></p>");
-            Helpers.Log("Example {0}", 389);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](<foo(and(bar))>)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 389, "Inlines - Links");
+			Helpers.ExecuteTest("[link](<foo(and(bar))>)", "<p><a href=\"foo(and(bar))\">link</a></p>");
         }
 
         // Parentheses and other symbols can also be escaped, as usual
@@ -15089,21 +10032,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="foo):">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](foo\\)\\:)");
-            var expected = Helpers.Normalize("<p><a href=\"foo):\">link</a></p>");
-            Helpers.Log("Example {0}", 390);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](foo\\)\\:)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 390, "Inlines - Links");
+			Helpers.ExecuteTest("[link](foo\\)\\:)", "<p><a href=\"foo):\">link</a></p>");
         }
 
         // URL-escaping should be left alone inside the destination, as all
@@ -15124,21 +10054,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="foo%20b%C3%A4">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](foo%20b&auml;)");
-            var expected = Helpers.Normalize("<p><a href=\"foo%20b%C3%A4\">link</a></p>");
-            Helpers.Log("Example {0}", 391);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](foo%20b&auml;)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 391, "Inlines - Links");
+			Helpers.ExecuteTest("[link](foo%20b&auml;)", "<p><a href=\"foo%20b%C3%A4\">link</a></p>");
         }
 
         // Note that, because titles can often be parsed as destinations,
@@ -15158,21 +10075,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="%22title%22">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](\"title\")");
-            var expected = Helpers.Normalize("<p><a href=\"%22title%22\">link</a></p>");
-            Helpers.Log("Example {0}", 392);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](\"title\")");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 392, "Inlines - Links");
+			Helpers.ExecuteTest("[link](\"title\")", "<p><a href=\"%22title%22\">link</a></p>");
         }
 
         // Titles may be in single quotes, double quotes, or parentheses:
@@ -15194,21 +10098,8 @@ namespace CommonMark.Tests.Specification
             //     <a href="/url" title="title">link</a>
             //     <a href="/url" title="title">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](/url \"title\")\n[link](/url 'title')\n[link](/url (title))");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a></p>");
-            Helpers.Log("Example {0}", 393);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](/url \"title\")\n[link](/url 'title')\n[link](/url (title))");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 393, "Inlines - Links");
+			Helpers.ExecuteTest("[link](/url \"title\")\n[link](/url 'title')\n[link](/url (title))", "<p><a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a></p>");
         }
 
         // Backslash escapes and entities may be used in titles:
@@ -15226,21 +10117,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title &quot;&quot;">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](/url \"title \\\"&quot;\")");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title &quot;&quot;\">link</a></p>");
-            Helpers.Log("Example {0}", 394);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](/url \"title \\\"&quot;\")");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 394, "Inlines - Links");
+			Helpers.ExecuteTest("[link](/url \"title \\\"&quot;\")", "<p><a href=\"/url\" title=\"title &quot;&quot;\">link</a></p>");
         }
 
         // Nested balanced quotes are not allowed without escaping:
@@ -15258,21 +10136,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](/url \"title \"and\" title\")");
-            var expected = Helpers.Normalize("<p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>");
-            Helpers.Log("Example {0}", 395);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](/url \"title \"and\" title\")");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 395, "Inlines - Links");
+			Helpers.ExecuteTest("[link](/url \"title \"and\" title\")", "<p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>");
         }
 
         // But it is easy to work around this by using a different quote type:
@@ -15290,21 +10155,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title &quot;and&quot; title">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](/url 'title \"and\" title')");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title &quot;and&quot; title\">link</a></p>");
-            Helpers.Log("Example {0}", 396);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](/url 'title \"and\" title')");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 396, "Inlines - Links");
+			Helpers.ExecuteTest("[link](/url 'title \"and\" title')", "<p><a href=\"/url\" title=\"title &quot;and&quot; title\">link</a></p>");
         }
 
         // (Note:  `Markdown.pl` did allow double quotes inside a double-quoted
@@ -15337,21 +10189,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri" title="title">link</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link](   /uri\n  \"title\"  )");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\" title=\"title\">link</a></p>");
-            Helpers.Log("Example {0}", 397);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link](   /uri\n  \"title\"  )");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 397, "Inlines - Links");
+			Helpers.ExecuteTest("[link](   /uri\n  \"title\"  )", "<p><a href=\"/uri\" title=\"title\">link</a></p>");
         }
 
         // But it is not allowed between the link text and the
@@ -15370,21 +10209,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[link] (/uri)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link] (/uri)");
-            var expected = Helpers.Normalize("<p>[link] (/uri)</p>");
-            Helpers.Log("Example {0}", 398);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link] (/uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 398, "Inlines - Links");
+			Helpers.ExecuteTest("[link] (/uri)", "<p>[link] (/uri)</p>");
         }
 
         // The link text may contain balanced brackets, but not unbalanced ones,
@@ -15403,21 +10229,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri">link [foo [bar]]</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link [foo [bar]]](/uri)");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\">link [foo [bar]]</a></p>");
-            Helpers.Log("Example {0}", 399);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link [foo [bar]]](/uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 399, "Inlines - Links");
+			Helpers.ExecuteTest("[link [foo [bar]]](/uri)", "<p><a href=\"/uri\">link [foo [bar]]</a></p>");
         }
 
         [TestMethod]
@@ -15434,21 +10247,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[link] bar](/uri)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link] bar](/uri)");
-            var expected = Helpers.Normalize("<p>[link] bar](/uri)</p>");
-            Helpers.Log("Example {0}", 400);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link] bar](/uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 400, "Inlines - Links");
+			Helpers.ExecuteTest("[link] bar](/uri)", "<p>[link] bar](/uri)</p>");
         }
 
         [TestMethod]
@@ -15465,21 +10265,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[link <a href="/uri">bar</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link [bar](/uri)");
-            var expected = Helpers.Normalize("<p>[link <a href=\"/uri\">bar</a></p>");
-            Helpers.Log("Example {0}", 401);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link [bar](/uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 401, "Inlines - Links");
+			Helpers.ExecuteTest("[link [bar](/uri)", "<p>[link <a href=\"/uri\">bar</a></p>");
         }
 
         [TestMethod]
@@ -15496,21 +10283,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri">link [bar</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link \\[bar](/uri)");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\">link [bar</a></p>");
-            Helpers.Log("Example {0}", 402);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link \\[bar](/uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 402, "Inlines - Links");
+			Helpers.ExecuteTest("[link \\[bar](/uri)", "<p><a href=\"/uri\">link [bar</a></p>");
         }
 
         // The link text may contain inline content:
@@ -15528,21 +10302,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link *foo **bar** `#`*](/uri)");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>");
-            Helpers.Log("Example {0}", 403);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link *foo **bar** `#`*](/uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 403, "Inlines - Links");
+			Helpers.ExecuteTest("[link *foo **bar** `#`*](/uri)", "<p><a href=\"/uri\">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>");
         }
 
         [TestMethod]
@@ -15559,21 +10320,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri"><img src="moon.jpg" alt="moon" /></a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[![moon](moon.jpg)](/uri)");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>");
-            Helpers.Log("Example {0}", 404);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[![moon](moon.jpg)](/uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 404, "Inlines - Links");
+			Helpers.ExecuteTest("[![moon](moon.jpg)](/uri)", "<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>");
         }
 
         // However, links may not contain other links, at any level of nesting.
@@ -15591,21 +10339,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo <a href="/uri">bar</a>](/uri)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo [bar](/uri)](/uri)");
-            var expected = Helpers.Normalize("<p>[foo <a href=\"/uri\">bar</a>](/uri)</p>");
-            Helpers.Log("Example {0}", 405);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo [bar](/uri)](/uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 405, "Inlines - Links");
+			Helpers.ExecuteTest("[foo [bar](/uri)](/uri)", "<p>[foo <a href=\"/uri\">bar</a>](/uri)</p>");
         }
 
         [TestMethod]
@@ -15622,21 +10357,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo <em>[bar <a href="/uri">baz</a>](/uri)</em>](/uri)</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo *[bar [baz](/uri)](/uri)*](/uri)");
-            var expected = Helpers.Normalize("<p>[foo <em>[bar <a href=\"/uri\">baz</a>](/uri)</em>](/uri)</p>");
-            Helpers.Log("Example {0}", 406);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo *[bar [baz](/uri)](/uri)*](/uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 406, "Inlines - Links");
+			Helpers.ExecuteTest("[foo *[bar [baz](/uri)](/uri)*](/uri)", "<p>[foo <em>[bar <a href=\"/uri\">baz</a>](/uri)</em>](/uri)</p>");
         }
 
         // These cases illustrate the precedence of link text grouping over
@@ -15655,21 +10377,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*<a href="/uri">foo*</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*[foo*](/uri)");
-            var expected = Helpers.Normalize("<p>*<a href=\"/uri\">foo*</a></p>");
-            Helpers.Log("Example {0}", 407);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*[foo*](/uri)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 407, "Inlines - Links");
+			Helpers.ExecuteTest("*[foo*](/uri)", "<p>*<a href=\"/uri\">foo*</a></p>");
         }
 
         [TestMethod]
@@ -15686,21 +10395,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="baz*">foo *bar</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo *bar](baz*)");
-            var expected = Helpers.Normalize("<p><a href=\"baz*\">foo *bar</a></p>");
-            Helpers.Log("Example {0}", 408);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo *bar](baz*)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 408, "Inlines - Links");
+			Helpers.ExecuteTest("[foo *bar](baz*)", "<p><a href=\"baz*\">foo *bar</a></p>");
         }
 
         // These cases illustrate the precedence of HTML tags, code spans,
@@ -15719,21 +10415,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo <bar attr="](baz)"></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo <bar attr=\"](baz)\">");
-            var expected = Helpers.Normalize("<p>[foo <bar attr=\"](baz)\"></p>");
-            Helpers.Log("Example {0}", 409);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo <bar attr=\"](baz)\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 409, "Inlines - Links");
+			Helpers.ExecuteTest("[foo <bar attr=\"](baz)\">", "<p>[foo <bar attr=\"](baz)\"></p>");
         }
 
         [TestMethod]
@@ -15750,21 +10433,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo<code>](/uri)</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo`](/uri)`");
-            var expected = Helpers.Normalize("<p>[foo<code>](/uri)</code></p>");
-            Helpers.Log("Example {0}", 410);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo`](/uri)`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 410, "Inlines - Links");
+			Helpers.ExecuteTest("[foo`](/uri)`", "<p>[foo<code>](/uri)</code></p>");
         }
 
         [TestMethod]
@@ -15781,21 +10451,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo<a href="http://example.com?search=%5D(uri)">http://example.com?search=](uri)</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo<http://example.com?search=](uri)>");
-            var expected = Helpers.Normalize("<p>[foo<a href=\"http://example.com?search=%5D(uri)\">http://example.com?search=](uri)</a></p>");
-            Helpers.Log("Example {0}", 411);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo<http://example.com?search=](uri)>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 411, "Inlines - Links");
+			Helpers.ExecuteTest("[foo<http://example.com?search=](uri)>", "<p>[foo<a href=\"http://example.com?search=%5D(uri)\">http://example.com?search=](uri)</a></p>");
         }
 
         // There are three kinds of [reference links](@reference-link):
@@ -15842,21 +10499,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo][bar]\n\n[bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 412);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo][bar]\n\n[bar]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 412, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][bar]\n\n[bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         // The rules for the [link text](#link-text) are the same as with
@@ -15880,21 +10524,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri">link [foo [bar]]</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link [foo [bar]]][ref]\n\n[ref]: /uri");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\">link [foo [bar]]</a></p>");
-            Helpers.Log("Example {0}", 413);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link [foo [bar]]][ref]\n\n[ref]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 413, "Inlines - Links");
+			Helpers.ExecuteTest("[link [foo [bar]]][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\">link [foo [bar]]</a></p>");
         }
 
         [TestMethod]
@@ -15913,21 +10544,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri">link [bar</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link \\[bar][ref]\n\n[ref]: /uri");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\">link [bar</a></p>");
-            Helpers.Log("Example {0}", 414);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link \\[bar][ref]\n\n[ref]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 414, "Inlines - Links");
+			Helpers.ExecuteTest("[link \\[bar][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\">link [bar</a></p>");
         }
 
         // The link text may contain inline content:
@@ -15947,21 +10565,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[link *foo **bar** `#`*][ref]\n\n[ref]: /uri");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>");
-            Helpers.Log("Example {0}", 415);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[link *foo **bar** `#`*][ref]\n\n[ref]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 415, "Inlines - Links");
+			Helpers.ExecuteTest("[link *foo **bar** `#`*][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>");
         }
 
         [TestMethod]
@@ -15980,21 +10585,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri"><img src="moon.jpg" alt="moon" /></a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[![moon](moon.jpg)][ref]\n\n[ref]: /uri");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>");
-            Helpers.Log("Example {0}", 416);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[![moon](moon.jpg)][ref]\n\n[ref]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 416, "Inlines - Links");
+			Helpers.ExecuteTest("[![moon](moon.jpg)][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>");
         }
 
         // However, links may not contain other links, at any level of nesting.
@@ -16014,21 +10606,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo <a href="/uri">bar</a>]<a href="/uri">ref</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo [bar](/uri)][ref]\n\n[ref]: /uri");
-            var expected = Helpers.Normalize("<p>[foo <a href=\"/uri\">bar</a>]<a href=\"/uri\">ref</a></p>");
-            Helpers.Log("Example {0}", 417);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo [bar](/uri)][ref]\n\n[ref]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 417, "Inlines - Links");
+			Helpers.ExecuteTest("[foo [bar](/uri)][ref]\n\n[ref]: /uri", "<p>[foo <a href=\"/uri\">bar</a>]<a href=\"/uri\">ref</a></p>");
         }
 
         [TestMethod]
@@ -16047,21 +10626,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo <em>bar <a href="/uri">baz</a></em>]<a href="/uri">ref</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo *bar [baz][ref]*][ref]\n\n[ref]: /uri");
-            var expected = Helpers.Normalize("<p>[foo <em>bar <a href=\"/uri\">baz</a></em>]<a href=\"/uri\">ref</a></p>");
-            Helpers.Log("Example {0}", 418);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo *bar [baz][ref]*][ref]\n\n[ref]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 418, "Inlines - Links");
+			Helpers.ExecuteTest("[foo *bar [baz][ref]*][ref]\n\n[ref]: /uri", "<p>[foo <em>bar <a href=\"/uri\">baz</a></em>]<a href=\"/uri\">ref</a></p>");
         }
 
         // (In the examples above, we have two [shortcut reference
@@ -16086,21 +10652,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*<a href="/uri">foo*</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*[foo*][ref]\n\n[ref]: /uri");
-            var expected = Helpers.Normalize("<p>*<a href=\"/uri\">foo*</a></p>");
-            Helpers.Log("Example {0}", 419);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*[foo*][ref]\n\n[ref]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 419, "Inlines - Links");
+			Helpers.ExecuteTest("*[foo*][ref]\n\n[ref]: /uri", "<p>*<a href=\"/uri\">foo*</a></p>");
         }
 
         [TestMethod]
@@ -16119,21 +10672,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri">foo *bar</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo *bar][ref]\n\n[ref]: /uri");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\">foo *bar</a></p>");
-            Helpers.Log("Example {0}", 420);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo *bar][ref]\n\n[ref]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 420, "Inlines - Links");
+			Helpers.ExecuteTest("[foo *bar][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\">foo *bar</a></p>");
         }
 
         // These cases illustrate the precedence of HTML tags, code spans,
@@ -16154,21 +10694,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo <bar attr="][ref]"></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo <bar attr=\"][ref]\">\n\n[ref]: /uri");
-            var expected = Helpers.Normalize("<p>[foo <bar attr=\"][ref]\"></p>");
-            Helpers.Log("Example {0}", 421);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo <bar attr=\"][ref]\">\n\n[ref]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 421, "Inlines - Links");
+			Helpers.ExecuteTest("[foo <bar attr=\"][ref]\">\n\n[ref]: /uri", "<p>[foo <bar attr=\"][ref]\"></p>");
         }
 
         [TestMethod]
@@ -16187,21 +10714,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo<code>][ref]</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo`][ref]`\n\n[ref]: /uri");
-            var expected = Helpers.Normalize("<p>[foo<code>][ref]</code></p>");
-            Helpers.Log("Example {0}", 422);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo`][ref]`\n\n[ref]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 422, "Inlines - Links");
+			Helpers.ExecuteTest("[foo`][ref]`\n\n[ref]: /uri", "<p>[foo<code>][ref]</code></p>");
         }
 
         [TestMethod]
@@ -16220,21 +10734,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo<a href="http://example.com?search=%5D%5Bref%5D">http://example.com?search=][ref]</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo<http://example.com?search=][ref]>\n\n[ref]: /uri");
-            var expected = Helpers.Normalize("<p>[foo<a href=\"http://example.com?search=%5D%5Bref%5D\">http://example.com?search=][ref]</a></p>");
-            Helpers.Log("Example {0}", 423);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo<http://example.com?search=][ref]>\n\n[ref]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 423, "Inlines - Links");
+			Helpers.ExecuteTest("[foo<http://example.com?search=][ref]>\n\n[ref]: /uri", "<p>[foo<a href=\"http://example.com?search=%5D%5Bref%5D\">http://example.com?search=][ref]</a></p>");
         }
 
         // Matching is case-insensitive:
@@ -16254,21 +10755,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo][BaR]\n\n[bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 424);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo][BaR]\n\n[bar]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 424, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][BaR]\n\n[bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         // Unicode case fold is used:
@@ -16288,21 +10776,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url">Толпой</a> is a Russian word.</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[Толпой][Толпой] is a Russian word.\n\n[ТОЛПОЙ]: /url");
-            var expected = Helpers.Normalize("<p><a href=\"/url\">Толпой</a> is a Russian word.</p>");
-            Helpers.Log("Example {0}", 425);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[Толпой][Толпой] is a Russian word.\n\n[ТОЛПОЙ]: /url");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 425, "Inlines - Links");
+			Helpers.ExecuteTest("[Толпой][Толпой] is a Russian word.\n\n[ТОЛПОЙ]: /url", "<p><a href=\"/url\">Толпой</a> is a Russian word.</p>");
         }
 
         // Consecutive internal whitespace is treated as one space for
@@ -16324,21 +10799,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url">Baz</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[Foo\n  bar]: /url\n\n[Baz][Foo bar]");
-            var expected = Helpers.Normalize("<p><a href=\"/url\">Baz</a></p>");
-            Helpers.Log("Example {0}", 426);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[Foo\n  bar]: /url\n\n[Baz][Foo bar]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 426, "Inlines - Links");
+			Helpers.ExecuteTest("[Foo\n  bar]: /url\n\n[Baz][Foo bar]", "<p><a href=\"/url\">Baz</a></p>");
         }
 
         // There can be whitespace between the [link text](#link-text) and the
@@ -16359,21 +10821,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo] [bar]\n\n[bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 427);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo] [bar]\n\n[bar]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 427, "Inlines - Links");
+			Helpers.ExecuteTest("[foo] [bar]\n\n[bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         [TestMethod]
@@ -16393,21 +10842,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]\n[bar]\n\n[bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 428);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]\n[bar]\n\n[bar]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 428, "Inlines - Links");
+			Helpers.ExecuteTest("[foo]\n[bar]\n\n[bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         // When there are multiple matching [link reference
@@ -16430,21 +10866,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url1">bar</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]: /url1\n\n[foo]: /url2\n\n[bar][foo]");
-            var expected = Helpers.Normalize("<p><a href=\"/url1\">bar</a></p>");
-            Helpers.Log("Example {0}", 429);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]: /url1\n\n[foo]: /url2\n\n[bar][foo]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 429, "Inlines - Links");
+			Helpers.ExecuteTest("[foo]: /url1\n\n[foo]: /url2\n\n[bar][foo]", "<p><a href=\"/url1\">bar</a></p>");
         }
 
         // Note that matching is performed on normalized strings, not parsed
@@ -16466,21 +10889,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[bar][foo!]</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[bar][foo\\!]\n\n[foo!]: /url");
-            var expected = Helpers.Normalize("<p>[bar][foo!]</p>");
-            Helpers.Log("Example {0}", 430);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[bar][foo\\!]\n\n[foo!]: /url");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 430, "Inlines - Links");
+			Helpers.ExecuteTest("[bar][foo\\!]\n\n[foo!]: /url", "<p>[bar][foo!]</p>");
         }
 
         // [Link labels](#link-label) cannot contain brackets, unless they are
@@ -16502,21 +10912,8 @@ namespace CommonMark.Tests.Specification
             //     <p>[foo][ref[]</p>
             //     <p>[ref[]: /uri</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo][ref[]\n\n[ref[]: /uri");
-            var expected = Helpers.Normalize("<p>[foo][ref[]</p>\n<p>[ref[]: /uri</p>");
-            Helpers.Log("Example {0}", 431);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo][ref[]\n\n[ref[]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 431, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][ref[]\n\n[ref[]: /uri", "<p>[foo][ref[]</p>\n<p>[ref[]: /uri</p>");
         }
 
         [TestMethod]
@@ -16536,21 +10933,8 @@ namespace CommonMark.Tests.Specification
             //     <p>[foo][ref[bar]]</p>
             //     <p>[ref[bar]]: /uri</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo][ref[bar]]\n\n[ref[bar]]: /uri");
-            var expected = Helpers.Normalize("<p>[foo][ref[bar]]</p>\n<p>[ref[bar]]: /uri</p>");
-            Helpers.Log("Example {0}", 432);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo][ref[bar]]\n\n[ref[bar]]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 432, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][ref[bar]]\n\n[ref[bar]]: /uri", "<p>[foo][ref[bar]]</p>\n<p>[ref[bar]]: /uri</p>");
         }
 
         [TestMethod]
@@ -16570,21 +10954,8 @@ namespace CommonMark.Tests.Specification
             //     <p>[[[foo]]]</p>
             //     <p>[[[foo]]]: /url</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[[[foo]]]\n\n[[[foo]]]: /url");
-            var expected = Helpers.Normalize("<p>[[[foo]]]</p>\n<p>[[[foo]]]: /url</p>");
-            Helpers.Log("Example {0}", 433);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[[[foo]]]\n\n[[[foo]]]: /url");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 433, "Inlines - Links");
+			Helpers.ExecuteTest("[[[foo]]]\n\n[[[foo]]]: /url", "<p>[[[foo]]]</p>\n<p>[[[foo]]]: /url</p>");
         }
 
         [TestMethod]
@@ -16603,21 +10974,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo][ref\\[]\n\n[ref\\[]: /uri");
-            var expected = Helpers.Normalize("<p><a href=\"/uri\">foo</a></p>");
-            Helpers.Log("Example {0}", 434);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo][ref\\[]\n\n[ref\\[]: /uri");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 434, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][ref\\[]\n\n[ref\\[]: /uri", "<p><a href=\"/uri\">foo</a></p>");
         }
 
         // A [collapsed reference link](@collapsed-reference-link)
@@ -16644,21 +11002,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo][]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 435);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo][]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 435, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][]\n\n[foo]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         [TestMethod]
@@ -16677,21 +11022,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title"><em>foo</em> bar</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[*foo* bar][]\n\n[*foo* bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\"><em>foo</em> bar</a></p>");
-            Helpers.Log("Example {0}", 436);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[*foo* bar][]\n\n[*foo* bar]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 436, "Inlines - Links");
+			Helpers.ExecuteTest("[*foo* bar][]\n\n[*foo* bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\"><em>foo</em> bar</a></p>");
         }
 
         // The link labels are case-insensitive:
@@ -16711,21 +11043,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">Foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[Foo][]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">Foo</a></p>");
-            Helpers.Log("Example {0}", 437);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[Foo][]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 437, "Inlines - Links");
+			Helpers.ExecuteTest("[Foo][]\n\n[foo]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">Foo</a></p>");
         }
 
         // As with full reference links, whitespace is allowed
@@ -16747,21 +11066,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo] \n[]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 438);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo] \n[]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 438, "Inlines - Links");
+			Helpers.ExecuteTest("[foo] \n[]\n\n[foo]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         // A [shortcut reference link](@shortcut-reference-link)
@@ -16789,21 +11095,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 439);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 439, "Inlines - Links");
+			Helpers.ExecuteTest("[foo]\n\n[foo]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         [TestMethod]
@@ -16822,21 +11115,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title"><em>foo</em> bar</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[*foo* bar]\n\n[*foo* bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\"><em>foo</em> bar</a></p>");
-            Helpers.Log("Example {0}", 440);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[*foo* bar]\n\n[*foo* bar]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 440, "Inlines - Links");
+			Helpers.ExecuteTest("[*foo* bar]\n\n[*foo* bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\"><em>foo</em> bar</a></p>");
         }
 
         [TestMethod]
@@ -16855,21 +11135,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[<a href="/url" title="title"><em>foo</em> bar</a>]</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[[*foo* bar]]\n\n[*foo* bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p>[<a href=\"/url\" title=\"title\"><em>foo</em> bar</a>]</p>");
-            Helpers.Log("Example {0}", 441);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[[*foo* bar]]\n\n[*foo* bar]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 441, "Inlines - Links");
+			Helpers.ExecuteTest("[[*foo* bar]]\n\n[*foo* bar]: /url \"title\"", "<p>[<a href=\"/url\" title=\"title\"><em>foo</em> bar</a>]</p>");
         }
 
         // The link labels are case-insensitive:
@@ -16889,21 +11156,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">Foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[Foo]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><a href=\"/url\" title=\"title\">Foo</a></p>");
-            Helpers.Log("Example {0}", 442);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[Foo]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 442, "Inlines - Links");
+			Helpers.ExecuteTest("[Foo]\n\n[foo]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">Foo</a></p>");
         }
 
         // A space after the link text should be preserved:
@@ -16923,21 +11177,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url">foo</a> bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo] bar\n\n[foo]: /url");
-            var expected = Helpers.Normalize("<p><a href=\"/url\">foo</a> bar</p>");
-            Helpers.Log("Example {0}", 443);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo] bar\n\n[foo]: /url");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 443, "Inlines - Links");
+			Helpers.ExecuteTest("[foo] bar\n\n[foo]: /url", "<p><a href=\"/url\">foo</a> bar</p>");
         }
 
         // If you just want bracketed text, you can backslash-escape the
@@ -16958,21 +11199,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo]</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("\\[foo]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p>[foo]</p>");
-            Helpers.Log("Example {0}", 444);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "\\[foo]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 444, "Inlines - Links");
+			Helpers.ExecuteTest("\\[foo]\n\n[foo]: /url \"title\"", "<p>[foo]</p>");
         }
 
         // Note that this is a link, because a link label ends with the first
@@ -16993,21 +11221,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*<a href="/url">foo*</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo*]: /url\n\n*[foo*]");
-            var expected = Helpers.Normalize("<p>*<a href=\"/url\">foo*</a></p>");
-            Helpers.Log("Example {0}", 445);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo*]: /url\n\n*[foo*]");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 445, "Inlines - Links");
+			Helpers.ExecuteTest("[foo*]: /url\n\n*[foo*]", "<p>*<a href=\"/url\">foo*</a></p>");
         }
 
         // This is a link too, for the same reason:
@@ -17027,21 +11242,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo<code>]</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo`]: /url\n\n[foo`]`");
-            var expected = Helpers.Normalize("<p>[foo<code>]</code></p>");
-            Helpers.Log("Example {0}", 446);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo`]: /url\n\n[foo`]`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 446, "Inlines - Links");
+			Helpers.ExecuteTest("[foo`]: /url\n\n[foo`]`", "<p>[foo<code>]</code></p>");
         }
 
         // Full references take precedence over shortcut references:
@@ -17062,21 +11264,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url2">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo][bar]\n\n[foo]: /url1\n[bar]: /url2");
-            var expected = Helpers.Normalize("<p><a href=\"/url2\">foo</a></p>");
-            Helpers.Log("Example {0}", 447);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo][bar]\n\n[foo]: /url1\n[bar]: /url2");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 447, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][bar]\n\n[foo]: /url1\n[bar]: /url2", "<p><a href=\"/url2\">foo</a></p>");
         }
 
         // In the following case `[bar][baz]` is parsed as a reference,
@@ -17097,21 +11286,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo]<a href="/url">bar</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo][bar][baz]\n\n[baz]: /url");
-            var expected = Helpers.Normalize("<p>[foo]<a href=\"/url\">bar</a></p>");
-            Helpers.Log("Example {0}", 448);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo][bar][baz]\n\n[baz]: /url");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 448, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][bar][baz]\n\n[baz]: /url", "<p>[foo]<a href=\"/url\">bar</a></p>");
         }
 
         // Here, though, `[foo][bar]` is parsed as a reference, since
@@ -17133,21 +11309,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url2">foo</a><a href="/url1">baz</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo][bar][baz]\n\n[baz]: /url1\n[bar]: /url2");
-            var expected = Helpers.Normalize("<p><a href=\"/url2\">foo</a><a href=\"/url1\">baz</a></p>");
-            Helpers.Log("Example {0}", 449);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo][bar][baz]\n\n[baz]: /url1\n[bar]: /url2");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 449, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][bar][baz]\n\n[baz]: /url1\n[bar]: /url2", "<p><a href=\"/url2\">foo</a><a href=\"/url1\">baz</a></p>");
         }
 
         // Here `[foo]` is not parsed as a shortcut reference, because it
@@ -17169,21 +11332,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo]<a href="/url1">bar</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("[foo][bar][baz]\n\n[baz]: /url1\n[foo]: /url2");
-            var expected = Helpers.Normalize("<p>[foo]<a href=\"/url1\">bar</a></p>");
-            Helpers.Log("Example {0}", 450);
-            Helpers.Log("Section: {0}", "Inlines - Links");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "[foo][bar][baz]\n\n[baz]: /url1\n[foo]: /url2");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 450, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][bar][baz]\n\n[baz]: /url1\n[foo]: /url2", "<p>[foo]<a href=\"/url1\">bar</a></p>");
         }
 
         // ## Images
@@ -17211,21 +11361,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo" title="title" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo](/url \"title\")");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 451);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo](/url \"title\")");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 451, "Inlines - Images");
+			Helpers.ExecuteTest("![foo](/url \"title\")", "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
         }
 
         [TestMethod]
@@ -17244,21 +11381,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
-            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
-            Helpers.Log("Example {0}", 452);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 452, "Inlines - Images");
+			Helpers.ExecuteTest("![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"", "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
         }
 
         [TestMethod]
@@ -17275,21 +11399,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url2" alt="foo bar" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo ![bar](/url)](/url2)");
-            var expected = Helpers.Normalize("<p><img src=\"/url2\" alt=\"foo bar\" /></p>");
-            Helpers.Log("Example {0}", 453);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo ![bar](/url)](/url2)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 453, "Inlines - Images");
+			Helpers.ExecuteTest("![foo ![bar](/url)](/url2)", "<p><img src=\"/url2\" alt=\"foo bar\" /></p>");
         }
 
         [TestMethod]
@@ -17306,21 +11417,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url2" alt="foo bar" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo [bar](/url)](/url2)");
-            var expected = Helpers.Normalize("<p><img src=\"/url2\" alt=\"foo bar\" /></p>");
-            Helpers.Log("Example {0}", 454);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo [bar](/url)](/url2)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 454, "Inlines - Images");
+			Helpers.ExecuteTest("![foo [bar](/url)](/url2)", "<p><img src=\"/url2\" alt=\"foo bar\" /></p>");
         }
 
         // Though this spec is concerned with parsing, not rendering, it is
@@ -17345,21 +11443,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
-            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
-            Helpers.Log("Example {0}", 455);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 455, "Inlines - Images");
+			Helpers.ExecuteTest("![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"", "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
         }
 
         [TestMethod]
@@ -17378,21 +11463,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"");
-            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
-            Helpers.Log("Example {0}", 456);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 456, "Inlines - Images");
+			Helpers.ExecuteTest("![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"", "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
         }
 
         [TestMethod]
@@ -17409,21 +11481,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="train.jpg" alt="foo" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo](train.jpg)");
-            var expected = Helpers.Normalize("<p><img src=\"train.jpg\" alt=\"foo\" /></p>");
-            Helpers.Log("Example {0}", 457);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo](train.jpg)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 457, "Inlines - Images");
+			Helpers.ExecuteTest("![foo](train.jpg)", "<p><img src=\"train.jpg\" alt=\"foo\" /></p>");
         }
 
         [TestMethod]
@@ -17440,21 +11499,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>My <img src="/path/to/train.jpg" alt="foo bar" title="title" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("My ![foo bar](/path/to/train.jpg  \"title\"   )");
-            var expected = Helpers.Normalize("<p>My <img src=\"/path/to/train.jpg\" alt=\"foo bar\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 458);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "My ![foo bar](/path/to/train.jpg  \"title\"   )");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 458, "Inlines - Images");
+			Helpers.ExecuteTest("My ![foo bar](/path/to/train.jpg  \"title\"   )", "<p>My <img src=\"/path/to/train.jpg\" alt=\"foo bar\" title=\"title\" /></p>");
         }
 
         [TestMethod]
@@ -17471,21 +11517,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="url" alt="foo" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo](<url>)");
-            var expected = Helpers.Normalize("<p><img src=\"url\" alt=\"foo\" /></p>");
-            Helpers.Log("Example {0}", 459);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo](<url>)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 459, "Inlines - Images");
+			Helpers.ExecuteTest("![foo](<url>)", "<p><img src=\"url\" alt=\"foo\" /></p>");
         }
 
         [TestMethod]
@@ -17502,21 +11535,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![](/url)");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"\" /></p>");
-            Helpers.Log("Example {0}", 460);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![](/url)");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 460, "Inlines - Images");
+			Helpers.ExecuteTest("![](/url)", "<p><img src=\"/url\" alt=\"\" /></p>");
         }
 
         // Reference-style:
@@ -17536,21 +11556,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo] [bar]\n\n[bar]: /url");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" /></p>");
-            Helpers.Log("Example {0}", 461);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo] [bar]\n\n[bar]: /url");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 461, "Inlines - Images");
+			Helpers.ExecuteTest("![foo] [bar]\n\n[bar]: /url", "<p><img src=\"/url\" alt=\"foo\" /></p>");
         }
 
         [TestMethod]
@@ -17569,21 +11576,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo] [bar]\n\n[BAR]: /url");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" /></p>");
-            Helpers.Log("Example {0}", 462);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo] [bar]\n\n[BAR]: /url");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 462, "Inlines - Images");
+			Helpers.ExecuteTest("![foo] [bar]\n\n[BAR]: /url", "<p><img src=\"/url\" alt=\"foo\" /></p>");
         }
 
         // Collapsed:
@@ -17603,21 +11597,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo" title="title" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo][]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 463);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo][]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 463, "Inlines - Images");
+			Helpers.ExecuteTest("![foo][]\n\n[foo]: /url \"title\"", "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
         }
 
         [TestMethod]
@@ -17636,21 +11617,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo bar" title="title" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![*foo* bar][]\n\n[*foo* bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 464);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![*foo* bar][]\n\n[*foo* bar]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 464, "Inlines - Images");
+			Helpers.ExecuteTest("![*foo* bar][]\n\n[*foo* bar]: /url \"title\"", "<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>");
         }
 
         // The labels are case-insensitive:
@@ -17670,21 +11638,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="Foo" title="title" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![Foo][]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 465);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![Foo][]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 465, "Inlines - Images");
+			Helpers.ExecuteTest("![Foo][]\n\n[foo]: /url \"title\"", "<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>");
         }
 
         // As with full reference links, whitespace is allowed
@@ -17706,21 +11661,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo" title="title" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo] \n[]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 466);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo] \n[]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 466, "Inlines - Images");
+			Helpers.ExecuteTest("![foo] \n[]\n\n[foo]: /url \"title\"", "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
         }
 
         // Shortcut:
@@ -17740,21 +11682,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo" title="title" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![foo]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 467);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![foo]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 467, "Inlines - Images");
+			Helpers.ExecuteTest("![foo]\n\n[foo]: /url \"title\"", "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
         }
 
         [TestMethod]
@@ -17773,21 +11702,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo bar" title="title" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![*foo* bar]\n\n[*foo* bar]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 468);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![*foo* bar]\n\n[*foo* bar]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 468, "Inlines - Images");
+			Helpers.ExecuteTest("![*foo* bar]\n\n[*foo* bar]: /url \"title\"", "<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>");
         }
 
         // Note that link labels cannot contain unescaped brackets:
@@ -17808,21 +11724,8 @@ namespace CommonMark.Tests.Specification
             //     <p>![[foo]]</p>
             //     <p>[[foo]]: /url &quot;title&quot;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![[foo]]\n\n[[foo]]: /url \"title\"");
-            var expected = Helpers.Normalize("<p>![[foo]]</p>\n<p>[[foo]]: /url &quot;title&quot;</p>");
-            Helpers.Log("Example {0}", 469);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![[foo]]\n\n[[foo]]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 469, "Inlines - Images");
+			Helpers.ExecuteTest("![[foo]]\n\n[[foo]]: /url \"title\"", "<p>![[foo]]</p>\n<p>[[foo]]: /url &quot;title&quot;</p>");
         }
 
         // The link labels are case-insensitive:
@@ -17842,21 +11745,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="Foo" title="title" /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("![Foo]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>");
-            Helpers.Log("Example {0}", 470);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "![Foo]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 470, "Inlines - Images");
+			Helpers.ExecuteTest("![Foo]\n\n[foo]: /url \"title\"", "<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>");
         }
 
         // If you just want bracketed text, you can backslash-escape the
@@ -17877,21 +11767,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>![foo]</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("\\!\\[foo]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p>![foo]</p>");
-            Helpers.Log("Example {0}", 471);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "\\!\\[foo]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 471, "Inlines - Images");
+			Helpers.ExecuteTest("\\!\\[foo]\n\n[foo]: /url \"title\"", "<p>![foo]</p>");
         }
 
         // If you want a link after a literal `!`, backslash-escape the
@@ -17912,21 +11789,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>!<a href="/url" title="title">foo</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("\\![foo]\n\n[foo]: /url \"title\"");
-            var expected = Helpers.Normalize("<p>!<a href=\"/url\" title=\"title\">foo</a></p>");
-            Helpers.Log("Example {0}", 472);
-            Helpers.Log("Section: {0}", "Inlines - Images");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "\\![foo]\n\n[foo]: /url \"title\"");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 472, "Inlines - Images");
+			Helpers.ExecuteTest("\\![foo]\n\n[foo]: /url \"title\"", "<p>!<a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         // ## Autolinks
@@ -17987,21 +11851,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="http://foo.bar.baz">http://foo.bar.baz</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<http://foo.bar.baz>");
-            var expected = Helpers.Normalize("<p><a href=\"http://foo.bar.baz\">http://foo.bar.baz</a></p>");
-            Helpers.Log("Example {0}", 473);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<http://foo.bar.baz>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 473, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<http://foo.bar.baz>", "<p><a href=\"http://foo.bar.baz\">http://foo.bar.baz</a></p>");
         }
 
         [TestMethod]
@@ -18018,21 +11869,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="http://foo.bar.baz?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz?q=hello&amp;id=22&amp;boolean</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<http://foo.bar.baz?q=hello&id=22&boolean>");
-            var expected = Helpers.Normalize("<p><a href=\"http://foo.bar.baz?q=hello&amp;id=22&amp;boolean\">http://foo.bar.baz?q=hello&amp;id=22&amp;boolean</a></p>");
-            Helpers.Log("Example {0}", 474);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<http://foo.bar.baz?q=hello&id=22&boolean>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 474, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<http://foo.bar.baz?q=hello&id=22&boolean>", "<p><a href=\"http://foo.bar.baz?q=hello&amp;id=22&amp;boolean\">http://foo.bar.baz?q=hello&amp;id=22&amp;boolean</a></p>");
         }
 
         [TestMethod]
@@ -18049,21 +11887,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<irc://foo.bar:2233/baz>");
-            var expected = Helpers.Normalize("<p><a href=\"irc://foo.bar:2233/baz\">irc://foo.bar:2233/baz</a></p>");
-            Helpers.Log("Example {0}", 475);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<irc://foo.bar:2233/baz>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 475, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<irc://foo.bar:2233/baz>", "<p><a href=\"irc://foo.bar:2233/baz\">irc://foo.bar:2233/baz</a></p>");
         }
 
         // Uppercase is also fine:
@@ -18081,21 +11906,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<MAILTO:FOO@BAR.BAZ>");
-            var expected = Helpers.Normalize("<p><a href=\"MAILTO:FOO@BAR.BAZ\">MAILTO:FOO@BAR.BAZ</a></p>");
-            Helpers.Log("Example {0}", 476);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<MAILTO:FOO@BAR.BAZ>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 476, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<MAILTO:FOO@BAR.BAZ>", "<p><a href=\"MAILTO:FOO@BAR.BAZ\">MAILTO:FOO@BAR.BAZ</a></p>");
         }
 
         // Spaces are not allowed in autolinks:
@@ -18113,21 +11925,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;http://foo.bar/baz bim&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<http://foo.bar/baz bim>");
-            var expected = Helpers.Normalize("<p>&lt;http://foo.bar/baz bim&gt;</p>");
-            Helpers.Log("Example {0}", 477);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<http://foo.bar/baz bim>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 477, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<http://foo.bar/baz bim>", "<p>&lt;http://foo.bar/baz bim&gt;</p>");
         }
 
         // An [email autolink](@email-autolink)
@@ -18158,21 +11957,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<foo@bar.example.com>");
-            var expected = Helpers.Normalize("<p><a href=\"mailto:foo@bar.example.com\">foo@bar.example.com</a></p>");
-            Helpers.Log("Example {0}", 478);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<foo@bar.example.com>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 478, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<foo@bar.example.com>", "<p><a href=\"mailto:foo@bar.example.com\">foo@bar.example.com</a></p>");
         }
 
         [TestMethod]
@@ -18189,21 +11975,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<foo+special@Bar.baz-bar0.com>");
-            var expected = Helpers.Normalize("<p><a href=\"mailto:foo+special@Bar.baz-bar0.com\">foo+special@Bar.baz-bar0.com</a></p>");
-            Helpers.Log("Example {0}", 479);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<foo+special@Bar.baz-bar0.com>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 479, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<foo+special@Bar.baz-bar0.com>", "<p><a href=\"mailto:foo+special@Bar.baz-bar0.com\">foo+special@Bar.baz-bar0.com</a></p>");
         }
 
         // These are not autolinks:
@@ -18221,21 +11994,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<>");
-            var expected = Helpers.Normalize("<p>&lt;&gt;</p>");
-            Helpers.Log("Example {0}", 480);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 480, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<>", "<p>&lt;&gt;</p>");
         }
 
         [TestMethod]
@@ -18252,21 +12012,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;heck://bing.bong&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<heck://bing.bong>");
-            var expected = Helpers.Normalize("<p>&lt;heck://bing.bong&gt;</p>");
-            Helpers.Log("Example {0}", 481);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<heck://bing.bong>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 481, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<heck://bing.bong>", "<p>&lt;heck://bing.bong&gt;</p>");
         }
 
         [TestMethod]
@@ -18283,21 +12030,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt; http://foo.bar &gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("< http://foo.bar >");
-            var expected = Helpers.Normalize("<p>&lt; http://foo.bar &gt;</p>");
-            Helpers.Log("Example {0}", 482);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "< http://foo.bar >");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 482, "Inlines - Autolinks");
+			Helpers.ExecuteTest("< http://foo.bar >", "<p>&lt; http://foo.bar &gt;</p>");
         }
 
         [TestMethod]
@@ -18314,21 +12048,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;foo.bar.baz&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<foo.bar.baz>");
-            var expected = Helpers.Normalize("<p>&lt;foo.bar.baz&gt;</p>");
-            Helpers.Log("Example {0}", 483);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<foo.bar.baz>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 483, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<foo.bar.baz>", "<p>&lt;foo.bar.baz&gt;</p>");
         }
 
         [TestMethod]
@@ -18345,21 +12066,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;localhost:5001/foo&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<localhost:5001/foo>");
-            var expected = Helpers.Normalize("<p>&lt;localhost:5001/foo&gt;</p>");
-            Helpers.Log("Example {0}", 484);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<localhost:5001/foo>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 484, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<localhost:5001/foo>", "<p>&lt;localhost:5001/foo&gt;</p>");
         }
 
         [TestMethod]
@@ -18376,21 +12084,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>http://example.com</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("http://example.com");
-            var expected = Helpers.Normalize("<p>http://example.com</p>");
-            Helpers.Log("Example {0}", 485);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "http://example.com");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 485, "Inlines - Autolinks");
+			Helpers.ExecuteTest("http://example.com", "<p>http://example.com</p>");
         }
 
         [TestMethod]
@@ -18407,21 +12102,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo@bar.example.com</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo@bar.example.com");
-            var expected = Helpers.Normalize("<p>foo@bar.example.com</p>");
-            Helpers.Log("Example {0}", 486);
-            Helpers.Log("Section: {0}", "Inlines - Autolinks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo@bar.example.com");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 486, "Inlines - Autolinks");
+			Helpers.ExecuteTest("foo@bar.example.com", "<p>foo@bar.example.com</p>");
         }
 
         // ## Raw HTML
@@ -18515,21 +12197,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a><bab><c2c></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a><bab><c2c>");
-            var expected = Helpers.Normalize("<p><a><bab><c2c></p>");
-            Helpers.Log("Example {0}", 487);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a><bab><c2c>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 487, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a><bab><c2c>", "<p><a><bab><c2c></p>");
         }
 
         // Empty elements:
@@ -18547,21 +12216,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a/><b2/></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a/><b2/>");
-            var expected = Helpers.Normalize("<p><a/><b2/></p>");
-            Helpers.Log("Example {0}", 488);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a/><b2/>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 488, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a/><b2/>", "<p><a/><b2/></p>");
         }
 
         // Whitespace is allowed:
@@ -18581,21 +12237,8 @@ namespace CommonMark.Tests.Specification
             //     <p><a  /><b2
             //     data="foo" ></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a  /><b2\ndata=\"foo\" >");
-            var expected = Helpers.Normalize("<p><a  /><b2\ndata=\"foo\" ></p>");
-            Helpers.Log("Example {0}", 489);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a  /><b2\ndata=\"foo\" >");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 489, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a  /><b2\ndata=\"foo\" >", "<p><a  /><b2\ndata=\"foo\" ></p>");
         }
 
         // With attributes:
@@ -18615,21 +12258,8 @@ namespace CommonMark.Tests.Specification
             //     <p><a foo="bar" bam = 'baz <em>"</em>'
             //     _boolean zoop:33=zoop:33 /></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />");
-            var expected = Helpers.Normalize("<p><a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 /></p>");
-            Helpers.Log("Example {0}", 490);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 490, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />", "<p><a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 /></p>");
         }
 
         // Illegal tag names, not parsed as HTML:
@@ -18647,21 +12277,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;33&gt; &lt;__&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<33> <__>");
-            var expected = Helpers.Normalize("<p>&lt;33&gt; &lt;__&gt;</p>");
-            Helpers.Log("Example {0}", 491);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<33> <__>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 491, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<33> <__>", "<p>&lt;33&gt; &lt;__&gt;</p>");
         }
 
         // Illegal attribute names:
@@ -18679,21 +12296,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a h*#ref=\"hi\">");
-            var expected = Helpers.Normalize("<p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>");
-            Helpers.Log("Example {0}", 492);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a h*#ref=\"hi\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 492, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a h*#ref=\"hi\">", "<p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>");
         }
 
         // Illegal attribute values:
@@ -18711,21 +12315,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;a href=&quot;hi'&gt; &lt;a href=hi'&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a href=\"hi'> <a href=hi'>");
-            var expected = Helpers.Normalize("<p>&lt;a href=&quot;hi'&gt; &lt;a href=hi'&gt;</p>");
-            Helpers.Log("Example {0}", 493);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a href=\"hi'> <a href=hi'>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 493, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a href=\"hi'> <a href=hi'>", "<p>&lt;a href=&quot;hi'&gt; &lt;a href=hi'&gt;</p>");
         }
 
         // Illegal whitespace:
@@ -18745,21 +12336,8 @@ namespace CommonMark.Tests.Specification
             //     <p>&lt; a&gt;&lt;
             //     foo&gt;&lt;bar/ &gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("< a><\nfoo><bar/ >");
-            var expected = Helpers.Normalize("<p>&lt; a&gt;&lt;\nfoo&gt;&lt;bar/ &gt;</p>");
-            Helpers.Log("Example {0}", 494);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "< a><\nfoo><bar/ >");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 494, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("< a><\nfoo><bar/ >", "<p>&lt; a&gt;&lt;\nfoo&gt;&lt;bar/ &gt;</p>");
         }
 
         // Missing whitespace:
@@ -18777,21 +12355,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;a href='bar'title=title&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a href='bar'title=title>");
-            var expected = Helpers.Normalize("<p>&lt;a href='bar'title=title&gt;</p>");
-            Helpers.Log("Example {0}", 495);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a href='bar'title=title>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 495, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a href='bar'title=title>", "<p>&lt;a href='bar'title=title&gt;</p>");
         }
 
         // Closing tags:
@@ -18811,21 +12376,8 @@ namespace CommonMark.Tests.Specification
             //     <p></a>
             //     </foo ></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("</a>\n</foo >");
-            var expected = Helpers.Normalize("<p></a>\n</foo ></p>");
-            Helpers.Log("Example {0}", 496);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "</a>\n</foo >");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 496, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("</a>\n</foo >", "<p></a>\n</foo ></p>");
         }
 
         // Illegal attributes in closing tag:
@@ -18843,21 +12395,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;/a href=&quot;foo&quot;&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("</a href=\"foo\">");
-            var expected = Helpers.Normalize("<p>&lt;/a href=&quot;foo&quot;&gt;</p>");
-            Helpers.Log("Example {0}", 497);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "</a href=\"foo\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 497, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("</a href=\"foo\">", "<p>&lt;/a href=&quot;foo&quot;&gt;</p>");
         }
 
         // Comments:
@@ -18877,21 +12416,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo <!-- this is a
             //     comment - with hyphen --></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo <!-- this is a\ncomment - with hyphen -->");
-            var expected = Helpers.Normalize("<p>foo <!-- this is a\ncomment - with hyphen --></p>");
-            Helpers.Log("Example {0}", 498);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo <!-- this is a\ncomment - with hyphen -->");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 498, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("foo <!-- this is a\ncomment - with hyphen -->", "<p>foo <!-- this is a\ncomment - with hyphen --></p>");
         }
 
         [TestMethod]
@@ -18908,21 +12434,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo <!-- not a comment -- two hyphens -->");
-            var expected = Helpers.Normalize("<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>");
-            Helpers.Log("Example {0}", 499);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo <!-- not a comment -- two hyphens -->");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 499, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("foo <!-- not a comment -- two hyphens -->", "<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>");
         }
 
         // Processing instructions:
@@ -18940,21 +12453,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo <?php echo $a; ?></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo <?php echo $a; ?>");
-            var expected = Helpers.Normalize("<p>foo <?php echo $a; ?></p>");
-            Helpers.Log("Example {0}", 500);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo <?php echo $a; ?>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 500, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("foo <?php echo $a; ?>", "<p>foo <?php echo $a; ?></p>");
         }
 
         // Declarations:
@@ -18972,21 +12472,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo <!ELEMENT br EMPTY></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo <!ELEMENT br EMPTY>");
-            var expected = Helpers.Normalize("<p>foo <!ELEMENT br EMPTY></p>");
-            Helpers.Log("Example {0}", 501);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo <!ELEMENT br EMPTY>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 501, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("foo <!ELEMENT br EMPTY>", "<p>foo <!ELEMENT br EMPTY></p>");
         }
 
         // CDATA sections:
@@ -19004,21 +12491,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo <![CDATA[>&<]]></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo <![CDATA[>&<]]>");
-            var expected = Helpers.Normalize("<p>foo <![CDATA[>&<]]></p>");
-            Helpers.Log("Example {0}", 502);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo <![CDATA[>&<]]>");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 502, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("foo <![CDATA[>&<]]>", "<p>foo <![CDATA[>&<]]></p>");
         }
 
         // Entities are preserved in HTML attributes:
@@ -19036,21 +12510,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="&ouml;"></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a href=\"&ouml;\">");
-            var expected = Helpers.Normalize("<p><a href=\"&ouml;\"></p>");
-            Helpers.Log("Example {0}", 503);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a href=\"&ouml;\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 503, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a href=\"&ouml;\">", "<p><a href=\"&ouml;\"></p>");
         }
 
         // Backslash escapes do not work in HTML attributes:
@@ -19068,21 +12529,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="\*"></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a href=\"\\*\">");
-            var expected = Helpers.Normalize("<p><a href=\"\\*\"></p>");
-            Helpers.Log("Example {0}", 504);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a href=\"\\*\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 504, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a href=\"\\*\">", "<p><a href=\"\\*\"></p>");
         }
 
         [TestMethod]
@@ -19099,21 +12547,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;a href=&quot;&quot;&quot;&gt;</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a href=\"\\\"\">");
-            var expected = Helpers.Normalize("<p>&lt;a href=&quot;&quot;&quot;&gt;</p>");
-            Helpers.Log("Example {0}", 505);
-            Helpers.Log("Section: {0}", "Inlines - Raw HTML");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a href=\"\\\"\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 505, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a href=\"\\\"\">", "<p>&lt;a href=&quot;&quot;&quot;&gt;</p>");
         }
 
         // ## Hard line breaks
@@ -19138,21 +12573,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo<br />
             //     baz</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo  \nbaz");
-            var expected = Helpers.Normalize("<p>foo<br />\nbaz</p>");
-            Helpers.Log("Example {0}", 506);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo  \nbaz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 506, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("foo  \nbaz", "<p>foo<br />\nbaz</p>");
         }
 
         // For a more visible alternative, a backslash before the
@@ -19173,21 +12595,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo<br />
             //     baz</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo\\\nbaz");
-            var expected = Helpers.Normalize("<p>foo<br />\nbaz</p>");
-            Helpers.Log("Example {0}", 507);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo\\\nbaz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 507, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("foo\\\nbaz", "<p>foo<br />\nbaz</p>");
         }
 
         // More than two spaces can be used:
@@ -19207,21 +12616,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo<br />
             //     baz</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo       \nbaz");
-            var expected = Helpers.Normalize("<p>foo<br />\nbaz</p>");
-            Helpers.Log("Example {0}", 508);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo       \nbaz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 508, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("foo       \nbaz", "<p>foo<br />\nbaz</p>");
         }
 
         // Leading spaces at the beginning of the next line are ignored:
@@ -19241,21 +12637,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo<br />
             //     bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo  \n     bar");
-            var expected = Helpers.Normalize("<p>foo<br />\nbar</p>");
-            Helpers.Log("Example {0}", 509);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo  \n     bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 509, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("foo  \n     bar", "<p>foo<br />\nbar</p>");
         }
 
         [TestMethod]
@@ -19274,21 +12657,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo<br />
             //     bar</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo\\\n     bar");
-            var expected = Helpers.Normalize("<p>foo<br />\nbar</p>");
-            Helpers.Log("Example {0}", 510);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo\\\n     bar");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 510, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("foo\\\n     bar", "<p>foo<br />\nbar</p>");
         }
 
         // Line breaks can occur inside emphasis, links, and other constructs
@@ -19309,21 +12679,8 @@ namespace CommonMark.Tests.Specification
             //     <p><em>foo<br />
             //     bar</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo  \nbar*");
-            var expected = Helpers.Normalize("<p><em>foo<br />\nbar</em></p>");
-            Helpers.Log("Example {0}", 511);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo  \nbar*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 511, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("*foo  \nbar*", "<p><em>foo<br />\nbar</em></p>");
         }
 
         [TestMethod]
@@ -19342,21 +12699,8 @@ namespace CommonMark.Tests.Specification
             //     <p><em>foo<br />
             //     bar</em></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("*foo\\\nbar*");
-            var expected = Helpers.Normalize("<p><em>foo<br />\nbar</em></p>");
-            Helpers.Log("Example {0}", 512);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "*foo\\\nbar*");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 512, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("*foo\\\nbar*", "<p><em>foo<br />\nbar</em></p>");
         }
 
         // Line breaks do not occur inside code spans
@@ -19375,21 +12719,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>code span</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`code  \nspan`");
-            var expected = Helpers.Normalize("<p><code>code span</code></p>");
-            Helpers.Log("Example {0}", 513);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`code  \nspan`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 513, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("`code  \nspan`", "<p><code>code span</code></p>");
         }
 
         [TestMethod]
@@ -19407,21 +12738,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>code\ span</code></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("`code\\\nspan`");
-            var expected = Helpers.Normalize("<p><code>code\\ span</code></p>");
-            Helpers.Log("Example {0}", 514);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "`code\\\nspan`");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 514, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("`code\\\nspan`", "<p><code>code\\ span</code></p>");
         }
 
         // or HTML tags:
@@ -19441,21 +12759,8 @@ namespace CommonMark.Tests.Specification
             //     <p><a href="foo  
             //     bar"></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a href=\"foo  \nbar\">");
-            var expected = Helpers.Normalize("<p><a href=\"foo  \nbar\"></p>");
-            Helpers.Log("Example {0}", 515);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a href=\"foo  \nbar\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 515, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("<a href=\"foo  \nbar\">", "<p><a href=\"foo  \nbar\"></p>");
         }
 
         [TestMethod]
@@ -19474,21 +12779,8 @@ namespace CommonMark.Tests.Specification
             //     <p><a href="foo\
             //     bar"></p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("<a href=\"foo\\\nbar\">");
-            var expected = Helpers.Normalize("<p><a href=\"foo\\\nbar\"></p>");
-            Helpers.Log("Example {0}", 516);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "<a href=\"foo\\\nbar\">");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 516, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("<a href=\"foo\\\nbar\">", "<p><a href=\"foo\\\nbar\"></p>");
         }
 
         // Hard line breaks are for separating inline content within a block.
@@ -19508,21 +12800,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo\</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo\\");
-            var expected = Helpers.Normalize("<p>foo\\</p>");
-            Helpers.Log("Example {0}", 517);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo\\");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 517, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("foo\\", "<p>foo\\</p>");
         }
 
         [TestMethod]
@@ -19539,21 +12818,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>foo</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo");
-            var expected = Helpers.Normalize("<p>foo</p>");
-            Helpers.Log("Example {0}", 518);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 518, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("foo", "<p>foo</p>");
         }
 
         [TestMethod]
@@ -19570,21 +12836,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <h3>foo\</h3>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("### foo\\");
-            var expected = Helpers.Normalize("<h3>foo\\</h3>");
-            Helpers.Log("Example {0}", 519);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "### foo\\");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 519, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("### foo\\", "<h3>foo\\</h3>");
         }
 
         [TestMethod]
@@ -19601,21 +12854,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <h3>foo</h3>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("### foo");
-            var expected = Helpers.Normalize("<h3>foo</h3>");
-            Helpers.Log("Example {0}", 520);
-            Helpers.Log("Section: {0}", "Inlines - Hard line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "### foo");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 520, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("### foo", "<h3>foo</h3>");
         }
 
         // ## Soft line breaks
@@ -19642,21 +12882,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo
             //     baz</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo\nbaz");
-            var expected = Helpers.Normalize("<p>foo\nbaz</p>");
-            Helpers.Log("Example {0}", 521);
-            Helpers.Log("Section: {0}", "Inlines - Soft line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo\nbaz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 521, "Inlines - Soft line breaks");
+			Helpers.ExecuteTest("foo\nbaz", "<p>foo\nbaz</p>");
         }
 
         // Spaces at the end of the line and beginning of the next line are
@@ -19677,21 +12904,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo
             //     baz</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("foo \n baz");
-            var expected = Helpers.Normalize("<p>foo\nbaz</p>");
-            Helpers.Log("Example {0}", 522);
-            Helpers.Log("Section: {0}", "Inlines - Soft line breaks");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "foo \n baz");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 522, "Inlines - Soft line breaks");
+			Helpers.ExecuteTest("foo \n baz", "<p>foo\nbaz</p>");
         }
 
         // A conforming parser may render a soft line break in HTML either as a
@@ -19718,21 +12932,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>hello $.;'there</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("hello $.;'there");
-            var expected = Helpers.Normalize("<p>hello $.;'there</p>");
-            Helpers.Log("Example {0}", 523);
-            Helpers.Log("Section: {0}", "Inlines - Textual content");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "hello $.;'there");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 523, "Inlines - Textual content");
+			Helpers.ExecuteTest("hello $.;'there", "<p>hello $.;'there</p>");
         }
 
         [TestMethod]
@@ -19749,21 +12950,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>Foo χρῆν</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Foo χρῆν");
-            var expected = Helpers.Normalize("<p>Foo χρῆν</p>");
-            Helpers.Log("Example {0}", 524);
-            Helpers.Log("Section: {0}", "Inlines - Textual content");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Foo χρῆν");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 524, "Inlines - Textual content");
+			Helpers.ExecuteTest("Foo χρῆν", "<p>Foo χρῆν</p>");
         }
 
         // Internal spaces are preserved verbatim:
@@ -19781,21 +12969,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>Multiple     spaces</p>
 
-            // Arrange
-            var commonMark = Helpers.Normalize("Multiple     spaces");
-            var expected = Helpers.Normalize("<p>Multiple     spaces</p>");
-            Helpers.Log("Example {0}", 525);
-            Helpers.Log("Section: {0}", "Inlines - Textual content");
-            Helpers.Log();
-            Helpers.LogValue("CommonMark", "Multiple     spaces");
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 525, "Inlines - Textual content");
+			Helpers.ExecuteTest("Multiple     spaces", "<p>Multiple     spaces</p>");
         }
 
         // # Appendix A: A parsing strategy {-}

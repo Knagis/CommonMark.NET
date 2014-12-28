@@ -17,19 +17,7 @@ namespace CommonMark.Tests
         [TestCategory("Security")]
         public void TestZeroCharRemoval()
         {
-            // Arrange
-            var commonMark = Helpers.Normalize("\u0000*foo*\0");
-            var expected = Helpers.Normalize("<p><em>foo</em></p>");
-            Helpers.LogValue("CommonMark", commonMark);
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Assert.AreEqual(0, commonMark[0]);
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.ExecuteTest("\u0000*foo*\0", "<p><em>foo</em></p>");
         }
     }
 }

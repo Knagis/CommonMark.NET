@@ -14,36 +14,14 @@ namespace CommonMark.Tests
         [TestCategory("Container blocks - List items")]
         public void UnicodeBulletEscape()
         {
-            // Arrange
-            var commonMark = Helpers.Normalize("\\• foo\n\n\\* bar");
-            var expected = Helpers.Normalize("<p>• foo</p>\n<p>* bar</p>");
-            Helpers.LogValue("CommonMark", commonMark);
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.ExecuteTest("\\• foo\n\n\\* bar", "<p>• foo</p>\n<p>* bar</p>");
         }
 
         [TestMethod]
         [TestCategory("Container blocks - List items")]
         public void UnicodeBulletList()
         {
-            // Arrange
-            var commonMark = Helpers.Normalize("• foo\n• bar");
-            var expected = Helpers.Normalize("<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>");
-            Helpers.LogValue("CommonMark", commonMark);
-            Helpers.LogValue("Expected", expected);
-
-            // Act
-            var actual = CommonMarkConverter.Convert(commonMark);
-
-            // Assert
-            Helpers.LogValue("Actual", actual);
-            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(actual));
+            Helpers.ExecuteTest("• foo\n• bar", "<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>");
         }
     }
 }
