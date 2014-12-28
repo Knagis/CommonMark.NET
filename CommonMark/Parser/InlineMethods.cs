@@ -16,7 +16,9 @@ namespace CommonMark.Parser
         /// <returns></returns>
         internal static Func<Parser.Subject, Syntax.Inline>[] InitializeParsers(CommonMarkSettings settings)
         {
-            var p = new Func<Parser.Subject, Syntax.Inline>[97];
+            var strikethroughTilde = 0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde);
+
+            var p = new Func<Parser.Subject, Syntax.Inline>[strikethroughTilde ? 127 : 97];
             p['\n'] = handle_newline;
             p['`'] = handle_backticks;
             p['\\'] = handle_backslash;
@@ -27,6 +29,10 @@ namespace CommonMark.Parser
             p['['] = HandleLeftSquareBracket;
             p[']'] = HandleRightSquareBracket;
             p['!'] = HandleExclamation;
+
+            if (strikethroughTilde)
+                p['~'] = HandleTilde;
+
             return p;
         }
 
@@ -432,18 +438,18 @@ namespace CommonMark.Parser
                 {
                     var useDelims = MatchEmphasisStack(istack, subj, numdelims, null);
 
-                // if the closer was not fully used, move back a char or two and try again.
-                if (useDelims < numdelims)
-                {
-                    subj.Position = subj.Position - numdelims + useDelims;
+                    // if the closer was not fully used, move back a char or two and try again.
+                    if (useDelims < numdelims)
+                    {
+                        subj.Position = subj.Position - numdelims + useDelims;
 
-                    // use recursion only if it will not be very deep.
-                    if (numdelims < 10)
-                    return HandleEmphasis(subj);
-                }
+                        // use recursion only if it will not be very deep.
+                        if (numdelims < 10)
+                            return HandleEmphasis(subj);
+                    }
 
                     return null;
-            }
+                }
             }
 
             var inlText = make_str(subj.Buffer.Substring(subj.Position - numdelims, numdelims));
@@ -462,6 +468,98 @@ namespace CommonMark.Parser
             }
 
             return inlText;
+        }
+
+        private static Inline HandleTilde(Subject subj)
+        {
+            bool can_open, can_close;
+            var numdelims = ScanEmphasisDelimeters(subj, '~', out can_open, out can_close);
+
+            if (numdelims == 1)
+                return make_str("~");
+
+            if (can_close)
+            {
+                // walk the stack and find a matching opener, if there is one
+                var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, '~', out can_close);
+                if (istack != null)
+                {
+                    MatchTildeStack(istack, subj, numdelims, null);
+
+                    // if the closer was not fully used, move back a char or two and try again.
+                    if (numdelims > 2)
+                    {
+                        subj.Position = subj.Position - numdelims + 2;
+
+                        // use recursion only if it will not be very deep.
+                        if (numdelims < 10)
+                            return HandleTilde(subj);
+                    }
+
+                    return null;
+                }
+            }
+
+            var inlText = make_str(subj.Buffer.Substring(subj.Position - numdelims, numdelims));
+
+            if (can_open || can_close)
+            {
+                var istack = new InlineStack();
+                istack.DelimeterCount = numdelims;
+                istack.Delimeter = '~';
+                istack.StartingInline = inlText;
+                istack.Priority = InlineStack.InlineStackPriority.Emphasis;
+                istack.Flags = (can_open ? InlineStack.InlineStackFlags.Opener : 0)
+                             | (can_close ? InlineStack.InlineStackFlags.Closer : 0);
+
+                InlineStack.AppendStackEntry(istack, subj);
+            }
+
+            return inlText;
+        }
+
+        internal static void MatchTildeStack(InlineStack opener, Subject subj, int closingDelimeterCount, InlineStack closer)
+        {
+            // calculate the actual number of delimeters used from this closer
+
+            if (opener.DelimeterCount == 2)
+            {
+                // the opener is completely used up - remove the stack entry and reuse the inline element
+                var inl = opener.StartingInline;
+                inl.Tag = InlineTag.Strikethrough;
+                inl.LiteralContent = null;
+
+                if (closer != null)
+                {
+                    inl.FirstChild = inl.NextSibling;
+                    inl.NextSibling = closer.StartingInline.NextSibling;
+                    closer.StartingInline.NextSibling = null;
+                    closer.StartingInline.LiteralContent = null;
+                }
+                else
+                {
+                    inl.FirstChild = inl.NextSibling;
+                    inl.NextSibling = null;
+                }
+
+                InlineStack.RemoveStackEntry(opener, subj, closer);
+
+                if (subj != null)
+                    subj.LastInline = inl;
+            }
+            else
+            {
+                // the opener will only partially be used - stack entry remains (truncated) and a new inline is added.
+                var inl = opener.StartingInline;
+                opener.DelimeterCount -= 2;
+                inl.LiteralContent = opener.StartingInline.LiteralContent.Substring(0, opener.DelimeterCount);
+
+                var emph = make_inlines(InlineTag.Strikethrough, inl.NextSibling);
+                inl.NextSibling = emph;
+
+                if (subj != null)
+                    subj.LastInline = emph;
+            }
         }
 
         private static Inline HandleExclamation(Subject subj)

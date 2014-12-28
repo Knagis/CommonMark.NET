@@ -25,6 +25,12 @@ namespace CommonMark.Syntax
 
         Link,
 
-        Image
+        Image,
+
+        /// <summary>
+        /// Represents an inline element that has been "removed" (visually represented as strikethrough).
+        /// Only present if the <see cref="CommonMarkAdditionalFeatures.StrikethroughTilde"/> is enabled.
+        /// </summary>
+        Strikethrough
     }
 }

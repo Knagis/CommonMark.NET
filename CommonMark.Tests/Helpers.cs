@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,23 @@ namespace CommonMark.Tests
 {
     internal static class Helpers
     {
+        public static void ExecuteTest(string commonMark, string html, CommonMarkSettings settings = null)
+        {
+            // Arrange
+            commonMark = Helpers.Normalize(commonMark);
+            html = Helpers.Normalize(html);
+
+            Helpers.LogValue("CommonMark", commonMark);
+            Helpers.LogValue("Expected", html);
+
+            // Act
+            var actual = CommonMarkConverter.Convert(commonMark, settings);
+
+            // Assert
+            Helpers.LogValue("Actual", actual);
+            Assert.AreEqual(Helpers.Tidy(html), Helpers.Tidy(actual));
+        }
+
         public static string Normalize(string value)
         {
             value = value.Replace('→', '\t');

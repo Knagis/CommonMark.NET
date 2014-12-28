@@ -44,6 +44,7 @@
     <AssemblyOriginatorKeyFile>Properties\public.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CommonMarkAdditionalFeatures.cs" />
     <Compile Include="CommonMarkConverter.cs" />
     <Compile Include="CommonMarkException.cs" />
     <Compile Include="CommonMarkSettings.cs" />

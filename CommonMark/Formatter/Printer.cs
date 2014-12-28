@@ -200,6 +200,14 @@ namespace CommonMark.Formatter
                     case InlineTag.Emphasis:
                         writer.WriteLine("emph");
                         break;
+
+                    case InlineTag.Strikethrough:
+                        writer.WriteLine("del");
+                        break;
+
+                    default:
+                        writer.WriteLine("unknown: " + inline.Tag.ToString());
+                        break;
                 }
 
                 if (inline.FirstChild != null)

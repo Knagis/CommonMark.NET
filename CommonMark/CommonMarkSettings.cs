@@ -7,6 +7,9 @@ namespace CommonMark
     /// <summary>
     /// Class used to configure the behavior of <see cref="CommonMarkConverter"/>.
     /// </summary>
+    /// <remarks>This class is not thread-safe so any changes to a instance that is reused (for example, the 
+    /// <see cref="CommonMarkSettings.Default"/>) has to be updated while it is not in use otherwise the
+    /// behaviour is undefined.</remarks>
     public sealed class CommonMarkSettings
     {
         /// <summary>
@@ -18,6 +21,13 @@ namespace CommonMark
         /// Gets or sets a value indicating whether soft line breaks should be rendered as hard line breaks.
         /// </summary>
         public bool RenderSoftLineBreaksAsLineBreaks { get; set; }
+
+        private CommonMarkAdditionalFeatures _additionalFeatures;
+        public CommonMarkAdditionalFeatures AdditionalFeatures
+        {
+            get { return this._additionalFeatures; }
+            set { this._additionalFeatures = value; this._inlineParsers = null; this._inlineParserSpecialCharacters = null; }
+        }
 
         private Func<string, string> _uriResolver;
         /// <summary>

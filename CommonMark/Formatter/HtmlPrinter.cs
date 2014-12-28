@@ -514,6 +514,13 @@ namespace CommonMark.Formatter
                         stackWithinLink = withinLink;
                         break;
 
+                    case InlineTag.Strikethrough:
+                        writer.Write("<del>");
+                        stackLiteral = "</del>";
+                        visitChildren = true;
+                        stackWithinLink = withinLink;
+                        break;
+
                     default:
                         throw new CommonMarkException("Inline type " + inline.Tag + " is not supported.", inline);
                 }

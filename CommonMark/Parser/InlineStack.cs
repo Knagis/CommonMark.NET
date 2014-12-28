@@ -188,6 +188,12 @@ namespace CommonMark.Parser
                             {
                                 InlineMethods.MatchSquareBracketStack(iopener, subj, istack, null);
                             }
+                            else if (iopener.Delimeter == '~')
+                            {
+                                InlineMethods.MatchTildeStack(iopener, subj, istack.DelimeterCount, istack);
+                                if (istack.DelimeterCount > 3)
+                                    retry = true;
+                            }
                             else
                             {
                                 var useDelims = InlineMethods.MatchEmphasisStack(iopener, subj, istack.DelimeterCount, istack);
