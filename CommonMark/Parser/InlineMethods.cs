@@ -613,10 +613,16 @@ namespace CommonMark.Parser
                 var temp = opener.Previous;
                 while (temp != null && temp.Priority <= InlineStack.InlineStackPriority.Links)
                 {
-                    var xtemp = temp.Previous;
                     if (temp.Delimeter == '[' && temp.Flags == opener.Flags)
-                        InlineStack.RemoveStackEntry(temp, null, temp);
-                    temp = xtemp;
+                    {
+                        // mark the previous entries as "inactive"
+                        if (temp.DelimeterCount == -1)
+                            break;
+
+                        temp.DelimeterCount = -1;
+                    }
+
+                    temp = temp.Previous;
                 }
 
                 InlineStack.RemoveStackEntry(opener, subj, closer);
@@ -648,8 +654,16 @@ namespace CommonMark.Parser
 
             bool can_close;
             var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Links, '[', out can_close);
+
             if (istack != null)
             {
+                // if the opener is "inactive" then it means that there was a nested link
+                if (istack.DelimeterCount == -1)
+                {
+                    InlineStack.RemoveStackEntry(istack, subj, istack);
+                    return make_str("]");
+                }
+
                 var endpos = subj.Position;
 
                 // try parsing details for '[foo](/url "title")' or '[foo][bar]'
