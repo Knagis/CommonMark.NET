@@ -7,9 +7,28 @@ namespace CommonMark.Parser
 {
     internal static class InlineMethods
     {
-        private static readonly char[] SpecialCharacters = new[] { '\n', '\\', '`', '&', '_', '*', '[', ']', '<', '!' };
         private static readonly char[] WhiteSpaceCharacters = new[] { '\n', ' ' };
         private static readonly char[] BracketSpecialCharacters = new[] { '\\', ']', '[' };
+
+        /// <summary>
+        /// Initializes the array of delegates for inline parsing.
+        /// </summary>
+        /// <returns></returns>
+        internal static Func<Parser.Subject, Syntax.Inline>[] InitializeParsers(CommonMarkSettings settings)
+        {
+            var p = new Func<Parser.Subject, Syntax.Inline>[97];
+            p['\n'] = handle_newline;
+            p['`'] = handle_backticks;
+            p['\\'] = handle_backslash;
+            p['&'] = handle_entity;
+            p['<'] = handle_pointy_brace;
+            p['_'] = HandleEmphasis;
+            p['*'] = HandleEmphasis;
+            p['['] = HandleLeftSquareBracket;
+            p[']'] = HandleRightSquareBracket;
+            p['!'] = HandleExclamation;
+            return p;
+        }
 
         /// <summary>
         /// Collapses internal whitespace to single space, removes leading/trailing whitespace, folds case.
@@ -399,9 +418,10 @@ namespace CommonMark.Parser
             return useDelims;
         }
 
-        private static Inline HandleEmphasis(Subject subj, char c)
+        private static Inline HandleEmphasis(Subject subj)
         {
             bool can_open, can_close;
+            var c = subj.Buffer[subj.Position];
             var numdelims = ScanEmphasisDelimeters(subj, c, out can_open, out can_close);
 
             if (can_close)
@@ -419,7 +439,7 @@ namespace CommonMark.Parser
 
                     // use recursion only if it will not be very deep.
                     if (numdelims < 10)
-                    return HandleEmphasis(subj, c);
+                    return HandleEmphasis(subj);
                 }
 
                     return null;
@@ -442,6 +462,20 @@ namespace CommonMark.Parser
             }
 
             return inlText;
+        }
+
+        private static Inline HandleExclamation(Subject subj)
+        {
+            advance(subj);
+            if (peek_char(subj) == '[')
+                return HandleLeftSquareBracket(subj, true);
+            else
+                return make_str("!");
+        }
+
+        private static Inline HandleLeftSquareBracket(Subject subj)
+        {
+            return HandleLeftSquareBracket(subj, false);
         }
 
         private static Inline HandleLeftSquareBracket(Subject subj, bool isImage)
@@ -901,87 +935,48 @@ namespace CommonMark.Parser
         // Parse an inline, advancing subject, and add it to last element.
         // Adjust tail to point to new last element of list.
         // Return 0 if no inline can be parsed, 1 otherwise.
-        public static Inline parse_inline(Subject subj)
+        public static Inline parse_inline(Subject subj, Func<Subject, Inline>[] parsers, char[] specialCharacters)
         {
-            Inline inew = null;
-            string contents;
-            int endpos;
-
             var c = subj.Buffer[subj.Position];
 
-            switch (c)
+            var parser = c < parsers.Length ? parsers[c] : null;
+
+            if (parser != null)
+                return parser(subj);
+
+            string contents;
+
+            // we read until we hit a special character
+            var endpos = subj.Buffer.IndexOfAny(specialCharacters, subj.Position);
+
+            if (endpos == subj.Position)
             {
-                case '\n':
-                    inew = handle_newline(subj);
-                    break;
-                case '`':
-                    inew = handle_backticks(subj);
-                    break;
-                case '\\':
-                    inew = handle_backslash(subj);
-                    break;
-                case '&':
-                    inew = handle_entity(subj);
-                    break;
-                case '<':
-                    inew = handle_pointy_brace(subj);
-                    break;
-                case '_':
-                    inew = HandleEmphasis(subj, '_');
-                    break;
-                case '*':
-                    inew = HandleEmphasis(subj, '*');
-                    break;
-                case '[':
-                    inew = HandleLeftSquareBracket(subj, false);
-                    break;
-                case ']':
-                    inew = HandleRightSquareBracket(subj);
-                    break;
-                case '!':
-                    advance(subj);
-                    if (peek_char(subj) == '[')
-                        inew = HandleLeftSquareBracket(subj, true);
-                        else
-                        inew = make_str("!");
-                    break;
+                // current char is special: read a 1-character str
+                contents = subj.Buffer[endpos].ToString();
+                advance(subj);
+            }
+            else if (endpos == -1)
+            {
+                // special char not found, take whole rest of buffer:
+                endpos = subj.Buffer.Length;
+                contents = subj.Buffer.Substring(subj.Position);
+                subj.Position = endpos;
+            }
+            else
+            {
+                // take buffer from subj.pos to endpos to str.
+                contents = subj.Buffer.Substring(subj.Position, endpos - subj.Position);
 
-                default:
-                    // we read until we hit a special character
-                    endpos = subj.Buffer.IndexOfAny(SpecialCharacters, subj.Position);
-
-                    if (endpos == subj.Position)
-                    {
-                        // current char is special: read a 1-character str
-                        contents = subj.Buffer[endpos].ToString();
-                        advance(subj);
-                    }
-                    else if (endpos == -1)
-                    {
-                        // special char not found, take whole rest of buffer:
-                        endpos = subj.Buffer.Length;
-                        contents = subj.Buffer.Substring(subj.Position);
-                        subj.Position = endpos;
-                    }
-                    else
-                    {
-                        // take buffer from subj.pos to endpos to str.
-                        contents = subj.Buffer.Substring(subj.Position, endpos - subj.Position);
-
-                        subj.Position = endpos;
-                        // if we're at a newline, strip trailing spaces.
-                        if (peek_char(subj) == '\n')
-                            contents = contents.TrimEnd();
-                    }
-
-                    inew = make_str(contents);
-                    break;
+                subj.Position = endpos;
+                // if we're at a newline, strip trailing spaces.
+                if (peek_char(subj) == '\n')
+                    contents = contents.TrimEnd();
             }
 
-            return inew;
+            return make_str(contents);
         }
 
-        public static Inline parse_inlines(string input, Dictionary<string, Reference> refmap)
+        public static Inline parse_inlines(string input, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters)
         {
             if (input == null)
                 return null;
@@ -993,18 +988,18 @@ namespace CommonMark.Parser
             if (len == 0)
                 return null;
 
-            var first = parse_inline(subj);
+            var first = parse_inline(subj, parsers, specialCharacters);
             subj.LastInline = first.LastSibling;
 
             Inline cur;
             while (subj.Position < len)
             {
-                cur = parse_inline(subj);
+                cur = parse_inline(subj, parsers, specialCharacters);
                 if (cur != null)
                 {
-                subj.LastInline.NextSibling = cur;
-                subj.LastInline = cur.LastSibling;
-            }
+                    subj.LastInline.NextSibling = cur;
+                    subj.LastInline = cur.LastSibling;
+                }
             }
 
             InlineStack.PostProcessInlineStack(subj, subj.FirstPendingInline, subj.LastPendingInline, InlineStack.InlineStackPriority.Maximum);

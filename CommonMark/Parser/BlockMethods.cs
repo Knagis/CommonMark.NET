@@ -214,9 +214,12 @@ namespace CommonMark.Parser
         /// </summary>
         /// <param name="block">The document level block from which to start the processing.</param>
         /// <param name="refmap">The reference mapping used when parsing links.</param>
-        public static void ProcessInlines(Block block, Dictionary<string, Reference> refmap)
+        /// <param name="settings">The settings that influence how the inline parsing is performed.</param>
+        public static void ProcessInlines(Block block, Dictionary<string, Reference> refmap, CommonMarkSettings settings)
         {
             var stack = new Stack<Block>();
+            var parsers = settings.InlineParsers;
+            var specialCharacters = settings.InlineParserSpecialCharacters;
 
             while (block != null)
             {
@@ -225,7 +228,7 @@ namespace CommonMark.Parser
                 {
                     if (block.StringContent != null)
                     {
-                        block.InlineContent = InlineMethods.parse_inlines(block.StringContent.ToString(), refmap);
+                        block.InlineContent = InlineMethods.parse_inlines(block.StringContent.ToString(), refmap, parsers, specialCharacters);
                         block.StringContent = null;
                     }
                 }

@@ -118,9 +118,12 @@ namespace CommonMark
             if (document.Tag != Syntax.BlockTag.Document)
                 throw new ArgumentException("The block element passed to this method must represent a top level document.", "document");
 
+            if (settings == null)
+                settings = CommonMarkSettings.Default;
+
             try
             {
-                BlockMethods.ProcessInlines(document, document.ReferenceMap);
+                BlockMethods.ProcessInlines(document, document.ReferenceMap, settings);
             }
             catch(CommonMarkException)
             {

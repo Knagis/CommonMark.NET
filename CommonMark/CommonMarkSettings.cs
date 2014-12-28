@@ -64,5 +64,54 @@ namespace CommonMark
         {
             return (CommonMarkSettings)this.MemberwiseClone();
         }
+
+        #region [ Properties that cache structures used in the parsers ]
+
+        private Func<Parser.Subject, Syntax.Inline>[] _inlineParsers;
+
+        /// <summary>
+        /// Gets the delegates that parse inline elements according to these settings.
+        /// </summary>
+        internal Func<Parser.Subject, Syntax.Inline>[] InlineParsers
+        {
+            get
+            {
+                var p = this._inlineParsers;
+                if (p == null)
+                {
+                    p = Parser.InlineMethods.InitializeParsers(this);
+                    this._inlineParsers = p;
+                }
+
+                return p;
+            }
+        }
+
+        private char[] _inlineParserSpecialCharacters;
+
+        /// <summary>
+        /// Gets the characters that have special meaning for inline element parsers according to these settings.
+        /// </summary>
+        internal char[] InlineParserSpecialCharacters
+        {
+            get
+            {
+                var v = this._inlineParserSpecialCharacters;
+                if (v == null)
+                {
+                    var p = this.InlineParsers;
+                    var vs = new List<char>(20);
+                    for (var i = 0; i < p.Length; i++)
+                        if (p[i] != null)
+                            vs.Add((char)i);
+
+                    v = this._inlineParserSpecialCharacters = vs.ToArray();
+                }
+
+                return v;
+            }
+        }
+
+        #endregion
     }
 }
