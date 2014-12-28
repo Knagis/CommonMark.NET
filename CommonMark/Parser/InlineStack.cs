@@ -191,25 +191,27 @@ namespace CommonMark.Parser
                             else if (iopener.Delimeter == '~')
                             {
                                 InlineMethods.MatchTildeStack(iopener, subj, istack.DelimeterCount, istack);
-                                if (istack.DelimeterCount > 3)
+                                if (istack.DelimeterCount > 1)
                                     retry = true;
                             }
                             else
                             {
                                 var useDelims = InlineMethods.MatchEmphasisStack(iopener, subj, istack.DelimeterCount, istack);
-                                if (useDelims < istack.DelimeterCount)
+                                if (istack.DelimeterCount > 0)
                                     retry = true;
                             }
 
                             if (retry)
                             {
-                                // remove opener and everything up to the closer
-                                InlineStack.RemoveStackEntry(iopener, subj, istack.Previous);
+                                // remove everything between opened and closer (not inclusive).
+                                if (iopener.Next != istack.Previous)
+                                    InlineStack.RemoveStackEntry(iopener.Next, subj, istack.Previous);
+
                                 continue;
                             }
                             else
                             {
-                                // remove opener, everything in between and the closer
+                                // remove opener, everything in between, and the closer
                                 InlineStack.RemoveStackEntry(iopener, subj, istack);
                             }
                         }

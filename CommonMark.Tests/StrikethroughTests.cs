@@ -90,5 +90,43 @@ namespace CommonMark.Tests
             Helpers.ExecuteTest("~~~foo\n~~", "<pre><code class=\"language-foo\">~~\n</code></pre>", Settings);
         }
 
+        [TestMethod]
+        [TestCategory("Inlines - Strikethrough")]
+        public void StrikethroughExample9()
+        {
+            Helpers.ExecuteTest("foo ~~~~bar~~~~", "<p>foo <del><del>bar</del></del></p>", Settings);
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Strikethrough")]
+        public void StrikethroughExample10()
+        {
+            // '[' char in the middle will delay the ~~ match to the post-process phase.
+            Helpers.ExecuteTest("foo ~~~~ba[r~~~~", "<p>foo <del><del>ba[r</del></del></p>", Settings);
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Strikethrough")]
+        public void StrikethroughExample10a()
+        {
+            // '[' char in the middle will delay the ~~ match to the post-process phase.
+            Helpers.ExecuteTest("foo ~~~~ba[r~~", "<p>foo ~~<del>ba[r</del></p>", Settings);
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Strikethrough")]
+        public void StrikethroughExample10b()
+        {
+            // '[' char in the middle will delay the ~~ match to the post-process phase.
+            Helpers.ExecuteTest("foo ~~ba[r~~~~", "<p>foo <del>ba[r</del>~~</p>", Settings);
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Strikethrough")]
+        public void StrikethroughExample10c()
+        {
+            // '[' char in the middle will delay the ~~ match to the post-process phase.
+            Helpers.ExecuteTest("foo ~~ba[r~~~", "<p>foo <del>ba[r</del>~</p>", Settings);
+        }
     }
 }

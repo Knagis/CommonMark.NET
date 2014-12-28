@@ -356,7 +356,7 @@ namespace CommonMark.Parser
 
             Utilities.CheckUnicodeCategory(char_before, out beforeIsSpace, out beforeIsPunctuation);
             Utilities.CheckUnicodeCategory(char_after, out afterIsSpace, out afterIsPunctuation);
-            
+
             can_open = !afterIsSpace && !(afterIsPunctuation && !beforeIsSpace && !beforeIsPunctuation);
             can_close = !beforeIsSpace && !(beforeIsPunctuation && !afterIsSpace && !afterIsPunctuation);
 
@@ -371,30 +371,39 @@ namespace CommonMark.Parser
 
         internal static int MatchEmphasisStack(InlineStack opener, Subject subj, int closingDelimeterCount, InlineStack closer)
         {
-                // calculate the actual number of delimeters used from this closer
-                //var useDelims = ;
-                //if (useDelims == 3) useDelims = numdelims == 3 ? 1 : numdelims;
-                //else if (useDelims > numdelims) useDelims = 1;
-                int useDelims;
-                var openerDelims = opener.DelimeterCount;
-                if (closingDelimeterCount < 3 || openerDelims < 3)
-                    useDelims = closingDelimeterCount <= openerDelims ? closingDelimeterCount : openerDelims; 
-                else
-                    useDelims = closingDelimeterCount % 2 == 0 ? 2 : 1;
+            // calculate the actual number of delimeters used from this closer
+            int useDelims;
+            var openerDelims = opener.DelimeterCount;
+            if (closingDelimeterCount < 3 || openerDelims < 3)
+                useDelims = closingDelimeterCount <= openerDelims ? closingDelimeterCount : openerDelims;
+            else
+                useDelims = closingDelimeterCount % 2 == 0 ? 2 : 1;
 
-                if (openerDelims == useDelims)
-                {
-                    // the opener is completely used up - remove the stack entry and reuse the inline element
+            if (openerDelims == useDelims)
+            {
+                // the opener is completely used up - remove the stack entry and reuse the inline element
                 var inl = opener.StartingInline;
-                    inl.Tag = useDelims == 1 ? InlineTag.Emphasis : InlineTag.Strong;
-                    inl.LiteralContent = null;
+                inl.Tag = useDelims == 1 ? InlineTag.Emphasis : InlineTag.Strong;
+                inl.LiteralContent = null;
 
                 if (closer != null)
                 {
                     inl.FirstChild = inl.NextSibling;
-                    inl.NextSibling = closer.StartingInline.NextSibling;
-                    closer.StartingInline.NextSibling = null;
-                    closer.StartingInline.LiteralContent = null;
+                    if ((closer.DelimeterCount -= useDelims) > 0)
+                    {
+                        // a new inline element must be created because the old one has to be the one that
+                        // finalizes the children of the emphasis
+                        var newCloserInline = make_str(closer.StartingInline.LiteralContent.Substring(useDelims));
+                        closer.StartingInline.LiteralContent = null;
+                        closer.StartingInline.NextSibling = null;
+                        inl.NextSibling = closer.StartingInline = newCloserInline;
+                    }
+                    else
+                    {
+                        closer.StartingInline.LiteralContent = null;
+                        inl.NextSibling = closer.StartingInline.NextSibling;
+                        closer.StartingInline.NextSibling = null;
+                    }
                 }
                 else
                 {
@@ -406,20 +415,28 @@ namespace CommonMark.Parser
 
                 if (subj != null)
                     subj.LastInline = inl;
-                }
-                else
-                {
-                    // the opener will only partially be used - stack entry remains (truncated) and a new inline is added.
+            }
+            else
+            {
+                // the opener will only partially be used - stack entry remains (truncated) and a new inline is added.
                 var inl = opener.StartingInline;
                 opener.DelimeterCount -= useDelims;
-                inl.LiteralContent = opener.StartingInline.LiteralContent.Substring(0, opener.DelimeterCount);
+                inl.LiteralContent = inl.LiteralContent.Substring(0, opener.DelimeterCount);
 
-                    var emph = useDelims == 1 ? make_emph(inl.NextSibling) : make_strong(inl.NextSibling);
-                    inl.NextSibling = emph;
+                var emph = useDelims == 1 ? make_emph(inl.NextSibling) : make_strong(inl.NextSibling);
+                inl.NextSibling = emph;
 
                 if (subj != null)
                     subj.LastInline = emph;
+
+                if (closer != null)
+                {
+                    inl = closer.StartingInline;
+                    closer.DelimeterCount -= useDelims;
+                    inl.LiteralContent = inl.LiteralContent.Substring(0, closer.DelimeterCount);
+                    emph.NextSibling = inl;
                 }
+            }
 
             return useDelims;
         }
@@ -532,9 +549,21 @@ namespace CommonMark.Parser
                 if (closer != null)
                 {
                     inl.FirstChild = inl.NextSibling;
-                    inl.NextSibling = closer.StartingInline.NextSibling;
-                    closer.StartingInline.NextSibling = null;
-                    closer.StartingInline.LiteralContent = null;
+                    if ((closer.DelimeterCount -= 2) > 0)
+                    {
+                        // a new inline element must be created because the old one has to be the one that
+                        // finalizes the children of the strikethrough
+                        var newCloserInline = make_str(closer.StartingInline.LiteralContent.Substring(2));
+                        closer.StartingInline.LiteralContent = null;
+                        closer.StartingInline.NextSibling = null;
+                        inl.NextSibling = closer.StartingInline = newCloserInline;
+                    }
+                    else
+                    {
+                        closer.StartingInline.LiteralContent = null;
+                        inl.NextSibling = closer.StartingInline.NextSibling;
+                        closer.StartingInline.NextSibling = null;
+                    }
                 }
                 else
                 {
@@ -559,6 +588,14 @@ namespace CommonMark.Parser
 
                 if (subj != null)
                     subj.LastInline = emph;
+
+                if (closer != null)
+                {
+                    inl = closer.StartingInline;
+                    closer.DelimeterCount -= 2;
+                    inl.LiteralContent = inl.LiteralContent.Substring(0, closer.DelimeterCount);
+                    emph.NextSibling = inl;
+                }
             }
         }
 
@@ -964,7 +1001,7 @@ namespace CommonMark.Parser
             {// if nothing matches, just return the opening <:
                 return make_str("<");
             }
-            }
+        }
 
         // Parse a link or the link portion of an image, or return a fallback.
         static Reference ParseLinkDetails(Subject subj)
@@ -980,31 +1017,31 @@ namespace CommonMark.Parser
             if (c == '(' &&
                     ((sps = Scanner.scan_spacechars(subj.Buffer, subj.Position + 1)) > -1) &&
                     ((n = Scanner.scan_link_url(subj.Buffer, subj.Position + 1 + sps)) > -1))
+            {
+                // try to parse an explicit link:
+                starturl = subj.Position + 1 + sps; // after (
+                endurl = starturl + n;
+                starttitle = endurl + Scanner.scan_spacechars(subj.Buffer, endurl);
+                // ensure there are spaces btw url and title
+                endtitle = (starttitle == endurl) ? starttitle :
+                           starttitle + Scanner.scan_link_title(subj.Buffer, starttitle);
+                endall = endtitle + Scanner.scan_spacechars(subj.Buffer, endtitle);
+                if (endall < subj.Buffer.Length && subj.Buffer[endall] == ')')
                 {
-                    // try to parse an explicit link:
-                    starturl = subj.Position + 1 + sps; // after (
-                    endurl = starturl + n;
-                    starttitle = endurl + Scanner.scan_spacechars(subj.Buffer, endurl);
-                    // ensure there are spaces btw url and title
-                    endtitle = (starttitle == endurl) ? starttitle :
-                               starttitle + Scanner.scan_link_title(subj.Buffer, starttitle);
-                    endall = endtitle + Scanner.scan_spacechars(subj.Buffer, endtitle);
-                    if (endall < subj.Buffer.Length && subj.Buffer[endall] == ')')
-                    {
-                        subj.Position = endall + 1;
-                        url = subj.Buffer.Substring(starturl, endurl - starturl);
-                        url = CleanUrl(url);
-                        title = subj.Buffer.Substring(starttitle, endtitle - starttitle);
-                        title = CleanTitle(title);
+                    subj.Position = endall + 1;
+                    url = subj.Buffer.Substring(starturl, endurl - starturl);
+                    url = CleanUrl(url);
+                    title = subj.Buffer.Substring(starttitle, endtitle - starttitle);
+                    title = CleanTitle(title);
 
                     return new Reference() { Title = title, Url = url };
-                    }
                 }
+            }
             else if (c == '[' || c == ' ' || c == '\n')
-                        {
+            {
                 var label = ParseReferenceLabel(subj);
                 if (label != null)
-                    {
+                {
                     if (label.Value.Length == 0)
                         return Reference.SelfReference;
 
@@ -1014,15 +1051,15 @@ namespace CommonMark.Parser
 
                     // rollback the subject but return InvalidReference so that the caller knows not to
                     // parse 'foo' from [foo][bar].
-                        subj.Position = endlabel;
+                    subj.Position = endlabel;
                     return Reference.InvalidReference;
-                    }
-                    }
+                }
+            }
 
             // rollback the subject position because didn't match anything.
-                        subj.Position = endlabel;
+            subj.Position = endlabel;
             return null;
-                }
+        }
 
         // Parse a hard or soft linebreak, returning an inline.
         // Assumes the subject has a newline at the current position.
@@ -1240,7 +1277,7 @@ namespace CommonMark.Parser
             url = subj.Buffer.Substring(subj.Position, matchlen);
             url = CleanUrl(url);
             subj.Position += matchlen;
-            
+
             // parse optional link_title
             beforetitle = subj.Position;
             spnl(subj);
