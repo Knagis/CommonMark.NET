@@ -299,7 +299,7 @@ namespace CommonMark.Parser
                     return 0;
 
                 pos++;
-                if (pos == len || ln[pos] != ' ')
+                if (pos == len || (ln[pos] != ' ' && ln[pos] != '\n'))
                     return 0;
 
                 data = new ListData();

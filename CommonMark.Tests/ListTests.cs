@@ -23,5 +23,19 @@ namespace CommonMark.Tests
         {
             Helpers.ExecuteTest("• foo\n• bar", "<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>");
         }
+
+        [TestMethod]
+        [TestCategory("Container blocks - List items")]
+        public void EmptyList1()
+        {
+            Helpers.ExecuteTest("1.\n2.", "<ol>\n<li></li>\n<li></li>\n</ol>");
+        }
+
+        [TestMethod]
+        [TestCategory("Container blocks - List items")]
+        public void EmptyList2()
+        {
+            Helpers.ExecuteTest("+\n+", "<ul>\n<li></li>\n<li></li>\n</ul>");
+        }
     }
 }
