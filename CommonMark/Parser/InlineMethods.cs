@@ -637,8 +637,8 @@ namespace CommonMark.Parser
             if (details != null)
             {
                 var inl = opener.StartingInline;
-                inl.Tag = 0 != (opener.Flags & InlineStack.InlineStackFlags.ImageLink)
-                            ? InlineTag.Image : InlineTag.Link;
+                var isImage = 0 != (opener.Flags & InlineStack.InlineStackFlags.ImageLink);
+                inl.Tag = isImage ? InlineTag.Image : InlineTag.Link;
                 inl.LiteralContent = null;
                 inl.FirstChild = inl.NextSibling;
                 inl.NextSibling = null;
@@ -646,20 +646,23 @@ namespace CommonMark.Parser
                 inl.Linkable.Url = details.Url;
                 inl.Linkable.Title = details.Title;
 
-                // since there cannot be nested links, remove any other link openers before this
-                var temp = opener.Previous;
-                while (temp != null && temp.Priority <= InlineStack.InlineStackPriority.Links)
+                if (!isImage)
                 {
-                    if (temp.Delimeter == '[' && temp.Flags == opener.Flags)
+                    // since there cannot be nested links, remove any other link openers before this
+                    var temp = opener.Previous;
+                    while (temp != null && temp.Priority <= InlineStack.InlineStackPriority.Links)
                     {
-                        // mark the previous entries as "inactive"
-                        if (temp.DelimeterCount == -1)
-                            break;
+                        if (temp.Delimeter == '[' && temp.Flags == opener.Flags)
+                        {
+                            // mark the previous entries as "inactive"
+                            if (temp.DelimeterCount == -1)
+                                break;
 
-                        temp.DelimeterCount = -1;
+                            temp.DelimeterCount = -1;
+                        }
+
+                        temp = temp.Previous;
                     }
-
-                    temp = temp.Previous;
                 }
 
                 InlineStack.RemoveStackEntry(opener, subj, closer);

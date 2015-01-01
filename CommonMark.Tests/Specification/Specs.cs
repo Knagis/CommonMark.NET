@@ -15,8 +15,9 @@ namespace CommonMark.Tests.Specification
         // title: CommonMark Spec
         // author:
         // - John MacFarlane
-        // version: 0.13
-        // date: 2014-12-10
+        // version: 0.15
+        // date: 2014-12-31
+        // license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
         // ...
         //
         // # Introduction
@@ -254,14 +255,14 @@ namespace CommonMark.Tests.Specification
         //
         // A [non-space character](@non-space-character) is anything but `U+0020`.
         //
-        // A [punctuation character](@punctuation-character) is anything in
-        // the unicode classes `Pc`, `Pd`, `Pe`,` `Pf`, `Pi`, `Po`, or `Ps`.
-        //
         // An [ASCII punctuation character](@ascii-punctuation-character)
-        // is a [punctuation character](#punctuation-character) in the
-        // ASCII class: that is, `!`, `"`, `#`, `$`, `%`, `&`, `'`, `(`, `)`,
+        // is `!`, `"`, `#`, `$`, `%`, `&`, `'`, `(`, `)`,
         // `*`, `+`, `,`, `-`, `.`, `/`, `:`, `;`, `<`, `=`, `>`, `?`, `@`,
         // `[`, `\`, `]`, `^`, `_`, `` ` ``, `{`, `|`, `}`, or `~`.
+        //
+        // A [punctuation character](@punctuation-character) is an [ASCII
+        // punctuation character](#ascii-punctuation-character) or anything in
+        // the unicode classes `Pc`, `Pd`, `Pe`, `Pf`, `Pi`, `Po`, or `Ps`.
         //
         // ## Tab expansion
         //
@@ -7376,14 +7377,14 @@ namespace CommonMark.Tests.Specification
         // followed by a `*` character, or a sequence of one or more `_`
         // characters that is not preceded or followed by a `_` character.
         //
-        // A [left-flanking delimiter run](@right-facing-delimiter-run) is
+        // A [left-flanking delimiter run](@left-flanking-delimiter-run) is
         // a [delimiter run](#delimiter-run) that is (a) not followed by [unicode
         // whitespace](#unicode-whitespace), and (b) either not followed by a
         // [punctuation character](#punctuation-character), or
         // preceded by [unicode whitespace](#unicode-whitespace) or
         // a [punctuation character](#punctuation-character).
         //
-        // A [right-flanking delimiter run](@left-facing-delimiter-run) is
+        // A [right-flanking delimiter run](@right-flanking-delimiter-run) is
         // a [delimiter run](#delimiter-run) that is (a) not preceded by [unicode
         // whitespace](#unicode-whitespace), and (b) either not preceded by a
         // [punctuation character](#punctuation-character), or
@@ -7436,38 +7437,38 @@ namespace CommonMark.Tests.Specification
         //
         // 1.  A single `*` character [can open emphasis](@can-open-emphasis)
         // iff it is part of a
-        // [left-flanking delimiter run](#right-facing-delimiter-run).
+        // [left-flanking delimiter run](#left-flanking-delimiter-run).
         //
         // 2.  A single `_` character [can open emphasis](#can-open-emphasis) iff
         // it is part of a
-        // [left-flanking delimiter run](#right-facing-delimiter-run)
+        // [left-flanking delimiter run](#left-flanking-delimiter-run)
         // and is not preceded by an ASCII alphanumeric character.
         //
         // 3.  A single `*` character [can close emphasis](@can-close-emphasis)
         // iff it is part of a
-        // [left-flanking delimiter run](#right-facing-delimiter-run).
+        // [right-flanking delimiter run](#right-flanking-delimiter-run).
         //
         // 4.  A single `_` character [can close emphasis](#can-close-emphasis)
         // iff it is part of a
-        // [left-flanking delimiter run](#right-facing-delimiter-run).
+        // [right-flanking delimiter run](#right-flanking-delimiter-run).
         // and it is not followed by an ASCII alphanumeric character.
         //
         // 5.  A double `**` [can open strong emphasis](@can-open-strong-emphasis)
         // iff it is part of a
-        // [left-flanking delimiter run](#right-facing-delimiter-run).
+        // [left-flanking delimiter run](#left-flanking-delimiter-run).
         //
         // 6.  A double `__` [can open strong emphasis](#can-open-strong-emphasis)
         // iff it is part of a
-        // [left-flanking delimiter run](#right-facing-delimiter-run)
+        // [left-flanking delimiter run](#left-flanking-delimiter-run)
         // and is not preceded by an ASCII alphanumeric character.
         //
         // 7.  A double `**` [can close strong emphasis](@can-close-strong-emphasis)
         // iff it is part of a
-        // [right-flanking delimiter run](#right-facing-delimiter-run).
+        // [right-flanking delimiter run](#right-flanking-delimiter-run).
         //
         // 8.  A double `__` [can close strong emphasis](#can-close-strong-emphasis)
         // iff it is part of a
-        // [right-flanking delimiter run](#right-facing-delimiter-run).
+        // [right-flanking delimiter run](#right-flanking-delimiter-run).
         // and is not followed by an ASCII alphanumeric character.
         //
         // 9.  Emphasis begins with a delimiter that [can open
@@ -7548,7 +7549,7 @@ namespace CommonMark.Tests.Specification
 
         // This is not emphasis, because the opening `*` is followed by
         // whitespace, and hence not part of a [left-flanking delimiter
-        // run](#right-facing-delimiter-run):
+        // run](#left-flanking-delimiter-run):
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7569,7 +7570,7 @@ namespace CommonMark.Tests.Specification
 
         // This is not emphasis, because the opening `*` is preceded
         // by an alphanumeric and followed by punctuation, and hence
-        // not part of a [left-flanking delimiter run](#right-facing-delimiter-run):
+        // not part of a [left-flanking delimiter run](#left-flanking-delimiter-run):
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7804,7 +7805,7 @@ namespace CommonMark.Tests.Specification
         // This is not emphasis, because the second `*` is
         // preceded by punctuation and followed by an alphanumeric
         // (hence it is not part of a [right-flanking delimiter
-        // run](#left-facing-delimiter-run):
+        // run](#right-flanking-delimiter-run):
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8019,7 +8020,7 @@ namespace CommonMark.Tests.Specification
 
         // This is not strong emphasis, because the opening `**` is preceded
         // by an alphanumeric and followed by punctuation, and hence
-        // not part of a [left-flanking delimiter run](#right-facing-delimiter-run):
+        // not part of a [left-flanking delimiter run](#left-flanking-delimiter-run):
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
