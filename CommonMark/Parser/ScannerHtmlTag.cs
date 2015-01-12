@@ -61,8 +61,6 @@ namespace CommonMark.Parser
 
         private static int _scanHtmlTagHtmlComment(string s, int pos)
         {
-            // Original regexp: "\\!--(([^-\\x00]+)|([-][^-\\x00]+))*-->"
-            
             // we know that the initial "!-" has already been verified
             if (pos + 5 >= s.Length)
                 return 0;
@@ -70,7 +68,10 @@ namespace CommonMark.Parser
             if (s[pos + 2] != '-')
                 return 0;
 
-            char nextChar;
+            char nextChar = s[pos + 3];
+            if (nextChar == '>' || (nextChar == '-' && s[pos + 4] == '>'))
+                return 0;
+
             byte hyphenCount = 0;
             for (var i = pos + 3; i < s.Length ; i++)
             {

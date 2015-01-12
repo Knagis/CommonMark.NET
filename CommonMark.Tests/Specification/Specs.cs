@@ -13,8 +13,7 @@ namespace CommonMark.Tests.Specification
     {
         // ---
         // title: CommonMark Spec
-        // author:
-        // - John MacFarlane
+        // author: John MacFarlane
         // version: 0.15
         // date: 2014-12-31
         // license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
@@ -215,16 +214,16 @@ namespace CommonMark.Tests.Specification
         //
         // ## Characters and lines
         //
-        // The input is a sequence of zero or more [lines](#line).
-        //
-        // A [line](@line)
-        // is a sequence of zero or more [characters](#character) followed by a
-        // [line ending](#line-ending) or by the end of file.
+        // Any sequence of [character]s is a valid CommonMark
+        // document.
         //
         // A [character](@character) is a unicode code point.
         // This spec does not specify an encoding; it thinks of lines as composed
         // of characters rather than bytes.  A conforming parser may be limited
         // to a certain encoding.
+        //
+        // A [line](@line) is a sequence of zero or more [character]s
+        // followed by a [line ending] or by the end of file.
         //
         // A [line ending](@line-ending) is, depending on the platform, a
         // newline (`U+000A`), carriage return (`U+000D`), or
@@ -243,7 +242,7 @@ namespace CommonMark.Tests.Specification
         // newline (`U+000A`).
         //
         // [Whitespace](@whitespace) is a sequence of one or more [whitespace
-        // characters](#whitespace-character).
+        // character]s.
         //
         // A [unicode whitespace character](@unicode-whitespace-character) is
         // any code point in the unicode `Zs` class, or a tab (`U+0009`),
@@ -251,7 +250,7 @@ namespace CommonMark.Tests.Specification
         // (`U+000C`).
         //
         // [Unicode whitespace](@unicode-whitespace) is a sequence of one
-        // or more [unicode whitespace characters](#unicode-whitespace-character).
+        // or more [unicode whitespace character]s.
         //
         // A [non-space character](@non-space-character) is anything but `U+0020`.
         //
@@ -261,7 +260,7 @@ namespace CommonMark.Tests.Specification
         // `[`, `\`, `]`, `^`, `_`, `` ` ``, `{`, `|`, `}`, or `~`.
         //
         // A [punctuation character](@punctuation-character) is an [ASCII
-        // punctuation character](#ascii-punctuation-character) or anything in
+        // punctuation character] or anything in
         // the unicode classes `Pc`, `Pd`, `Pe`, `Pf`, `Pi`, `Po`, or `Ps`.
         //
         // ## Tab expansion
@@ -355,8 +354,8 @@ namespace CommonMark.Tests.Specification
         // ## Container blocks and leaf blocks
         //
         // We can divide blocks into two types:
-        // [container blocks](@container-block),
-        // which can contain other blocks, and [leaf blocks](@leaf-block),
+        // [container block](@container-block)s,
+        // which can contain other blocks, and [leaf block](@leaf-block)s,
         // which cannot.
         //
         // # Leaf blocks
@@ -368,8 +367,8 @@ namespace CommonMark.Tests.Specification
         //
         // A line consisting of 0-3 spaces of indentation, followed by a sequence
         // of three or more matching `-`, `_`, or `*` characters, each followed
-        // optionally by any number of spaces, forms a [horizontal
-        // rule](@horizontal-rule).
+        // optionally by any number of spaces, forms a
+        // [horizontal rule](@horizontal-rule).
         [TestMethod]
         [TestCategory("Leaf blocks - Horizontal rules")]
         //[Timeout(1000)]
@@ -633,8 +632,7 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("_ _ _ _ a\n\na------\n\n---a---", "<p>_ _ _ _ a</p>\n<p>a------</p>\n<p>---a---</p>");
         }
 
-        // It is required that all of the
-        // [non-space characters](#non-space-character) be the same.
+        // It is required that all of the [non-space character]s be the same.
         // So, this is not a horizontal rule:
         [TestMethod]
         [TestCategory("Leaf blocks - Horizontal rules")]
@@ -706,8 +704,8 @@ namespace CommonMark.Tests.Specification
 
         // If a line of dashes that meets the above conditions for being a
         // horizontal rule could also be interpreted as the underline of a [setext
-        // header](#setext-header), the interpretation as a
-        // [setext-header](#setext-header) takes precedence. Thus, for example,
+        // header], the interpretation as a
+        // [setext header] takes precedence. Thus, for example,
         // this is a setext header, not a paragraph followed by a horizontal rule:
         [TestMethod]
         [TestCategory("Leaf blocks - Horizontal rules")]
@@ -731,7 +729,7 @@ namespace CommonMark.Tests.Specification
         }
 
         // When both a horizontal rule and a list item are possible
-        // interpretations of a line, the horizontal rule is preferred:
+        // interpretations of a line, the horizontal rule takes precedence:
         [TestMethod]
         [TestCategory("Leaf blocks - Horizontal rules")]
         //[Timeout(1000)]
@@ -789,7 +787,8 @@ namespace CommonMark.Tests.Specification
         // consists of a string of characters, parsed as inline content, between an
         // opening sequence of 1--6 unescaped `#` characters and an optional
         // closing sequence of any number of `#` characters.  The opening sequence
-        // of `#` characters cannot be followed directly by a nonspace character.
+        // of `#` characters cannot be followed directly by a
+        // [non-space character].
         // The optional closing sequence of `#`s must be preceded by a space and may be
         // followed by spaces only.  The opening `#` character may be indented 0-3
         // spaces.  The raw contents of the header are stripped of leading and
@@ -1048,7 +1047,8 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("### foo ###     ", "<h3>foo</h3>");
         }
 
-        // A sequence of `#` characters with a nonspace character following it
+        // A sequence of `#` characters with a
+        // [non-space character] following it
         // is not a closing sequence, but counts as part of the contents of the
         // header:
         [TestMethod]
@@ -1184,9 +1184,10 @@ namespace CommonMark.Tests.Specification
         // ## Setext headers
         //
         // A [setext header](@setext-header)
-        // consists of a line of text, containing at least one nonspace character,
+        // consists of a line of text, containing at least one
+        // [non-space character],
         // with no more than 3 spaces indentation, followed by a [setext header
-        // underline](#setext-header-underline).  The line of text must be
+        // underline].  The line of text must be
         // one that, were it not followed by the setext header underline,
         // would be interpreted as part of a paragraph:  it cannot be a code
         // block, header, blockquote, horizontal rule, or list.
@@ -1195,11 +1196,11 @@ namespace CommonMark.Tests.Specification
         // `=` characters or a sequence of `-` characters, with no more than 3
         // spaces indentation and any number of trailing spaces.  If a line
         // containing a single `-` can be interpreted as an
-        // empty [list item](#list-items), it should be interpreted this way
-        // and not as a [setext header underline](#setext-header-underline).
+        // empty [list items], it should be interpreted this way
+        // and not as a [setext header underline].
         //
         // The header is a level 1 header if `=` characters are used in the
-        // [setext header underline](#setext-header-underline), and a level 2
+        // [setext header underline], and a level 2
         // header if `-` characters are used.  The contents of the header are the
         // result of parsing the first line as Markdown inline content.
         //
@@ -1345,14 +1346,14 @@ namespace CommonMark.Tests.Specification
             //
             // The following CommonMark:
             //     Foo
-            //          ---
+            //         ---
             //
             // Should be rendered as:
             //     <p>Foo
             //     ---</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 46, "Leaf blocks - Setext headers");
-			Helpers.ExecuteTest("Foo\n     ---", "<p>Foo\n---</p>");
+			Helpers.ExecuteTest("Foo\n    ---", "<p>Foo\n---</p>");
         }
 
         // The setext header underline cannot contain internal spaces:
@@ -1451,7 +1452,7 @@ namespace CommonMark.Tests.Specification
         }
 
         // The setext header underline cannot be a [lazy continuation
-        // line](#lazy-continuation-line) in a list item or block quote:
+        // line] in a list item or block quote:
         [TestMethod]
         [TestCategory("Leaf blocks - Setext headers")]
         //[Timeout(1000)]
@@ -1684,12 +1685,12 @@ namespace CommonMark.Tests.Specification
         // ## Indented code blocks
         //
         // An [indented code block](@indented-code-block) is composed of one or more
-        // [indented chunks](#indented-chunk) separated by blank lines.
+        // [indented chunk]s separated by blank lines.
         // An [indented chunk](@indented-chunk) is a sequence of non-blank lines,
         // each indented four or more spaces. The contents of the code block are
         // the literal contents of the lines, including trailing
-        // [line endings](#line-ending), minus four spaces of indentation.
-        // An indented code block has no attributes.
+        // [line ending]s, minus four spaces of indentation.
+        // An indented code block has no [info string].
         //
         // An indented code block cannot interrupt a paragraph, so there must be
         // a blank line between a paragraph and a following indented code block.
@@ -1954,13 +1955,13 @@ namespace CommonMark.Tests.Specification
         // The line with the opening code fence may optionally contain some text
         // following the code fence; this is trimmed of leading and trailing
         // spaces and called the [info string](@info-string).
-        // The info string may not contain any backtick
+        // The [info string] may not contain any backtick
         // characters.  (The reason for this restriction is that otherwise
         // some inline code would be incorrectly interpreted as the
         // beginning of a fenced code block.)
         //
         // The content of the code block consists of all subsequent lines, until
-        // a closing [code fence](#code-fence) of the same type as the code block
+        // a closing [code fence] of the same type as the code block
         // began with (backticks or tildes), and with at least as many backticks
         // or tildes as the opening code fence.  If the leading code fence is
         // indented N spaces, then up to N spaces of indentation are removed from
@@ -1982,10 +1983,10 @@ namespace CommonMark.Tests.Specification
         // a blank line either before or after.
         //
         // The content of a code fence is treated as literal text, not parsed
-        // as inlines.  The first word of the info string is typically used to
+        // as inlines.  The first word of the [info string] is typically used to
         // specify the language of the code sample, and rendered in the `class`
         // attribute of the `code` tag.  However, this spec does not mandate any
-        // particular treatment of the info string.
+        // particular treatment of the [info string].
         //
         // Here is a simple example with backticks:
         [TestMethod]
@@ -2482,7 +2483,7 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("foo\n---\n~~~\nbar\n~~~\n# baz", "<h2>foo</h2>\n<pre><code>bar\n</code></pre>\n<h1>baz</h1>");
         }
 
-        // An [info string](#info-string) can be provided after the opening code fence.
+        // An [info string] can be provided after the opening code fence.
         // Opening and closing spaces will be stripped, and the first word, prefixed
         // with `language-`, is used as the value for the `class` attribute of the
         // `code` element within the enclosing `pre` element.
@@ -2555,7 +2556,7 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("````;\n````", "<pre><code class=\"language-;\"></code></pre>");
         }
 
-        // Info strings for backtick code blocks cannot contain backticks:
+        // [Info string]s for backtick code blocks cannot contain backticks:
         [TestMethod]
         [TestCategory("Leaf blocks - Fenced code blocks")]
         //[Timeout(1000)]
@@ -2576,7 +2577,7 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("``` aa ```\nfoo", "<p><code>aa</code>\nfoo</p>");
         }
 
-        // Closing code fences cannot have info strings:
+        // Closing code fences cannot have [info string]s:
         [TestMethod]
         [TestCategory("Leaf blocks - Fenced code blocks")]
         //[Timeout(1000)]
@@ -2601,7 +2602,7 @@ namespace CommonMark.Tests.Specification
         // ## HTML blocks
         //
         // An [HTML block tag](@html-block-tag) is
-        // an [open tag](#open-tag) or [closing tag](#closing-tag) whose tag
+        // an [open tag] or [closing tag] whose tag
         // name is one of the following (case-insensitive):
         // `article`, `header`, `aside`, `hgroup`, `blockquote`, `hr`, `iframe`,
         // `body`, `li`, `map`, `button`, `object`, `canvas`, `ol`, `caption`,
@@ -2612,10 +2613,9 @@ namespace CommonMark.Tests.Specification
         // `script`, `style`.
         //
         // An [HTML block](@html-block) begins with an
-        // [HTML block tag](#html-block-tag), [HTML comment](#html-comment),
-        // [processing instruction](#processing-instruction),
-        // [declaration](#declaration), or [CDATA section](#cdata-section).
-        // It ends when a [blank line](#blank-line) or the end of the
+        // [HTML block tag], [HTML comment], [processing instruction],
+        // [declaration], or [CDATA section].
+        // It ends when a [blank line] or the end of the
         // input is encountered.  The initial line may be indented up to three
         // spaces, and subsequent lines may have any indentation.  The contents
         // of the HTML block are interpreted as raw HTML, and will not be escaped
@@ -3041,19 +3041,19 @@ namespace CommonMark.Tests.Specification
         // ## Link reference definitions
         //
         // A [link reference definition](@link-reference-definition)
-        // consists of a [link label](#link-label), indented up to three spaces, followed
-        // by a colon (`:`), optional [whitespace](#whitespace) (including up to one
-        // [line ending](#line-ending)), a [link destination](#link-destination),
-        // optional [whitespace](#whitespace) (including up to one
-        // [line ending](#line-ending)), and an optional [link
-        // title](#link-title), which if it is present must be separated
-        // from the [link destination](#link-destination) by [whitespace](#whitespace).
-        // No further [non-space characters](#non-space-character) may occur on the line.
+        // consists of a [link label], indented up to three spaces, followed
+        // by a colon (`:`), optional [whitespace] (including up to one
+        // [line ending]), a [link destination],
+        // optional [whitespace] (including up to one
+        // [line ending]), and an optional [link
+        // title], which if it is present must be separated
+        // from the [link destination] by [whitespace].
+        // No further [non-space character]s may occur on the line.
         //
-        // A [link reference-definition](#link-reference-definition)
+        // A [link reference-definition]
         // does not correspond to a structural element of a document.  Instead, it
-        // defines a label which can be used in [reference links](#reference-link)
-        // and reference-style [images](#images) elsewhere in the document.  [Link
+        // defines a label which can be used in [reference link]s
+        // and reference-style [images] elsewhere in the document.  [Link
         // reference definitions] can come either before or after the links that use
         // them.
         [TestMethod]
@@ -3229,7 +3229,7 @@ namespace CommonMark.Tests.Specification
         }
 
         // As noted in the section on [Links], matching of labels is
-        // case-insensitive (see [matches](#matches)).
+        // case-insensitive (see [matches]).
         [TestMethod]
         [TestCategory("Leaf blocks - Link reference definitions")]
         //[Timeout(1000)]
@@ -3291,7 +3291,7 @@ namespace CommonMark.Tests.Specification
         }
 
         // This is not a link reference definition, because there are
-        // [non-space characters](#non-space-character) after the title:
+        // [non-space character]s after the title:
         [TestMethod]
         [TestCategory("Leaf blocks - Link reference definitions")]
         //[Timeout(1000)]
@@ -3360,8 +3360,7 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("```\n[foo]: /url\n```\n\n[foo]", "<pre><code>[foo]: /url\n</code></pre>\n<p>[foo]</p>");
         }
 
-        // A [link reference definition](#link-reference-definition) cannot
-        // interrupt a paragraph.
+        // A [link reference definition] cannot interrupt a paragraph.
         [TestMethod]
         [TestCategory("Leaf blocks - Link reference definitions")]
         //[Timeout(1000)]
@@ -3410,7 +3409,7 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("# [Foo]\n[foo]: /url\n> bar", "<h1><a href=\"/url\">Foo</a></h1>\n<blockquote>\n<p>bar</p>\n</blockquote>");
         }
 
-        // Several [link references definitions](#link-reference-definition)
+        // Several [link reference definition]s
         // can occur one after another, without intervening blank lines.
         [TestMethod]
         [TestCategory("Leaf blocks - Link reference definitions")]
@@ -3439,7 +3438,7 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("[foo]: /foo-url \"foo\"\n[bar]: /bar-url\n  \"bar\"\n[baz]: /baz-url\n\n[foo],\n[bar],\n[baz]", "<p><a href=\"/foo-url\" title=\"foo\">foo</a>,\n<a href=\"/bar-url\" title=\"bar\">bar</a>,\n<a href=\"/baz-url\">baz</a></p>");
         }
 
-        // [Link reference definitions](#link-reference-definition) can occur
+        // [Link reference definition]s can occur
         // inside block containers, like lists and block quotations.  They
         // affect the entire document, not just the container in which they
         // are defined:
@@ -3472,7 +3471,7 @@ namespace CommonMark.Tests.Specification
         // The contents of the paragraph are the result of parsing the
         // paragraph's raw content as inlines.  The paragraph's raw content
         // is formed by concatenating the lines and removing initial and final
-        // spaces.
+        // [whitespace].
         //
         // A simple example with two paragraphs:
         [TestMethod]
@@ -3635,7 +3634,7 @@ namespace CommonMark.Tests.Specification
 
         // Final spaces are stripped before inline parsing, so a paragraph
         // that ends with two or more spaces will not end with a [hard line
-        // break](#hard-line-break):
+        // break]:
         [TestMethod]
         [TestCategory("Leaf blocks - Paragraphs")]
         //[Timeout(1000)]
@@ -3658,9 +3657,9 @@ namespace CommonMark.Tests.Specification
 
         // ## Blank lines
         //
-        // [Blank lines](#blank-line) between block-level elements are ignored,
-        // except for the role they play in determining whether a [list](#list)
-        // is [tight](#tight) or [loose](#loose).
+        // [Blank line]s between block-level elements are ignored,
+        // except for the role they play in determining whether a [list]
+        // is [tight] or [loose].
         //
         // Blank lines at the beginning and end of the document are also ignored.
         [TestMethod]
@@ -3691,10 +3690,10 @@ namespace CommonMark.Tests.Specification
 
         // # Container blocks
         //
-        // A [container block](#container-block) is a block that has other
+        // A [container block] is a block that has other
         // blocks as its contents.  There are two basic kinds of container blocks:
-        // [block quotes](#block-quote) and [list items](#list-item).
-        // [Lists](#list) are meta-containers for [list items](#list-item).
+        // [block quotes] and [list items].
+        // [Lists] are meta-containers for [list items].
         //
         // We define the syntax for container blocks recursively.  The general
         // form of the definition is:
@@ -3715,30 +3714,27 @@ namespace CommonMark.Tests.Specification
         // consists of 0-3 spaces of initial indent, plus (a) the character `>` together
         // with a following space, or (b) a single character `>` not followed by a space.
         //
-        // The following rules define [block quotes](@block-quote):
+        // The following rules define [block quotes]:
         //
         // 1.  **Basic case.**  If a string of lines *Ls* constitute a sequence
         // of blocks *Bs*, then the result of prepending a [block quote
-        // marker](#block-quote-marker) to the beginning of each line in *Ls*
-        // is a [block quote](#block-quote) containing *Bs*.
+        // marker] to the beginning of each line in *Ls*
+        // is a [block quote](#block-quotes) containing *Bs*.
         //
         // 2.  **Laziness.**  If a string of lines *Ls* constitute a [block
-        // quote](#block-quote) with contents *Bs*, then the result of deleting
-        // the initial [block quote marker](#block-quote-marker) from one or
-        // more lines in which the next
-        // [non-space character](#non-space-character) after the [block
-        // quote marker](#block-quote-marker) is [paragraph continuation
-        // text](#paragraph-continuation-text) is a block quote with *Bs* as
-        // its content.
+        // quote](#block-quotes) with contents *Bs*, then the result of deleting
+        // the initial [block quote marker] from one or
+        // more lines in which the next [non-space character] after the [block
+        // quote marker] is [paragraph continuation
+        // text] is a block quote with *Bs* as its content.
         // [Paragraph continuation text](@paragraph-continuation-text) is text
         // that will be parsed as part of the content of a paragraph, but does
         // not occur at the beginning of the paragraph.
         //
         // 3.  **Consecutiveness.**  A document cannot contain two [block
-        // quotes](#block-quote) in a row unless there is a [blank
-        // line](#blank-line) between them.
+        // quotes] in a row unless there is a [blank line] between them.
         //
-        // Nothing else counts as a [block quote](#block-quote).
+        // Nothing else counts as a [block quote](#block-quotes).
         //
         // Here is a simple example:
         [TestMethod]
@@ -4312,7 +4308,7 @@ namespace CommonMark.Tests.Specification
         }
 
         // When including an indented code block in a block quote,
-        // remember that the [block quote marker](#block-quote-marker) includes
+        // remember that the [block quote marker] includes
         // both the `>` and a following space.  So *five spaces* are needed after
         // the `>`:
         [TestMethod]
@@ -4344,8 +4340,7 @@ namespace CommonMark.Tests.Specification
         // ## List items
         //
         // A [list marker](@list-marker) is a
-        // [bullet list marker](#bullet-list-marker) or an [ordered list
-        // marker](#ordered-list-marker).
+        // [bullet list marker] or an [ordered list marker].
         //
         // A [bullet list marker](@bullet-list-marker)
         // is a `-`, `+`, or `*` character.
@@ -4354,11 +4349,10 @@ namespace CommonMark.Tests.Specification
         // is a sequence of one of more digits (`0-9`), followed by either a
         // `.` character or a `)` character.
         //
-        // The following rules define [list items](@list-item):
+        // The following rules define [list items]:
         //
         // 1.  **Basic case.**  If a sequence of lines *Ls* constitute a sequence of
-        // blocks *Bs* starting with a [non-space character](#non-space-character)
-        // and not separated
+        // blocks *Bs* starting with a [non-space character] and not separated
         // from each other by more than one blank line, and *M* is a list
         // marker *M* of width *W* followed by 0 < *N* < 5 spaces, then the result
         // of prepending *M* and the following spaces to the first line of
@@ -4438,7 +4432,7 @@ namespace CommonMark.Tests.Specification
         // the text after the list marker determines how much indentation
         // is needed in subsequent blocks in the list item.  If the list
         // marker takes up two spaces, and there are three spaces between
-        // the list marker and the next nonspace character, then blocks
+        // the list marker and the next [non-space character], then blocks
         // must be indented five spaces in order to fall under the list
         // item.
         //
@@ -4542,8 +4536,8 @@ namespace CommonMark.Tests.Specification
         }
 
         // It is tempting to think of this in terms of columns:  the continuation
-        // blocks must be indented at least to the column of the first nonspace
-        // character after the list marker.  However, that is not quite right.
+        // blocks must be indented at least to the column of the first
+        // [non-space character] after the list marker. However, that is not quite right.
         // The spaces after the list marker determine how much relative indentation
         // is needed.  Which column this indentation reaches will depend on
         // how the list item is embedded in other constructions, as shown by
@@ -4614,7 +4608,7 @@ namespace CommonMark.Tests.Specification
 
         // A list item may not contain blocks that are separated by more than
         // one blank line.  Thus, two blank lines will end a list, unless the
-        // two blanks are contained in a [fenced code block](#fenced-code-block).
+        // two blanks are contained in a [fenced code block].
         [TestMethod]
         [TestCategory("Container blocks - List items")]
         //[Timeout(1000)]
@@ -4883,8 +4877,9 @@ namespace CommonMark.Tests.Specification
         }
 
         // Note that rules #1 and #2 only apply to two cases:  (a) cases
-        // in which the lines to be included in a list item begin with a nonspace
-        // character, and (b) cases in which they begin with an indented code
+        // in which the lines to be included in a list item begin with a
+        // [non-space character], and (b) cases in which
+        // they begin with an indented code
         // block.  In a case like the following, where the first block begins with
         // a three-space indent, the rules do not allow us to form a list item by
         // indenting the whole thing and prepending a list marker:
@@ -4961,9 +4956,8 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("-  foo\n\n   bar", "<ul>\n<li>\n<p>foo</p>\n<p>bar</p>\n</li>\n</ul>");
         }
 
-        // 3. **Empty list item.**  A [list marker](#list-marker) followed by a
-        // line containing only [whitespace](#whitespace) is a list item with
-        // no contents.
+        // 3. **Empty list item.**  A [list marker] followed by a
+        // line containing only [whitespace] is a list item with no contents.
         //
         // Here is an empty bullet list item:
         [TestMethod]
@@ -4990,8 +4984,7 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("- foo\n-\n- bar", "<ul>\n<li>foo</li>\n<li></li>\n<li>bar</li>\n</ul>");
         }
 
-        // It does not matter whether there are spaces following the
-        // [list marker](#list-marker):
+        // It does not matter whether there are spaces following the [list marker]:
         [TestMethod]
         [TestCategory("Container blocks - List items")]
         //[Timeout(1000)]
@@ -5201,16 +5194,15 @@ namespace CommonMark.Tests.Specification
         }
 
         // 5.  **Laziness.**  If a string of lines *Ls* constitute a [list
-        // item](#list-item) with contents *Bs*, then the result of deleting
+        // item](#list-items) with contents *Bs*, then the result of deleting
         // some or all of the indentation from one or more lines in which the
-        // next [non-space character](#non-space-character) after the indentation is
-        // [paragraph continuation text](#paragraph-continuation-text) is a
+        // next [non-space character] after the indentation is
+        // [paragraph continuation text] is a
         // list item with the same contents and attributes.  The unindented
         // lines are called
-        // [lazy continuation lines](@lazy-continuation-line).
+        // [lazy continuation line](@lazy-continuation-line)s.
         //
-        // Here is an example with [lazy continuation
-        // lines](#lazy-continuation-line):
+        // Here is an example with [lazy continuation line]s:
         [TestMethod]
         [TestCategory("Container blocks - List items")]
         //[Timeout(1000)]
@@ -5325,7 +5317,7 @@ namespace CommonMark.Tests.Specification
         }
 
         // 6.  **That's all.** Nothing that is not counted as a list item by rules
-        // #1--5 counts as a [list item](#list-item).
+        // #1--5 counts as a [list item](#list-items).
         //
         // The rules for sublists follow from the general rules above.  A sublist
         // must be indented the same number of spaces a paragraph would need to be
@@ -5709,25 +5701,25 @@ namespace CommonMark.Tests.Specification
         // ## Lists
         //
         // A [list](@list) is a sequence of one or more
-        // list items [of the same type](#of-the-same-type).  The list items
-        // may be separated by single [blank lines](#blank-line), but two
+        // list items [of the same type].  The list items
+        // may be separated by single [blank lines], but two
         // blank lines end all containing lists.
         //
         // Two list items are [of the same type](@of-the-same-type)
-        // if they begin with a [list
-        // marker](#list-marker) of the same type.  Two list markers are of the
+        // if they begin with a [list marker] of the same type.
+        // Two list markers are of the
         // same type if (a) they are bullet list markers using the same character
         // (`-`, `+`, or `*`) or (b) they are ordered list numbers with the same
         // delimiter (either `.` or `)`).
         //
         // A list is an [ordered list](@ordered-list)
         // if its constituent list items begin with
-        // [ordered list markers](#ordered-list-marker), and a [bullet
-        // list](@bullet-list) if its constituent list
-        // items begin with [bullet list markers](#bullet-list-marker).
+        // [ordered list marker]s, and a
+        // [bullet list](@bullet-list) if its constituent list
+        // items begin with [bullet list marker]s.
         //
         // The [start number](@start-number)
-        // of an [ordered list](#ordered-list) is determined by the list number of
+        // of an [ordered list] is determined by the list number of
         // its initial list item.  The numbers of subsequent list items are
         // disregarded.
         //
@@ -5862,9 +5854,8 @@ namespace CommonMark.Tests.Specification
         // > meaning, it will continue to have the same meaning when put into a
         // > container block (such as a list item or blockquote).
         //
-        // (Indeed, the spec for [list items](#list-item) and
-        // [blockquotes](#block-quotes) presupposes this principle.)
-        // This principle implies that if
+        // (Indeed, the spec for [list items] and [block quotes] presupposes
+        // this principle.) This principle implies that if
         //
         // * I need to buy
         // - new shoes
@@ -5883,7 +5874,7 @@ namespace CommonMark.Tests.Specification
         //
         // by itself should be a paragraph followed by a nested sublist.
         //
-        // Our adherence to the [principle of uniformity](#principle-of-uniformity)
+        // Our adherence to the [principle of uniformity]
         // thus inclines us to think that there are two coherent packages:
         //
         // 1.  Require blank lines before *all* lists and blockquotes,
@@ -5930,7 +5921,7 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("- foo\n\n- bar\n\n\n- baz", "<ul>\n<li>\n<p>foo</p>\n</li>\n<li>\n<p>bar</p>\n</li>\n</ul>\n<ul>\n<li>baz</li>\n</ul>");
         }
 
-        // As illustrated above in the section on [list items](#list-item),
+        // As illustrated above in the section on [list items],
         // two blank lines between blocks *within* a list item will also end a
         // list:
         [TestMethod]
@@ -6601,8 +6592,7 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("\\\\*emphasis*", "<p>\\<em>emphasis</em></p>");
         }
 
-        // A backslash at the end of the line is a [hard line
-        // break](#hard-line-break):
+        // A backslash at the end of the line is a [hard line break]:
         [TestMethod]
         [TestCategory("Inlines - Backslash escapes")]
         //[Timeout(1000)]
@@ -6720,8 +6710,7 @@ namespace CommonMark.Tests.Specification
         }
 
         // But they work in all other contexts, including URLs and link titles,
-        // link references, and info strings in [fenced code
-        // blocks](#fenced-code-block):
+        // link references, and [info string]s in [fenced code block]s:
         [TestMethod]
         [TestCategory("Inlines - Backslash escapes")]
         //[Timeout(1000)]
@@ -6925,8 +6914,8 @@ namespace CommonMark.Tests.Specification
         }
 
         // Entities are recognized in any context besides code spans or
-        // code blocks, including raw HTML, URLs, [link titles](#link-title), and
-        // [fenced code block](#fenced-code-block) info strings:
+        // code blocks, including raw HTML, URLs, [link title]s, and
+        // [fenced code block] [info string]s:
         [TestMethod]
         [TestCategory("Inlines - Entities")]
         //[Timeout(1000)]
@@ -7042,7 +7031,7 @@ namespace CommonMark.Tests.Specification
 			Helpers.ExecuteTest("    f&ouml;f&ouml;", "<pre><code>f&amp;ouml;f&amp;ouml;\n</code></pre>");
         }
 
-        // ## Code span
+        // ## Code spans
         //
         // A [backtick string](@backtick-string)
         // is a string of one or more backtick characters (`` ` ``) that is neither
@@ -7051,17 +7040,17 @@ namespace CommonMark.Tests.Specification
         // A [code span](@code-span) begins with a backtick string and ends with
         // a backtick string of equal length.  The contents of the code span are
         // the characters between the two backtick strings, with leading and
-        // trailing spaces and [line endings](#line-ending) removed, and
-        // [whitespace](#whitespace) collapsed to single spaces.
+        // trailing spaces and [line ending]s removed, and
+        // [whitespace] collapsed to single spaces.
         //
         // This is a simple code span:
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
         public void Example247()
         {
             // Example 247
-            // Section: Inlines - Code span
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     `foo`
@@ -7069,19 +7058,19 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo</code></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 247, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 247, "Inlines - Code spans");
 			Helpers.ExecuteTest("`foo`", "<p><code>foo</code></p>");
         }
 
         // Here two backticks are used, because the code contains a backtick.
         // This example also illustrates stripping of leading and trailing spaces:
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
         public void Example248()
         {
             // Example 248
-            // Section: Inlines - Code span
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     `` foo ` bar  ``
@@ -7089,19 +7078,19 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo ` bar</code></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 248, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 248, "Inlines - Code spans");
 			Helpers.ExecuteTest("`` foo ` bar  ``", "<p><code>foo ` bar</code></p>");
         }
 
         // This example shows the motivation for stripping leading and trailing
         // spaces:
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
         public void Example249()
         {
             // Example 249
-            // Section: Inlines - Code span
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     ` `` `
@@ -7109,18 +7098,18 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>``</code></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 249, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 249, "Inlines - Code spans");
 			Helpers.ExecuteTest("` `` `", "<p><code>``</code></p>");
         }
 
-        // [Line endings](#line-ending) are treated like spaces:
+        // [Line ending]s are treated like spaces:
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
         public void Example250()
         {
             // Example 250
-            // Section: Inlines - Code span
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     ``
@@ -7130,19 +7119,19 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo</code></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 250, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 250, "Inlines - Code spans");
 			Helpers.ExecuteTest("``\nfoo\n``", "<p><code>foo</code></p>");
         }
 
-        // Interior spaces and [line endings](#line-ending) are collapsed into
+        // Interior spaces and [line ending]s are collapsed into
         // single spaces, just as they would be by a browser:
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
         public void Example251()
         {
             // Example 251
-            // Section: Inlines - Code span
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     `foo   bar
@@ -7151,7 +7140,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo bar baz</code></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 251, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 251, "Inlines - Code spans");
 			Helpers.ExecuteTest("`foo   bar\n  baz`", "<p><code>foo bar baz</code></p>");
         }
 
@@ -7160,20 +7149,20 @@ namespace CommonMark.Tests.Specification
         // shouldn't rely on HTML-specific rendering assumptions.
         //
         // (Existing implementations differ in their treatment of internal
-        // spaces and [line endings](#line-ending).  Some, including `Markdown.pl` and
-        // `showdown`, convert an internal [line ending](#line-ending) into a
+        // spaces and [line ending]s.  Some, including `Markdown.pl` and
+        // `showdown`, convert an internal [line ending] into a
         // `<br />` tag.  But this makes things difficult for those who like to
         // hard-wrap their paragraphs, since a line break in the midst of a code
         // span will cause an unintended line break in the output.  Others just
         // leave internal spaces as they are, which is fine if only HTML is being
         // targeted.)
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
         public void Example252()
         {
             // Example 252
-            // Section: Inlines - Code span
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     `foo `` bar`
@@ -7181,19 +7170,19 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo `` bar</code></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 252, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 252, "Inlines - Code spans");
 			Helpers.ExecuteTest("`foo `` bar`", "<p><code>foo `` bar</code></p>");
         }
 
         // Note that backslash escapes do not work in code spans. All backslashes
         // are treated literally:
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
         public void Example253()
         {
             // Example 253
-            // Section: Inlines - Code span
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     `foo\`bar`
@@ -7201,7 +7190,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><code>foo\</code>bar`</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 253, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 253, "Inlines - Code spans");
 			Helpers.ExecuteTest("`foo\\`bar`", "<p><code>foo\\</code>bar`</p>");
         }
 
@@ -7214,12 +7203,12 @@ namespace CommonMark.Tests.Specification
         // not parsed as emphasized text, since the second `*` is part of a code
         // span:
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
         public void Example254()
         {
             // Example 254
-            // Section: Inlines - Code span
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     *foo`*`
@@ -7227,18 +7216,18 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*foo<code>*</code></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 254, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 254, "Inlines - Code spans");
 			Helpers.ExecuteTest("*foo`*`", "<p>*foo<code>*</code></p>");
         }
 
         // And this is not parsed as a link:
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
         public void Example255()
         {
             // Example 255
-            // Section: Inlines - Code span
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     [not a `link](/foo`)
@@ -7246,37 +7235,38 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[not a <code>link](/foo</code>)</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 255, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 255, "Inlines - Code spans");
 			Helpers.ExecuteTest("[not a `link](/foo`)", "<p>[not a <code>link](/foo</code>)</p>");
         }
 
-        // But this is a link:
+        // Code spans, HTML tags, and autolinks have the same precedence.
+        // Thus, this is code:
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
         public void Example256()
         {
             // Example 256
-            // Section: Inlines - Code span
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
-            //     <http://foo.bar.`baz>`
+            //     `<a href="`">`
             //
             // Should be rendered as:
-            //     <p><a href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
+            //     <p><code>&lt;a href=&quot;</code>&quot;&gt;`</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 256, "Inlines - Code span");
-			Helpers.ExecuteTest("<http://foo.bar.`baz>`", "<p><a href=\"http://foo.bar.%60baz\">http://foo.bar.`baz</a>`</p>");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 256, "Inlines - Code spans");
+			Helpers.ExecuteTest("`<a href=\"`\">`", "<p><code>&lt;a href=&quot;</code>&quot;&gt;`</p>");
         }
 
-        // And this is an HTML tag:
+        // But this is an HTML tag:
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
         public void Example257()
         {
             // Example 257
-            // Section: Inlines - Code span
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     <a href="`">`
@@ -7284,19 +7274,57 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="`">`</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 257, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 257, "Inlines - Code spans");
 			Helpers.ExecuteTest("<a href=\"`\">`", "<p><a href=\"`\">`</p>");
+        }
+
+        // And this is code:
+        [TestMethod]
+        [TestCategory("Inlines - Code spans")]
+        //[Timeout(1000)]
+        public void Example258()
+        {
+            // Example 258
+            // Section: Inlines - Code spans
+            //
+            // The following CommonMark:
+            //     `<http://foo.bar.`baz>`
+            //
+            // Should be rendered as:
+            //     <p><code>&lt;http://foo.bar.</code>baz&gt;`</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 258, "Inlines - Code spans");
+			Helpers.ExecuteTest("`<http://foo.bar.`baz>`", "<p><code>&lt;http://foo.bar.</code>baz&gt;`</p>");
+        }
+
+        // But this is an autolink:
+        [TestMethod]
+        [TestCategory("Inlines - Code spans")]
+        //[Timeout(1000)]
+        public void Example259()
+        {
+            // Example 259
+            // Section: Inlines - Code spans
+            //
+            // The following CommonMark:
+            //     <http://foo.bar.`baz>`
+            //
+            // Should be rendered as:
+            //     <p><a href="http://foo.bar.%60baz">http://foo.bar.`baz</a>`</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 259, "Inlines - Code spans");
+			Helpers.ExecuteTest("<http://foo.bar.`baz>`", "<p><a href=\"http://foo.bar.%60baz\">http://foo.bar.`baz</a>`</p>");
         }
 
         // When a backtick string is not closed by a matching backtick string,
         // we just have literal backticks:
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
-        public void Example258()
+        public void Example260()
         {
-            // Example 258
-            // Section: Inlines - Code span
+            // Example 260
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     ```foo``
@@ -7304,17 +7332,17 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>```foo``</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 258, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 260, "Inlines - Code spans");
 			Helpers.ExecuteTest("```foo``", "<p>```foo``</p>");
         }
 
         [TestMethod]
-        [TestCategory("Inlines - Code span")]
+        [TestCategory("Inlines - Code spans")]
         //[Timeout(1000)]
-        public void Example259()
+        public void Example261()
         {
-            // Example 259
-            // Section: Inlines - Code span
+            // Example 261
+            // Section: Inlines - Code spans
             //
             // The following CommonMark:
             //     `foo
@@ -7322,7 +7350,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>`foo</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 259, "Inlines - Code span");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 261, "Inlines - Code spans");
 			Helpers.ExecuteTest("`foo", "<p>`foo</p>");
         }
 
@@ -7378,18 +7406,14 @@ namespace CommonMark.Tests.Specification
         // characters that is not preceded or followed by a `_` character.
         //
         // A [left-flanking delimiter run](@left-flanking-delimiter-run) is
-        // a [delimiter run](#delimiter-run) that is (a) not followed by [unicode
-        // whitespace](#unicode-whitespace), and (b) either not followed by a
-        // [punctuation character](#punctuation-character), or
-        // preceded by [unicode whitespace](#unicode-whitespace) or
-        // a [punctuation character](#punctuation-character).
+        // a [delimiter run] that is (a) not followed by [unicode whitespace],
+        // and (b) either not followed by a [punctuation character], or
+        // preceded by [unicode whitespace] or a [punctuation character].
         //
         // A [right-flanking delimiter run](@right-flanking-delimiter-run) is
-        // a [delimiter run](#delimiter-run) that is (a) not preceded by [unicode
-        // whitespace](#unicode-whitespace), and (b) either not preceded by a
-        // [punctuation character](#punctuation-character), or
-        // followed by [unicode whitespace](#unicode-whitespace) or
-        // a [punctuation character](#punctuation-character).
+        // a [delimiter run] that is (a) not preceded by [unicode whitespace],
+        // and (b) either not preceded by a [punctuation character], or
+        // followed by [unicode whitespace] or a [punctuation character].
         //
         // Here are some examples of delimiter runs.
         //
@@ -7436,53 +7460,44 @@ namespace CommonMark.Tests.Specification
         // The following rules define emphasis and strong emphasis:
         //
         // 1.  A single `*` character [can open emphasis](@can-open-emphasis)
-        // iff it is part of a
-        // [left-flanking delimiter run](#left-flanking-delimiter-run).
+        // iff it is part of a [left-flanking delimiter run].
         //
-        // 2.  A single `_` character [can open emphasis](#can-open-emphasis) iff
-        // it is part of a
-        // [left-flanking delimiter run](#left-flanking-delimiter-run)
+        // 2.  A single `_` character [can open emphasis] iff
+        // it is part of a [left-flanking delimiter run]
         // and is not preceded by an ASCII alphanumeric character.
         //
         // 3.  A single `*` character [can close emphasis](@can-close-emphasis)
-        // iff it is part of a
-        // [right-flanking delimiter run](#right-flanking-delimiter-run).
+        // iff it is part of a [right-flanking delimiter run].
         //
-        // 4.  A single `_` character [can close emphasis](#can-close-emphasis)
-        // iff it is part of a
-        // [right-flanking delimiter run](#right-flanking-delimiter-run).
+        // 4.  A single `_` character [can close emphasis]
+        // iff it is part of a [right-flanking delimiter run].
         // and it is not followed by an ASCII alphanumeric character.
         //
         // 5.  A double `**` [can open strong emphasis](@can-open-strong-emphasis)
-        // iff it is part of a
-        // [left-flanking delimiter run](#left-flanking-delimiter-run).
+        // iff it is part of a [left-flanking delimiter run].
         //
-        // 6.  A double `__` [can open strong emphasis](#can-open-strong-emphasis)
-        // iff it is part of a
-        // [left-flanking delimiter run](#left-flanking-delimiter-run)
+        // 6.  A double `__` [can open strong emphasis]
+        // iff it is part of a [left-flanking delimiter run]
         // and is not preceded by an ASCII alphanumeric character.
         //
         // 7.  A double `**` [can close strong emphasis](@can-close-strong-emphasis)
-        // iff it is part of a
-        // [right-flanking delimiter run](#right-flanking-delimiter-run).
+        // iff it is part of a [right-flanking delimiter run].
         //
-        // 8.  A double `__` [can close strong emphasis](#can-close-strong-emphasis)
-        // iff it is part of a
-        // [right-flanking delimiter run](#right-flanking-delimiter-run).
+        // 8.  A double `__` [can close strong emphasis]
+        // iff it is part of a [right-flanking delimiter run]
         // and is not followed by an ASCII alphanumeric character.
         //
-        // 9.  Emphasis begins with a delimiter that [can open
-        // emphasis](#can-open-emphasis) and ends with a delimiter that [can close
-        // emphasis](#can-close-emphasis), and that uses the same
+        // 9.  Emphasis begins with a delimiter that [can open emphasis] and ends
+        // with a delimiter that [can close emphasis], and that uses the same
         // character (`_` or `*`) as the opening delimiter.  There must
         // be a nonempty sequence of inlines between the open delimiter
         // and the closing delimiter; these form the contents of the emphasis
         // inline.
         //
-        // 10. Strong emphasis begins with a delimiter that [can open strong
-        // emphasis](#can-open-strong-emphasis) and ends with a delimiter that
-        // [can close strong emphasis](#can-close-strong-emphasis), and that
-        // uses the same character (`_` or `*`) as the opening delimiter.
+        // 10. Strong emphasis begins with a delimiter that
+        // [can open strong emphasis] and ends with a delimiter that
+        // [can close strong emphasis], and that uses the same character
+        // (`_` or `*`) as the opening delimiter.
         // There must be a nonempty sequence of inlines between the open
         // delimiter and the closing delimiter; these form the contents of
         // the strong emphasis inline.
@@ -7507,7 +7522,7 @@ namespace CommonMark.Tests.Specification
         //
         // 15. When two potential emphasis or strong emphasis spans overlap,
         // so that the second begins before the first ends and ends after
-        // the first ends, the first is preferred. Thus, for example,
+        // the first ends, the first takes precedence. Thus, for example,
         // `*foo _bar* baz_` is parsed as `<em>foo _bar</em> baz_` rather
         // than `*foo <em>bar* baz</em>`.  For the same reason,
         // `**foo*bar**` is parsed as `<em><em>foo</em>bar</em>*`
@@ -7515,7 +7530,7 @@ namespace CommonMark.Tests.Specification
         //
         // 16. When there are two potential emphasis or strong emphasis spans
         // with the same closing delimiter, the shorter one (the one that
-        // opens later) is preferred. Thus, for example,
+        // opens later) takes precedence. Thus, for example,
         // `**foo **bar baz**` is parsed as `**foo <strong>bar baz</strong>`
         // rather than `<strong>foo **bar baz</strong>`.
         //
@@ -7532,9 +7547,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example260()
+        public void Example262()
         {
-            // Example 260
+            // Example 262
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -7543,53 +7558,12 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>foo bar</em></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 260, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 262, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("*foo bar*", "<p><em>foo bar</em></p>");
         }
 
         // This is not emphasis, because the opening `*` is followed by
-        // whitespace, and hence not part of a [left-flanking delimiter
-        // run](#left-flanking-delimiter-run):
-        [TestMethod]
-        [TestCategory("Inlines - Emphasis and strong emphasis")]
-        //[Timeout(1000)]
-        public void Example261()
-        {
-            // Example 261
-            // Section: Inlines - Emphasis and strong emphasis
-            //
-            // The following CommonMark:
-            //     a * foo bar*
-            //
-            // Should be rendered as:
-            //     <p>a * foo bar*</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 261, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("a * foo bar*", "<p>a * foo bar*</p>");
-        }
-
-        // This is not emphasis, because the opening `*` is preceded
-        // by an alphanumeric and followed by punctuation, and hence
-        // not part of a [left-flanking delimiter run](#left-flanking-delimiter-run):
-        [TestMethod]
-        [TestCategory("Inlines - Emphasis and strong emphasis")]
-        //[Timeout(1000)]
-        public void Example262()
-        {
-            // Example 262
-            // Section: Inlines - Emphasis and strong emphasis
-            //
-            // The following CommonMark:
-            //     a*"foo"*
-            //
-            // Should be rendered as:
-            //     <p>a*&quot;foo&quot;*</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 262, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("a*\"foo\"*", "<p>a*&quot;foo&quot;*</p>");
-        }
-
-        // Unicode nonbreaking spaces count as whitespace, too:
+        // whitespace, and hence not part of a [left-flanking delimiter run]:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7599,16 +7573,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     * a *
+            //     a * foo bar*
             //
             // Should be rendered as:
-            //     <p>* a *</p>
+            //     <p>a * foo bar*</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 263, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("* a *", "<p>* a *</p>");
+			Helpers.ExecuteTest("a * foo bar*", "<p>a * foo bar*</p>");
         }
 
-        // Intraword emphasis with `*` is permitted:
+        // This is not emphasis, because the opening `*` is preceded
+        // by an alphanumeric and followed by punctuation, and hence
+        // not part of a [left-flanking delimiter run]:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7618,15 +7594,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo*bar*
+            //     a*"foo"*
             //
             // Should be rendered as:
-            //     <p>foo<em>bar</em></p>
+            //     <p>a*&quot;foo&quot;*</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 264, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo*bar*", "<p>foo<em>bar</em></p>");
+			Helpers.ExecuteTest("a*\"foo\"*", "<p>a*&quot;foo&quot;*</p>");
         }
 
+        // Unicode nonbreaking spaces count as whitespace, too:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7636,16 +7613,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     5*6*78
+            //     * a *
             //
             // Should be rendered as:
-            //     <p>5<em>6</em>78</p>
+            //     <p>* a *</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 265, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("5*6*78", "<p>5<em>6</em>78</p>");
+			Helpers.ExecuteTest("* a *", "<p>* a *</p>");
         }
 
-        // Rule 2:
+        // Intraword emphasis with `*` is permitted:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7655,17 +7632,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo bar_
+            //     foo*bar*
             //
             // Should be rendered as:
-            //     <p><em>foo bar</em></p>
+            //     <p>foo<em>bar</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 266, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_foo bar_", "<p><em>foo bar</em></p>");
+			Helpers.ExecuteTest("foo*bar*", "<p>foo<em>bar</em></p>");
         }
 
-        // This is not emphasis, because the opening `*` is followed by
-        // whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7675,17 +7650,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _ foo bar_
+            //     5*6*78
             //
             // Should be rendered as:
-            //     <p>_ foo bar_</p>
+            //     <p>5<em>6</em>78</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 267, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_ foo bar_", "<p>_ foo bar_</p>");
+			Helpers.ExecuteTest("5*6*78", "<p>5<em>6</em>78</p>");
         }
 
-        // This is not emphasis, because the opening `_` is preceded
-        // by an alphanumeric and followed by punctuation:
+        // Rule 2:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7695,16 +7669,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     a_"foo"_
+            //     _foo bar_
             //
             // Should be rendered as:
-            //     <p>a_&quot;foo&quot;_</p>
+            //     <p><em>foo bar</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 268, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("a_\"foo\"_", "<p>a_&quot;foo&quot;_</p>");
+			Helpers.ExecuteTest("_foo bar_", "<p><em>foo bar</em></p>");
         }
 
-        // Emphasis with `_` is not allowed inside ASCII words:
+        // This is not emphasis, because the opening `*` is followed by
+        // whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7714,15 +7689,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo_bar_
+            //     _ foo bar_
             //
             // Should be rendered as:
-            //     <p>foo_bar_</p>
+            //     <p>_ foo bar_</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 269, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo_bar_", "<p>foo_bar_</p>");
+			Helpers.ExecuteTest("_ foo bar_", "<p>_ foo bar_</p>");
         }
 
+        // This is not emphasis, because the opening `_` is preceded
+        // by an alphanumeric and followed by punctuation:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7732,16 +7709,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     5_6_78
+            //     a_"foo"_
             //
             // Should be rendered as:
-            //     <p>5_6_78</p>
+            //     <p>a_&quot;foo&quot;_</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 270, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("5_6_78", "<p>5_6_78</p>");
+			Helpers.ExecuteTest("a_\"foo\"_", "<p>a_&quot;foo&quot;_</p>");
         }
 
-        // But it is permitted inside non-ASCII words:
+        // Emphasis with `_` is not allowed inside ASCII words:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7751,12 +7728,49 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
+            //     foo_bar_
+            //
+            // Should be rendered as:
+            //     <p>foo_bar_</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 271, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("foo_bar_", "<p>foo_bar_</p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example272()
+        {
+            // Example 272
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     5_6_78
+            //
+            // Should be rendered as:
+            //     <p>5_6_78</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 272, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("5_6_78", "<p>5_6_78</p>");
+        }
+
+        // But it is permitted inside non-ASCII words:
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example273()
+        {
+            // Example 273
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
             //     пристаням_стремятся_
             //
             // Should be rendered as:
             //     <p>пристаням<em>стремятся</em></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 271, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 273, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("пристаням_стремятся_", "<p>пристаням<em>стремятся</em></p>");
         }
 
@@ -7767,9 +7781,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example272()
+        public void Example274()
         {
-            // Example 272
+            // Example 274
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -7778,54 +7792,12 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>_foo*</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 272, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 274, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("_foo*", "<p>_foo*</p>");
         }
 
         // This is not emphasis, because the closing `*` is preceded by
         // whitespace:
-        [TestMethod]
-        [TestCategory("Inlines - Emphasis and strong emphasis")]
-        //[Timeout(1000)]
-        public void Example273()
-        {
-            // Example 273
-            // Section: Inlines - Emphasis and strong emphasis
-            //
-            // The following CommonMark:
-            //     *foo bar *
-            //
-            // Should be rendered as:
-            //     <p>*foo bar *</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 273, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo bar *", "<p>*foo bar *</p>");
-        }
-
-        // This is not emphasis, because the second `*` is
-        // preceded by punctuation and followed by an alphanumeric
-        // (hence it is not part of a [right-flanking delimiter
-        // run](#right-flanking-delimiter-run):
-        [TestMethod]
-        [TestCategory("Inlines - Emphasis and strong emphasis")]
-        //[Timeout(1000)]
-        public void Example274()
-        {
-            // Example 274
-            // Section: Inlines - Emphasis and strong emphasis
-            //
-            // The following CommonMark:
-            //     *(*foo)
-            //
-            // Should be rendered as:
-            //     <p>*(*foo)</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 274, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*(*foo)", "<p>*(*foo)</p>");
-        }
-
-        // The point of this restriction is more easily appreciated
-        // with this example:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7835,16 +7807,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *(*foo*)*
+            //     *foo bar *
             //
             // Should be rendered as:
-            //     <p><em>(<em>foo</em>)</em></p>
+            //     <p>*foo bar *</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 275, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*(*foo*)*", "<p><em>(<em>foo</em>)</em></p>");
+			Helpers.ExecuteTest("*foo bar *", "<p>*foo bar *</p>");
         }
 
-        // Intraword emphasis with `*` is allowed:
+        // This is not emphasis, because the second `*` is
+        // preceded by punctuation and followed by an alphanumeric
+        // (hence it is not part of a [right-flanking delimiter run]:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7854,12 +7828,51 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
+            //     *(*foo)
+            //
+            // Should be rendered as:
+            //     <p>*(*foo)</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 276, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*(*foo)", "<p>*(*foo)</p>");
+        }
+
+        // The point of this restriction is more easily appreciated
+        // with this example:
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example277()
+        {
+            // Example 277
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     *(*foo*)*
+            //
+            // Should be rendered as:
+            //     <p><em>(<em>foo</em>)</em></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 277, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("*(*foo*)*", "<p><em>(<em>foo</em>)</em></p>");
+        }
+
+        // Intraword emphasis with `*` is allowed:
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example278()
+        {
+            // Example 278
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
             //     *foo*bar
             //
             // Should be rendered as:
             //     <p><em>foo</em>bar</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 276, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 278, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("*foo*bar", "<p><em>foo</em>bar</p>");
         }
 
@@ -7870,9 +7883,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example277()
+        public void Example279()
         {
-            // Example 277
+            // Example 279
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -7881,50 +7894,12 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>_foo bar _</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 277, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 279, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("_foo bar _", "<p>_foo bar _</p>");
         }
 
         // This is not emphasis, because the second `_` is
         // preceded by punctuation and followed by an alphanumeric:
-        [TestMethod]
-        [TestCategory("Inlines - Emphasis and strong emphasis")]
-        //[Timeout(1000)]
-        public void Example278()
-        {
-            // Example 278
-            // Section: Inlines - Emphasis and strong emphasis
-            //
-            // The following CommonMark:
-            //     _(_foo)
-            //
-            // Should be rendered as:
-            //     <p>_(_foo)</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 278, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_(_foo)", "<p>_(_foo)</p>");
-        }
-
-        // This is emphasis within emphasis:
-        [TestMethod]
-        [TestCategory("Inlines - Emphasis and strong emphasis")]
-        //[Timeout(1000)]
-        public void Example279()
-        {
-            // Example 279
-            // Section: Inlines - Emphasis and strong emphasis
-            //
-            // The following CommonMark:
-            //     _(_foo_)_
-            //
-            // Should be rendered as:
-            //     <p><em>(<em>foo</em>)</em></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 279, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_(_foo_)_", "<p><em>(<em>foo</em>)</em></p>");
-        }
-
-        // Intraword emphasis is disallowed for `_`:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7934,15 +7909,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo_bar
+            //     _(_foo)
             //
             // Should be rendered as:
-            //     <p>_foo_bar</p>
+            //     <p>_(_foo)</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 280, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_foo_bar", "<p>_foo_bar</p>");
+			Helpers.ExecuteTest("_(_foo)", "<p>_(_foo)</p>");
         }
 
+        // This is emphasis within emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7952,15 +7928,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _пристаням_стремятся
+            //     _(_foo_)_
             //
             // Should be rendered as:
-            //     <p><em>пристаням</em>стремятся</p>
+            //     <p><em>(<em>foo</em>)</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 281, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_пристаням_стремятся", "<p><em>пристаням</em>стремятся</p>");
+			Helpers.ExecuteTest("_(_foo_)_", "<p><em>(<em>foo</em>)</em></p>");
         }
 
+        // Intraword emphasis is disallowed for `_`:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7970,16 +7947,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo_bar_baz_
+            //     _foo_bar
             //
             // Should be rendered as:
-            //     <p><em>foo_bar_baz</em></p>
+            //     <p>_foo_bar</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 282, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_foo_bar_baz_", "<p><em>foo_bar_baz</em></p>");
+			Helpers.ExecuteTest("_foo_bar", "<p>_foo_bar</p>");
         }
 
-        // Rule 5:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -7989,17 +7965,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo bar**
+            //     _пристаням_стремятся
             //
             // Should be rendered as:
-            //     <p><strong>foo bar</strong></p>
+            //     <p><em>пристаням</em>стремятся</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 283, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo bar**", "<p><strong>foo bar</strong></p>");
+			Helpers.ExecuteTest("_пристаням_стремятся", "<p><em>пристаням</em>стремятся</p>");
         }
 
-        // This is not strong emphasis, because the opening delimiter is
-        // followed by whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8009,18 +7983,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ** foo bar**
+            //     _foo_bar_baz_
             //
             // Should be rendered as:
-            //     <p>** foo bar**</p>
+            //     <p><em>foo_bar_baz</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 284, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("** foo bar**", "<p>** foo bar**</p>");
+			Helpers.ExecuteTest("_foo_bar_baz_", "<p><em>foo_bar_baz</em></p>");
         }
 
-        // This is not strong emphasis, because the opening `**` is preceded
-        // by an alphanumeric and followed by punctuation, and hence
-        // not part of a [left-flanking delimiter run](#left-flanking-delimiter-run):
+        // Rule 5:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8030,16 +8002,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     a**"foo"**
+            //     **foo bar**
             //
             // Should be rendered as:
-            //     <p>a**&quot;foo&quot;**</p>
+            //     <p><strong>foo bar</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 285, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("a**\"foo\"**", "<p>a**&quot;foo&quot;**</p>");
+			Helpers.ExecuteTest("**foo bar**", "<p><strong>foo bar</strong></p>");
         }
 
-        // Intraword strong emphasis with `**` is permitted:
+        // This is not strong emphasis, because the opening delimiter is
+        // followed by whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8049,16 +8022,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo**bar**
+            //     ** foo bar**
             //
             // Should be rendered as:
-            //     <p>foo<strong>bar</strong></p>
+            //     <p>** foo bar**</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 286, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo**bar**", "<p>foo<strong>bar</strong></p>");
+			Helpers.ExecuteTest("** foo bar**", "<p>** foo bar**</p>");
         }
 
-        // Rule 6:
+        // This is not strong emphasis, because the opening `**` is preceded
+        // by an alphanumeric and followed by punctuation, and hence
+        // not part of a [left-flanking delimiter run]:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8068,17 +8043,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo bar__
+            //     a**"foo"**
             //
             // Should be rendered as:
-            //     <p><strong>foo bar</strong></p>
+            //     <p>a**&quot;foo&quot;**</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 287, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__foo bar__", "<p><strong>foo bar</strong></p>");
+			Helpers.ExecuteTest("a**\"foo\"**", "<p>a**&quot;foo&quot;**</p>");
         }
 
-        // This is not strong emphasis, because the opening delimiter is
-        // followed by whitespace:
+        // Intraword strong emphasis with `**` is permitted:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8088,17 +8062,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __ foo bar__
+            //     foo**bar**
             //
             // Should be rendered as:
-            //     <p>__ foo bar__</p>
+            //     <p>foo<strong>bar</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 288, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__ foo bar__", "<p>__ foo bar__</p>");
+			Helpers.ExecuteTest("foo**bar**", "<p>foo<strong>bar</strong></p>");
         }
 
-        // This is not strong emphasis, because the opening `__` is preceded
-        // by an alphanumeric and followed by punctuation:
+        // Rule 6:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8108,16 +8081,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     a__"foo"__
+            //     __foo bar__
             //
             // Should be rendered as:
-            //     <p>a__&quot;foo&quot;__</p>
+            //     <p><strong>foo bar</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 289, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("a__\"foo\"__", "<p>a__&quot;foo&quot;__</p>");
+			Helpers.ExecuteTest("__foo bar__", "<p><strong>foo bar</strong></p>");
         }
 
-        // Intraword strong emphasis is forbidden with `__`:
+        // This is not strong emphasis, because the opening delimiter is
+        // followed by whitespace:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8127,15 +8101,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo__bar__
+            //     __ foo bar__
             //
             // Should be rendered as:
-            //     <p>foo__bar__</p>
+            //     <p>__ foo bar__</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 290, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo__bar__", "<p>foo__bar__</p>");
+			Helpers.ExecuteTest("__ foo bar__", "<p>__ foo bar__</p>");
         }
 
+        // This is not strong emphasis, because the opening `__` is preceded
+        // by an alphanumeric and followed by punctuation:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8145,15 +8121,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     5__6__78
+            //     a__"foo"__
             //
             // Should be rendered as:
-            //     <p>5__6__78</p>
+            //     <p>a__&quot;foo&quot;__</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 291, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("5__6__78", "<p>5__6__78</p>");
+			Helpers.ExecuteTest("a__\"foo\"__", "<p>a__&quot;foo&quot;__</p>");
         }
 
+        // Intraword strong emphasis is forbidden with `__`:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8163,13 +8140,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     пристаням__стремятся__
+            //     foo__bar__
             //
             // Should be rendered as:
-            //     <p>пристаням<strong>стремятся</strong></p>
+            //     <p>foo__bar__</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 292, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("пристаням__стремятся__", "<p>пристаням<strong>стремятся</strong></p>");
+			Helpers.ExecuteTest("foo__bar__", "<p>foo__bar__</p>");
         }
 
         [TestMethod]
@@ -8181,12 +8158,48 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
+            //     5__6__78
+            //
+            // Should be rendered as:
+            //     <p>5__6__78</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 293, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("5__6__78", "<p>5__6__78</p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example294()
+        {
+            // Example 294
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     пристаням__стремятся__
+            //
+            // Should be rendered as:
+            //     <p>пристаням<strong>стремятся</strong></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 294, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("пристаням__стремятся__", "<p>пристаням<strong>стремятся</strong></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example295()
+        {
+            // Example 295
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
             //     __foo, __bar__, baz__
             //
             // Should be rendered as:
             //     <p><strong>foo, <strong>bar</strong>, baz</strong></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 293, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 295, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("__foo, __bar__, baz__", "<p><strong>foo, <strong>bar</strong>, baz</strong></p>");
         }
 
@@ -8197,9 +8210,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example294()
+        public void Example296()
         {
-            // Example 294
+            // Example 296
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -8208,7 +8221,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>**foo bar **</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 294, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 296, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("**foo bar **", "<p>**foo bar **</p>");
         }
 
@@ -8220,9 +8233,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example295()
+        public void Example297()
         {
-            // Example 295
+            // Example 297
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -8231,7 +8244,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>**(**foo)</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 295, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 297, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("**(**foo)", "<p>**(**foo)</p>");
         }
 
@@ -8240,9 +8253,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example296()
+        public void Example298()
         {
-            // Example 296
+            // Example 298
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -8251,16 +8264,16 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><em>(<strong>foo</strong>)</em></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 296, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 298, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("*(**foo**)*", "<p><em>(<strong>foo</strong>)</em></p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example297()
+        public void Example299()
         {
-            // Example 297
+            // Example 299
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -8271,16 +8284,16 @@ namespace CommonMark.Tests.Specification
             //     <p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.
             //     <em>Asclepias physocarpa</em>)</strong></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 297, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 299, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("**Gomphocarpus (*Gomphocarpus physocarpus*, syn.\n*Asclepias physocarpa*)**", "<p><strong>Gomphocarpus (<em>Gomphocarpus physocarpus</em>, syn.\n<em>Asclepias physocarpa</em>)</strong></p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example298()
+        public void Example300()
         {
-            // Example 298
+            // Example 300
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -8289,7 +8302,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 298, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 300, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("**foo \"*bar*\" foo**", "<p><strong>foo &quot;<em>bar</em>&quot; foo</strong></p>");
         }
 
@@ -8297,9 +8310,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example299()
+        public void Example301()
         {
-            // Example 299
+            // Example 301
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -8308,7 +8321,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><strong>foo</strong>bar</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 299, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 301, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("**foo**bar", "<p><strong>foo</strong>bar</p>");
         }
 
@@ -8319,9 +8332,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
-        public void Example300()
+        public void Example302()
         {
-            // Example 300
+            // Example 302
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
@@ -8330,51 +8343,12 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>__foo bar __</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 300, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 302, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("__foo bar __", "<p>__foo bar __</p>");
         }
 
         // This is not strong emphasis, because the second `__` is
         // preceded by punctuation and followed by an alphanumeric:
-        [TestMethod]
-        [TestCategory("Inlines - Emphasis and strong emphasis")]
-        //[Timeout(1000)]
-        public void Example301()
-        {
-            // Example 301
-            // Section: Inlines - Emphasis and strong emphasis
-            //
-            // The following CommonMark:
-            //     __(__foo)
-            //
-            // Should be rendered as:
-            //     <p>__(__foo)</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 301, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__(__foo)", "<p>__(__foo)</p>");
-        }
-
-        // The point of this restriction is more easily appreciated
-        // with this example:
-        [TestMethod]
-        [TestCategory("Inlines - Emphasis and strong emphasis")]
-        //[Timeout(1000)]
-        public void Example302()
-        {
-            // Example 302
-            // Section: Inlines - Emphasis and strong emphasis
-            //
-            // The following CommonMark:
-            //     _(__foo__)_
-            //
-            // Should be rendered as:
-            //     <p><em>(<strong>foo</strong>)</em></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 302, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_(__foo__)_", "<p><em>(<strong>foo</strong>)</em></p>");
-        }
-
-        // Intraword strong emphasis is forbidden with `__`:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8384,15 +8358,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo__bar
+            //     __(__foo)
             //
             // Should be rendered as:
-            //     <p>__foo__bar</p>
+            //     <p>__(__foo)</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 303, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__foo__bar", "<p>__foo__bar</p>");
+			Helpers.ExecuteTest("__(__foo)", "<p>__(__foo)</p>");
         }
 
+        // The point of this restriction is more easily appreciated
+        // with this example:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8402,15 +8378,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __пристаням__стремятся
+            //     _(__foo__)_
             //
             // Should be rendered as:
-            //     <p><strong>пристаням</strong>стремятся</p>
+            //     <p><em>(<strong>foo</strong>)</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 304, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__пристаням__стремятся", "<p><strong>пристаням</strong>стремятся</p>");
+			Helpers.ExecuteTest("_(__foo__)_", "<p><em>(<strong>foo</strong>)</em></p>");
         }
 
+        // Intraword strong emphasis is forbidden with `__`:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8420,19 +8397,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo__bar__baz__
+            //     __foo__bar
             //
             // Should be rendered as:
-            //     <p><strong>foo__bar__baz</strong></p>
+            //     <p>__foo__bar</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 305, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__foo__bar__baz__", "<p><strong>foo__bar__baz</strong></p>");
+			Helpers.ExecuteTest("__foo__bar", "<p>__foo__bar</p>");
         }
 
-        // Rule 9:
-        //
-        // Any nonempty sequence of inline elements can be the contents of an
-        // emphasized span.
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8442,13 +8415,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo [bar](/url)*
+            //     __пристаням__стремятся
             //
             // Should be rendered as:
-            //     <p><em>foo <a href="/url">bar</a></em></p>
+            //     <p><strong>пристаням</strong>стремятся</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 306, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo [bar](/url)*", "<p><em>foo <a href=\"/url\">bar</a></em></p>");
+			Helpers.ExecuteTest("__пристаням__стремятся", "<p><strong>пристаням</strong>стремятся</p>");
         }
 
         [TestMethod]
@@ -8460,19 +8433,19 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo
-            //     bar*
+            //     __foo__bar__baz__
             //
             // Should be rendered as:
-            //     <p><em>foo
-            //     bar</em></p>
+            //     <p><strong>foo__bar__baz</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 307, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo\nbar*", "<p><em>foo\nbar</em></p>");
+			Helpers.ExecuteTest("__foo__bar__baz__", "<p><strong>foo__bar__baz</strong></p>");
         }
 
-        // In particular, emphasis and strong emphasis can be nested
-        // inside emphasis:
+        // Rule 9:
+        //
+        // Any nonempty sequence of inline elements can be the contents of an
+        // emphasized span.
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8482,13 +8455,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo __bar__ baz_
+            //     *foo [bar](/url)*
             //
             // Should be rendered as:
-            //     <p><em>foo <strong>bar</strong> baz</em></p>
+            //     <p><em>foo <a href="/url">bar</a></em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 308, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_foo __bar__ baz_", "<p><em>foo <strong>bar</strong> baz</em></p>");
+			Helpers.ExecuteTest("*foo [bar](/url)*", "<p><em>foo <a href=\"/url\">bar</a></em></p>");
         }
 
         [TestMethod]
@@ -8500,15 +8473,19 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo _bar_ baz_
+            //     *foo
+            //     bar*
             //
             // Should be rendered as:
-            //     <p><em>foo <em>bar</em> baz</em></p>
+            //     <p><em>foo
+            //     bar</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 309, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_foo _bar_ baz_", "<p><em>foo <em>bar</em> baz</em></p>");
+			Helpers.ExecuteTest("*foo\nbar*", "<p><em>foo\nbar</em></p>");
         }
 
+        // In particular, emphasis and strong emphasis can be nested
+        // inside emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8518,13 +8495,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo_ bar_
+            //     _foo __bar__ baz_
             //
             // Should be rendered as:
-            //     <p><em><em>foo</em> bar</em></p>
+            //     <p><em>foo <strong>bar</strong> baz</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 310, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__foo_ bar_", "<p><em><em>foo</em> bar</em></p>");
+			Helpers.ExecuteTest("_foo __bar__ baz_", "<p><em>foo <strong>bar</strong> baz</em></p>");
         }
 
         [TestMethod]
@@ -8536,13 +8513,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo *bar**
+            //     _foo _bar_ baz_
             //
             // Should be rendered as:
-            //     <p><em>foo <em>bar</em></em></p>
+            //     <p><em>foo <em>bar</em> baz</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 311, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo *bar**", "<p><em>foo <em>bar</em></em></p>");
+			Helpers.ExecuteTest("_foo _bar_ baz_", "<p><em>foo <em>bar</em> baz</em></p>");
         }
 
         [TestMethod]
@@ -8554,16 +8531,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo **bar** baz*
+            //     __foo_ bar_
             //
             // Should be rendered as:
-            //     <p><em>foo <strong>bar</strong> baz</em></p>
+            //     <p><em><em>foo</em> bar</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 312, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo **bar** baz*", "<p><em>foo <strong>bar</strong> baz</em></p>");
+			Helpers.ExecuteTest("__foo_ bar_", "<p><em><em>foo</em> bar</em></p>");
         }
 
-        // But note:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8573,18 +8549,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo**bar**baz*
+            //     *foo *bar**
             //
             // Should be rendered as:
-            //     <p><em>foo</em><em>bar</em><em>baz</em></p>
+            //     <p><em>foo <em>bar</em></em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 313, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo**bar**baz*", "<p><em>foo</em><em>bar</em><em>baz</em></p>");
+			Helpers.ExecuteTest("*foo *bar**", "<p><em>foo <em>bar</em></em></p>");
         }
 
-        // The difference is that in the preceding case,
-        // the internal delimiters [can close emphasis](#can-close-emphasis),
-        // while in the cases with spaces, they cannot.
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8594,15 +8567,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo** bar*
+            //     *foo **bar** baz*
             //
             // Should be rendered as:
-            //     <p><em><strong>foo</strong> bar</em></p>
+            //     <p><em>foo <strong>bar</strong> baz</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 314, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("***foo** bar*", "<p><em><strong>foo</strong> bar</em></p>");
+			Helpers.ExecuteTest("*foo **bar** baz*", "<p><em>foo <strong>bar</strong> baz</em></p>");
         }
 
+        // But note:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8612,18 +8586,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo **bar***
+            //     *foo**bar**baz*
             //
             // Should be rendered as:
-            //     <p><em>foo <strong>bar</strong></em></p>
+            //     <p><em>foo</em><em>bar</em><em>baz</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 315, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo **bar***", "<p><em>foo <strong>bar</strong></em></p>");
+			Helpers.ExecuteTest("*foo**bar**baz*", "<p><em>foo</em><em>bar</em><em>baz</em></p>");
         }
 
-        // Note, however, that in the following case we get no strong
-        // emphasis, because the opening delimiter is closed by the first
-        // `*` before `bar`:
+        // The difference is that in the preceding case, the internal delimiters
+        // [can close emphasis], while in the cases with spaces, they cannot.
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8633,16 +8606,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo**bar***
+            //     ***foo** bar*
             //
             // Should be rendered as:
-            //     <p><em>foo</em><em>bar</em>**</p>
+            //     <p><em><strong>foo</strong> bar</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 316, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo**bar***", "<p><em>foo</em><em>bar</em>**</p>");
+			Helpers.ExecuteTest("***foo** bar*", "<p><em><strong>foo</strong> bar</em></p>");
         }
 
-        // Indefinite levels of nesting are possible:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8652,15 +8624,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo **bar *baz* bim** bop*
+            //     *foo **bar***
             //
             // Should be rendered as:
-            //     <p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>
+            //     <p><em>foo <strong>bar</strong></em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 317, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo **bar *baz* bim** bop*", "<p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>");
+			Helpers.ExecuteTest("*foo **bar***", "<p><em>foo <strong>bar</strong></em></p>");
         }
 
+        // Note, however, that in the following case we get no strong
+        // emphasis, because the opening delimiter is closed by the first
+        // `*` before `bar`:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8670,16 +8645,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo [*bar*](/url)*
+            //     *foo**bar***
             //
             // Should be rendered as:
-            //     <p><em>foo <a href="/url"><em>bar</em></a></em></p>
+            //     <p><em>foo</em><em>bar</em>**</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 318, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo [*bar*](/url)*", "<p><em>foo <a href=\"/url\"><em>bar</em></a></em></p>");
+			Helpers.ExecuteTest("*foo**bar***", "<p><em>foo</em><em>bar</em>**</p>");
         }
 
-        // There can be no empty emphasis or strong emphasis:
+        // Indefinite levels of nesting are possible:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8689,13 +8664,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ** is not an empty emphasis
+            //     *foo **bar *baz* bim** bop*
             //
             // Should be rendered as:
-            //     <p>** is not an empty emphasis</p>
+            //     <p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 319, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("** is not an empty emphasis", "<p>** is not an empty emphasis</p>");
+			Helpers.ExecuteTest("*foo **bar *baz* bim** bop*", "<p><em>foo <strong>bar <em>baz</em> bim</strong> bop</em></p>");
         }
 
         [TestMethod]
@@ -8707,19 +8682,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **** is not an empty strong emphasis
+            //     *foo [*bar*](/url)*
             //
             // Should be rendered as:
-            //     <p>**** is not an empty strong emphasis</p>
+            //     <p><em>foo <a href="/url"><em>bar</em></a></em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 320, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**** is not an empty strong emphasis", "<p>**** is not an empty strong emphasis</p>");
+			Helpers.ExecuteTest("*foo [*bar*](/url)*", "<p><em>foo <a href=\"/url\"><em>bar</em></a></em></p>");
         }
 
-        // Rule 10:
-        //
-        // Any nonempty sequence of inline elements can be the contents of an
-        // strongly emphasized span.
+        // There can be no empty emphasis or strong emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8729,13 +8701,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo [bar](/url)**
+            //     ** is not an empty emphasis
             //
             // Should be rendered as:
-            //     <p><strong>foo <a href="/url">bar</a></strong></p>
+            //     <p>** is not an empty emphasis</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 321, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo [bar](/url)**", "<p><strong>foo <a href=\"/url\">bar</a></strong></p>");
+			Helpers.ExecuteTest("** is not an empty emphasis", "<p>** is not an empty emphasis</p>");
         }
 
         [TestMethod]
@@ -8747,19 +8719,19 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo
-            //     bar**
+            //     **** is not an empty strong emphasis
             //
             // Should be rendered as:
-            //     <p><strong>foo
-            //     bar</strong></p>
+            //     <p>**** is not an empty strong emphasis</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 322, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo\nbar**", "<p><strong>foo\nbar</strong></p>");
+			Helpers.ExecuteTest("**** is not an empty strong emphasis", "<p>**** is not an empty strong emphasis</p>");
         }
 
-        // In particular, emphasis and strong emphasis can be nested
-        // inside strong emphasis:
+        // Rule 10:
+        //
+        // Any nonempty sequence of inline elements can be the contents of an
+        // strongly emphasized span.
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8769,13 +8741,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo _bar_ baz__
+            //     **foo [bar](/url)**
             //
             // Should be rendered as:
-            //     <p><strong>foo <em>bar</em> baz</strong></p>
+            //     <p><strong>foo <a href="/url">bar</a></strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 323, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__foo _bar_ baz__", "<p><strong>foo <em>bar</em> baz</strong></p>");
+			Helpers.ExecuteTest("**foo [bar](/url)**", "<p><strong>foo <a href=\"/url\">bar</a></strong></p>");
         }
 
         [TestMethod]
@@ -8787,15 +8759,19 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo __bar__ baz__
+            //     **foo
+            //     bar**
             //
             // Should be rendered as:
-            //     <p><strong>foo <strong>bar</strong> baz</strong></p>
+            //     <p><strong>foo
+            //     bar</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 324, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__foo __bar__ baz__", "<p><strong>foo <strong>bar</strong> baz</strong></p>");
+			Helpers.ExecuteTest("**foo\nbar**", "<p><strong>foo\nbar</strong></p>");
         }
 
+        // In particular, emphasis and strong emphasis can be nested
+        // inside strong emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8805,13 +8781,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ____foo__ bar__
+            //     __foo _bar_ baz__
             //
             // Should be rendered as:
-            //     <p><strong><strong>foo</strong> bar</strong></p>
+            //     <p><strong>foo <em>bar</em> baz</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 325, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("____foo__ bar__", "<p><strong><strong>foo</strong> bar</strong></p>");
+			Helpers.ExecuteTest("__foo _bar_ baz__", "<p><strong>foo <em>bar</em> baz</strong></p>");
         }
 
         [TestMethod]
@@ -8823,13 +8799,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo **bar****
+            //     __foo __bar__ baz__
             //
             // Should be rendered as:
-            //     <p><strong>foo <strong>bar</strong></strong></p>
+            //     <p><strong>foo <strong>bar</strong> baz</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 326, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo **bar****", "<p><strong>foo <strong>bar</strong></strong></p>");
+			Helpers.ExecuteTest("__foo __bar__ baz__", "<p><strong>foo <strong>bar</strong> baz</strong></p>");
         }
 
         [TestMethod]
@@ -8841,16 +8817,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo *bar* baz**
+            //     ____foo__ bar__
             //
             // Should be rendered as:
-            //     <p><strong>foo <em>bar</em> baz</strong></p>
+            //     <p><strong><strong>foo</strong> bar</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 327, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo *bar* baz**", "<p><strong>foo <em>bar</em> baz</strong></p>");
+			Helpers.ExecuteTest("____foo__ bar__", "<p><strong><strong>foo</strong> bar</strong></p>");
         }
 
-        // But note:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8860,18 +8835,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo*bar*baz**
+            //     **foo **bar****
             //
             // Should be rendered as:
-            //     <p><em><em>foo</em>bar</em>baz**</p>
+            //     <p><strong>foo <strong>bar</strong></strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 328, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo*bar*baz**", "<p><em><em>foo</em>bar</em>baz**</p>");
+			Helpers.ExecuteTest("**foo **bar****", "<p><strong>foo <strong>bar</strong></strong></p>");
         }
 
-        // The difference is that in the preceding case,
-        // the internal delimiters [can close emphasis](#can-close-emphasis),
-        // while in the cases with spaces, they cannot.
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8881,15 +8853,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo* bar**
+            //     **foo *bar* baz**
             //
             // Should be rendered as:
-            //     <p><strong><em>foo</em> bar</strong></p>
+            //     <p><strong>foo <em>bar</em> baz</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 329, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("***foo* bar**", "<p><strong><em>foo</em> bar</strong></p>");
+			Helpers.ExecuteTest("**foo *bar* baz**", "<p><strong>foo <em>bar</em> baz</strong></p>");
         }
 
+        // But note:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8899,16 +8872,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo *bar***
+            //     **foo*bar*baz**
             //
             // Should be rendered as:
-            //     <p><strong>foo <em>bar</em></strong></p>
+            //     <p><em><em>foo</em>bar</em>baz**</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 330, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo *bar***", "<p><strong>foo <em>bar</em></strong></p>");
+			Helpers.ExecuteTest("**foo*bar*baz**", "<p><em><em>foo</em>bar</em>baz**</p>");
         }
 
-        // Indefinite levels of nesting are possible:
+        // The difference is that in the preceding case, the internal delimiters
+        // [can close emphasis], while in the cases with spaces, they cannot.
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8918,15 +8892,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo *bar **baz**
-            //     bim* bop**
+            //     ***foo* bar**
             //
             // Should be rendered as:
-            //     <p><strong>foo <em>bar <strong>baz</strong>
-            //     bim</em> bop</strong></p>
+            //     <p><strong><em>foo</em> bar</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 331, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo *bar **baz**\nbim* bop**", "<p><strong>foo <em>bar <strong>baz</strong>\nbim</em> bop</strong></p>");
+			Helpers.ExecuteTest("***foo* bar**", "<p><strong><em>foo</em> bar</strong></p>");
         }
 
         [TestMethod]
@@ -8938,16 +8910,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo [*bar*](/url)**
+            //     **foo *bar***
             //
             // Should be rendered as:
-            //     <p><strong>foo <a href="/url"><em>bar</em></a></strong></p>
+            //     <p><strong>foo <em>bar</em></strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 332, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo [*bar*](/url)**", "<p><strong>foo <a href=\"/url\"><em>bar</em></a></strong></p>");
+			Helpers.ExecuteTest("**foo *bar***", "<p><strong>foo <em>bar</em></strong></p>");
         }
 
-        // There can be no empty emphasis or strong emphasis:
+        // Indefinite levels of nesting are possible:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8957,13 +8929,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __ is not an empty emphasis
+            //     **foo *bar **baz**
+            //     bim* bop**
             //
             // Should be rendered as:
-            //     <p>__ is not an empty emphasis</p>
+            //     <p><strong>foo <em>bar <strong>baz</strong>
+            //     bim</em> bop</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 333, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__ is not an empty emphasis", "<p>__ is not an empty emphasis</p>");
+			Helpers.ExecuteTest("**foo *bar **baz**\nbim* bop**", "<p><strong>foo <em>bar <strong>baz</strong>\nbim</em> bop</strong></p>");
         }
 
         [TestMethod]
@@ -8975,16 +8949,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ____ is not an empty strong emphasis
+            //     **foo [*bar*](/url)**
             //
             // Should be rendered as:
-            //     <p>____ is not an empty strong emphasis</p>
+            //     <p><strong>foo <a href="/url"><em>bar</em></a></strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 334, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("____ is not an empty strong emphasis", "<p>____ is not an empty strong emphasis</p>");
+			Helpers.ExecuteTest("**foo [*bar*](/url)**", "<p><strong>foo <a href=\"/url\"><em>bar</em></a></strong></p>");
         }
 
-        // Rule 11:
+        // There can be no empty emphasis or strong emphasis:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -8994,13 +8968,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo ***
+            //     __ is not an empty emphasis
             //
             // Should be rendered as:
-            //     <p>foo ***</p>
+            //     <p>__ is not an empty emphasis</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 335, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo ***", "<p>foo ***</p>");
+			Helpers.ExecuteTest("__ is not an empty emphasis", "<p>__ is not an empty emphasis</p>");
         }
 
         [TestMethod]
@@ -9012,15 +8986,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo *\**
+            //     ____ is not an empty strong emphasis
             //
             // Should be rendered as:
-            //     <p>foo <em>*</em></p>
+            //     <p>____ is not an empty strong emphasis</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 336, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo *\\**", "<p>foo <em>*</em></p>");
+			Helpers.ExecuteTest("____ is not an empty strong emphasis", "<p>____ is not an empty strong emphasis</p>");
         }
 
+        // Rule 11:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9030,13 +9005,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo *_*
+            //     foo ***
             //
             // Should be rendered as:
-            //     <p>foo <em>_</em></p>
+            //     <p>foo ***</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 337, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo *_*", "<p>foo <em>_</em></p>");
+			Helpers.ExecuteTest("foo ***", "<p>foo ***</p>");
         }
 
         [TestMethod]
@@ -9048,13 +9023,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo *****
+            //     foo *\**
             //
             // Should be rendered as:
-            //     <p>foo *****</p>
+            //     <p>foo <em>*</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 338, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo *****", "<p>foo *****</p>");
+			Helpers.ExecuteTest("foo *\\**", "<p>foo <em>*</em></p>");
         }
 
         [TestMethod]
@@ -9066,13 +9041,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo **\***
+            //     foo *_*
             //
             // Should be rendered as:
-            //     <p>foo <strong>*</strong></p>
+            //     <p>foo <em>_</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 339, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo **\\***", "<p>foo <strong>*</strong></p>");
+			Helpers.ExecuteTest("foo *_*", "<p>foo <em>_</em></p>");
         }
 
         [TestMethod]
@@ -9084,18 +9059,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo **_**
+            //     foo *****
             //
             // Should be rendered as:
-            //     <p>foo <strong>_</strong></p>
+            //     <p>foo *****</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 340, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo **_**", "<p>foo <strong>_</strong></p>");
+			Helpers.ExecuteTest("foo *****", "<p>foo *****</p>");
         }
 
-        // Note that when delimiters do not match evenly, Rule 11 determines
-        // that the excess literal `*` characters will appear outside of the
-        // emphasis, rather than inside it:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9105,13 +9077,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo*
+            //     foo **\***
             //
             // Should be rendered as:
-            //     <p>*<em>foo</em></p>
+            //     <p>foo <strong>*</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 341, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo*", "<p>*<em>foo</em></p>");
+			Helpers.ExecuteTest("foo **\\***", "<p>foo <strong>*</strong></p>");
         }
 
         [TestMethod]
@@ -9123,15 +9095,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo**
+            //     foo **_**
             //
             // Should be rendered as:
-            //     <p><em>foo</em>*</p>
+            //     <p>foo <strong>_</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 342, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo**", "<p><em>foo</em>*</p>");
+			Helpers.ExecuteTest("foo **_**", "<p>foo <strong>_</strong></p>");
         }
 
+        // Note that when delimiters do not match evenly, Rule 11 determines
+        // that the excess literal `*` characters will appear outside of the
+        // emphasis, rather than inside it:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9141,13 +9116,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo**
+            //     **foo*
             //
             // Should be rendered as:
-            //     <p>*<strong>foo</strong></p>
+            //     <p>*<em>foo</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 343, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("***foo**", "<p>*<strong>foo</strong></p>");
+			Helpers.ExecuteTest("**foo*", "<p>*<em>foo</em></p>");
         }
 
         [TestMethod]
@@ -9159,13 +9134,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ****foo*
+            //     *foo**
             //
             // Should be rendered as:
-            //     <p>***<em>foo</em></p>
+            //     <p><em>foo</em>*</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 344, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("****foo*", "<p>***<em>foo</em></p>");
+			Helpers.ExecuteTest("*foo**", "<p><em>foo</em>*</p>");
         }
 
         [TestMethod]
@@ -9177,13 +9152,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo***
+            //     ***foo**
             //
             // Should be rendered as:
-            //     <p><strong>foo</strong>*</p>
+            //     <p>*<strong>foo</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 345, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo***", "<p><strong>foo</strong>*</p>");
+			Helpers.ExecuteTest("***foo**", "<p>*<strong>foo</strong></p>");
         }
 
         [TestMethod]
@@ -9195,16 +9170,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo****
+            //     ****foo*
             //
             // Should be rendered as:
-            //     <p><em>foo</em>***</p>
+            //     <p>***<em>foo</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 346, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo****", "<p><em>foo</em>***</p>");
+			Helpers.ExecuteTest("****foo*", "<p>***<em>foo</em></p>");
         }
 
-        // Rule 12:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9214,13 +9188,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo ___
+            //     **foo***
             //
             // Should be rendered as:
-            //     <p>foo ___</p>
+            //     <p><strong>foo</strong>*</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 347, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo ___", "<p>foo ___</p>");
+			Helpers.ExecuteTest("**foo***", "<p><strong>foo</strong>*</p>");
         }
 
         [TestMethod]
@@ -9232,15 +9206,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo _\__
+            //     *foo****
             //
             // Should be rendered as:
-            //     <p>foo <em>_</em></p>
+            //     <p><em>foo</em>***</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 348, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo _\\__", "<p>foo <em>_</em></p>");
+			Helpers.ExecuteTest("*foo****", "<p><em>foo</em>***</p>");
         }
 
+        // Rule 12:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9250,13 +9225,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo _*_
+            //     foo ___
             //
             // Should be rendered as:
-            //     <p>foo <em>*</em></p>
+            //     <p>foo ___</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 349, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo _*_", "<p>foo <em>*</em></p>");
+			Helpers.ExecuteTest("foo ___", "<p>foo ___</p>");
         }
 
         [TestMethod]
@@ -9268,13 +9243,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo _____
+            //     foo _\__
             //
             // Should be rendered as:
-            //     <p>foo _____</p>
+            //     <p>foo <em>_</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 350, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo _____", "<p>foo _____</p>");
+			Helpers.ExecuteTest("foo _\\__", "<p>foo <em>_</em></p>");
         }
 
         [TestMethod]
@@ -9286,13 +9261,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo __\___
+            //     foo _*_
             //
             // Should be rendered as:
-            //     <p>foo <strong>_</strong></p>
+            //     <p>foo <em>*</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 351, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo __\\___", "<p>foo <strong>_</strong></p>");
+			Helpers.ExecuteTest("foo _*_", "<p>foo <em>*</em></p>");
         }
 
         [TestMethod]
@@ -9304,13 +9279,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     foo __*__
+            //     foo _____
             //
             // Should be rendered as:
-            //     <p>foo <strong>*</strong></p>
+            //     <p>foo _____</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 352, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("foo __*__", "<p>foo <strong>*</strong></p>");
+			Helpers.ExecuteTest("foo _____", "<p>foo _____</p>");
         }
 
         [TestMethod]
@@ -9322,18 +9297,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo_
+            //     foo __\___
             //
             // Should be rendered as:
-            //     <p>_<em>foo</em></p>
+            //     <p>foo <strong>_</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 353, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__foo_", "<p>_<em>foo</em></p>");
+			Helpers.ExecuteTest("foo __\\___", "<p>foo <strong>_</strong></p>");
         }
 
-        // Note that when delimiters do not match evenly, Rule 12 determines
-        // that the excess literal `_` characters will appear outside of the
-        // emphasis, rather than inside it:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9343,13 +9315,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo__
+            //     foo __*__
             //
             // Should be rendered as:
-            //     <p><em>foo</em>_</p>
+            //     <p>foo <strong>*</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 354, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_foo__", "<p><em>foo</em>_</p>");
+			Helpers.ExecuteTest("foo __*__", "<p>foo <strong>*</strong></p>");
         }
 
         [TestMethod]
@@ -9361,15 +9333,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ___foo__
+            //     __foo_
             //
             // Should be rendered as:
-            //     <p>_<strong>foo</strong></p>
+            //     <p>_<em>foo</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 355, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("___foo__", "<p>_<strong>foo</strong></p>");
+			Helpers.ExecuteTest("__foo_", "<p>_<em>foo</em></p>");
         }
 
+        // Note that when delimiters do not match evenly, Rule 12 determines
+        // that the excess literal `_` characters will appear outside of the
+        // emphasis, rather than inside it:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9379,13 +9354,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ____foo_
+            //     _foo__
             //
             // Should be rendered as:
-            //     <p>___<em>foo</em></p>
+            //     <p><em>foo</em>_</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 356, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("____foo_", "<p>___<em>foo</em></p>");
+			Helpers.ExecuteTest("_foo__", "<p><em>foo</em>_</p>");
         }
 
         [TestMethod]
@@ -9397,13 +9372,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo___
+            //     ___foo__
             //
             // Should be rendered as:
-            //     <p><strong>foo</strong>_</p>
+            //     <p>_<strong>foo</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 357, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__foo___", "<p><strong>foo</strong>_</p>");
+			Helpers.ExecuteTest("___foo__", "<p>_<strong>foo</strong></p>");
         }
 
         [TestMethod]
@@ -9415,17 +9390,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo____
+            //     ____foo_
             //
             // Should be rendered as:
-            //     <p><em>foo</em>___</p>
+            //     <p>___<em>foo</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 358, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_foo____", "<p><em>foo</em>___</p>");
+			Helpers.ExecuteTest("____foo_", "<p>___<em>foo</em></p>");
         }
 
-        // Rule 13 implies that if you want emphasis nested directly inside
-        // emphasis, you must use different delimiters:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9435,13 +9408,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo**
+            //     __foo___
             //
             // Should be rendered as:
-            //     <p><strong>foo</strong></p>
+            //     <p><strong>foo</strong>_</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 359, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo**", "<p><strong>foo</strong></p>");
+			Helpers.ExecuteTest("__foo___", "<p><strong>foo</strong>_</p>");
         }
 
         [TestMethod]
@@ -9453,15 +9426,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *_foo_*
+            //     _foo____
             //
             // Should be rendered as:
-            //     <p><em><em>foo</em></em></p>
+            //     <p><em>foo</em>___</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 360, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*_foo_*", "<p><em><em>foo</em></em></p>");
+			Helpers.ExecuteTest("_foo____", "<p><em>foo</em>___</p>");
         }
 
+        // Rule 13 implies that if you want emphasis nested directly inside
+        // emphasis, you must use different delimiters:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9471,13 +9446,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __foo__
+            //     **foo**
             //
             // Should be rendered as:
             //     <p><strong>foo</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 361, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__foo__", "<p><strong>foo</strong></p>");
+			Helpers.ExecuteTest("**foo**", "<p><strong>foo</strong></p>");
         }
 
         [TestMethod]
@@ -9489,17 +9464,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _*foo*_
+            //     *_foo_*
             //
             // Should be rendered as:
             //     <p><em><em>foo</em></em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 362, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_*foo*_", "<p><em><em>foo</em></em></p>");
+			Helpers.ExecuteTest("*_foo_*", "<p><em><em>foo</em></em></p>");
         }
 
-        // However, strong emphasis within strong emphasisis possible without
-        // switching delimiters:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9509,13 +9482,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ****foo****
+            //     __foo__
             //
             // Should be rendered as:
-            //     <p><strong><strong>foo</strong></strong></p>
+            //     <p><strong>foo</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 363, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("****foo****", "<p><strong><strong>foo</strong></strong></p>");
+			Helpers.ExecuteTest("__foo__", "<p><strong>foo</strong></p>");
         }
 
         [TestMethod]
@@ -9527,17 +9500,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ____foo____
+            //     _*foo*_
             //
             // Should be rendered as:
-            //     <p><strong><strong>foo</strong></strong></p>
+            //     <p><em><em>foo</em></em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 364, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("____foo____", "<p><strong><strong>foo</strong></strong></p>");
+			Helpers.ExecuteTest("_*foo*_", "<p><em><em>foo</em></em></p>");
         }
 
-        // Rule 13 can be applied to arbitrarily long sequences of
-        // delimiters:
+        // However, strong emphasis within strong emphasisis possible without
+        // switching delimiters:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9547,16 +9520,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ******foo******
+            //     ****foo****
             //
             // Should be rendered as:
-            //     <p><strong><strong><strong>foo</strong></strong></strong></p>
+            //     <p><strong><strong>foo</strong></strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 365, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("******foo******", "<p><strong><strong><strong>foo</strong></strong></strong></p>");
+			Helpers.ExecuteTest("****foo****", "<p><strong><strong>foo</strong></strong></p>");
         }
 
-        // Rule 14:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9566,15 +9538,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     ***foo***
+            //     ____foo____
             //
             // Should be rendered as:
-            //     <p><strong><em>foo</em></strong></p>
+            //     <p><strong><strong>foo</strong></strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 366, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("***foo***", "<p><strong><em>foo</em></strong></p>");
+			Helpers.ExecuteTest("____foo____", "<p><strong><strong>foo</strong></strong></p>");
         }
 
+        // Rule 13 can be applied to arbitrarily long sequences of
+        // delimiters:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9584,16 +9558,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _____foo_____
+            //     ******foo******
             //
             // Should be rendered as:
-            //     <p><strong><strong><em>foo</em></strong></strong></p>
+            //     <p><strong><strong><strong>foo</strong></strong></strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 367, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_____foo_____", "<p><strong><strong><em>foo</em></strong></strong></p>");
+			Helpers.ExecuteTest("******foo******", "<p><strong><strong><strong>foo</strong></strong></strong></p>");
         }
 
-        // Rule 15:
+        // Rule 14:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9603,13 +9577,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo _bar* baz_
+            //     ***foo***
             //
             // Should be rendered as:
-            //     <p><em>foo _bar</em> baz_</p>
+            //     <p><strong><em>foo</em></strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 368, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo _bar* baz_", "<p><em>foo _bar</em> baz_</p>");
+			Helpers.ExecuteTest("***foo***", "<p><strong><em>foo</em></strong></p>");
         }
 
         [TestMethod]
@@ -9621,16 +9595,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo*bar**
+            //     _____foo_____
             //
             // Should be rendered as:
-            //     <p><em><em>foo</em>bar</em>*</p>
+            //     <p><strong><strong><em>foo</em></strong></strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 369, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo*bar**", "<p><em><em>foo</em>bar</em>*</p>");
+			Helpers.ExecuteTest("_____foo_____", "<p><strong><strong><em>foo</em></strong></strong></p>");
         }
 
-        // Rule 16:
+        // Rule 15:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9640,13 +9614,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **foo **bar baz**
+            //     *foo _bar* baz_
             //
             // Should be rendered as:
-            //     <p>**foo <strong>bar baz</strong></p>
+            //     <p><em>foo _bar</em> baz_</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 370, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**foo **bar baz**", "<p>**foo <strong>bar baz</strong></p>");
+			Helpers.ExecuteTest("*foo _bar* baz_", "<p><em>foo _bar</em> baz_</p>");
         }
 
         [TestMethod]
@@ -9658,16 +9632,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *foo *bar baz*
+            //     **foo*bar**
             //
             // Should be rendered as:
-            //     <p>*foo <em>bar baz</em></p>
+            //     <p><em><em>foo</em>bar</em>*</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 371, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*foo *bar baz*", "<p>*foo <em>bar baz</em></p>");
+			Helpers.ExecuteTest("**foo*bar**", "<p><em><em>foo</em>bar</em>*</p>");
         }
 
-        // Rule 17:
+        // Rule 16:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9677,13 +9651,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *[bar*](/url)
+            //     **foo **bar baz**
             //
             // Should be rendered as:
-            //     <p>*<a href="/url">bar*</a></p>
+            //     <p>**foo <strong>bar baz</strong></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 372, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*[bar*](/url)", "<p>*<a href=\"/url\">bar*</a></p>");
+			Helpers.ExecuteTest("**foo **bar baz**", "<p>**foo <strong>bar baz</strong></p>");
         }
 
         [TestMethod]
@@ -9695,15 +9669,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _foo [bar_](/url)
+            //     *foo *bar baz*
             //
             // Should be rendered as:
-            //     <p>_foo <a href="/url">bar_</a></p>
+            //     <p>*foo <em>bar baz</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 373, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_foo [bar_](/url)", "<p>_foo <a href=\"/url\">bar_</a></p>");
+			Helpers.ExecuteTest("*foo *bar baz*", "<p>*foo <em>bar baz</em></p>");
         }
 
+        // Rule 17:
         [TestMethod]
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         //[Timeout(1000)]
@@ -9713,13 +9688,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *<img src="foo" title="*"/>
+            //     *[bar*](/url)
             //
             // Should be rendered as:
-            //     <p>*<img src="foo" title="*"/></p>
+            //     <p>*<a href="/url">bar*</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 374, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*<img src=\"foo\" title=\"*\"/>", "<p>*<img src=\"foo\" title=\"*\"/></p>");
+			Helpers.ExecuteTest("*[bar*](/url)", "<p>*<a href=\"/url\">bar*</a></p>");
         }
 
         [TestMethod]
@@ -9731,13 +9706,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **<a href="**">
+            //     _foo [bar_](/url)
             //
             // Should be rendered as:
-            //     <p>**<a href="**"></p>
+            //     <p>_foo <a href="/url">bar_</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 375, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**<a href=\"**\">", "<p>**<a href=\"**\"></p>");
+			Helpers.ExecuteTest("_foo [bar_](/url)", "<p>_foo <a href=\"/url\">bar_</a></p>");
         }
 
         [TestMethod]
@@ -9749,13 +9724,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __<a href="__">
+            //     *<img src="foo" title="*"/>
             //
             // Should be rendered as:
-            //     <p>__<a href="__"></p>
+            //     <p>*<img src="foo" title="*"/></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 376, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__<a href=\"__\">", "<p>__<a href=\"__\"></p>");
+			Helpers.ExecuteTest("*<img src=\"foo\" title=\"*\"/>", "<p>*<img src=\"foo\" title=\"*\"/></p>");
         }
 
         [TestMethod]
@@ -9767,13 +9742,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     *a `*`*
+            //     **<a href="**">
             //
             // Should be rendered as:
-            //     <p><em>a <code>*</code></em></p>
+            //     <p>**<a href="**"></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 377, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("*a `*`*", "<p><em>a <code>*</code></em></p>");
+			Helpers.ExecuteTest("**<a href=\"**\">", "<p>**<a href=\"**\"></p>");
         }
 
         [TestMethod]
@@ -9785,13 +9760,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     _a `_`_
+            //     __<a href="__">
             //
             // Should be rendered as:
-            //     <p><em>a <code>_</code></em></p>
+            //     <p>__<a href="__"></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 378, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("_a `_`_", "<p><em>a <code>_</code></em></p>");
+			Helpers.ExecuteTest("__<a href=\"__\">", "<p>__<a href=\"__\"></p>");
         }
 
         [TestMethod]
@@ -9803,13 +9778,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **a<http://foo.bar?q=**>
+            //     *a `*`*
             //
             // Should be rendered as:
-            //     <p>**a<a href="http://foo.bar?q=**">http://foo.bar?q=**</a></p>
+            //     <p><em>a <code>*</code></em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 379, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**a<http://foo.bar?q=**>", "<p>**a<a href=\"http://foo.bar?q=**\">http://foo.bar?q=**</a></p>");
+			Helpers.ExecuteTest("*a `*`*", "<p><em>a <code>*</code></em></p>");
         }
 
         [TestMethod]
@@ -9821,24 +9796,59 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
+            //     _a `_`_
+            //
+            // Should be rendered as:
+            //     <p><em>a <code>_</code></em></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 380, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("_a `_`_", "<p><em>a <code>_</code></em></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example381()
+        {
+            // Example 381
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
+            //     **a<http://foo.bar?q=**>
+            //
+            // Should be rendered as:
+            //     <p>**a<a href="http://foo.bar?q=**">http://foo.bar?q=**</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 381, "Inlines - Emphasis and strong emphasis");
+			Helpers.ExecuteTest("**a<http://foo.bar?q=**>", "<p>**a<a href=\"http://foo.bar?q=**\">http://foo.bar?q=**</a></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        //[Timeout(1000)]
+        public void Example382()
+        {
+            // Example 382
+            // Section: Inlines - Emphasis and strong emphasis
+            //
+            // The following CommonMark:
             //     __a<http://foo.bar?q=__>
             //
             // Should be rendered as:
             //     <p>__a<a href="http://foo.bar?q=__">http://foo.bar?q=__</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 380, "Inlines - Emphasis and strong emphasis");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 382, "Inlines - Emphasis and strong emphasis");
 			Helpers.ExecuteTest("__a<http://foo.bar?q=__>", "<p>__a<a href=\"http://foo.bar?q=__\">http://foo.bar?q=__</a></p>");
         }
 
         // ## Links
         //
-        // A link contains [link text](#link-label) (the visible text),
-        // a [link destination](#link-destination) (the URI that is the link destination),
-        // and optionally a [link title](#link-title).  There are two basic kinds
-        // of links in Markdown.  In [inline links](#inline-link) the destination
-        // and title are given immediately after the link text.  In [reference
-        // links](#reference-link) the destination and title are defined elsewhere
-        // in the document.
+        // A link contains [link text] (the visible text), a [link destination]
+        // (the URI that is the link destination), and optionally a [link title].
+        // There are two basic kinds of links in Markdown.  In [inline link]s the
+        // destination and title are given immediately after the link text.  In
+        // [reference link]s the destination and title are defined elsewhere in
+        // the document.
         //
         // A [link text](@link-text) consists of a sequence of zero or more
         // inline elements enclosed by square brackets (`[` and `]`).  The
@@ -9846,20 +9856,18 @@ namespace CommonMark.Tests.Specification
         //
         // - Links may not contain other links, at any level of nesting.
         //
-        // - Brackets are allowed in the [link text](#link-text) only if (a) they
+        // - Brackets are allowed in the [link text] only if (a) they
         // are backslash-escaped or (b) they appear as a matched pair of brackets,
         // with an open bracket `[`, a sequence of zero or more inlines, and
         // a close bracket `]`.
         //
-        // - Backtick [code spans](#code-span), [autolinks](#autolink), and
-        // raw [HTML tags](#html-tag) bind more tightly
+        // - Backtick [code span]s, [autolink]s, and raw [HTML tag]s bind more tightly
         // than the brackets in link text.  Thus, for example,
         // `` [foo`]` `` could not be a link text, since the second `]`
         // is part of a code span.
         //
         // - The brackets in link text bind more tightly than markers for
-        // [emphasis and strong emphasis](#emphasis-and-strong-emphasis).
-        // Thus, for example, `*[foo*](url)` is a link.
+        // [emphasis and strong emphasis]. Thus, for example, `*[foo*](url)` is a link.
         //
         // A [link destination](@link-destination) consists of either
         //
@@ -9886,15 +9894,12 @@ namespace CommonMark.Tests.Specification
         // - a sequence of zero or more characters between matching parentheses
         // (`(...)`), including a `)` character only if it is backslash-escaped.
         //
-        // An [inline link](@inline-link)
-        // consists of a [link text](#link-text) followed immediately
-        // by a left parenthesis `(`, optional [whitespace](#whitespace),
-        // an optional [link destination](#link-destination),
-        // an optional [link title](#link-title) separated from the link
-        // destination by [whitespace](#whitespace), optional
-        // [whitespace](#whitespace), and a right parenthesis `)`.
-        // The link's text consists of the inlines contained
-        // in the [link text](#link-text) (excluding the enclosing square brackets).
+        // An [inline link](@inline-link) consists of a [link text] followed immediately
+        // by a left parenthesis `(`, optional [whitespace], an optional
+        // [link destination], an optional [link title] separated from the link
+        // destination by [whitespace], optional [whitespace], and a right
+        // parenthesis `)`. The link's text consists of the inlines contained
+        // in the [link text] (excluding the enclosing square brackets).
         // The link's URI consists of the link destination, excluding enclosing
         // `<...>` if present, with backslash-escapes in effect as described
         // above.  The link's title consists of the link title, excluding its
@@ -9905,9 +9910,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example381()
+        public void Example383()
         {
-            // Example 381
+            // Example 383
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -9916,48 +9921,11 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri" title="title">link</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 381, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 383, "Inlines - Links");
 			Helpers.ExecuteTest("[link](/uri \"title\")", "<p><a href=\"/uri\" title=\"title\">link</a></p>");
         }
 
         // The title may be omitted:
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example382()
-        {
-            // Example 382
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [link](/uri)
-            //
-            // Should be rendered as:
-            //     <p><a href="/uri">link</a></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 382, "Inlines - Links");
-			Helpers.ExecuteTest("[link](/uri)", "<p><a href=\"/uri\">link</a></p>");
-        }
-
-        // Both the title and the destination may be omitted:
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example383()
-        {
-            // Example 383
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [link]()
-            //
-            // Should be rendered as:
-            //     <p><a href="">link</a></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 383, "Inlines - Links");
-			Helpers.ExecuteTest("[link]()", "<p><a href=\"\">link</a></p>");
-        }
-
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -9967,17 +9935,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [link](<>)
+            //     [link](/uri)
             //
             // Should be rendered as:
-            //     <p><a href="">link</a></p>
+            //     <p><a href="/uri">link</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 384, "Inlines - Links");
-			Helpers.ExecuteTest("[link](<>)", "<p><a href=\"\">link</a></p>");
+			Helpers.ExecuteTest("[link](/uri)", "<p><a href=\"/uri\">link</a></p>");
         }
 
-        // If the destination contains spaces, it must be enclosed in pointy
-        // braces:
+        // Both the title and the destination may be omitted:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -9987,13 +9954,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [link](/my uri)
+            //     [link]()
             //
             // Should be rendered as:
-            //     <p>[link](/my uri)</p>
+            //     <p><a href="">link</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 385, "Inlines - Links");
-			Helpers.ExecuteTest("[link](/my uri)", "<p>[link](/my uri)</p>");
+			Helpers.ExecuteTest("[link]()", "<p><a href=\"\">link</a></p>");
         }
 
         [TestMethod]
@@ -10005,12 +9972,50 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
+            //     [link](<>)
+            //
+            // Should be rendered as:
+            //     <p><a href="">link</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 386, "Inlines - Links");
+			Helpers.ExecuteTest("[link](<>)", "<p><a href=\"\">link</a></p>");
+        }
+
+        // If the destination contains spaces, it must be enclosed in pointy
+        // braces:
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example387()
+        {
+            // Example 387
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
+            //     [link](/my uri)
+            //
+            // Should be rendered as:
+            //     <p>[link](/my uri)</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 387, "Inlines - Links");
+			Helpers.ExecuteTest("[link](/my uri)", "<p>[link](/my uri)</p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example388()
+        {
+            // Example 388
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
             //     [link](</my uri>)
             //
             // Should be rendered as:
             //     <p><a href="/my%20uri">link</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 386, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 388, "Inlines - Links");
 			Helpers.ExecuteTest("[link](</my uri>)", "<p><a href=\"/my%20uri\">link</a></p>");
         }
 
@@ -10018,9 +10023,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example387()
+        public void Example389()
         {
-            // Example 387
+            // Example 389
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10031,49 +10036,11 @@ namespace CommonMark.Tests.Specification
             //     <p>[link](foo
             //     bar)</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 387, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 389, "Inlines - Links");
 			Helpers.ExecuteTest("[link](foo\nbar)", "<p>[link](foo\nbar)</p>");
         }
 
         // One level of balanced parentheses is allowed without escaping:
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example388()
-        {
-            // Example 388
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [link]((foo)and(bar))
-            //
-            // Should be rendered as:
-            //     <p><a href="(foo)and(bar)">link</a></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 388, "Inlines - Links");
-			Helpers.ExecuteTest("[link]((foo)and(bar))", "<p><a href=\"(foo)and(bar)\">link</a></p>");
-        }
-
-        // However, if you have parentheses within parentheses, you need to escape
-        // or use the `<...>` form:
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example389()
-        {
-            // Example 389
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [link](foo(and(bar)))
-            //
-            // Should be rendered as:
-            //     <p>[link](foo(and(bar)))</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 389, "Inlines - Links");
-			Helpers.ExecuteTest("[link](foo(and(bar)))", "<p>[link](foo(and(bar)))</p>");
-        }
-
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10083,15 +10050,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [link](foo(and\(bar\)))
+            //     [link]((foo)and(bar))
             //
             // Should be rendered as:
-            //     <p><a href="foo(and(bar))">link</a></p>
+            //     <p><a href="(foo)and(bar)">link</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 390, "Inlines - Links");
-			Helpers.ExecuteTest("[link](foo(and\\(bar\\)))", "<p><a href=\"foo(and(bar))\">link</a></p>");
+			Helpers.ExecuteTest("[link]((foo)and(bar))", "<p><a href=\"(foo)and(bar)\">link</a></p>");
         }
 
+        // However, if you have parentheses within parentheses, you need to escape
+        // or use the `<...>` form:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10101,17 +10070,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [link](<foo(and(bar))>)
+            //     [link](foo(and(bar)))
             //
             // Should be rendered as:
-            //     <p><a href="foo(and(bar))">link</a></p>
+            //     <p>[link](foo(and(bar)))</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 391, "Inlines - Links");
-			Helpers.ExecuteTest("[link](<foo(and(bar))>)", "<p><a href=\"foo(and(bar))\">link</a></p>");
+			Helpers.ExecuteTest("[link](foo(and(bar)))", "<p>[link](foo(and(bar)))</p>");
         }
 
-        // Parentheses and other symbols can also be escaped, as usual
-        // in Markdown:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10121,12 +10088,50 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
+            //     [link](foo(and\(bar\)))
+            //
+            // Should be rendered as:
+            //     <p><a href="foo(and(bar))">link</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 392, "Inlines - Links");
+			Helpers.ExecuteTest("[link](foo(and\\(bar\\)))", "<p><a href=\"foo(and(bar))\">link</a></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example393()
+        {
+            // Example 393
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
+            //     [link](<foo(and(bar))>)
+            //
+            // Should be rendered as:
+            //     <p><a href="foo(and(bar))">link</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 393, "Inlines - Links");
+			Helpers.ExecuteTest("[link](<foo(and(bar))>)", "<p><a href=\"foo(and(bar))\">link</a></p>");
+        }
+
+        // Parentheses and other symbols can also be escaped, as usual
+        // in Markdown:
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example394()
+        {
+            // Example 394
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
             //     [link](foo\)\:)
             //
             // Should be rendered as:
             //     <p><a href="foo):">link</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 392, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 394, "Inlines - Links");
 			Helpers.ExecuteTest("[link](foo\\)\\:)", "<p><a href=\"foo):\">link</a></p>");
         }
 
@@ -10137,9 +10142,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example393()
+        public void Example395()
         {
-            // Example 393
+            // Example 395
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10148,7 +10153,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="foo%20b%C3%A4">link</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 393, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 395, "Inlines - Links");
 			Helpers.ExecuteTest("[link](foo%20b&auml;)", "<p><a href=\"foo%20b%C3%A4\">link</a></p>");
         }
 
@@ -10158,9 +10163,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example394()
+        public void Example396()
         {
-            // Example 394
+            // Example 396
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10169,7 +10174,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="%22title%22">link</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 394, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 396, "Inlines - Links");
 			Helpers.ExecuteTest("[link](\"title\")", "<p><a href=\"%22title%22\">link</a></p>");
         }
 
@@ -10177,9 +10182,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example395()
+        public void Example397()
         {
-            // Example 395
+            // Example 397
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10192,49 +10197,11 @@ namespace CommonMark.Tests.Specification
             //     <a href="/url" title="title">link</a>
             //     <a href="/url" title="title">link</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 395, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 397, "Inlines - Links");
 			Helpers.ExecuteTest("[link](/url \"title\")\n[link](/url 'title')\n[link](/url (title))", "<p><a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a>\n<a href=\"/url\" title=\"title\">link</a></p>");
         }
 
         // Backslash escapes and entities may be used in titles:
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example396()
-        {
-            // Example 396
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [link](/url "title \"&quot;")
-            //
-            // Should be rendered as:
-            //     <p><a href="/url" title="title &quot;&quot;">link</a></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 396, "Inlines - Links");
-			Helpers.ExecuteTest("[link](/url \"title \\\"&quot;\")", "<p><a href=\"/url\" title=\"title &quot;&quot;\">link</a></p>");
-        }
-
-        // Nested balanced quotes are not allowed without escaping:
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example397()
-        {
-            // Example 397
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [link](/url "title "and" title")
-            //
-            // Should be rendered as:
-            //     <p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 397, "Inlines - Links");
-			Helpers.ExecuteTest("[link](/url \"title \"and\" title\")", "<p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>");
-        }
-
-        // But it is easy to work around this by using a different quote type:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10244,12 +10211,50 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
+            //     [link](/url "title \"&quot;")
+            //
+            // Should be rendered as:
+            //     <p><a href="/url" title="title &quot;&quot;">link</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 398, "Inlines - Links");
+			Helpers.ExecuteTest("[link](/url \"title \\\"&quot;\")", "<p><a href=\"/url\" title=\"title &quot;&quot;\">link</a></p>");
+        }
+
+        // Nested balanced quotes are not allowed without escaping:
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example399()
+        {
+            // Example 399
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
+            //     [link](/url "title "and" title")
+            //
+            // Should be rendered as:
+            //     <p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 399, "Inlines - Links");
+			Helpers.ExecuteTest("[link](/url \"title \"and\" title\")", "<p>[link](/url &quot;title &quot;and&quot; title&quot;)</p>");
+        }
+
+        // But it is easy to work around this by using a different quote type:
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example400()
+        {
+            // Example 400
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
             //     [link](/url 'title "and" title')
             //
             // Should be rendered as:
             //     <p><a href="/url" title="title &quot;and&quot; title">link</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 398, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 400, "Inlines - Links");
 			Helpers.ExecuteTest("[link](/url 'title \"and\" title')", "<p><a href=\"/url\" title=\"title &quot;and&quot; title\">link</a></p>");
         }
 
@@ -10267,48 +10272,7 @@ namespace CommonMark.Tests.Specification
         // a simple, rational rule that works the same way in inline links and
         // link reference definitions.)
         //
-        // [Whitespace](#whitespace) is allowed around the destination and title:
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example399()
-        {
-            // Example 399
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [link](   /uri
-            //       "title"  )
-            //
-            // Should be rendered as:
-            //     <p><a href="/uri" title="title">link</a></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 399, "Inlines - Links");
-			Helpers.ExecuteTest("[link](   /uri\n  \"title\"  )", "<p><a href=\"/uri\" title=\"title\">link</a></p>");
-        }
-
-        // But it is not allowed between the link text and the
-        // following parenthesis:
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example400()
-        {
-            // Example 400
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [link] (/uri)
-            //
-            // Should be rendered as:
-            //     <p>[link] (/uri)</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 400, "Inlines - Links");
-			Helpers.ExecuteTest("[link] (/uri)", "<p>[link] (/uri)</p>");
-        }
-
-        // The link text may contain balanced brackets, but not unbalanced ones,
-        // unless they are escaped:
+        // [Whitespace] is allowed around the destination and title:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10318,15 +10282,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [link [foo [bar]]](/uri)
+            //     [link](   /uri
+            //       "title"  )
             //
             // Should be rendered as:
-            //     <p><a href="/uri">link [foo [bar]]</a></p>
+            //     <p><a href="/uri" title="title">link</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 401, "Inlines - Links");
-			Helpers.ExecuteTest("[link [foo [bar]]](/uri)", "<p><a href=\"/uri\">link [foo [bar]]</a></p>");
+			Helpers.ExecuteTest("[link](   /uri\n  \"title\"  )", "<p><a href=\"/uri\" title=\"title\">link</a></p>");
         }
 
+        // But it is not allowed between the link text and the
+        // following parenthesis:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10336,15 +10303,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [link] bar](/uri)
+            //     [link] (/uri)
             //
             // Should be rendered as:
-            //     <p>[link] bar](/uri)</p>
+            //     <p>[link] (/uri)</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 402, "Inlines - Links");
-			Helpers.ExecuteTest("[link] bar](/uri)", "<p>[link] bar](/uri)</p>");
+			Helpers.ExecuteTest("[link] (/uri)", "<p>[link] (/uri)</p>");
         }
 
+        // The link text may contain balanced brackets, but not unbalanced ones,
+        // unless they are escaped:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10354,13 +10323,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [link [bar](/uri)
+            //     [link [foo [bar]]](/uri)
             //
             // Should be rendered as:
-            //     <p>[link <a href="/uri">bar</a></p>
+            //     <p><a href="/uri">link [foo [bar]]</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 403, "Inlines - Links");
-			Helpers.ExecuteTest("[link [bar](/uri)", "<p>[link <a href=\"/uri\">bar</a></p>");
+			Helpers.ExecuteTest("[link [foo [bar]]](/uri)", "<p><a href=\"/uri\">link [foo [bar]]</a></p>");
         }
 
         [TestMethod]
@@ -10372,16 +10341,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [link \[bar](/uri)
+            //     [link] bar](/uri)
             //
             // Should be rendered as:
-            //     <p><a href="/uri">link [bar</a></p>
+            //     <p>[link] bar](/uri)</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 404, "Inlines - Links");
-			Helpers.ExecuteTest("[link \\[bar](/uri)", "<p><a href=\"/uri\">link [bar</a></p>");
+			Helpers.ExecuteTest("[link] bar](/uri)", "<p>[link] bar](/uri)</p>");
         }
 
-        // The link text may contain inline content:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10391,13 +10359,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [link *foo **bar** `#`*](/uri)
+            //     [link [bar](/uri)
             //
             // Should be rendered as:
-            //     <p><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
+            //     <p>[link <a href="/uri">bar</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 405, "Inlines - Links");
-			Helpers.ExecuteTest("[link *foo **bar** `#`*](/uri)", "<p><a href=\"/uri\">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>");
+			Helpers.ExecuteTest("[link [bar](/uri)", "<p>[link <a href=\"/uri\">bar</a></p>");
         }
 
         [TestMethod]
@@ -10409,16 +10377,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [![moon](moon.jpg)](/uri)
+            //     [link \[bar](/uri)
             //
             // Should be rendered as:
-            //     <p><a href="/uri"><img src="moon.jpg" alt="moon" /></a></p>
+            //     <p><a href="/uri">link [bar</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 406, "Inlines - Links");
-			Helpers.ExecuteTest("[![moon](moon.jpg)](/uri)", "<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>");
+			Helpers.ExecuteTest("[link \\[bar](/uri)", "<p><a href=\"/uri\">link [bar</a></p>");
         }
 
-        // However, links may not contain other links, at any level of nesting.
+        // The link text may contain inline content:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10428,13 +10396,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [foo [bar](/uri)](/uri)
+            //     [link *foo **bar** `#`*](/uri)
             //
             // Should be rendered as:
-            //     <p>[foo <a href="/uri">bar</a>](/uri)</p>
+            //     <p><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 407, "Inlines - Links");
-			Helpers.ExecuteTest("[foo [bar](/uri)](/uri)", "<p>[foo <a href=\"/uri\">bar</a>](/uri)</p>");
+			Helpers.ExecuteTest("[link *foo **bar** `#`*](/uri)", "<p><a href=\"/uri\">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>");
         }
 
         [TestMethod]
@@ -10446,15 +10414,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [foo *[bar [baz](/uri)](/uri)*](/uri)
+            //     [![moon](moon.jpg)](/uri)
             //
             // Should be rendered as:
-            //     <p>[foo <em>[bar <a href="/uri">baz</a>](/uri)</em>](/uri)</p>
+            //     <p><a href="/uri"><img src="moon.jpg" alt="moon" /></a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 408, "Inlines - Links");
-			Helpers.ExecuteTest("[foo *[bar [baz](/uri)](/uri)*](/uri)", "<p>[foo <em>[bar <a href=\"/uri\">baz</a>](/uri)</em>](/uri)</p>");
+			Helpers.ExecuteTest("[![moon](moon.jpg)](/uri)", "<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>");
         }
 
+        // However, links may not contain other links, at any level of nesting.
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10464,17 +10433,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     ![[[foo](uri1)](uri2)](uri3)
+            //     [foo [bar](/uri)](/uri)
             //
             // Should be rendered as:
-            //     <p><img src="uri3" alt="[foo](uri2)" /></p>
+            //     <p>[foo <a href="/uri">bar</a>](/uri)</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 409, "Inlines - Links");
-			Helpers.ExecuteTest("![[[foo](uri1)](uri2)](uri3)", "<p><img src=\"uri3\" alt=\"[foo](uri2)\" /></p>");
+			Helpers.ExecuteTest("[foo [bar](/uri)](/uri)", "<p>[foo <a href=\"/uri\">bar</a>](/uri)</p>");
         }
 
-        // These cases illustrate the precedence of link text grouping over
-        // emphasis grouping:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10484,13 +10451,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     *[foo*](/uri)
+            //     [foo *[bar [baz](/uri)](/uri)*](/uri)
             //
             // Should be rendered as:
-            //     <p>*<a href="/uri">foo*</a></p>
+            //     <p>[foo <em>[bar <a href="/uri">baz</a>](/uri)</em>](/uri)</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 410, "Inlines - Links");
-			Helpers.ExecuteTest("*[foo*](/uri)", "<p>*<a href=\"/uri\">foo*</a></p>");
+			Helpers.ExecuteTest("[foo *[bar [baz](/uri)](/uri)*](/uri)", "<p>[foo <em>[bar <a href=\"/uri\">baz</a>](/uri)</em>](/uri)</p>");
         }
 
         [TestMethod]
@@ -10502,17 +10469,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [foo *bar](baz*)
+            //     ![[[foo](uri1)](uri2)](uri3)
             //
             // Should be rendered as:
-            //     <p><a href="baz*">foo *bar</a></p>
+            //     <p><img src="uri3" alt="[foo](uri2)" /></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 411, "Inlines - Links");
-			Helpers.ExecuteTest("[foo *bar](baz*)", "<p><a href=\"baz*\">foo *bar</a></p>");
+			Helpers.ExecuteTest("![[[foo](uri1)](uri2)](uri3)", "<p><img src=\"uri3\" alt=\"[foo](uri2)\" /></p>");
         }
 
-        // These cases illustrate the precedence of HTML tags, code spans,
-        // and autolinks over link grouping:
+        // These cases illustrate the precedence of link text grouping over
+        // emphasis grouping:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10522,13 +10489,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [foo <bar attr="](baz)">
+            //     *[foo*](/uri)
             //
             // Should be rendered as:
-            //     <p>[foo <bar attr="](baz)"></p>
+            //     <p>*<a href="/uri">foo*</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 412, "Inlines - Links");
-			Helpers.ExecuteTest("[foo <bar attr=\"](baz)\">", "<p>[foo <bar attr=\"](baz)\"></p>");
+			Helpers.ExecuteTest("*[foo*](/uri)", "<p>*<a href=\"/uri\">foo*</a></p>");
         }
 
         [TestMethod]
@@ -10540,15 +10507,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [foo`](/uri)`
+            //     [foo *bar](baz*)
             //
             // Should be rendered as:
-            //     <p>[foo<code>](/uri)</code></p>
+            //     <p><a href="baz*">foo *bar</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 413, "Inlines - Links");
-			Helpers.ExecuteTest("[foo`](/uri)`", "<p>[foo<code>](/uri)</code></p>");
+			Helpers.ExecuteTest("[foo *bar](baz*)", "<p><a href=\"baz*\">foo *bar</a></p>");
         }
 
+        // Note that brackets that *aren't* part of links do not take
+        // precedence:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10558,44 +10527,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [foo<http://example.com?search=](uri)>
+            //     *foo [bar* baz]
             //
             // Should be rendered as:
-            //     <p>[foo<a href="http://example.com?search=%5D(uri)">http://example.com?search=](uri)</a></p>
+            //     <p><em>foo [bar</em> baz]</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 414, "Inlines - Links");
-			Helpers.ExecuteTest("[foo<http://example.com?search=](uri)>", "<p>[foo<a href=\"http://example.com?search=%5D(uri)\">http://example.com?search=](uri)</a></p>");
+			Helpers.ExecuteTest("*foo [bar* baz]", "<p><em>foo [bar</em> baz]</p>");
         }
 
-        // There are three kinds of [reference links](@reference-link):
-        // [full](#full-reference-link), [collapsed](#collapsed-reference-link),
-        // and [shortcut](#shortcut-reference-link).
-        //
-        // A [full reference link](@full-reference-link)
-        // consists of a [link text](#link-text),
-        // optional [whitespace](#whitespace), and
-        // a [link label](#link-label) that [matches](#matches) a
-        // [link reference definition](#link-reference-definition) elsewhere in the
-        // document.
-        //
-        // A [link label](@link-label)  begins with a left bracket (`[`) and ends
-        // with the first right bracket (`]`) that is not backslash-escaped.
-        // Unescaped square bracket characters are not allowed in
-        // [link labels](#link-label).  A link label can have at most 999
-        // characters inside the square brackets.
-        //
-        // One label [matches](@matches)
-        // another just in case their normalized forms are equal.  To normalize a
-        // label, perform the *unicode case fold* and collapse consecutive internal
-        // [whitespace](#whitespace) to a single space.  If there are multiple
-        // matching reference link definitions, the one that comes first in the
-        // document is used.  (It is desirable in such cases to emit a warning.)
-        //
-        // The contents of the first link label are parsed as inlines, which are
-        // used as the link's text.  The link's URI and title are provided by the
-        // matching [link reference definition](#link-reference-definition).
-        //
-        // Here is a simple example:
+        // These cases illustrate the precedence of HTML tags, code spans,
+        // and autolinks over link grouping:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10605,22 +10547,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [foo][bar]
-            //     
-            //     [bar]: /url "title"
+            //     [foo <bar attr="](baz)">
             //
             // Should be rendered as:
-            //     <p><a href="/url" title="title">foo</a></p>
+            //     <p>[foo <bar attr="](baz)"></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 415, "Inlines - Links");
-			Helpers.ExecuteTest("[foo][bar]\n\n[bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
+			Helpers.ExecuteTest("[foo <bar attr=\"](baz)\">", "<p>[foo <bar attr=\"](baz)\"></p>");
         }
 
-        // The rules for the [link text](#link-text) are the same as with
-        // [inline links](#inline-link).  Thus:
-        //
-        // The link text may contain balanced brackets, but not unbalanced ones,
-        // unless they are escaped:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
@@ -10630,15 +10565,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [link [foo [bar]]][ref]
-            //     
-            //     [ref]: /uri
+            //     [foo`](/uri)`
             //
             // Should be rendered as:
-            //     <p><a href="/uri">link [foo [bar]]</a></p>
+            //     <p>[foo<code>](/uri)</code></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 416, "Inlines - Links");
-			Helpers.ExecuteTest("[link [foo [bar]]][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\">link [foo [bar]]</a></p>");
+			Helpers.ExecuteTest("[foo`](/uri)`", "<p>[foo<code>](/uri)</code></p>");
         }
 
         [TestMethod]
@@ -10650,6 +10583,95 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
+            //     [foo<http://example.com?search=](uri)>
+            //
+            // Should be rendered as:
+            //     <p>[foo<a href="http://example.com?search=%5D(uri)">http://example.com?search=](uri)</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 417, "Inlines - Links");
+			Helpers.ExecuteTest("[foo<http://example.com?search=](uri)>", "<p>[foo<a href=\"http://example.com?search=%5D(uri)\">http://example.com?search=](uri)</a></p>");
+        }
+
+        // There are three kinds of [reference link](@reference-link)s:
+        // [full](#full-reference-link), [collapsed](#collapsed-reference-link),
+        // and [shortcut](#shortcut-reference-link).
+        //
+        // A [full reference link](@full-reference-link)
+        // consists of a [link text], optional [whitespace], and a [link label]
+        // that [matches] a [link reference definition] elsewhere in the document.
+        //
+        // A [link label](@link-label)  begins with a left bracket (`[`) and ends
+        // with the first right bracket (`]`) that is not backslash-escaped.
+        // Unescaped square bracket characters are not allowed in
+        // [link label]s.  A link label can have at most 999
+        // characters inside the square brackets.
+        //
+        // One label [matches](@matches)
+        // another just in case their normalized forms are equal.  To normalize a
+        // label, perform the *unicode case fold* and collapse consecutive internal
+        // [whitespace] to a single space.  If there are multiple
+        // matching reference link definitions, the one that comes first in the
+        // document is used.  (It is desirable in such cases to emit a warning.)
+        //
+        // The contents of the first link label are parsed as inlines, which are
+        // used as the link's text.  The link's URI and title are provided by the
+        // matching [link reference definition].
+        //
+        // Here is a simple example:
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example418()
+        {
+            // Example 418
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
+            //     [foo][bar]
+            //     
+            //     [bar]: /url "title"
+            //
+            // Should be rendered as:
+            //     <p><a href="/url" title="title">foo</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 418, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][bar]\n\n[bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
+        }
+
+        // The rules for the [link text] are the same as with
+        // [inline link]s.  Thus:
+        //
+        // The link text may contain balanced brackets, but not unbalanced ones,
+        // unless they are escaped:
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example419()
+        {
+            // Example 419
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
+            //     [link [foo [bar]]][ref]
+            //     
+            //     [ref]: /uri
+            //
+            // Should be rendered as:
+            //     <p><a href="/uri">link [foo [bar]]</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 419, "Inlines - Links");
+			Helpers.ExecuteTest("[link [foo [bar]]][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\">link [foo [bar]]</a></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example420()
+        {
+            // Example 420
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
             //     [link \[bar][ref]
             //     
             //     [ref]: /uri
@@ -10657,7 +10679,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri">link [bar</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 417, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 420, "Inlines - Links");
 			Helpers.ExecuteTest("[link \\[bar][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\">link [bar</a></p>");
         }
 
@@ -10665,9 +10687,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example418()
+        public void Example421()
         {
-            // Example 418
+            // Example 421
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10678,16 +10700,16 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 418, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 421, "Inlines - Links");
 			Helpers.ExecuteTest("[link *foo **bar** `#`*][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\">link <em>foo <strong>bar</strong> <code>#</code></em></a></p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example419()
+        public void Example422()
         {
-            // Example 419
+            // Example 422
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10698,7 +10720,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/uri"><img src="moon.jpg" alt="moon" /></a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 419, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 422, "Inlines - Links");
 			Helpers.ExecuteTest("[![moon](moon.jpg)][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\"><img src=\"moon.jpg\" alt=\"moon\" /></a></p>");
         }
 
@@ -10706,9 +10728,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example420()
+        public void Example423()
         {
-            // Example 420
+            // Example 423
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10719,16 +10741,16 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo <a href="/uri">bar</a>]<a href="/uri">ref</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 420, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 423, "Inlines - Links");
 			Helpers.ExecuteTest("[foo [bar](/uri)][ref]\n\n[ref]: /uri", "<p>[foo <a href=\"/uri\">bar</a>]<a href=\"/uri\">ref</a></p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example421()
+        public void Example424()
         {
-            // Example 421
+            // Example 424
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10739,22 +10761,21 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo <em>bar <a href="/uri">baz</a></em>]<a href="/uri">ref</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 421, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 424, "Inlines - Links");
 			Helpers.ExecuteTest("[foo *bar [baz][ref]*][ref]\n\n[ref]: /uri", "<p>[foo <em>bar <a href=\"/uri\">baz</a></em>]<a href=\"/uri\">ref</a></p>");
         }
 
-        // (In the examples above, we have two [shortcut reference
-        // links](#shortcut-reference-link) instead of one [full reference
-        // link](#full-reference-link).)
+        // (In the examples above, we have two [shortcut reference link]s
+        // instead of one [full reference link].)
         //
         // The following cases illustrate the precedence of link text grouping over
         // emphasis grouping:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example422()
+        public void Example425()
         {
-            // Example 422
+            // Example 425
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10765,70 +10786,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*<a href="/uri">foo*</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 422, "Inlines - Links");
-			Helpers.ExecuteTest("*[foo*][ref]\n\n[ref]: /uri", "<p>*<a href=\"/uri\">foo*</a></p>");
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example423()
-        {
-            // Example 423
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [foo *bar][ref]
-            //     
-            //     [ref]: /uri
-            //
-            // Should be rendered as:
-            //     <p><a href="/uri">foo *bar</a></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 423, "Inlines - Links");
-			Helpers.ExecuteTest("[foo *bar][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\">foo *bar</a></p>");
-        }
-
-        // These cases illustrate the precedence of HTML tags, code spans,
-        // and autolinks over link grouping:
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example424()
-        {
-            // Example 424
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [foo <bar attr="][ref]">
-            //     
-            //     [ref]: /uri
-            //
-            // Should be rendered as:
-            //     <p>[foo <bar attr="][ref]"></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 424, "Inlines - Links");
-			Helpers.ExecuteTest("[foo <bar attr=\"][ref]\">\n\n[ref]: /uri", "<p>[foo <bar attr=\"][ref]\"></p>");
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example425()
-        {
-            // Example 425
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [foo`][ref]`
-            //     
-            //     [ref]: /uri
-            //
-            // Should be rendered as:
-            //     <p>[foo<code>][ref]</code></p>
-
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 425, "Inlines - Links");
-			Helpers.ExecuteTest("[foo`][ref]`\n\n[ref]: /uri", "<p>[foo<code>][ref]</code></p>");
+			Helpers.ExecuteTest("*[foo*][ref]\n\n[ref]: /uri", "<p>*<a href=\"/uri\">foo*</a></p>");
         }
 
         [TestMethod]
@@ -10840,6 +10799,68 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
+            //     [foo *bar][ref]
+            //     
+            //     [ref]: /uri
+            //
+            // Should be rendered as:
+            //     <p><a href="/uri">foo *bar</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 426, "Inlines - Links");
+			Helpers.ExecuteTest("[foo *bar][ref]\n\n[ref]: /uri", "<p><a href=\"/uri\">foo *bar</a></p>");
+        }
+
+        // These cases illustrate the precedence of HTML tags, code spans,
+        // and autolinks over link grouping:
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example427()
+        {
+            // Example 427
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
+            //     [foo <bar attr="][ref]">
+            //     
+            //     [ref]: /uri
+            //
+            // Should be rendered as:
+            //     <p>[foo <bar attr="][ref]"></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 427, "Inlines - Links");
+			Helpers.ExecuteTest("[foo <bar attr=\"][ref]\">\n\n[ref]: /uri", "<p>[foo <bar attr=\"][ref]\"></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example428()
+        {
+            // Example 428
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
+            //     [foo`][ref]`
+            //     
+            //     [ref]: /uri
+            //
+            // Should be rendered as:
+            //     <p>[foo<code>][ref]</code></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 428, "Inlines - Links");
+			Helpers.ExecuteTest("[foo`][ref]`\n\n[ref]: /uri", "<p>[foo<code>][ref]</code></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example429()
+        {
+            // Example 429
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
             //     [foo<http://example.com?search=][ref]>
             //     
             //     [ref]: /uri
@@ -10847,7 +10868,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo<a href="http://example.com?search=%5D%5Bref%5D">http://example.com?search=][ref]</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 426, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 429, "Inlines - Links");
 			Helpers.ExecuteTest("[foo<http://example.com?search=][ref]>\n\n[ref]: /uri", "<p>[foo<a href=\"http://example.com?search=%5D%5Bref%5D\">http://example.com?search=][ref]</a></p>");
         }
 
@@ -10855,9 +10876,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example427()
+        public void Example430()
         {
-            // Example 427
+            // Example 430
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10868,7 +10889,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 427, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 430, "Inlines - Links");
 			Helpers.ExecuteTest("[foo][BaR]\n\n[bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
@@ -10876,9 +10897,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example428()
+        public void Example431()
         {
-            // Example 428
+            // Example 431
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10889,18 +10910,18 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url">Толпой</a> is a Russian word.</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 428, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 431, "Inlines - Links");
 			Helpers.ExecuteTest("[Толпой][Толпой] is a Russian word.\n\n[ТОЛПОЙ]: /url", "<p><a href=\"/url\">Толпой</a> is a Russian word.</p>");
         }
 
-        // Consecutive internal [whitespace](#whitespace) is treated as one space for
+        // Consecutive internal [whitespace] is treated as one space for
         // purposes of determining matching:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example429()
+        public void Example432()
         {
-            // Example 429
+            // Example 432
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10912,18 +10933,17 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url">Baz</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 429, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 432, "Inlines - Links");
 			Helpers.ExecuteTest("[Foo\n  bar]: /url\n\n[Baz][Foo bar]", "<p><a href=\"/url\">Baz</a></p>");
         }
 
-        // There can be [whitespace](#whitespace) between the
-        // [link text](#link-text) and the [link label](#link-label):
+        // There can be [whitespace] between the [link text] and the [link label]:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example430()
+        public void Example433()
         {
-            // Example 430
+            // Example 433
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10934,16 +10954,16 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 430, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 433, "Inlines - Links");
 			Helpers.ExecuteTest("[foo] [bar]\n\n[bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example431()
+        public void Example434()
         {
-            // Example 431
+            // Example 434
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10955,18 +10975,18 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 431, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 434, "Inlines - Links");
 			Helpers.ExecuteTest("[foo]\n[bar]\n\n[bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
-        // When there are multiple matching [link reference
-        // definitions](#link-reference-definition), the first is used:
+        // When there are multiple matching [link reference definition]s,
+        // the first is used:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example432()
+        public void Example435()
         {
-            // Example 432
+            // Example 435
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -10979,7 +10999,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url1">bar</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 432, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 435, "Inlines - Links");
 			Helpers.ExecuteTest("[foo]: /url1\n\n[foo]: /url2\n\n[bar][foo]", "<p><a href=\"/url1\">bar</a></p>");
         }
 
@@ -10989,9 +11009,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example433()
+        public void Example436()
         {
-            // Example 433
+            // Example 436
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11002,18 +11022,18 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[bar][foo!]</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 433, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 436, "Inlines - Links");
 			Helpers.ExecuteTest("[bar][foo\\!]\n\n[foo!]: /url", "<p>[bar][foo!]</p>");
         }
 
-        // [Link labels](#link-label) cannot contain brackets, unless they are
+        // [Link label]s cannot contain brackets, unless they are
         // backslash-escaped:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example434()
+        public void Example437()
         {
-            // Example 434
+            // Example 437
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11025,16 +11045,16 @@ namespace CommonMark.Tests.Specification
             //     <p>[foo][ref[]</p>
             //     <p>[ref[]: /uri</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 434, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 437, "Inlines - Links");
 			Helpers.ExecuteTest("[foo][ref[]\n\n[ref[]: /uri", "<p>[foo][ref[]</p>\n<p>[ref[]: /uri</p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example435()
+        public void Example438()
         {
-            // Example 435
+            // Example 438
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11046,78 +11066,8 @@ namespace CommonMark.Tests.Specification
             //     <p>[foo][ref[bar]]</p>
             //     <p>[ref[bar]]: /uri</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 435, "Inlines - Links");
-			Helpers.ExecuteTest("[foo][ref[bar]]\n\n[ref[bar]]: /uri", "<p>[foo][ref[bar]]</p>\n<p>[ref[bar]]: /uri</p>");
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example436()
-        {
-            // Example 436
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [[[foo]]]
-            //     
-            //     [[[foo]]]: /url
-            //
-            // Should be rendered as:
-            //     <p>[[[foo]]]</p>
-            //     <p>[[[foo]]]: /url</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 436, "Inlines - Links");
-			Helpers.ExecuteTest("[[[foo]]]\n\n[[[foo]]]: /url", "<p>[[[foo]]]</p>\n<p>[[[foo]]]: /url</p>");
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example437()
-        {
-            // Example 437
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [foo][ref\[]
-            //     
-            //     [ref\[]: /uri
-            //
-            // Should be rendered as:
-            //     <p><a href="/uri">foo</a></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 437, "Inlines - Links");
-			Helpers.ExecuteTest("[foo][ref\\[]\n\n[ref\\[]: /uri", "<p><a href=\"/uri\">foo</a></p>");
-        }
-
-        // A [collapsed reference link](@collapsed-reference-link)
-        // consists of a [link
-        // label](#link-label) that [matches](#matches) a [link reference
-        // definition](#link-reference-definition) elsewhere in the
-        // document, optional [whitespace](#whitespace), and the string `[]`.
-        // The contents of the first link label are parsed as inlines,
-        // which are used as the link's text.  The link's URI and title are
-        // provided by the matching reference link definition.  Thus,
-        // `[foo][]` is equivalent to `[foo][foo]`.
-        [TestMethod]
-        [TestCategory("Inlines - Links")]
-        //[Timeout(1000)]
-        public void Example438()
-        {
-            // Example 438
-            // Section: Inlines - Links
-            //
-            // The following CommonMark:
-            //     [foo][]
-            //     
-            //     [foo]: /url "title"
-            //
-            // Should be rendered as:
-            //     <p><a href="/url" title="title">foo</a></p>
-
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 438, "Inlines - Links");
-			Helpers.ExecuteTest("[foo][]\n\n[foo]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
+			Helpers.ExecuteTest("[foo][ref[bar]]\n\n[ref[bar]]: /uri", "<p>[foo][ref[bar]]</p>\n<p>[ref[bar]]: /uri</p>");
         }
 
         [TestMethod]
@@ -11129,6 +11079,75 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
+            //     [[[foo]]]
+            //     
+            //     [[[foo]]]: /url
+            //
+            // Should be rendered as:
+            //     <p>[[[foo]]]</p>
+            //     <p>[[[foo]]]: /url</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 439, "Inlines - Links");
+			Helpers.ExecuteTest("[[[foo]]]\n\n[[[foo]]]: /url", "<p>[[[foo]]]</p>\n<p>[[[foo]]]: /url</p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example440()
+        {
+            // Example 440
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
+            //     [foo][ref\[]
+            //     
+            //     [ref\[]: /uri
+            //
+            // Should be rendered as:
+            //     <p><a href="/uri">foo</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 440, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][ref\\[]\n\n[ref\\[]: /uri", "<p><a href=\"/uri\">foo</a></p>");
+        }
+
+        // A [collapsed reference link](@collapsed-reference-link)
+        // consists of a [link label] that [matches] a
+        // [link reference definition] elsewhere in the
+        // document, optional [whitespace], and the string `[]`.
+        // The contents of the first link label are parsed as inlines,
+        // which are used as the link's text.  The link's URI and title are
+        // provided by the matching reference link definition.  Thus,
+        // `[foo][]` is equivalent to `[foo][foo]`.
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example441()
+        {
+            // Example 441
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
+            //     [foo][]
+            //     
+            //     [foo]: /url "title"
+            //
+            // Should be rendered as:
+            //     <p><a href="/url" title="title">foo</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 441, "Inlines - Links");
+			Helpers.ExecuteTest("[foo][]\n\n[foo]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        //[Timeout(1000)]
+        public void Example442()
+        {
+            // Example 442
+            // Section: Inlines - Links
+            //
+            // The following CommonMark:
             //     [*foo* bar][]
             //     
             //     [*foo* bar]: /url "title"
@@ -11136,7 +11155,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title"><em>foo</em> bar</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 439, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 442, "Inlines - Links");
 			Helpers.ExecuteTest("[*foo* bar][]\n\n[*foo* bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\"><em>foo</em> bar</a></p>");
         }
 
@@ -11144,9 +11163,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example440()
+        public void Example443()
         {
-            // Example 440
+            // Example 443
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11157,18 +11176,18 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">Foo</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 440, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 443, "Inlines - Links");
 			Helpers.ExecuteTest("[Foo][]\n\n[foo]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">Foo</a></p>");
         }
 
-        // As with full reference links, [whitespace](#whitespace) is allowed
+        // As with full reference links, [whitespace] is allowed
         // between the two sets of brackets:
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example441()
+        public void Example444()
         {
-            // Example 441
+            // Example 444
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11180,14 +11199,13 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 441, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 444, "Inlines - Links");
 			Helpers.ExecuteTest("[foo] \n[]\n\n[foo]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         // A [shortcut reference link](@shortcut-reference-link)
-        // consists of a [link
-        // label](#link-label) that [matches](#matches) a [link reference
-        // definition](#link-reference-definition)  elsewhere in the
+        // consists of a [link label] that [matches] a
+        // [link reference definition] elsewhere in the
         // document and is not followed by `[]` or a link label.
         // The contents of the first link label are parsed as inlines,
         // which are used as the link's text.  the link's URI and title
@@ -11196,9 +11214,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example442()
+        public void Example445()
         {
-            // Example 442
+            // Example 445
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11209,16 +11227,16 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">foo</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 442, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 445, "Inlines - Links");
 			Helpers.ExecuteTest("[foo]\n\n[foo]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example443()
+        public void Example446()
         {
-            // Example 443
+            // Example 446
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11229,16 +11247,16 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title"><em>foo</em> bar</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 443, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 446, "Inlines - Links");
 			Helpers.ExecuteTest("[*foo* bar]\n\n[*foo* bar]: /url \"title\"", "<p><a href=\"/url\" title=\"title\"><em>foo</em> bar</a></p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example444()
+        public void Example447()
         {
-            // Example 444
+            // Example 447
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11249,7 +11267,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[<a href="/url" title="title"><em>foo</em> bar</a>]</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 444, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 447, "Inlines - Links");
 			Helpers.ExecuteTest("[[*foo* bar]]\n\n[*foo* bar]: /url \"title\"", "<p>[<a href=\"/url\" title=\"title\"><em>foo</em> bar</a>]</p>");
         }
 
@@ -11257,9 +11275,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example445()
+        public void Example448()
         {
-            // Example 445
+            // Example 448
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11270,7 +11288,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url" title="title">Foo</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 445, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 448, "Inlines - Links");
 			Helpers.ExecuteTest("[Foo]\n\n[foo]: /url \"title\"", "<p><a href=\"/url\" title=\"title\">Foo</a></p>");
         }
 
@@ -11278,9 +11296,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example446()
+        public void Example449()
         {
-            // Example 446
+            // Example 449
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11291,7 +11309,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url">foo</a> bar</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 446, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 449, "Inlines - Links");
 			Helpers.ExecuteTest("[foo] bar\n\n[foo]: /url", "<p><a href=\"/url\">foo</a> bar</p>");
         }
 
@@ -11300,9 +11318,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example447()
+        public void Example450()
         {
-            // Example 447
+            // Example 450
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11313,7 +11331,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo]</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 447, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 450, "Inlines - Links");
 			Helpers.ExecuteTest("\\[foo]\n\n[foo]: /url \"title\"", "<p>[foo]</p>");
         }
 
@@ -11322,9 +11340,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example448()
+        public void Example451()
         {
-            // Example 448
+            // Example 451
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11335,7 +11353,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>*<a href="/url">foo*</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 448, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 451, "Inlines - Links");
 			Helpers.ExecuteTest("[foo*]: /url\n\n*[foo*]", "<p>*<a href=\"/url\">foo*</a></p>");
         }
 
@@ -11343,9 +11361,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example449()
+        public void Example452()
         {
-            // Example 449
+            // Example 452
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11356,7 +11374,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo<code>]</code></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 449, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 452, "Inlines - Links");
 			Helpers.ExecuteTest("[foo`]: /url\n\n[foo`]`", "<p>[foo<code>]</code></p>");
         }
 
@@ -11364,9 +11382,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example450()
+        public void Example453()
         {
-            // Example 450
+            // Example 453
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11378,7 +11396,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url2">foo</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 450, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 453, "Inlines - Links");
 			Helpers.ExecuteTest("[foo][bar]\n\n[foo]: /url1\n[bar]: /url2", "<p><a href=\"/url2\">foo</a></p>");
         }
 
@@ -11387,9 +11405,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example451()
+        public void Example454()
         {
-            // Example 451
+            // Example 454
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11400,7 +11418,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo]<a href="/url">bar</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 451, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 454, "Inlines - Links");
 			Helpers.ExecuteTest("[foo][bar][baz]\n\n[baz]: /url", "<p>[foo]<a href=\"/url\">bar</a></p>");
         }
 
@@ -11409,9 +11427,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example452()
+        public void Example455()
         {
-            // Example 452
+            // Example 455
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11423,7 +11441,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="/url2">foo</a><a href="/url1">baz</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 452, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 455, "Inlines - Links");
 			Helpers.ExecuteTest("[foo][bar][baz]\n\n[baz]: /url1\n[bar]: /url2", "<p><a href=\"/url2\">foo</a><a href=\"/url1\">baz</a></p>");
         }
 
@@ -11432,9 +11450,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Links")]
         //[Timeout(1000)]
-        public void Example453()
+        public void Example456()
         {
-            // Example 453
+            // Example 456
             // Section: Inlines - Links
             //
             // The following CommonMark:
@@ -11446,16 +11464,16 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>[foo]<a href="/url1">bar</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 453, "Inlines - Links");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 456, "Inlines - Links");
 			Helpers.ExecuteTest("[foo][bar][baz]\n\n[baz]: /url1\n[foo]: /url2", "<p>[foo]<a href=\"/url1\">bar</a></p>");
         }
 
         // ## Images
         //
         // Syntax for images is like the syntax for links, with one
-        // difference. Instead of [link text](#link-text), we have an [image
-        // description](@image-description).  The rules for this are the
-        // same as for [link text](#link-text), except that (a) an
+        // difference. Instead of [link text], we have an
+        // [image description](@image-description).  The rules for this are the
+        // same as for [link text], except that (a) an
         // image description starts with `![` rather than `[`, and
         // (b) an image description may contain links.
         // An image description has inline elements
@@ -11464,9 +11482,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example454()
+        public void Example457()
         {
-            // Example 454
+            // Example 457
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11475,16 +11493,16 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo" title="title" /></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 454, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 457, "Inlines - Images");
 			Helpers.ExecuteTest("![foo](/url \"title\")", "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example455()
+        public void Example458()
         {
-            // Example 455
+            // Example 458
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11495,70 +11513,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 455, "Inlines - Images");
-			Helpers.ExecuteTest("![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"", "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Images")]
-        //[Timeout(1000)]
-        public void Example456()
-        {
-            // Example 456
-            // Section: Inlines - Images
-            //
-            // The following CommonMark:
-            //     ![foo ![bar](/url)](/url2)
-            //
-            // Should be rendered as:
-            //     <p><img src="/url2" alt="foo bar" /></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 456, "Inlines - Images");
-			Helpers.ExecuteTest("![foo ![bar](/url)](/url2)", "<p><img src=\"/url2\" alt=\"foo bar\" /></p>");
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Images")]
-        //[Timeout(1000)]
-        public void Example457()
-        {
-            // Example 457
-            // Section: Inlines - Images
-            //
-            // The following CommonMark:
-            //     ![foo [bar](/url)](/url2)
-            //
-            // Should be rendered as:
-            //     <p><img src="/url2" alt="foo bar" /></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 457, "Inlines - Images");
-			Helpers.ExecuteTest("![foo [bar](/url)](/url2)", "<p><img src=\"/url2\" alt=\"foo bar\" /></p>");
-        }
-
-        // Though this spec is concerned with parsing, not rendering, it is
-        // recommended that in rendering to HTML, only the plain string content
-        // of the [image description](#image-description) be used.  Note that in
-        // the above example, the alt attribute's value is `foo bar`, not `foo
-        // [bar](/url)` or `foo <a href="/url">bar</a>`.  Only the plain string
-        // content is rendered, without formatting.
-        [TestMethod]
-        [TestCategory("Inlines - Images")]
-        //[Timeout(1000)]
-        public void Example458()
-        {
-            // Example 458
-            // Section: Inlines - Images
-            //
-            // The following CommonMark:
-            //     ![foo *bar*][]
-            //     
-            //     [foo *bar*]: train.jpg "train & tracks"
-            //
-            // Should be rendered as:
-            //     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
-
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 458, "Inlines - Images");
-			Helpers.ExecuteTest("![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"", "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
+			Helpers.ExecuteTest("![foo *bar*]\n\n[foo *bar*]: train.jpg \"train & tracks\"", "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
         }
 
         [TestMethod]
@@ -11570,15 +11526,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     ![foo *bar*][foobar]
-            //     
-            //     [FOOBAR]: train.jpg "train & tracks"
+            //     ![foo ![bar](/url)](/url2)
             //
             // Should be rendered as:
-            //     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
+            //     <p><img src="/url2" alt="foo bar" /></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 459, "Inlines - Images");
-			Helpers.ExecuteTest("![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"", "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
+			Helpers.ExecuteTest("![foo ![bar](/url)](/url2)", "<p><img src=\"/url2\" alt=\"foo bar\" /></p>");
         }
 
         [TestMethod]
@@ -11590,15 +11544,21 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     ![foo](train.jpg)
+            //     ![foo [bar](/url)](/url2)
             //
             // Should be rendered as:
-            //     <p><img src="train.jpg" alt="foo" /></p>
+            //     <p><img src="/url2" alt="foo bar" /></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 460, "Inlines - Images");
-			Helpers.ExecuteTest("![foo](train.jpg)", "<p><img src=\"train.jpg\" alt=\"foo\" /></p>");
+			Helpers.ExecuteTest("![foo [bar](/url)](/url2)", "<p><img src=\"/url2\" alt=\"foo bar\" /></p>");
         }
 
+        // Though this spec is concerned with parsing, not rendering, it is
+        // recommended that in rendering to HTML, only the plain string content
+        // of the [image description] be used.  Note that in
+        // the above example, the alt attribute's value is `foo bar`, not `foo
+        // [bar](/url)` or `foo <a href="/url">bar</a>`.  Only the plain string
+        // content is rendered, without formatting.
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
@@ -11608,13 +11568,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     My ![foo bar](/path/to/train.jpg  "title"   )
+            //     ![foo *bar*][]
+            //     
+            //     [foo *bar*]: train.jpg "train & tracks"
             //
             // Should be rendered as:
-            //     <p>My <img src="/path/to/train.jpg" alt="foo bar" title="title" /></p>
+            //     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 461, "Inlines - Images");
-			Helpers.ExecuteTest("My ![foo bar](/path/to/train.jpg  \"title\"   )", "<p>My <img src=\"/path/to/train.jpg\" alt=\"foo bar\" title=\"title\" /></p>");
+			Helpers.ExecuteTest("![foo *bar*][]\n\n[foo *bar*]: train.jpg \"train & tracks\"", "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
         }
 
         [TestMethod]
@@ -11626,13 +11588,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     ![foo](<url>)
+            //     ![foo *bar*][foobar]
+            //     
+            //     [FOOBAR]: train.jpg "train & tracks"
             //
             // Should be rendered as:
-            //     <p><img src="url" alt="foo" /></p>
+            //     <p><img src="train.jpg" alt="foo bar" title="train &amp; tracks" /></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 462, "Inlines - Images");
-			Helpers.ExecuteTest("![foo](<url>)", "<p><img src=\"url\" alt=\"foo\" /></p>");
+			Helpers.ExecuteTest("![foo *bar*][foobar]\n\n[FOOBAR]: train.jpg \"train & tracks\"", "<p><img src=\"train.jpg\" alt=\"foo bar\" title=\"train &amp; tracks\" /></p>");
         }
 
         [TestMethod]
@@ -11644,16 +11608,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     ![](/url)
+            //     ![foo](train.jpg)
             //
             // Should be rendered as:
-            //     <p><img src="/url" alt="" /></p>
+            //     <p><img src="train.jpg" alt="foo" /></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 463, "Inlines - Images");
-			Helpers.ExecuteTest("![](/url)", "<p><img src=\"/url\" alt=\"\" /></p>");
+			Helpers.ExecuteTest("![foo](train.jpg)", "<p><img src=\"train.jpg\" alt=\"foo\" /></p>");
         }
 
-        // Reference-style:
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
@@ -11663,15 +11626,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
-            //     ![foo] [bar]
-            //     
-            //     [bar]: /url
+            //     My ![foo bar](/path/to/train.jpg  "title"   )
             //
             // Should be rendered as:
-            //     <p><img src="/url" alt="foo" /></p>
+            //     <p>My <img src="/path/to/train.jpg" alt="foo bar" title="title" /></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 464, "Inlines - Images");
-			Helpers.ExecuteTest("![foo] [bar]\n\n[bar]: /url", "<p><img src=\"/url\" alt=\"foo\" /></p>");
+			Helpers.ExecuteTest("My ![foo bar](/path/to/train.jpg  \"title\"   )", "<p>My <img src=\"/path/to/train.jpg\" alt=\"foo bar\" title=\"title\" /></p>");
         }
 
         [TestMethod]
@@ -11683,6 +11644,63 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Images
             //
             // The following CommonMark:
+            //     ![foo](<url>)
+            //
+            // Should be rendered as:
+            //     <p><img src="url" alt="foo" /></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 465, "Inlines - Images");
+			Helpers.ExecuteTest("![foo](<url>)", "<p><img src=\"url\" alt=\"foo\" /></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Images")]
+        //[Timeout(1000)]
+        public void Example466()
+        {
+            // Example 466
+            // Section: Inlines - Images
+            //
+            // The following CommonMark:
+            //     ![](/url)
+            //
+            // Should be rendered as:
+            //     <p><img src="/url" alt="" /></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 466, "Inlines - Images");
+			Helpers.ExecuteTest("![](/url)", "<p><img src=\"/url\" alt=\"\" /></p>");
+        }
+
+        // Reference-style:
+        [TestMethod]
+        [TestCategory("Inlines - Images")]
+        //[Timeout(1000)]
+        public void Example467()
+        {
+            // Example 467
+            // Section: Inlines - Images
+            //
+            // The following CommonMark:
+            //     ![foo] [bar]
+            //     
+            //     [bar]: /url
+            //
+            // Should be rendered as:
+            //     <p><img src="/url" alt="foo" /></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 467, "Inlines - Images");
+			Helpers.ExecuteTest("![foo] [bar]\n\n[bar]: /url", "<p><img src=\"/url\" alt=\"foo\" /></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Images")]
+        //[Timeout(1000)]
+        public void Example468()
+        {
+            // Example 468
+            // Section: Inlines - Images
+            //
+            // The following CommonMark:
             //     ![foo] [bar]
             //     
             //     [BAR]: /url
@@ -11690,7 +11708,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo" /></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 465, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 468, "Inlines - Images");
 			Helpers.ExecuteTest("![foo] [bar]\n\n[BAR]: /url", "<p><img src=\"/url\" alt=\"foo\" /></p>");
         }
 
@@ -11698,9 +11716,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example466()
+        public void Example469()
         {
-            // Example 466
+            // Example 469
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11711,16 +11729,16 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo" title="title" /></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 466, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 469, "Inlines - Images");
 			Helpers.ExecuteTest("![foo][]\n\n[foo]: /url \"title\"", "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example467()
+        public void Example470()
         {
-            // Example 467
+            // Example 470
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11731,7 +11749,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo bar" title="title" /></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 467, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 470, "Inlines - Images");
 			Helpers.ExecuteTest("![*foo* bar][]\n\n[*foo* bar]: /url \"title\"", "<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>");
         }
 
@@ -11739,9 +11757,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example468()
+        public void Example471()
         {
-            // Example 468
+            // Example 471
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11752,18 +11770,18 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="Foo" title="title" /></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 468, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 471, "Inlines - Images");
 			Helpers.ExecuteTest("![Foo][]\n\n[foo]: /url \"title\"", "<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>");
         }
 
-        // As with full reference links, [whitespace](#whitespace) is allowed
+        // As with full reference links, [whitespace] is allowed
         // between the two sets of brackets:
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example469()
+        public void Example472()
         {
-            // Example 469
+            // Example 472
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11775,7 +11793,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo" title="title" /></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 469, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 472, "Inlines - Images");
 			Helpers.ExecuteTest("![foo] \n[]\n\n[foo]: /url \"title\"", "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
         }
 
@@ -11783,9 +11801,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example470()
+        public void Example473()
         {
-            // Example 470
+            // Example 473
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11796,16 +11814,16 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo" title="title" /></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 470, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 473, "Inlines - Images");
 			Helpers.ExecuteTest("![foo]\n\n[foo]: /url \"title\"", "<p><img src=\"/url\" alt=\"foo\" title=\"title\" /></p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example471()
+        public void Example474()
         {
-            // Example 471
+            // Example 474
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11816,7 +11834,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="foo bar" title="title" /></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 471, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 474, "Inlines - Images");
 			Helpers.ExecuteTest("![*foo* bar]\n\n[*foo* bar]: /url \"title\"", "<p><img src=\"/url\" alt=\"foo bar\" title=\"title\" /></p>");
         }
 
@@ -11824,9 +11842,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example472()
+        public void Example475()
         {
-            // Example 472
+            // Example 475
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11838,7 +11856,7 @@ namespace CommonMark.Tests.Specification
             //     <p>![[foo]]</p>
             //     <p>[[foo]]: /url &quot;title&quot;</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 472, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 475, "Inlines - Images");
 			Helpers.ExecuteTest("![[foo]]\n\n[[foo]]: /url \"title\"", "<p>![[foo]]</p>\n<p>[[foo]]: /url &quot;title&quot;</p>");
         }
 
@@ -11846,9 +11864,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example473()
+        public void Example476()
         {
-            // Example 473
+            // Example 476
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11859,7 +11877,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><img src="/url" alt="Foo" title="title" /></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 473, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 476, "Inlines - Images");
 			Helpers.ExecuteTest("![Foo]\n\n[foo]: /url \"title\"", "<p><img src=\"/url\" alt=\"Foo\" title=\"title\" /></p>");
         }
 
@@ -11868,9 +11886,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example474()
+        public void Example477()
         {
-            // Example 474
+            // Example 477
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11881,7 +11899,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>![foo]</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 474, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 477, "Inlines - Images");
 			Helpers.ExecuteTest("\\!\\[foo]\n\n[foo]: /url \"title\"", "<p>![foo]</p>");
         }
 
@@ -11890,9 +11908,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Images")]
         //[Timeout(1000)]
-        public void Example475()
+        public void Example478()
         {
-            // Example 475
+            // Example 478
             // Section: Inlines - Images
             //
             // The following CommonMark:
@@ -11903,25 +11921,24 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>!<a href="/url" title="title">foo</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 475, "Inlines - Images");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 478, "Inlines - Images");
 			Helpers.ExecuteTest("\\![foo]\n\n[foo]: /url \"title\"", "<p>!<a href=\"/url\" title=\"title\">foo</a></p>");
         }
 
         // ## Autolinks
         //
-        // [Autolinks](@autolink) are absolute URIs and email addresses inside `<` and `>`.
-        // They are parsed as links, with the URL or email address as the link
-        // label.
+        // [Autolink](@autolink)s are absolute URIs and email addresses inside
+        // `<` and `>`. They are parsed as links, with the URL or email address
+        // as the link label.
         //
-        // A [URI autolink](@uri-autolink)
-        // consists of `<`, followed by an [absolute
-        // URI](#absolute-uri) not containing `<`, followed by `>`.  It is parsed
-        // as a link to the URI, with the URI as the link's label.
+        // A [URI autolink](@uri-autolink) consists of `<`, followed by an
+        // [absolute URI] not containing `<`, followed by `>`.  It is parsed as
+        // a link to the URI, with the URI as the link's label.
         //
         // An [absolute URI](@absolute-uri),
-        // for these purposes, consists of a [scheme](#scheme) followed by a colon (`:`)
+        // for these purposes, consists of a [scheme] followed by a colon (`:`)
         // followed by zero or more characters other than ASCII
-        // [whitespace](#whitespace) and control characters, `<`, and `>`.  If
+        // [whitespace] and control characters, `<`, and `>`.  If
         // the URI includes these characters, you must use percent-encoding
         // (e.g. `%20` for a space).
         //
@@ -11955,9 +11972,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example476()
+        public void Example479()
         {
-            // Example 476
+            // Example 479
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -11966,66 +11983,10 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="http://foo.bar.baz">http://foo.bar.baz</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 476, "Inlines - Autolinks");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 479, "Inlines - Autolinks");
 			Helpers.ExecuteTest("<http://foo.bar.baz>", "<p><a href=\"http://foo.bar.baz\">http://foo.bar.baz</a></p>");
         }
 
-        [TestMethod]
-        [TestCategory("Inlines - Autolinks")]
-        //[Timeout(1000)]
-        public void Example477()
-        {
-            // Example 477
-            // Section: Inlines - Autolinks
-            //
-            // The following CommonMark:
-            //     <http://foo.bar.baz?q=hello&id=22&boolean>
-            //
-            // Should be rendered as:
-            //     <p><a href="http://foo.bar.baz?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz?q=hello&amp;id=22&amp;boolean</a></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 477, "Inlines - Autolinks");
-			Helpers.ExecuteTest("<http://foo.bar.baz?q=hello&id=22&boolean>", "<p><a href=\"http://foo.bar.baz?q=hello&amp;id=22&amp;boolean\">http://foo.bar.baz?q=hello&amp;id=22&amp;boolean</a></p>");
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Autolinks")]
-        //[Timeout(1000)]
-        public void Example478()
-        {
-            // Example 478
-            // Section: Inlines - Autolinks
-            //
-            // The following CommonMark:
-            //     <irc://foo.bar:2233/baz>
-            //
-            // Should be rendered as:
-            //     <p><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 478, "Inlines - Autolinks");
-			Helpers.ExecuteTest("<irc://foo.bar:2233/baz>", "<p><a href=\"irc://foo.bar:2233/baz\">irc://foo.bar:2233/baz</a></p>");
-        }
-
-        // Uppercase is also fine:
-        [TestMethod]
-        [TestCategory("Inlines - Autolinks")]
-        //[Timeout(1000)]
-        public void Example479()
-        {
-            // Example 479
-            // Section: Inlines - Autolinks
-            //
-            // The following CommonMark:
-            //     <MAILTO:FOO@BAR.BAZ>
-            //
-            // Should be rendered as:
-            //     <p><a href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 479, "Inlines - Autolinks");
-			Helpers.ExecuteTest("<MAILTO:FOO@BAR.BAZ>", "<p><a href=\"MAILTO:FOO@BAR.BAZ\">MAILTO:FOO@BAR.BAZ</a></p>");
-        }
-
-        // Spaces are not allowed in autolinks:
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
@@ -12035,17 +11996,73 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
+            //     <http://foo.bar.baz?q=hello&id=22&boolean>
+            //
+            // Should be rendered as:
+            //     <p><a href="http://foo.bar.baz?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz?q=hello&amp;id=22&amp;boolean</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 480, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<http://foo.bar.baz?q=hello&id=22&boolean>", "<p><a href=\"http://foo.bar.baz?q=hello&amp;id=22&amp;boolean\">http://foo.bar.baz?q=hello&amp;id=22&amp;boolean</a></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Autolinks")]
+        //[Timeout(1000)]
+        public void Example481()
+        {
+            // Example 481
+            // Section: Inlines - Autolinks
+            //
+            // The following CommonMark:
+            //     <irc://foo.bar:2233/baz>
+            //
+            // Should be rendered as:
+            //     <p><a href="irc://foo.bar:2233/baz">irc://foo.bar:2233/baz</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 481, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<irc://foo.bar:2233/baz>", "<p><a href=\"irc://foo.bar:2233/baz\">irc://foo.bar:2233/baz</a></p>");
+        }
+
+        // Uppercase is also fine:
+        [TestMethod]
+        [TestCategory("Inlines - Autolinks")]
+        //[Timeout(1000)]
+        public void Example482()
+        {
+            // Example 482
+            // Section: Inlines - Autolinks
+            //
+            // The following CommonMark:
+            //     <MAILTO:FOO@BAR.BAZ>
+            //
+            // Should be rendered as:
+            //     <p><a href="MAILTO:FOO@BAR.BAZ">MAILTO:FOO@BAR.BAZ</a></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 482, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<MAILTO:FOO@BAR.BAZ>", "<p><a href=\"MAILTO:FOO@BAR.BAZ\">MAILTO:FOO@BAR.BAZ</a></p>");
+        }
+
+        // Spaces are not allowed in autolinks:
+        [TestMethod]
+        [TestCategory("Inlines - Autolinks")]
+        //[Timeout(1000)]
+        public void Example483()
+        {
+            // Example 483
+            // Section: Inlines - Autolinks
+            //
+            // The following CommonMark:
             //     <http://foo.bar/baz bim>
             //
             // Should be rendered as:
             //     <p>&lt;http://foo.bar/baz bim&gt;</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 480, "Inlines - Autolinks");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 483, "Inlines - Autolinks");
 			Helpers.ExecuteTest("<http://foo.bar/baz bim>", "<p>&lt;http://foo.bar/baz bim&gt;</p>");
         }
 
         // An [email autolink](@email-autolink)
-        // consists of `<`, followed by an [email address](#email-address),
+        // consists of `<`, followed by an [email address],
         // followed by `>`.  The link's label is the email address,
         // and the URL is `mailto:` followed by the email address.
         //
@@ -12061,9 +12078,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
-        public void Example481()
+        public void Example484()
         {
-            // Example 481
+            // Example 484
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
@@ -12072,63 +12089,8 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a href="mailto:foo@bar.example.com">foo@bar.example.com</a></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 481, "Inlines - Autolinks");
-			Helpers.ExecuteTest("<foo@bar.example.com>", "<p><a href=\"mailto:foo@bar.example.com\">foo@bar.example.com</a></p>");
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Autolinks")]
-        //[Timeout(1000)]
-        public void Example482()
-        {
-            // Example 482
-            // Section: Inlines - Autolinks
-            //
-            // The following CommonMark:
-            //     <foo+special@Bar.baz-bar0.com>
-            //
-            // Should be rendered as:
-            //     <p><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 482, "Inlines - Autolinks");
-			Helpers.ExecuteTest("<foo+special@Bar.baz-bar0.com>", "<p><a href=\"mailto:foo+special@Bar.baz-bar0.com\">foo+special@Bar.baz-bar0.com</a></p>");
-        }
-
-        // These are not autolinks:
-        [TestMethod]
-        [TestCategory("Inlines - Autolinks")]
-        //[Timeout(1000)]
-        public void Example483()
-        {
-            // Example 483
-            // Section: Inlines - Autolinks
-            //
-            // The following CommonMark:
-            //     <>
-            //
-            // Should be rendered as:
-            //     <p>&lt;&gt;</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 483, "Inlines - Autolinks");
-			Helpers.ExecuteTest("<>", "<p>&lt;&gt;</p>");
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Autolinks")]
-        //[Timeout(1000)]
-        public void Example484()
-        {
-            // Example 484
-            // Section: Inlines - Autolinks
-            //
-            // The following CommonMark:
-            //     <heck://bing.bong>
-            //
-            // Should be rendered as:
-            //     <p>&lt;heck://bing.bong&gt;</p>
-
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 484, "Inlines - Autolinks");
-			Helpers.ExecuteTest("<heck://bing.bong>", "<p>&lt;heck://bing.bong&gt;</p>");
+			Helpers.ExecuteTest("<foo@bar.example.com>", "<p><a href=\"mailto:foo@bar.example.com\">foo@bar.example.com</a></p>");
         }
 
         [TestMethod]
@@ -12140,15 +12102,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
-            //     < http://foo.bar >
+            //     <foo+special@Bar.baz-bar0.com>
             //
             // Should be rendered as:
-            //     <p>&lt; http://foo.bar &gt;</p>
+            //     <p><a href="mailto:foo+special@Bar.baz-bar0.com">foo+special@Bar.baz-bar0.com</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 485, "Inlines - Autolinks");
-			Helpers.ExecuteTest("< http://foo.bar >", "<p>&lt; http://foo.bar &gt;</p>");
+			Helpers.ExecuteTest("<foo+special@Bar.baz-bar0.com>", "<p><a href=\"mailto:foo+special@Bar.baz-bar0.com\">foo+special@Bar.baz-bar0.com</a></p>");
         }
 
+        // These are not autolinks:
         [TestMethod]
         [TestCategory("Inlines - Autolinks")]
         //[Timeout(1000)]
@@ -12158,13 +12121,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
-            //     <foo.bar.baz>
+            //     <>
             //
             // Should be rendered as:
-            //     <p>&lt;foo.bar.baz&gt;</p>
+            //     <p>&lt;&gt;</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 486, "Inlines - Autolinks");
-			Helpers.ExecuteTest("<foo.bar.baz>", "<p>&lt;foo.bar.baz&gt;</p>");
+			Helpers.ExecuteTest("<>", "<p>&lt;&gt;</p>");
         }
 
         [TestMethod]
@@ -12176,13 +12139,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
-            //     <localhost:5001/foo>
+            //     <heck://bing.bong>
             //
             // Should be rendered as:
-            //     <p>&lt;localhost:5001/foo&gt;</p>
+            //     <p>&lt;heck://bing.bong&gt;</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 487, "Inlines - Autolinks");
-			Helpers.ExecuteTest("<localhost:5001/foo>", "<p>&lt;localhost:5001/foo&gt;</p>");
+			Helpers.ExecuteTest("<heck://bing.bong>", "<p>&lt;heck://bing.bong&gt;</p>");
         }
 
         [TestMethod]
@@ -12194,13 +12157,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
-            //     http://example.com
+            //     < http://foo.bar >
             //
             // Should be rendered as:
-            //     <p>http://example.com</p>
+            //     <p>&lt; http://foo.bar &gt;</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 488, "Inlines - Autolinks");
-			Helpers.ExecuteTest("http://example.com", "<p>http://example.com</p>");
+			Helpers.ExecuteTest("< http://foo.bar >", "<p>&lt; http://foo.bar &gt;</p>");
         }
 
         [TestMethod]
@@ -12212,12 +12175,66 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
+            //     <foo.bar.baz>
+            //
+            // Should be rendered as:
+            //     <p>&lt;foo.bar.baz&gt;</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 489, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<foo.bar.baz>", "<p>&lt;foo.bar.baz&gt;</p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Autolinks")]
+        //[Timeout(1000)]
+        public void Example490()
+        {
+            // Example 490
+            // Section: Inlines - Autolinks
+            //
+            // The following CommonMark:
+            //     <localhost:5001/foo>
+            //
+            // Should be rendered as:
+            //     <p>&lt;localhost:5001/foo&gt;</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 490, "Inlines - Autolinks");
+			Helpers.ExecuteTest("<localhost:5001/foo>", "<p>&lt;localhost:5001/foo&gt;</p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Autolinks")]
+        //[Timeout(1000)]
+        public void Example491()
+        {
+            // Example 491
+            // Section: Inlines - Autolinks
+            //
+            // The following CommonMark:
+            //     http://example.com
+            //
+            // Should be rendered as:
+            //     <p>http://example.com</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 491, "Inlines - Autolinks");
+			Helpers.ExecuteTest("http://example.com", "<p>http://example.com</p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Autolinks")]
+        //[Timeout(1000)]
+        public void Example492()
+        {
+            // Example 492
+            // Section: Inlines - Autolinks
+            //
+            // The following CommonMark:
             //     foo@bar.example.com
             //
             // Should be rendered as:
             //     <p>foo@bar.example.com</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 489, "Inlines - Autolinks");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 492, "Inlines - Autolinks");
 			Helpers.ExecuteTest("foo@bar.example.com", "<p>foo@bar.example.com</p>");
         }
 
@@ -12233,9 +12250,9 @@ namespace CommonMark.Tests.Specification
         // A [tag name](@tag-name) consists of an ASCII letter
         // followed by zero or more ASCII letters or digits.
         //
-        // An [attribute](@attribute) consists of [whitespace](#whitespace),
-        // an [attribute name](#attribute-name), and an optional
-        // [attribute value specification](#attribute-value-specification).
+        // An [attribute](@attribute) consists of [whitespace],
+        // an [attribute name], and an optional
+        // [attribute value specification].
         //
         // An [attribute name](@attribute-name)
         // consists of an ASCII letter, `_`, or `:`, followed by zero or more ASCII
@@ -12243,14 +12260,13 @@ namespace CommonMark.Tests.Specification
         // specification restricted to ASCII.  HTML5 is laxer.)
         //
         // An [attribute value specification](@attribute-value-specification)
-        // consists of optional [whitespace](#whitespace),
-        // a `=` character, optional [whitespace](#whitespace), and an [attribute
-        // value](#attribute-value).
+        // consists of optional [whitespace],
+        // a `=` character, optional [whitespace], and an [attribute
+        // value].
         //
         // An [attribute value](@attribute-value)
-        // consists of an [unquoted attribute value](#unquoted-attribute-value),
-        // a [single-quoted attribute value](#single-quoted-attribute-value),
-        // or a [double-quoted attribute value](#double-quoted-attribute-value).
+        // consists of an [unquoted attribute value],
+        // a [single-quoted attribute value], or a [double-quoted attribute value].
         //
         // An [unquoted attribute value](@unquoted-attribute-value)
         // is a nonempty string of characters not
@@ -12264,18 +12280,17 @@ namespace CommonMark.Tests.Specification
         // consists of `"`, zero or more
         // characters not including `"`, and a final `"`.
         //
-        // An [open tag](@open-tag) consists of a `<` character,
-        // a [tag name](#tag-name), zero or more [attributes](#attribute),
-        // optional [whitespace](#whitespace), an optional `/` character, and a
-        // `>` character.
+        // An [open tag](@open-tag) consists of a `<` character, a [tag name],
+        // zero or more [attributes], optional [whitespace], an optional `/`
+        // character, and a `>` character.
         //
-        // A [closing tag](@closing-tag) consists of the
-        // string `</`, a [tag name](#tag-name), optional
-        // [whitespace](#whitespace), and the character `>`.
+        // A [closing tag](@closing-tag) consists of the string `</`, a
+        // [tag name], optional [whitespace], and the character `>`.
         //
-        // An [HTML comment](@html-comment) consists of the
-        // string `<!--`, a string of characters not including the string `--`, and
-        // the string `-->`.
+        // An [HTML comment](@html-comment) consists of `<!--` + *text* + `-->`,
+        // where *text* does not start with `>` or `->`, does not end with `-`,
+        // and does not contain `--`.  (See the
+        // [HTML5 spec](http://www.w3.org/TR/html5/syntax.html#comments).)
         //
         // A [processing instruction](@processing-instruction)
         // consists of the string `<?`, a string
@@ -12284,25 +12299,24 @@ namespace CommonMark.Tests.Specification
         //
         // A [declaration](@declaration) consists of the
         // string `<!`, a name consisting of one or more uppercase ASCII letters,
-        // [whitespace](#whitespace), a string of characters not including the
+        // [whitespace], a string of characters not including the
         // character `>`, and the character `>`.
         //
         // A [CDATA section](@cdata-section) consists of
         // the string `<![CDATA[`, a string of characters not including the string
         // `]]>`, and the string `]]>`.
         //
-        // An [HTML tag](@html-tag) consists of an [open
-        // tag](#open-tag), a [closing tag](#closing-tag), an [HTML
-        // comment](#html-comment), a [processing instruction](#processing-instruction),
-        // a [declaration](#declaration), or a [CDATA section](#cdata-section).
+        // An [HTML tag](@html-tag) consists of an [open tag], a [closing tag],
+        // an [HTML comment], a [processing instruction], a [declaration],
+        // or a [CDATA section].
         //
         // Here are some simple open tags:
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example490()
+        public void Example493()
         {
-            // Example 490
+            // Example 493
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12311,7 +12325,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a><bab><c2c></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 490, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 493, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("<a><bab><c2c>", "<p><a><bab><c2c></p>");
         }
 
@@ -12319,9 +12333,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example491()
+        public void Example494()
         {
-            // Example 491
+            // Example 494
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12330,17 +12344,17 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p><a/><b2/></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 491, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 494, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("<a/><b2/>", "<p><a/><b2/></p>");
         }
 
-        // [Whitespace](#whitespace) is allowed:
+        // [Whitespace] is allowed:
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example492()
+        public void Example495()
         {
-            // Example 492
+            // Example 495
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12351,7 +12365,7 @@ namespace CommonMark.Tests.Specification
             //     <p><a  /><b2
             //     data="foo" ></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 492, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 495, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("<a  /><b2\ndata=\"foo\" >", "<p><a  /><b2\ndata=\"foo\" ></p>");
         }
 
@@ -12359,9 +12373,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example493()
+        public void Example496()
         {
-            // Example 493
+            // Example 496
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12372,7 +12386,7 @@ namespace CommonMark.Tests.Specification
             //     <p><a foo="bar" bam = 'baz <em>"</em>'
             //     _boolean zoop:33=zoop:33 /></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 493, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 496, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("<a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 />", "<p><a foo=\"bar\" bam = 'baz <em>\"</em>'\n_boolean zoop:33=zoop:33 /></p>");
         }
 
@@ -12380,9 +12394,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example494()
+        public void Example497()
         {
-            // Example 494
+            // Example 497
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12391,7 +12405,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;33&gt; &lt;__&gt;</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 494, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 497, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("<33> <__>", "<p>&lt;33&gt; &lt;__&gt;</p>");
         }
 
@@ -12399,9 +12413,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example495()
+        public void Example498()
         {
-            // Example 495
+            // Example 498
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12410,7 +12424,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 495, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 498, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("<a h*#ref=\"hi\">", "<p>&lt;a h*#ref=&quot;hi&quot;&gt;</p>");
         }
 
@@ -12418,9 +12432,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example496()
+        public void Example499()
         {
-            // Example 496
+            // Example 499
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12429,17 +12443,17 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;a href=&quot;hi'&gt; &lt;a href=hi'&gt;</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 496, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 499, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("<a href=\"hi'> <a href=hi'>", "<p>&lt;a href=&quot;hi'&gt; &lt;a href=hi'&gt;</p>");
         }
 
-        // Illegal [whitespace](#whitespace):
+        // Illegal [whitespace]:
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example497()
+        public void Example500()
         {
-            // Example 497
+            // Example 500
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12450,17 +12464,17 @@ namespace CommonMark.Tests.Specification
             //     <p>&lt; a&gt;&lt;
             //     foo&gt;&lt;bar/ &gt;</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 497, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 500, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("< a><\nfoo><bar/ >", "<p>&lt; a&gt;&lt;\nfoo&gt;&lt;bar/ &gt;</p>");
         }
 
-        // Missing [whitespace](#whitespace):
+        // Missing [whitespace]:
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example498()
+        public void Example501()
         {
-            // Example 498
+            // Example 501
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12469,7 +12483,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;a href='bar'title=title&gt;</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 498, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 501, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("<a href='bar'title=title>", "<p>&lt;a href='bar'title=title&gt;</p>");
         }
 
@@ -12477,9 +12491,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example499()
+        public void Example502()
         {
-            // Example 499
+            // Example 502
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12490,7 +12504,7 @@ namespace CommonMark.Tests.Specification
             //     <p></a>
             //     </foo ></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 499, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 502, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("</a>\n</foo >", "<p></a>\n</foo ></p>");
         }
 
@@ -12498,9 +12512,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example500()
+        public void Example503()
         {
-            // Example 500
+            // Example 503
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12509,7 +12523,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>&lt;/a href=&quot;foo&quot;&gt;</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 500, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 503, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("</a href=\"foo\">", "<p>&lt;/a href=&quot;foo&quot;&gt;</p>");
         }
 
@@ -12517,9 +12531,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
-        public void Example501()
+        public void Example504()
         {
-            // Example 501
+            // Example 504
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
@@ -12530,67 +12544,10 @@ namespace CommonMark.Tests.Specification
             //     <p>foo <!-- this is a
             //     comment - with hyphen --></p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 501, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 504, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("foo <!-- this is a\ncomment - with hyphen -->", "<p>foo <!-- this is a\ncomment - with hyphen --></p>");
         }
 
-        [TestMethod]
-        [TestCategory("Inlines - Raw HTML")]
-        //[Timeout(1000)]
-        public void Example502()
-        {
-            // Example 502
-            // Section: Inlines - Raw HTML
-            //
-            // The following CommonMark:
-            //     foo <!-- not a comment -- two hyphens -->
-            //
-            // Should be rendered as:
-            //     <p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 502, "Inlines - Raw HTML");
-			Helpers.ExecuteTest("foo <!-- not a comment -- two hyphens -->", "<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>");
-        }
-
-        // Processing instructions:
-        [TestMethod]
-        [TestCategory("Inlines - Raw HTML")]
-        //[Timeout(1000)]
-        public void Example503()
-        {
-            // Example 503
-            // Section: Inlines - Raw HTML
-            //
-            // The following CommonMark:
-            //     foo <?php echo $a; ?>
-            //
-            // Should be rendered as:
-            //     <p>foo <?php echo $a; ?></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 503, "Inlines - Raw HTML");
-			Helpers.ExecuteTest("foo <?php echo $a; ?>", "<p>foo <?php echo $a; ?></p>");
-        }
-
-        // Declarations:
-        [TestMethod]
-        [TestCategory("Inlines - Raw HTML")]
-        //[Timeout(1000)]
-        public void Example504()
-        {
-            // Example 504
-            // Section: Inlines - Raw HTML
-            //
-            // The following CommonMark:
-            //     foo <!ELEMENT br EMPTY>
-            //
-            // Should be rendered as:
-            //     <p>foo <!ELEMENT br EMPTY></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 504, "Inlines - Raw HTML");
-			Helpers.ExecuteTest("foo <!ELEMENT br EMPTY>", "<p>foo <!ELEMENT br EMPTY></p>");
-        }
-
-        // CDATA sections:
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
@@ -12600,16 +12557,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
-            //     foo <![CDATA[>&<]]>
+            //     foo <!-- not a comment -- two hyphens -->
             //
             // Should be rendered as:
-            //     <p>foo <![CDATA[>&<]]></p>
+            //     <p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 505, "Inlines - Raw HTML");
-			Helpers.ExecuteTest("foo <![CDATA[>&<]]>", "<p>foo <![CDATA[>&<]]></p>");
+			Helpers.ExecuteTest("foo <!-- not a comment -- two hyphens -->", "<p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>");
         }
 
-        // Entities are preserved in HTML attributes:
+        // Not comments:
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
@@ -12619,16 +12576,19 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
-            //     <a href="&ouml;">
+            //     foo <!--> foo -->
+            //     
+            //     foo <!-- foo--->
             //
             // Should be rendered as:
-            //     <p><a href="&ouml;"></p>
+            //     <p>foo &lt;!--&gt; foo --&gt;</p>
+            //     <p>foo &lt;!-- foo---&gt;</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 506, "Inlines - Raw HTML");
-			Helpers.ExecuteTest("<a href=\"&ouml;\">", "<p><a href=\"&ouml;\"></p>");
+			Helpers.ExecuteTest("foo <!--> foo -->\n\nfoo <!-- foo--->", "<p>foo &lt;!--&gt; foo --&gt;</p>\n<p>foo &lt;!-- foo---&gt;</p>");
         }
 
-        // Backslash escapes do not work in HTML attributes:
+        // Processing instructions:
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
@@ -12638,15 +12598,16 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
-            //     <a href="\*">
+            //     foo <?php echo $a; ?>
             //
             // Should be rendered as:
-            //     <p><a href="\*"></p>
+            //     <p>foo <?php echo $a; ?></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 507, "Inlines - Raw HTML");
-			Helpers.ExecuteTest("<a href=\"\\*\">", "<p><a href=\"\\*\"></p>");
+			Helpers.ExecuteTest("foo <?php echo $a; ?>", "<p>foo <?php echo $a; ?></p>");
         }
 
+        // Declarations:
         [TestMethod]
         [TestCategory("Inlines - Raw HTML")]
         //[Timeout(1000)]
@@ -12656,12 +12617,87 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Raw HTML
             //
             // The following CommonMark:
+            //     foo <!ELEMENT br EMPTY>
+            //
+            // Should be rendered as:
+            //     <p>foo <!ELEMENT br EMPTY></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 508, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("foo <!ELEMENT br EMPTY>", "<p>foo <!ELEMENT br EMPTY></p>");
+        }
+
+        // CDATA sections:
+        [TestMethod]
+        [TestCategory("Inlines - Raw HTML")]
+        //[Timeout(1000)]
+        public void Example509()
+        {
+            // Example 509
+            // Section: Inlines - Raw HTML
+            //
+            // The following CommonMark:
+            //     foo <![CDATA[>&<]]>
+            //
+            // Should be rendered as:
+            //     <p>foo <![CDATA[>&<]]></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 509, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("foo <![CDATA[>&<]]>", "<p>foo <![CDATA[>&<]]></p>");
+        }
+
+        // Entities are preserved in HTML attributes:
+        [TestMethod]
+        [TestCategory("Inlines - Raw HTML")]
+        //[Timeout(1000)]
+        public void Example510()
+        {
+            // Example 510
+            // Section: Inlines - Raw HTML
+            //
+            // The following CommonMark:
+            //     <a href="&ouml;">
+            //
+            // Should be rendered as:
+            //     <p><a href="&ouml;"></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 510, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a href=\"&ouml;\">", "<p><a href=\"&ouml;\"></p>");
+        }
+
+        // Backslash escapes do not work in HTML attributes:
+        [TestMethod]
+        [TestCategory("Inlines - Raw HTML")]
+        //[Timeout(1000)]
+        public void Example511()
+        {
+            // Example 511
+            // Section: Inlines - Raw HTML
+            //
+            // The following CommonMark:
+            //     <a href="\*">
+            //
+            // Should be rendered as:
+            //     <p><a href="\*"></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 511, "Inlines - Raw HTML");
+			Helpers.ExecuteTest("<a href=\"\\*\">", "<p><a href=\"\\*\"></p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Raw HTML")]
+        //[Timeout(1000)]
+        public void Example512()
+        {
+            // Example 512
+            // Section: Inlines - Raw HTML
+            //
+            // The following CommonMark:
             //     <a href="\"">
             //
             // Should be rendered as:
             //     <p>&lt;a href=&quot;&quot;&quot;&gt;</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 508, "Inlines - Raw HTML");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 512, "Inlines - Raw HTML");
 			Helpers.ExecuteTest("<a href=\"\\\"\">", "<p>&lt;a href=&quot;&quot;&quot;&gt;</p>");
         }
 
@@ -12674,9 +12710,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example509()
+        public void Example513()
         {
-            // Example 509
+            // Example 513
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -12687,18 +12723,18 @@ namespace CommonMark.Tests.Specification
             //     <p>foo<br />
             //     baz</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 509, "Inlines - Hard line breaks");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 513, "Inlines - Hard line breaks");
 			Helpers.ExecuteTest("foo  \nbaz", "<p>foo<br />\nbaz</p>");
         }
 
         // For a more visible alternative, a backslash before the
-        // [line ending](#line-ending) may be used instead of two spaces:
+        // [line ending] may be used instead of two spaces:
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example510()
+        public void Example514()
         {
-            // Example 510
+            // Example 514
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -12709,7 +12745,7 @@ namespace CommonMark.Tests.Specification
             //     <p>foo<br />
             //     baz</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 510, "Inlines - Hard line breaks");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 514, "Inlines - Hard line breaks");
 			Helpers.ExecuteTest("foo\\\nbaz", "<p>foo<br />\nbaz</p>");
         }
 
@@ -12717,9 +12753,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example511()
+        public void Example515()
         {
-            // Example 511
+            // Example 515
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -12730,7 +12766,7 @@ namespace CommonMark.Tests.Specification
             //     <p>foo<br />
             //     baz</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 511, "Inlines - Hard line breaks");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 515, "Inlines - Hard line breaks");
 			Helpers.ExecuteTest("foo       \nbaz", "<p>foo<br />\nbaz</p>");
         }
 
@@ -12738,9 +12774,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
-        public void Example512()
+        public void Example516()
         {
-            // Example 512
+            // Example 516
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
@@ -12751,90 +12787,8 @@ namespace CommonMark.Tests.Specification
             //     <p>foo<br />
             //     bar</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 512, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("foo  \n     bar", "<p>foo<br />\nbar</p>");
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Hard line breaks")]
-        //[Timeout(1000)]
-        public void Example513()
-        {
-            // Example 513
-            // Section: Inlines - Hard line breaks
-            //
-            // The following CommonMark:
-            //     foo\
-            //          bar
-            //
-            // Should be rendered as:
-            //     <p>foo<br />
-            //     bar</p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 513, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("foo\\\n     bar", "<p>foo<br />\nbar</p>");
-        }
-
-        // Line breaks can occur inside emphasis, links, and other constructs
-        // that allow inline content:
-        [TestMethod]
-        [TestCategory("Inlines - Hard line breaks")]
-        //[Timeout(1000)]
-        public void Example514()
-        {
-            // Example 514
-            // Section: Inlines - Hard line breaks
-            //
-            // The following CommonMark:
-            //     *foo  
-            //     bar*
-            //
-            // Should be rendered as:
-            //     <p><em>foo<br />
-            //     bar</em></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 514, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("*foo  \nbar*", "<p><em>foo<br />\nbar</em></p>");
-        }
-
-        [TestMethod]
-        [TestCategory("Inlines - Hard line breaks")]
-        //[Timeout(1000)]
-        public void Example515()
-        {
-            // Example 515
-            // Section: Inlines - Hard line breaks
-            //
-            // The following CommonMark:
-            //     *foo\
-            //     bar*
-            //
-            // Should be rendered as:
-            //     <p><em>foo<br />
-            //     bar</em></p>
-
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 515, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("*foo\\\nbar*", "<p><em>foo<br />\nbar</em></p>");
-        }
-
-        // Line breaks do not occur inside code spans
-        [TestMethod]
-        [TestCategory("Inlines - Hard line breaks")]
-        //[Timeout(1000)]
-        public void Example516()
-        {
-            // Example 516
-            // Section: Inlines - Hard line breaks
-            //
-            // The following CommonMark:
-            //     `code  
-            //     span`
-            //
-            // Should be rendered as:
-            //     <p><code>code span</code></p>
-
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 516, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("`code  \nspan`", "<p><code>code span</code></p>");
+			Helpers.ExecuteTest("foo  \n     bar", "<p>foo<br />\nbar</p>");
         }
 
         [TestMethod]
@@ -12846,17 +12800,19 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
-            //     `code\
-            //     span`
+            //     foo\
+            //          bar
             //
             // Should be rendered as:
-            //     <p><code>code\ span</code></p>
+            //     <p>foo<br />
+            //     bar</p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 517, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("`code\\\nspan`", "<p><code>code\\ span</code></p>");
+			Helpers.ExecuteTest("foo\\\n     bar", "<p>foo<br />\nbar</p>");
         }
 
-        // or HTML tags:
+        // Line breaks can occur inside emphasis, links, and other constructs
+        // that allow inline content:
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
@@ -12866,15 +12822,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
-            //     <a href="foo  
-            //     bar">
+            //     *foo  
+            //     bar*
             //
             // Should be rendered as:
-            //     <p><a href="foo  
-            //     bar"></p>
+            //     <p><em>foo<br />
+            //     bar</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 518, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("<a href=\"foo  \nbar\">", "<p><a href=\"foo  \nbar\"></p>");
+			Helpers.ExecuteTest("*foo  \nbar*", "<p><em>foo<br />\nbar</em></p>");
         }
 
         [TestMethod]
@@ -12886,20 +12842,18 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
-            //     <a href="foo\
-            //     bar">
+            //     *foo\
+            //     bar*
             //
             // Should be rendered as:
-            //     <p><a href="foo\
-            //     bar"></p>
+            //     <p><em>foo<br />
+            //     bar</em></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 519, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("<a href=\"foo\\\nbar\">", "<p><a href=\"foo\\\nbar\"></p>");
+			Helpers.ExecuteTest("*foo\\\nbar*", "<p><em>foo<br />\nbar</em></p>");
         }
 
-        // Hard line breaks are for separating inline content within a block.
-        // Neither syntax for hard line breaks works at the end of a paragraph or
-        // other block element:
+        // Line breaks do not occur inside code spans
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
@@ -12909,13 +12863,14 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
-            //     foo\
+            //     `code  
+            //     span`
             //
             // Should be rendered as:
-            //     <p>foo\</p>
+            //     <p><code>code span</code></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 520, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("foo\\", "<p>foo\\</p>");
+			Helpers.ExecuteTest("`code  \nspan`", "<p><code>code span</code></p>");
         }
 
         [TestMethod]
@@ -12927,15 +12882,17 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
-            //     foo
+            //     `code\
+            //     span`
             //
             // Should be rendered as:
-            //     <p>foo</p>
+            //     <p><code>code\ span</code></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 521, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("foo", "<p>foo</p>");
+			Helpers.ExecuteTest("`code\\\nspan`", "<p><code>code\\ span</code></p>");
         }
 
+        // or HTML tags:
         [TestMethod]
         [TestCategory("Inlines - Hard line breaks")]
         //[Timeout(1000)]
@@ -12945,13 +12902,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
-            //     ### foo\
+            //     <a href="foo  
+            //     bar">
             //
             // Should be rendered as:
-            //     <h3>foo\</h3>
+            //     <p><a href="foo  
+            //     bar"></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 522, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("### foo\\", "<h3>foo\\</h3>");
+			Helpers.ExecuteTest("<a href=\"foo  \nbar\">", "<p><a href=\"foo  \nbar\"></p>");
         }
 
         [TestMethod]
@@ -12963,13 +12922,90 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Hard line breaks
             //
             // The following CommonMark:
-            //     ### foo
+            //     <a href="foo\
+            //     bar">
+            //
+            // Should be rendered as:
+            //     <p><a href="foo\
+            //     bar"></p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 523, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("<a href=\"foo\\\nbar\">", "<p><a href=\"foo\\\nbar\"></p>");
+        }
+
+        // Hard line breaks are for separating inline content within a block.
+        // Neither syntax for hard line breaks works at the end of a paragraph or
+        // other block element:
+        [TestMethod]
+        [TestCategory("Inlines - Hard line breaks")]
+        //[Timeout(1000)]
+        public void Example524()
+        {
+            // Example 524
+            // Section: Inlines - Hard line breaks
+            //
+            // The following CommonMark:
+            //     foo\
+            //
+            // Should be rendered as:
+            //     <p>foo\</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 524, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("foo\\", "<p>foo\\</p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Hard line breaks")]
+        //[Timeout(1000)]
+        public void Example525()
+        {
+            // Example 525
+            // Section: Inlines - Hard line breaks
+            //
+            // The following CommonMark:
+            //     foo  
+            //
+            // Should be rendered as:
+            //     <p>foo</p>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 525, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("foo  ", "<p>foo</p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Hard line breaks")]
+        //[Timeout(1000)]
+        public void Example526()
+        {
+            // Example 526
+            // Section: Inlines - Hard line breaks
+            //
+            // The following CommonMark:
+            //     ### foo\
+            //
+            // Should be rendered as:
+            //     <h3>foo\</h3>
+
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 526, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("### foo\\", "<h3>foo\\</h3>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Hard line breaks")]
+        //[Timeout(1000)]
+        public void Example527()
+        {
+            // Example 527
+            // Section: Inlines - Hard line breaks
+            //
+            // The following CommonMark:
+            //     ### foo  
             //
             // Should be rendered as:
             //     <h3>foo</h3>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 523, "Inlines - Hard line breaks");
-			Helpers.ExecuteTest("### foo", "<h3>foo</h3>");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 527, "Inlines - Hard line breaks");
+			Helpers.ExecuteTest("### foo  ", "<h3>foo</h3>");
         }
 
         // ## Soft line breaks
@@ -12977,15 +13013,14 @@ namespace CommonMark.Tests.Specification
         // A regular line break (not in a code span or HTML tag) that is not
         // preceded by two or more spaces is parsed as a softbreak.  (A
         // softbreak may be rendered in HTML either as a
-        // [line ending](#line-ending) or as a space. The result will be the same
-        // in browsers. In the examples here, a [line ending](#line-ending) will
-        // be used.)
+        // [line ending] or as a space. The result will be the same
+        // in browsers. In the examples here, a [line ending] will be used.)
         [TestMethod]
         [TestCategory("Inlines - Soft line breaks")]
         //[Timeout(1000)]
-        public void Example524()
+        public void Example528()
         {
-            // Example 524
+            // Example 528
             // Section: Inlines - Soft line breaks
             //
             // The following CommonMark:
@@ -12996,7 +13031,7 @@ namespace CommonMark.Tests.Specification
             //     <p>foo
             //     baz</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 524, "Inlines - Soft line breaks");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 528, "Inlines - Soft line breaks");
 			Helpers.ExecuteTest("foo\nbaz", "<p>foo\nbaz</p>");
         }
 
@@ -13005,9 +13040,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Soft line breaks")]
         //[Timeout(1000)]
-        public void Example525()
+        public void Example529()
         {
-            // Example 525
+            // Example 529
             // Section: Inlines - Soft line breaks
             //
             // The following CommonMark:
@@ -13018,7 +13053,7 @@ namespace CommonMark.Tests.Specification
             //     <p>foo
             //     baz</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 525, "Inlines - Soft line breaks");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 529, "Inlines - Soft line breaks");
 			Helpers.ExecuteTest("foo \n baz", "<p>foo\nbaz</p>");
         }
 
@@ -13035,9 +13070,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Textual content")]
         //[Timeout(1000)]
-        public void Example526()
+        public void Example530()
         {
-            // Example 526
+            // Example 530
             // Section: Inlines - Textual content
             //
             // The following CommonMark:
@@ -13046,16 +13081,16 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>hello $.;'there</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 526, "Inlines - Textual content");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 530, "Inlines - Textual content");
 			Helpers.ExecuteTest("hello $.;'there", "<p>hello $.;'there</p>");
         }
 
         [TestMethod]
         [TestCategory("Inlines - Textual content")]
         //[Timeout(1000)]
-        public void Example527()
+        public void Example531()
         {
-            // Example 527
+            // Example 531
             // Section: Inlines - Textual content
             //
             // The following CommonMark:
@@ -13064,7 +13099,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>Foo χρῆν</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 527, "Inlines - Textual content");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 531, "Inlines - Textual content");
 			Helpers.ExecuteTest("Foo χρῆν", "<p>Foo χρῆν</p>");
         }
 
@@ -13072,9 +13107,9 @@ namespace CommonMark.Tests.Specification
         [TestMethod]
         [TestCategory("Inlines - Textual content")]
         //[Timeout(1000)]
-        public void Example528()
+        public void Example532()
         {
-            // Example 528
+            // Example 532
             // Section: Inlines - Textual content
             //
             // The following CommonMark:
@@ -13083,7 +13118,7 @@ namespace CommonMark.Tests.Specification
             // Should be rendered as:
             //     <p>Multiple     spaces</p>
 
-            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 528, "Inlines - Textual content");
+            Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 532, "Inlines - Textual content");
 			Helpers.ExecuteTest("Multiple     spaces", "<p>Multiple     spaces</p>");
         }
 
@@ -13268,7 +13303,7 @@ namespace CommonMark.Tests.Specification
         // str "aliquando id"
         // ```
         //
-        // Notice how the [line ending](#line-ending) in the first paragraph has
+        // Notice how the [line ending] in the first paragraph has
         // been parsed as a `softbreak`, and the asterisks in the first list item
         // have become an `emph`.
         //
