@@ -594,12 +594,11 @@ namespace CommonMark.Parser
                 var inl = opener.StartingInline;
                 var isImage = 0 != (opener.Flags & InlineStack.InlineStackFlags.ImageLink);
                 inl.Tag = isImage ? InlineTag.Image : InlineTag.Link;
-                inl.LiteralContent = null;
                 inl.FirstChild = inl.NextSibling;
                 inl.NextSibling = null;
 
-                inl.Linkable.Url = details.Url;
-                inl.Linkable.Title = details.Title;
+                inl.TargetUrl = details.Url;
+                inl.LiteralContent = details.Title;
 
                 if (!isImage)
                 {

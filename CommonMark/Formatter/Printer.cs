@@ -183,14 +183,14 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Link:
                         writer.WriteLine("link url={0} title={1}",
-                               format_str(inline.Linkable.Url),
-                               format_str(inline.Linkable.Title));
+                               format_str(inline.TargetUrl),
+                               format_str(inline.LiteralContent));
                         break;
 
                     case InlineTag.Image:
                         writer.WriteLine("image url={0} title={1}",
-                               format_str(inline.Linkable.Url),
-                               format_str(inline.Linkable.Title));
+                               format_str(inline.TargetUrl),
+                               format_str(inline.LiteralContent));
                         break;
 
                     case InlineTag.Strong:

@@ -4,23 +4,42 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
+    /// <summary>
+    /// Represents a parsed inline element in the document.
+    /// </summary>
     public sealed class Inline
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Inline"/> class.
+        /// </summary>
         public Inline()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Inline"/> class.
+        /// </summary>
+        /// <param name="tag">The type of inline element.</param>
         public Inline(InlineTag tag)
         {
             this.Tag = tag;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Inline"/> class.
+        /// </summary>
+        /// <param name="tag">The type of inline element. Should be one of the types that require literal content, for example, <see cref="InlineTag.Code"/>.</param>
+        /// <param name="content">The literal contents of the inline element.</param>
         public Inline(InlineTag tag, string content)
         {
             this.Tag = tag;
             this.LiteralContent = content;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Inline"/> class. The element type is set to <see cref="InlineTag.String"/>
+        /// </summary>
+        /// <param name="content">The literal string contents of the inline element.</param>
         public Inline(string content)
         {
             // this is not assigned because it is the default value.
@@ -29,6 +48,11 @@ namespace CommonMark.Syntax
             this.LiteralContent = content;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Inline"/> class.
+        /// </summary>
+        /// <param name="tag">The type of inline element. Should be one of the types that contain child elements, for example, <see cref="InlineTag.Emphasis"/>.</param>
+        /// <param name="content">The first descendant element of the inline that is being created.</param>
         public Inline(InlineTag tag, Inline content)
         {
             this.Tag = tag;
@@ -37,38 +61,56 @@ namespace CommonMark.Syntax
 
         internal static Inline CreateLink(Inline label, string url, string title)
         {
-            var i = new Inline();
-            i.Tag = InlineTag.Link;
-            i.FirstChild = label;
-            i._linkable.Url = url;
-            i._linkable.Title = title;
-            return i;
+            return new Inline()
+            {
+                Tag = InlineTag.Link,
+                FirstChild = label,
+                TargetUrl = url,
+                LiteralContent = title
+            };
         }
 
+        /// <summary>
+        /// Gets of sets the type of the inline element this instance represents.
+        /// </summary>
         public InlineTag Tag { get; set; }
 
+        /// <summary>
+        /// Gets or sets the literal content of this element. This is only used if the <see cref="Tag"/> property specifies
+        /// a type that can have literal content.
+        /// 
+        /// Note that for <see cref="InlineTag.Link"/> this property contains the title of the link.
+        /// </summary>
         public string LiteralContent { get; set; }
 
+        /// <summary>
+        /// Gets or sets the target URL for this element. Only used for <see cref="InlineTag.Link"/> and 
+        /// <see cref="InlineTag.Image"/>.
+        /// </summary>
+        public string TargetUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the first descendant of this element. This is only used if the <see cref="Tag"/> property specifies
+        /// a type that can have nested elements. 
+        /// </summary>
         public Inline FirstChild { get; set; }
 
-        private readonly InlineContentLinkable _linkable = new InlineContentLinkable();
-        public InlineContentLinkable Linkable { get { return this._linkable; } }
+        /// <summary>
+        /// Gets the link details. This is now obsolete in favor of <see cref="TargetUrl"/> and <see cref="LiteralContent"/>
+        /// properties and this property will be removed in future.
+        /// </summary>
+        [Obsolete("The link properties have been moved to TargetUrl and LiteralContent (previously Title) properties to reduce number of objects created. This property will be removed in future versions.", false)]
+        public InlineContentLinkable Linkable { get { return new InlineContentLinkable() { Url = this.TargetUrl, Title = this.LiteralContent }; } }
 
         private Inline _next;
 
         /// <summary>
-        /// Gets the next sibling inline.
+        /// Gets the next sibling inline element. Returns <c>null</c> if this is the last element.
         /// </summary>
-        public Inline NextSibling 
-        { 
-            get 
-            { 
-                return this._next; 
-            } 
-            set 
-            { 
-                this._next = value;
-            } 
+        public Inline NextSibling
+        {
+            get { return this._next; }
+            set { this._next = value; }
         }
 
         /// <summary>

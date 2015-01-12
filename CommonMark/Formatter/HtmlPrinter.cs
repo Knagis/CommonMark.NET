@@ -461,15 +461,15 @@ namespace CommonMark.Formatter
                         {
                             writer.Write("<a href=\"");
                             if (uriResolver != null)
-                                EscapeUrl(uriResolver(inline.Linkable.Url), writer);
+                                EscapeUrl(uriResolver(inline.TargetUrl), writer);
                             else
-                                EscapeUrl(inline.Linkable.Url, writer);
+                                EscapeUrl(inline.TargetUrl, writer);
 
                             writer.Write('\"');
-                            if (!string.IsNullOrEmpty(inline.Linkable.Title))
+                            if (!string.IsNullOrEmpty(inline.LiteralContent))
                             {
                                 writer.Write(" title=\"");
-                                EscapeHtml(inline.Linkable.Title, writer);
+                                EscapeHtml(inline.LiteralContent, writer);
                                 writer.Write('\"');
                             }
 
@@ -484,17 +484,17 @@ namespace CommonMark.Formatter
                     case InlineTag.Image:
                         writer.Write("<img src=\"");
                         if (uriResolver != null)
-                            EscapeUrl(uriResolver(inline.Linkable.Url), writer);
+                            EscapeUrl(uriResolver(inline.TargetUrl), writer);
                         else
-                            EscapeUrl(inline.Linkable.Url, writer);
+                            EscapeUrl(inline.TargetUrl, writer);
 
                         writer.Write("\" alt=\"");
                         InlinesToPlainText(writer, inline.FirstChild, settings, stack);
                         writer.Write("\"");
-                        if (inline.Linkable.Title.Length > 0)
+                        if (!string.IsNullOrEmpty(inline.LiteralContent))
                         {
                             writer.Write(" title=\"");
-                            EscapeHtml(inline.Linkable.Title, writer);
+                            EscapeHtml(inline.LiteralContent, writer);
                             writer.Write("\"");
                         }
                         writer.Write(" />");
