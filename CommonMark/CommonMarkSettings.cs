@@ -23,6 +23,11 @@ namespace CommonMark
         public bool RenderSoftLineBreaksAsLineBreaks { get; set; }
 
         private CommonMarkAdditionalFeatures _additionalFeatures;
+
+        /// <summary>
+        /// Gets or sets any additional features (that are not present in the current CommonMark specification) that
+        /// the parser and/or formatter will recognize.
+        /// </summary>
         public CommonMarkAdditionalFeatures AdditionalFeatures
         {
             get { return this._additionalFeatures; }

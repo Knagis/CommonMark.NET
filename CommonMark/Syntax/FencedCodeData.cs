@@ -4,17 +4,29 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
+    /// <summary>
+    /// Contains additional data for fenced code blocks. Used in <see cref="Block.FencedCodeData"/>/
+    /// </summary>
     public sealed class FencedCodeData
     {
-        /// <remarks>Original: fence_length</remarks>
+        /// <summary>
+        /// Gets or sets the number of characters that were used in the opening code fence.
+        /// </summary>
         public int FenceLength { get; set; }
 
-        /// <remarks>Original: fence_offset</remarks>
+        /// <summary>
+        /// Gets or sets the number of spaces the opening fence was indented.
+        /// </summary>
         public int FenceOffset { get; set; }
 
-        /// <remarks>Original: fence_char</remarks>
+        /// <summary>
+        /// Gets or sets the character that is used in the fences.
+        /// </summary>
         public char FenceChar { get; set; }
 
+        /// <summary>
+        /// Gets or sets the additional information that was present in the same line as the opening fence.
+        /// </summary>
         public string Info { get; set; }
     }
 }

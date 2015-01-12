@@ -5,8 +5,17 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
+    /// <summary>
+    /// Represents a block-level element of the parsed document.
+    /// </summary>
     public sealed class Block
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Block"/> class.
+        /// </summary>
+        /// <param name="tag">The type of the element this instance represents.</param>
+        /// <param name="startLine">The number of the first line in the source text that contains this element.</param>
+        /// <param name="startColumn">The number of the first column (within the first line) in the source text that contains this element.</param>
         public Block(BlockTag tag, int startLine, int startColumn)
         {
             this.Tag = tag;
@@ -16,59 +25,101 @@ namespace CommonMark.Syntax
             this.IsOpen = true;
         }
 
+        /// <summary>
+        /// Gets or sets the type of the element this instance represents.
+        /// </summary>
         public BlockTag Tag { get; set; }
 
-        /// <remarks>Original: start_line</remarks>
+        /// <summary>
+        /// Gets or sets the number of the first line in the source text that contains this element.
+        /// </summary>
         public int StartLine { get; set; }
 
-        /// <remarks>Original: start_column</remarks>
+        /// <summary>
+        /// Gets or sets the number of the first column (within the first line) in the source text that contains this element.
+        /// </summary>
         public int StartColumn { get; set; }
 
-        /// <remarks>Original: end_line</remarks>
+        /// <summary>
+        /// Gets or sets the number of the last line in the source text that contains this element.
+        /// </summary>
         public int EndLine { get; set; }
 
-        /// <remarks>Original: open</remarks>
+        /// <summary>
+        /// Gets or sets a value indicating whether this block element has been completed (and thus new lines cannot be added
+        /// to it) or is still open. By default all elements are created as open and are closed when the parser detects it.
+        /// </summary>
         public bool IsOpen { get; set; }
 
-        /// <remarks>Original: last_line_blank</remarks>
+        /// <summary>
+        /// Gets or sets a value indicating whether the last line parsed for this block element was blank (containing only
+        /// whitespaces).
+        /// </summary>
         public bool IsLastLineBlank { get; set; }
 
-        /// <remarks>Original: children</remarks>
+        /// <summary>
+        /// Gets or sets the first child element of this instance. <c>null</c> if there are no children.
+        /// </summary>
         public Block FirstChild { get; set; }
 
-        /// <remarks>Original: last_child</remarks>
+        /// <summary>
+        /// Gets or sets the last child element (the last sibling of <see cref="FirstChild"/>) of this instance. 
+        /// <c>null</c> if there are no children.
+        /// </summary>
         public Block LastChild { get; set; }
 
+        /// <summary>
+        /// Gets or sets the parent element of this block.
+        /// </summary>
         public Block Parent { get; set; }
 
+        /// <summary>
+        /// Gets or sets the root element (that represents the document itself).
+        /// </summary>
         public Block Top { get; set; }
 
         /// <summary>
         /// Gets or sets the string content of this block. The content consists of multiple string parts to avoid string concatenation.
-        /// Note that some parts of the parser (for example, <see cref="Formatter.HtmlPrinter.EscapeHtml(StringContent, bool, System.IO.TextWriter)"/>) might assume that
+        /// Note that some parts of the parser (for example, <see cref="Formatter.HtmlPrinter.EscapeHtml(StringContent, System.IO.TextWriter)"/>) might assume that
         /// the parts are not split within certain objects, so it is advised that the parts are split on newline.
         /// </summary>
-        /// <remarks>Original: string_content</remarks>
         public StringContent StringContent { get; set; }
 
-        /// <remarks>Original: inline_content</remarks>
+        /// <summary>
+        /// Gets or sets the first inline element that was parsed from <see cref="StringContent"/> property.
+        /// Note that once the inlines are parsed, <see cref="StringContent"/> will be set to <c>null</c>.
+        /// </summary>
         public Inline InlineContent { get; set; }
 
-        /// <remarks>Original: list_data</remarks>
+        /// <summary>
+        /// Gets or sets the additional properties that apply to list elements.
+        /// </summary>
         public ListData ListData { get; set; }
 
-        /// <remarks>Original: fenced_code_data</remarks>
+        /// <summary>
+        /// Gets or sets the additional properties that apply to fenced code blocks.
+        /// </summary>
         public FencedCodeData FencedCodeData { get; set; }
 
-        /// <remarks>Original: header_level</remarks>
+        /// <summary>
+        /// Gets or sets the heading level (as in <c>&lt;h1&gt;</c> or <c>&lt;h2&gt;</c>).
+        /// </summary>
         public int HeaderLevel { get; set; }
 
-        /// <remarks>Original: refmap</remarks>
+        /// <summary>
+        /// Gets or sets the dictionary containing resolved link references. Only set on the document node, <c>null</c>
+        /// and not used for all other elements.
+        /// </summary>
         public Dictionary<string, Reference> ReferenceMap { get; set; }
 
+        /// <summary>
+        /// Gets or sets the next sibling of this block element. <c>null</c> if this is the last element.
+        /// </summary>
         public Block NextSibling { get; set; }
 
-        /// <remarks>Original: prev</remarks>
+        /// <summary>
+        /// Gets or sets the previous sibling of this block element. <c>null</c> if this is the first element.
+        /// </summary>
         public Block Previous { get; set; }
     }
 }

@@ -30,6 +30,12 @@ namespace CommonMark.Syntax
                 this._length += this._parts[i].Length;
         }
 
+        /// <summary>
+        /// Appends a part of the given string data to this instance.
+        /// </summary>
+        /// <param name="source">The source string.</param>
+        /// <param name="startIndex">The index of the first character that will be appended.</param>
+        /// <param name="length">The length of the substring that will be appended.</param>
         public void Append(string source, int startIndex, int length)
         {
             if (startIndex > source.Length || length < 1)
@@ -82,7 +88,6 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Writes the data contained in this instance to the given text writer.
         /// </summary>
-        /// <param name="writer"></param>
         public void WriteTo(System.IO.TextWriter writer)
         {
             for (var i = 0; i < this._partCounter; i++)
@@ -95,6 +100,9 @@ namespace CommonMark.Syntax
             }
         }
 
+        /// <summary>
+        /// Checks if the first character of the string content matches the given.
+        /// </summary>
         public bool StartsWith(char c)
         {
             for (var i = 0; i < this._partCounter; i++)
@@ -106,6 +114,9 @@ namespace CommonMark.Syntax
             return false;
         }
 
+        /// <summary>
+        /// Removes a given number of characters from the beginning of this instance.
+        /// </summary>
         public void TrimStart(int charactersToRemove)
         {
             this._length -= charactersToRemove;
@@ -130,6 +141,10 @@ namespace CommonMark.Syntax
             }
         }
 
+        /// <summary>
+        /// Reports the zero-based index of the first occurrence of the specified character in this instance.
+        /// </summary>
+        /// <returns>The zero-based index position of value if that character is found, or -1 if it is not.</returns>
         public int IndexOf(char c)
         {
             int res = -1;
@@ -149,6 +164,12 @@ namespace CommonMark.Syntax
             return res;
         }
 
+        /// <summary>
+        /// Returns a substring starting at the beginning this instance with the given length.
+        /// Optionally the returned characters are removed from this instance.
+        /// </summary>
+        /// <param name="length">The number of characters to return.</param>
+        /// <param name="trim">If set to <c>true</c>, the characters are removed from this instance.</param>
         public string TakeFromStart(int length, bool trim = false)
         {
             // does not use StringBuilder because in most cases the substring will be taken from just the first part
@@ -192,6 +213,9 @@ namespace CommonMark.Syntax
             throw new ArgumentOutOfRangeException("length", "The length of the substring cannot be greater than the length of the string.");
         }
 
+        /// <summary>
+        /// Determines if the first line of this instance contains only spaces.
+        /// </summary>
         public bool IsFirstLineBlank()
         {
             char c;
@@ -218,6 +242,9 @@ namespace CommonMark.Syntax
             return true;
         }
 
+        /// <summary>
+        /// Removes any trailing blank lines.
+        /// </summary>
         public void RemoveTrailingBlankLines()
         {
             int pos, si;

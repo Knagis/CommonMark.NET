@@ -4,38 +4,69 @@ using System.Text;
 
 namespace CommonMark.Syntax
 {
+    /// <summary>
+    /// Specifies the element type of a <see cref="Block"/> instance.
+    /// </summary>
     public enum BlockTag
     {
+        /// <summary>
+        /// The root element that represents the document itself. There should only be one in the tree.
+        /// </summary>
         Document,
 
-        /// <remarks>Original: block_quote</remarks>
+        /// <summary>
+        /// A block-quote element.
+        /// </summary>
         BlockQuote,
 
+        /// <summary>
+        /// A list element. Will contain nested blocks with type of <see cref="BlockTag.ListItem"/>.
+        /// </summary>
         List,
 
-        /// <remarks>Original: list_item</remarks>
+        /// <summary>
+        /// An item in a block element of type <see cref="BlockTag.List"/>.
+        /// </summary>
         ListItem,
 
-        /// <remarks>Original: fenced_code</remarks>
+        /// <summary>
+        /// A code block element that was formatted with fences (for example, <c>~~~\nfoo\n~~~</c>).
+        /// </summary>
         FencedCode,
 
-        /// <remarks>Original: indented_code</remarks>
+        /// <summary>
+        /// A code block element that was formatted by indenting the lines with at least 4 spaces.
+        /// </summary>
         IndentedCode,
 
-        /// <remarks>Original: html_block</remarks>
+        /// <summary>
+        /// A raw HTML code block element.
+        /// </summary>
         HtmlBlock,
 
+        /// <summary>
+        /// A paragraph block element.
+        /// </summary>
         Paragraph,
 
-        /// <remarks>Original: atx_header</remarks>
+        /// <summary>
+        /// A header element that was parsed from an ATX style markup (<c>## heading 2</c>).
+        /// </summary>
         AtxHeader,
 
-        /// <remarks>Original: setext_header</remarks>
+        /// <summary>
+        /// A header element that was parsed from a Setext style markup (<c>heading\n========</c>).
+        /// </summary>
         SETextHeader,
 
+        /// <summary>
+        /// A horizontal ruler element.
+        /// </summary>
         HorizontalRuler,
 
-        /// <remarks>Original: reference_def</remarks>
+        /// <summary>
+        /// A text block that contains only link reference definitions.
+        /// </summary>
         ReferenceDefinition
     }
 }

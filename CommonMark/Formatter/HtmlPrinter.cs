@@ -322,7 +322,7 @@ namespace CommonMark.Formatter
         /// <summary>
         /// Writes the inline list to the given writer as plain text (without any HTML tags).
         /// </summary>
-        /// <seealso cref="https://github.com/jgm/CommonMark/issues/145"/>
+        /// <seealso href="https://github.com/jgm/CommonMark/issues/145"/>
         private static void InlinesToPlainText(HtmlTextWriter writer, Inline inline, CommonMarkSettings settings, Stack<InlineStackEntry> stack)
         {
             bool withinLink = false;
