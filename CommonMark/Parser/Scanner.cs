@@ -148,7 +148,7 @@ namespace CommonMark.Parser
 
             var j = 0;
             var tagname = new char[10];
-            while (((nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z')) && j <= 10 && ++i < s.Length)
+            while (((nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z') || (nextChar >= '1' && nextChar <= '6')) && j < 10 && ++i < s.Length)
             {
                 tagname[j++] = nextChar;
                 nextChar = s[i];
