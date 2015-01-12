@@ -15,6 +15,7 @@ namespace CommonMark.Formatter
         private char[] _buffer = new char[256];
 
         public HtmlTextWriter(System.IO.TextWriter inner)
+            : base(System.Globalization.CultureInfo.InvariantCulture)
         {
             this._inner = inner;
 

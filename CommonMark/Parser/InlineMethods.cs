@@ -456,7 +456,7 @@ namespace CommonMark.Parser
                 var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, '~', out can_close);
                 if (istack != null)
                 {
-                    MatchTildeStack(istack, subj, numdelims, null);
+                    MatchTildeStack(istack, subj, null);
 
                     // if the closer was not fully used, move back a char or two and try again.
                     if (numdelims > 2)
@@ -490,7 +490,7 @@ namespace CommonMark.Parser
             return inlText;
         }
 
-        internal static void MatchTildeStack(InlineStack opener, Subject subj, int closingDelimeterCount, InlineStack closer)
+        internal static void MatchTildeStack(InlineStack opener, Subject subj, InlineStack closer)
         {
             // calculate the actual number of delimeters used from this closer
 

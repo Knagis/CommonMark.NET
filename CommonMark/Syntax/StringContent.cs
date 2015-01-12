@@ -103,12 +103,12 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Checks if the first character of the string content matches the given.
         /// </summary>
-        public bool StartsWith(char c)
+        public bool StartsWith(char character)
         {
             for (var i = 0; i < this._partCounter; i++)
             {
                 if (this._parts[i].Length != 0)
-                    return this._parts[i].Source[this._parts[i].StartIndex] == c;
+                    return this._parts[i].Source[this._parts[i].StartIndex] == character;
             }
 
             return false;
@@ -145,13 +145,13 @@ namespace CommonMark.Syntax
         /// Reports the zero-based index of the first occurrence of the specified character in this instance.
         /// </summary>
         /// <returns>The zero-based index position of value if that character is found, or -1 if it is not.</returns>
-        public int IndexOf(char c)
+        public int IndexOf(char character)
         {
             int res = -1;
             var index = 0;
             for (var i = 0; i < this._partCounter; i++)
             {
-                res = this._parts[i].Source.IndexOf(c, this._parts[i].StartIndex, this._parts[i].Length);
+                res = this._parts[i].Source.IndexOf(character, this._parts[i].StartIndex, this._parts[i].Length);
                 if (res != -1)
                 {
                     res = res - this._parts[i].StartIndex + index;

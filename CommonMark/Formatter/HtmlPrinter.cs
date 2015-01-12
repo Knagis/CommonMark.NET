@@ -323,7 +323,7 @@ namespace CommonMark.Formatter
         /// Writes the inline list to the given writer as plain text (without any HTML tags).
         /// </summary>
         /// <seealso href="https://github.com/jgm/CommonMark/issues/145"/>
-        private static void InlinesToPlainText(HtmlTextWriter writer, Inline inline, CommonMarkSettings settings, Stack<InlineStackEntry> stack)
+        private static void InlinesToPlainText(HtmlTextWriter writer, Inline inline, Stack<InlineStackEntry> stack)
         {
             bool withinLink = false;
             bool stackWithinLink = false; 
@@ -489,7 +489,7 @@ namespace CommonMark.Formatter
                             EscapeUrl(inline.TargetUrl, writer);
 
                         writer.Write("\" alt=\"");
-                        InlinesToPlainText(writer, inline.FirstChild, settings, stack);
+                        InlinesToPlainText(writer, inline.FirstChild, stack);
                         writer.Write("\"");
                         if (!string.IsNullOrEmpty(inline.LiteralContent))
                         {

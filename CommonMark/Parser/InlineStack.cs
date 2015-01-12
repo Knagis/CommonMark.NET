@@ -190,7 +190,7 @@ namespace CommonMark.Parser
                             }
                             else if (iopener.Delimeter == '~')
                             {
-                                InlineMethods.MatchTildeStack(iopener, subj, istack.DelimeterCount, istack);
+                                InlineMethods.MatchTildeStack(iopener, subj, istack);
                                 if (istack.DelimeterCount > 1)
                                     retry = true;
                             }
