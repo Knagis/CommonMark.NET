@@ -36,6 +36,7 @@ namespace CommonMark.Parser
             return p;
         }
 
+
         /// <summary>
         /// Collapses internal whitespace to single space, removes leading/trailing whitespace, folds case.
         /// </summary>
@@ -82,52 +83,6 @@ namespace CommonMark.Parser
 
             refmap.Add(refer.Label, refer);
         }
-
-        // Create an inline with a linkable string value.
-        private static Inline make_linkable(InlineTag t, Inline label, string url, string title)
-        {
-            Inline e = new Inline();
-            e.Tag = t;
-            e.FirstChild = label;
-            e.Linkable.Url = url;
-            e.Linkable.Title = title;
-            return e;
-        }
-
-        private static Inline make_inlines(InlineTag t, Inline contents)
-        {
-            Inline e = new Inline();
-            e.Tag = t;
-            e.FirstChild = contents;
-            return e;
-        }
-
-        // Create an inline with a literal string value.
-        private static Inline make_literal(InlineTag t, string s)
-        {
-            Inline e = new Inline();
-            e.Tag = t;
-            e.LiteralContent = s;
-            return e;
-        }
-
-        // Create an inline with no value.
-        private static Inline make_simple(InlineTag t)
-        {
-            Inline e = new Inline();
-            e.Tag = t;
-            return e;
-        }
-
-        // Macros for creating various kinds of inlines.
-        private static Inline make_str(string s) { return make_literal(InlineTag.String, s); }
-        private static Inline make_code(string s) { return make_literal(InlineTag.Code, s); }
-        private static Inline make_raw_html(string s) { return make_literal(InlineTag.RawHtml, s); }
-        private static Inline make_linebreak() { return make_simple(InlineTag.LineBreak); }
-        private static Inline make_softbreak() { return make_simple(InlineTag.SoftBreak); }
-        private static Inline make_link(Inline label, string url, string title) { return make_linkable(InlineTag.Link, label, url, title); }
-        private static Inline make_emph(Inline contents) { return make_inlines(InlineTag.Emphasis, contents); }
-        private static Inline make_strong(Inline contents) { return make_inlines(InlineTag.Strong, contents); }
 
         // Append inline list b to the end of inline list a.
         // Return pointer to head of new list.
@@ -319,11 +274,11 @@ namespace CommonMark.Parser
             {
                 // closing not found
                 subj.Position = startpos; // rewind to right after the opening ticks
-                return make_str(new string('`', ticklength));
+                return new Inline(new string('`', ticklength));
             }
             else
             {
-                return make_code(NormalizeWhitespace(subj.Buffer, startpos, endpos - startpos - ticklength));
+                return new Inline(InlineTag.Code, NormalizeWhitespace(subj.Buffer, startpos, endpos - startpos - ticklength));
             }
         }
 
@@ -393,7 +348,7 @@ namespace CommonMark.Parser
                     {
                         // a new inline element must be created because the old one has to be the one that
                         // finalizes the children of the emphasis
-                        var newCloserInline = make_str(closer.StartingInline.LiteralContent.Substring(useDelims));
+                        var newCloserInline = new Inline(closer.StartingInline.LiteralContent.Substring(useDelims));
                         closer.StartingInline.LiteralContent = null;
                         closer.StartingInline.NextSibling = null;
                         inl.NextSibling = closer.StartingInline = newCloserInline;
@@ -423,7 +378,7 @@ namespace CommonMark.Parser
                 opener.DelimeterCount -= useDelims;
                 inl.LiteralContent = inl.LiteralContent.Substring(0, opener.DelimeterCount);
 
-                var emph = useDelims == 1 ? make_emph(inl.NextSibling) : make_strong(inl.NextSibling);
+                var emph = new Inline(useDelims == 1 ? InlineTag.Emphasis : InlineTag.Strong, inl.NextSibling);
                 inl.NextSibling = emph;
 
                 if (subj != null)
@@ -469,7 +424,7 @@ namespace CommonMark.Parser
                 }
             }
 
-            var inlText = make_str(subj.Buffer.Substring(subj.Position - numdelims, numdelims));
+            var inlText = new Inline(subj.Buffer.Substring(subj.Position - numdelims, numdelims));
 
             if (can_open || can_close)
             {
@@ -493,7 +448,7 @@ namespace CommonMark.Parser
             var numdelims = ScanEmphasisDelimeters(subj, '~', out can_open, out can_close);
 
             if (numdelims == 1)
-                return make_str("~");
+                return new Inline("~");
 
             if (can_close)
             {
@@ -517,7 +472,7 @@ namespace CommonMark.Parser
                 }
             }
 
-            var inlText = make_str(subj.Buffer.Substring(subj.Position - numdelims, numdelims));
+            var inlText = new Inline(subj.Buffer.Substring(subj.Position - numdelims, numdelims));
 
             if (can_open || can_close)
             {
@@ -553,7 +508,7 @@ namespace CommonMark.Parser
                     {
                         // a new inline element must be created because the old one has to be the one that
                         // finalizes the children of the strikethrough
-                        var newCloserInline = make_str(closer.StartingInline.LiteralContent.Substring(2));
+                        var newCloserInline = new Inline(closer.StartingInline.LiteralContent.Substring(2));
                         closer.StartingInline.LiteralContent = null;
                         closer.StartingInline.NextSibling = null;
                         inl.NextSibling = closer.StartingInline = newCloserInline;
@@ -583,18 +538,18 @@ namespace CommonMark.Parser
                 opener.DelimeterCount -= 2;
                 inl.LiteralContent = opener.StartingInline.LiteralContent.Substring(0, opener.DelimeterCount);
 
-                var emph = make_inlines(InlineTag.Strikethrough, inl.NextSibling);
-                inl.NextSibling = emph;
+                var strk = new Inline(InlineTag.Strikethrough, inl.NextSibling);
+                inl.NextSibling = strk;
 
                 if (subj != null)
-                    subj.LastInline = emph;
+                    subj.LastInline = strk;
 
                 if (closer != null)
                 {
                     inl = closer.StartingInline;
                     closer.DelimeterCount -= 2;
                     inl.LiteralContent = inl.LiteralContent.Substring(0, closer.DelimeterCount);
-                    emph.NextSibling = inl;
+                    strk.NextSibling = inl;
                 }
             }
         }
@@ -605,7 +560,7 @@ namespace CommonMark.Parser
             if (peek_char(subj) == '[')
                 return HandleLeftSquareBracket(subj, true);
             else
-                return make_str("!");
+                return new Inline("!");
         }
 
         private static Inline HandleLeftSquareBracket(Subject subj)
@@ -618,7 +573,7 @@ namespace CommonMark.Parser
             // move past the '['
             subj.Position++;
 
-            var inlText = make_str(isImage ? "![" : "[");
+            var inlText = new Inline(isImage ? "![" : "[");
 
             var istack = new InlineStack();
             istack.Delimeter = '[';
@@ -680,7 +635,7 @@ namespace CommonMark.Parser
                     InlineStack.RemoveStackEntry(closer, subj, closer);
                 else
                 {
-                    var inl = make_str("]");
+                    var inl = new Inline("]");
                     subj.LastInline.LastSibling.NextSibling = inl;
                     subj.LastInline = inl;
                 }
@@ -701,7 +656,7 @@ namespace CommonMark.Parser
                 if (istack.DelimeterCount == -1)
                 {
                     InlineStack.RemoveStackEntry(istack, subj, istack);
-                    return make_str("]");
+                    return new Inline("]");
                 }
 
                 var endpos = subj.Position;
@@ -725,7 +680,7 @@ namespace CommonMark.Parser
                 return null;
             }
 
-            var inlText = make_str("]");
+            var inlText = new Inline("]");
 
             if (can_close)
             {
@@ -754,7 +709,7 @@ namespace CommonMark.Parser
             advance(subj);
 
             if (subj.Position >= subj.Buffer.Length)
-                return make_str("\\");
+                return new Inline("\\");
 
             var nextChar = subj.Buffer[subj.Position];
 
@@ -763,16 +718,16 @@ namespace CommonMark.Parser
                 // only ascii symbols and newline can be escaped
                 // the exception is the unicode bullet char since it can be used for defining list items
                 advance(subj);
-                return make_str(nextChar.ToString());
+                return new Inline(nextChar.ToString());
             }
             else if (nextChar == '\n')
             {
                 advance(subj);
-                return make_linebreak();
+                return new Inline(InlineTag.LineBreak);
             }
             else
             {
-                return make_str("\\");
+                return new Inline("\\");
             }
         }
 
@@ -792,28 +747,30 @@ namespace CommonMark.Parser
                 {
                     var decoded = EntityDecoder.DecodeEntity(namedEntity);
                     if (decoded != null)
-                        return make_str(decoded);
+                        return new Inline(decoded);
                 }
                 else if (numericEntity > 0)
                 {
                     var decoded = EntityDecoder.DecodeEntity(numericEntity);
                     if (decoded != null)
-                        return make_str(decoded);
-                    return make_str("\uFFFD");
+                        return new Inline(decoded);
+                    return new Inline("\uFFFD");
                 }
 
-                return make_str(subj.Buffer.Substring(subj.Position - match, match));
+                return new Inline(subj.Buffer.Substring(subj.Position - match, match));
             }
             else
             {
                 advance(subj);
-                return make_str("&");
+                return new Inline("&");
             }
         }
 
-        // Like make_str, but parses entities.
-        // Returns an inline sequence consisting of str and entity elements.
-        static Inline make_str_with_entities(string s)
+        /// <summary>
+        /// Creates a new <see cref="Inline"/> element that represents string content but the given content
+        /// is processed to decode any HTML entities in it.
+        /// </summary>
+        static Inline ParseStringEntities(string s)
         {
             Inline result = null;
             Inline inew;
@@ -833,7 +790,7 @@ namespace CommonMark.Parser
                     if (searchpos == -1)
                         searchpos = subj.Buffer.Length;
 
-                    inew = make_str(subj.Buffer.Substring(subj.Position, searchpos - subj.Position));
+                    inew = new Inline(subj.Buffer.Substring(subj.Position, searchpos - subj.Position));
                     subj.Position = searchpos;
                 }
 
@@ -973,36 +930,41 @@ namespace CommonMark.Parser
             string contents;
             Inline result;
 
-            advance(subj);  // advance past first <
+            // advance past first <
+            advance(subj);  
+
             // first try to match a URL autolink
             matchlen = Scanner.scan_autolink_uri(subj.Buffer, subj.Position);
             if (matchlen > 0)
             {
                 contents = subj.Buffer.Substring(subj.Position, matchlen - 1);
                 subj.Position += matchlen;
-                result = make_link(make_str_with_entities(contents), contents, "");
+                result = Inline.CreateLink(ParseStringEntities(contents), contents, string.Empty);
                 return result;
             }
+
             // next try to match an email autolink
             matchlen = Scanner.scan_autolink_email(subj.Buffer, subj.Position);
             if (matchlen > 0)
             {
                 contents = subj.Buffer.Substring(subj.Position, matchlen - 1);
                 subj.Position += matchlen;
-                result = make_link(make_str_with_entities(contents), "mailto:" + contents, "");
+                result = Inline.CreateLink(ParseStringEntities(contents), "mailto:" + contents, string.Empty);
                 return result;
             }
+
             // finally, try to match an html tag
             matchlen = Scanner.scan_html_tag(subj.Buffer, subj.Position);
             if (matchlen > 0)
             {
                 contents = subj.Buffer.Substring(subj.Position - 1, matchlen + 1);
                 subj.Position += matchlen;
-                return make_raw_html(contents);
+                return new Inline(InlineTag.RawHtml, contents);
             }
             else
-            {// if nothing matches, just return the opening <:
-                return make_str("<");
+            {
+                // if nothing matches, just return the opening <:
+                return new Inline("<");
             }
         }
 
@@ -1079,9 +1041,9 @@ namespace CommonMark.Parser
                 advance(subj);
 
             if (nlpos > 1 && subj.Buffer[nlpos - 1] == ' ' && subj.Buffer[nlpos - 2] == ' ')
-                return make_linebreak();
+                return new Inline(InlineTag.LineBreak);
             else
-                return make_softbreak();
+                return new Inline(InlineTag.SoftBreak);
         }
 
         // Parse an inline, advancing subject, and add it to last element.
@@ -1125,7 +1087,7 @@ namespace CommonMark.Parser
                     contents = contents.TrimEnd();
             }
 
-            return make_str(contents);
+            return new Inline(contents);
         }
 
         public static Inline parse_inlines(string input, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters)

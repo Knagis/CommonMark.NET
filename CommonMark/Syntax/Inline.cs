@@ -6,6 +6,45 @@ namespace CommonMark.Syntax
 {
     public sealed class Inline
     {
+        public Inline()
+        {
+        }
+
+        public Inline(InlineTag tag)
+        {
+            this.Tag = tag;
+        }
+
+        public Inline(InlineTag tag, string content)
+        {
+            this.Tag = tag;
+            this.LiteralContent = content;
+        }
+
+        public Inline(string content)
+        {
+            // this is not assigned because it is the default value.
+            ////this.Tag = InlineTag.String;
+
+            this.LiteralContent = content;
+        }
+
+        public Inline(InlineTag tag, Inline content)
+        {
+            this.Tag = tag;
+            this.FirstChild = content;
+        }
+
+        internal static Inline CreateLink(Inline label, string url, string title)
+        {
+            var i = new Inline();
+            i.Tag = InlineTag.Link;
+            i.FirstChild = label;
+            i._linkable.Url = url;
+            i._linkable.Title = title;
+            return i;
+        }
+
         public InlineTag Tag { get; set; }
 
         public string LiteralContent { get; set; }

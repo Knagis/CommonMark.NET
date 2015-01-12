@@ -7,7 +7,7 @@ namespace CommonMark.Syntax
     public enum InlineTag
     {
         /// <remarks>Original: str</remarks>
-        String,
+        String = 0,
 
         SoftBreak,
 
