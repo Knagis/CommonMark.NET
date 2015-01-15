@@ -8,7 +8,7 @@ namespace CommonMark
 {
     class Program
     {
-        static void print_usage()
+        static void PrintUsage()
         {
             Console.WriteLine("Usage:   CommonMark.Console [FILE*] [--out FILE]");
             Console.WriteLine("Options: --help, -h    Print usage information");
@@ -38,7 +38,7 @@ namespace CommonMark
                     else if ((string.Equals(args[i], "--help", StringComparison.OrdinalIgnoreCase)) ||
                              (string.Equals(args[i], "-h", StringComparison.OrdinalIgnoreCase)))
                     {
-                        print_usage();
+                        PrintUsage();
                         return 0;
                     }
                     else if (string.Equals(args[i], "--ast", StringComparison.OrdinalIgnoreCase))
@@ -49,7 +49,7 @@ namespace CommonMark
                     {
                         if (i == argc - 1 || args[i + 1].StartsWith("-"))
                         {
-                            print_usage();
+                            PrintUsage();
                             return 1;
                         }
 
@@ -58,7 +58,7 @@ namespace CommonMark
                     }
                     else if (args[i].StartsWith("-"))
                     {
-                        print_usage();
+                        PrintUsage();
                         return 1;
                     }
                     else
@@ -81,7 +81,7 @@ namespace CommonMark
                         if (!Console.IsInputRedirected)
                         {
                             Console.WriteLine("Only redirected STDIN is supported.");
-                            print_usage();
+                            PrintUsage();
                             return 2;
                         }
 
