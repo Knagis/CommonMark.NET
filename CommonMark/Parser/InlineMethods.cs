@@ -386,10 +386,14 @@ namespace CommonMark.Parser
 
                 if (closer != null)
                 {
-                    inl = closer.StartingInline;
+                    // a new inline element must be created because the old one has to be the one that
+                    // finalizes the children of the emphasis
+                    var newCloserInline = new Inline(closer.StartingInline.LiteralContent.Substring(useDelims));
+                    newCloserInline.NextSibling = closer.StartingInline.NextSibling;
                     closer.DelimeterCount -= useDelims;
-                    inl.LiteralContent = inl.LiteralContent.Substring(0, closer.DelimeterCount);
-                    emph.NextSibling = inl;
+                    closer.StartingInline.LiteralContent = null;
+                    closer.StartingInline.NextSibling = null;
+                    emph.NextSibling = closer.StartingInline = newCloserInline;
                 }
             }
 
@@ -546,10 +550,14 @@ namespace CommonMark.Parser
 
                 if (closer != null)
                 {
-                    inl = closer.StartingInline;
+                    // a new inline element must be created because the old one has to be the one that
+                    // finalizes the children of the emphasis
+                    var newCloserInline = new Inline(closer.StartingInline.LiteralContent.Substring(2));
+                    newCloserInline.NextSibling = closer.StartingInline.NextSibling;
                     closer.DelimeterCount -= 2;
-                    inl.LiteralContent = inl.LiteralContent.Substring(0, closer.DelimeterCount);
-                    strk.NextSibling = inl;
+                    closer.StartingInline.LiteralContent = null;
+                    closer.StartingInline.NextSibling = null;
+                    strk.NextSibling = closer.StartingInline = newCloserInline;
                 }
             }
         }
