@@ -41,7 +41,7 @@ namespace CommonMark
             if (source == null)
                 throw new ArgumentNullException("source");
 
-            var cur = BlockMethods.make_document();
+            var cur = Syntax.Block.CreateDocument();
 
             int linenum = 1;
             try
@@ -49,7 +49,7 @@ namespace CommonMark
                 var reader = new Parser.TabTextReader(source);
                 while (!reader.EndOfStream())
                 {
-                    BlockMethods.incorporate_line(reader.ReadLine(), linenum, ref cur);
+                    BlockMethods.IncorporateLine(reader.ReadLine(), linenum, ref cur);
                     linenum++;
                 }
             }
@@ -70,7 +70,7 @@ namespace CommonMark
             {
                 while (cur != cur.Top)
                 {
-                    BlockMethods.finalize(cur, linenum);
+                    BlockMethods.Finalize(cur, linenum);
                     cur = cur.Parent;
                 }
             }
@@ -88,7 +88,7 @@ namespace CommonMark
 
             try
             {
-                BlockMethods.finalize(cur, linenum);
+                BlockMethods.Finalize(cur, linenum);
             }
             catch(CommonMarkException)
             {

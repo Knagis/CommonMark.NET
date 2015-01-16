@@ -9,19 +9,10 @@ namespace CommonMark.Parser
     {
         private const int CODE_INDENT = 4;
 
-        // Create a root document block.
-        public static Block make_document()
-        {
-            Block e = new Block(BlockTag.Document, 1, 1);
-            e.ReferenceMap = new Dictionary<string, Reference>();
-            e.Top = e;
-            return e;
-        }
-
 #if OptimizeFor45
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        private static bool can_contain(BlockTag parent_type, BlockTag child_type)
+        private static bool CanContain(BlockTag parent_type, BlockTag child_type)
         {
             return (parent_type == BlockTag.Document ||
                      parent_type == BlockTag.BlockQuote ||
@@ -32,7 +23,7 @@ namespace CommonMark.Parser
 #if OptimizeFor45
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        private static bool accepts_lines(BlockTag block_type)
+        private static bool AcceptsLines(BlockTag block_type)
         {
             return (block_type == BlockTag.Paragraph ||
                     block_type == BlockTag.AtxHeader ||
@@ -40,8 +31,7 @@ namespace CommonMark.Parser
                     block_type == BlockTag.FencedCode);
         }
 
-
-        static void add_line(Block block, string ln, int offset, int length = -1)
+        private static void AddLine(Block block, string ln, int offset, int length = -1)
         {
             if (!block.IsOpen)
                 throw new CommonMarkException(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
@@ -54,59 +44,59 @@ namespace CommonMark.Parser
             if (curSC == null)
                 block.StringContent = curSC = new StringContent();
 
-                block.StringContent.Append(ln, offset, len);
+            block.StringContent.Append(ln, offset, len);
         }
 
-        // Check to see if a block ends with a blank line, descending
-        // if needed into lists and sublists.
-        static bool ends_with_blank_line(Block block)
+        /// <summary>
+        /// Check to see if a block ends with a blank line, descending if needed into lists and sublists.
+        /// </summary>
+        private static bool EndsWithBlankLine(Block block)
         {
-            if (block.IsLastLineBlank)
+            while (true)
             {
-                return true;
-            }
-            if ((block.Tag == BlockTag.List || block.Tag == BlockTag.ListItem) && block.LastChild != null)
-            {
-                return ends_with_blank_line(block.LastChild);
-            }
-            else
-            {
-                return false;
+                if (block.IsLastLineBlank)
+                    return true;
+
+                if (block.Tag != BlockTag.List && block.Tag != BlockTag.ListItem)
+                    return false;
+                 
+                block = block.LastChild;
             }
         }
 
-        // Break out of all containing lists
-        private static void break_out_of_lists(ref Block bptr, int line_number)
+        /// <summary>
+        /// Break out of all containing lists
+        /// </summary>
+        private static void BreakOutOfLists(ref Block blockRef, int line_number)
         {
-            Block container = bptr;
+            Block container = blockRef;
             Block b = container.Top;
+
             // find first containing list:
             while (b != null && b.Tag != BlockTag.List)
-            {
                 b = b.LastChild;
-            }
+
             if (b != null)
             {
                 while (container != null && container != b)
                 {
-                    finalize(container, line_number);
+                    Finalize(container, line_number);
                     container = container.Parent;
                 }
-                finalize(b, line_number);
-                bptr = b.Parent;
+
+                Finalize(b, line_number);
+                blockRef = b.Parent;
             }
         }
 
-
-        public static void finalize(Block b, int line_number)
+        public static void Finalize(Block b, int line_number)
         {
+            // don't do anything if the block is already closed
             if (!b.IsOpen)
-            {
-                // don't do anything if the block is already closed
-                return; 
-            }
+                return;
 
             b.IsOpen = false;
+
             if (line_number > b.StartLine)
                 b.EndLine = line_number - 1;
             else
@@ -148,23 +138,23 @@ namespace CommonMark.Parser
                             b.ListData.IsTight = false;
                             break;
                         }
-                        // recurse into children of list item, to see if there are
-                        // spaces between them:
+
+                        // recurse into children of list item, to see if there are spaces between them:
                         subitem = item.FirstChild;
                         while (subitem != null)
                         {
-                            if (ends_with_blank_line(subitem) &&
-                                (item.NextSibling != null || subitem.NextSibling != null))
+                            if (EndsWithBlankLine(subitem) && (item.NextSibling != null || subitem.NextSibling != null))
                             {
                                 b.ListData.IsTight = false;
                                 break;
                             }
+
                             subitem = subitem.NextSibling;
                         }
-                        if (!(b.ListData.IsTight))
-                        {
+
+                        if (!b.ListData.IsTight)
                             break;
-                        }
+
                         item = item.NextSibling;
                     }
 
@@ -183,9 +173,9 @@ namespace CommonMark.Parser
         {
             // if 'parent' isn't the kind of block that can accept this child,
             // then back up til we hit a block that can.
-            while (!can_contain(parent.Tag, blockType))
+            while (!CanContain(parent.Tag, blockType))
             {
-                finalize(parent, startLine);
+                Finalize(parent, startLine);
                 parent = parent.Parent;
             }
 
@@ -207,7 +197,6 @@ namespace CommonMark.Parser
             parent.LastChild = child;
             return child;
         }
-
 
         /// <summary>
         /// Walk through the block, its children and siblings, parsing string content into inline content where appropriate.
@@ -325,8 +314,7 @@ namespace CommonMark.Parser
             return (i == -1 || i == content.Length - 1);
         }
 
-        // Return 1 if list item belongs in list, else 0.
-        private static bool lists_match(ListData list_data, ListData item_data)
+        private static bool ListsMatch(ListData list_data, ListData item_data)
         {
             return (list_data.ListType == item_data.ListType &&
                     list_data.Delimiter == item_data.Delimiter &&
@@ -337,7 +325,7 @@ namespace CommonMark.Parser
         // Process one line at a time, modifying a block.
         // Returns 0 if successful.  curptr is changed to point to
         // the currently open block.
-        public static void incorporate_line(string ln, int line_number, ref Block curptr)
+        public static void IncorporateLine(string ln, int line_number, ref Block curptr)
         {
             Block last_matched_container;
             int offset = 0;
@@ -470,11 +458,11 @@ namespace CommonMark.Parser
             // check to see if we've hit 2nd blank line, break out of list:
             if (blank && container.IsLastLineBlank)
             {
-                break_out_of_lists(ref container, line_number);
+                BreakOutOfLists(ref container, line_number);
             }
 
             // unless last matched container is code block, try new container starts:
-            while (container.Tag != BlockTag.FencedCode && 
+            while (container.Tag != BlockTag.FencedCode &&
                    container.Tag != BlockTag.IndentedCode &&
                    container.Tag != BlockTag.HtmlBlock)
             {
@@ -538,7 +526,7 @@ namespace CommonMark.Parser
                     // note, we don't adjust offset because the tag is part of the text
 
                 }
-                else if (container.Tag == BlockTag.Paragraph 
+                else if (container.Tag == BlockTag.Paragraph
                         && 0 != (matched = Scanner.scan_setext_header_line(ln, first_nonspace))
                         && ContainsSingleLine(container.StringContent))
                 {
@@ -553,7 +541,7 @@ namespace CommonMark.Parser
 
                     // it's only now that we know the line is not part of a setext header:
                     container = CreateChildBlock(container, BlockTag.HorizontalRuler, line_number, first_nonspace + 1);
-                    finalize(container, line_number);
+                    Finalize(container, line_number);
                     container = container.Parent;
                     offset = ln.Length - 1;
 
@@ -588,7 +576,7 @@ namespace CommonMark.Parser
 
                     data.MarkerOffset = indent;
 
-                    if (container.Tag != BlockTag.List || !lists_match(container.ListData, data))
+                    if (container.Tag != BlockTag.List || !ListsMatch(container.ListData, data))
                     {
                         container = CreateChildBlock(container, BlockTag.List, line_number, first_nonspace + 1);
                         container.ListData = data;
@@ -603,7 +591,7 @@ namespace CommonMark.Parser
                     break;
                 }
 
-                if (accepts_lines(container.Tag))
+                if (AcceptsLines(container.Tag))
                 {
                     // if it's a line container, it can't contain other containers
                     break;
@@ -649,7 +637,7 @@ namespace CommonMark.Parser
                 cur.StringContent.Length > 0)
             {
 
-                add_line(cur, ln, offset);
+                AddLine(cur, ln, offset);
 
             }
             else
@@ -659,7 +647,7 @@ namespace CommonMark.Parser
                 while (cur != last_matched_container)
                 {
 
-                    finalize(cur, line_number);
+                    Finalize(cur, line_number);
                     cur = cur.Parent;
 
                     if (cur == null)
@@ -670,7 +658,7 @@ namespace CommonMark.Parser
                 if (container.Tag == BlockTag.IndentedCode)
                 {
 
-                    add_line(container, ln, offset);
+                    AddLine(container, ln, offset);
 
                 }
                 else if (container.Tag == BlockTag.FencedCode)
@@ -683,19 +671,19 @@ namespace CommonMark.Parser
                     if (matched != 0)
                     {
                         // if closing fence, don't add line to container; instead, close it:
-                        finalize(container, line_number);
+                        Finalize(container, line_number);
                         container = container.Parent; // back up to parent
                     }
                     else
                     {
-                        add_line(container, ln, offset);
+                        AddLine(container, ln, offset);
                     }
 
                 }
                 else if (container.Tag == BlockTag.HtmlBlock)
                 {
 
-                    add_line(container, ln, offset);
+                    AddLine(container, ln, offset);
 
                 }
                 else if (blank)
@@ -721,15 +709,15 @@ namespace CommonMark.Parser
                     if (p < 0 || ln[p] != ' ')
                         p = ln.Length - 1;
 
-                    add_line(container, ln, first_nonspace, p - first_nonspace + 1);
-                    finalize(container, line_number);
+                    AddLine(container, ln, first_nonspace, p - first_nonspace + 1);
+                    Finalize(container, line_number);
                     container = container.Parent;
 
                 }
-                else if (accepts_lines(container.Tag))
+                else if (AcceptsLines(container.Tag))
                 {
 
-                    add_line(container, ln, first_nonspace);
+                    AddLine(container, ln, first_nonspace);
 
                 }
                 else if (container.Tag != BlockTag.HorizontalRuler && container.Tag != BlockTag.SETextHeader)
@@ -737,7 +725,7 @@ namespace CommonMark.Parser
 
                     // create paragraph container for line
                     container = CreateChildBlock(container, BlockTag.Paragraph, line_number, first_nonspace + 1);
-                    add_line(container, ln, first_nonspace);
+                    AddLine(container, ln, first_nonspace);
 
                 }
                 else

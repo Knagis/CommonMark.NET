@@ -26,6 +26,17 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
+        /// Creates a new top-level document block.
+        /// </summary>
+        internal static Block CreateDocument()
+        {
+            Block e = new Block(BlockTag.Document, 1, 1);
+            e.ReferenceMap = new Dictionary<string, Reference>();
+            e.Top = e;
+            return e;
+        }
+
+        /// <summary>
         /// Gets or sets the type of the element this instance represents.
         /// </summary>
         public BlockTag Tag { get; set; }
