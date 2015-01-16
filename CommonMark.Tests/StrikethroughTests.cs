@@ -128,5 +128,13 @@ namespace CommonMark.Tests
             // '[' char in the middle will delay the ~~ match to the post-process phase.
             Helpers.ExecuteTest("foo ~~ba[r~~~", "<p>foo <del>ba[r</del>~</p>", Settings);
         }
+
+        [TestMethod]
+        [TestCategory("Inlines - Strikethrough")]
+        public void StrikethroughExample10d()
+        {
+            // '[' char in the middle will delay the ~~ match to the post-process phase.
+            Helpers.ExecuteTest("~~~~[foo~~ bar", "<p>~~<del>[foo</del> bar</p>", Settings);
+        }
     }
 }

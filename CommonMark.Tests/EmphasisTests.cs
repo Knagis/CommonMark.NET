@@ -59,5 +59,12 @@ namespace CommonMark.Tests
             // '[' char in the middle will delay the ** match to the post-process phase.
             Helpers.ExecuteTest("foo **ba[r****", "<p>foo <strong>ba[r</strong>**</p>");
         }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        public void DelayedEmphasisMatch4()
+        {
+            Helpers.ExecuteTest("**[foo* bar", "<p>*<em>[foo</em> bar</p>");
+        }
     }
 }
