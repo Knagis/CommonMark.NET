@@ -526,7 +526,7 @@ namespace CommonMark.Parser
                     // note, we don't adjust offset because the tag is part of the text
 
                 }
-                else if (container.Tag == BlockTag.Paragraph
+                else if (container.Tag == BlockTag.Paragraph && (curChar == '=' || curChar == '-')
                         && 0 != (matched = Scanner.scan_setext_header_line(ln, first_nonspace))
                         && ContainsSingleLine(container.StringContent))
                 {
@@ -553,17 +553,14 @@ namespace CommonMark.Parser
                     offset = first_nonspace + matched;
                     i = 0;
                     while (i <= 5 && ln[offset + i] == ' ')
-                    {
                         i++;
-                    }
+
                     // i = number of spaces after marker, up to 5
                     if (i >= 5 || i < 1 || ln[offset] == '\n')
                     {
                         data.Padding = matched + 1;
                         if (i > 0)
-                        {
-                            offset += 1;
-                        }
+                            offset++;
                     }
                     else
                     {
@@ -664,11 +661,9 @@ namespace CommonMark.Parser
                 else if (container.Tag == BlockTag.FencedCode)
                 {
 
-                    matched = (indent <= 3
+                    if ((indent <= 3
                       && curChar == container.FencedCodeData.FenceChar)
-                      && (0 != Scanner.scan_close_code_fence(ln, first_nonspace, container.FencedCodeData.FenceLength))
-                      ? 1 : 0;
-                    if (matched != 0)
+                      && (0 != Scanner.scan_close_code_fence(ln, first_nonspace, container.FencedCodeData.FenceLength)))
                     {
                         // if closing fence, don't add line to container; instead, close it:
                         Finalize(container, line_number);
