@@ -51,6 +51,8 @@ sub tidy
       s/  */ /;
       # collapse space before /> in tag
       s/  *\/>/\/>/;
+	  # add a newline after <li> tag
+	  s/<li>(.+)/<li>\n$1/;
       # skip blank line
       if (/^$/) {
         next;
