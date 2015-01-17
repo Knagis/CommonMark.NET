@@ -137,10 +137,12 @@ namespace CommonMark
                 var settings = new CommonMarkSettings();
                 settings.OutputFormat = ast ? OutputFormat.SyntaxTree : OutputFormat.Html;
 
-                foreach (var source in sources)
+                if (benchmark)
                 {
-                    if (benchmark)
+                    Console.WriteLine("Running the benchmark...");
+                    foreach (var source in sources)
                     {
+                        // by using a in-memory source, the disparity of results is reduced.
                         var data = source.ReadToEnd();
 
                         var sw = new System.Diagnostics.Stopwatch();
@@ -167,10 +169,11 @@ namespace CommonMark
                             (decimal)sw.ElapsedMilliseconds / benchmarkIterations,
                             (mem2 - mem) / 1024M / 1024M);
                     }
-                    else
-                    {
+                }
+                else
+                {
+                    foreach (var source in sources)
                         CommonMarkConverter.Convert(source, target, settings);
-                    }
                 }
 
                 return 0;
