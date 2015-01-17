@@ -26,6 +26,16 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
+        /// Returns an enumerable that allows the iteration over all block and inline elements within this
+        /// instance. Note that the enumerator should not be used if optimal performance is desired and instead
+        /// a custom implementation should be written.
+        /// </summary>
+        public IEnumerable<EnumeratorEntry> AsEnumerable()
+        {
+            return new Enumerable(this);
+        }
+
+        /// <summary>
         /// Creates a new top-level document block.
         /// </summary>
         internal static Block CreateDocument()

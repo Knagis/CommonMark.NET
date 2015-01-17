@@ -34,6 +34,16 @@ namespace CommonMark.Tests
 {
     internal static class Helpers
     {
+        public static Syntax.Block ParseDocument(string commonMark, CommonMarkSettings settings = null)
+        {
+            using (var reader = new System.IO.StringReader(Helpers.Normalize(commonMark)))
+            {
+                var doc = CommonMarkConverter.ProcessStage1(reader, settings);
+                CommonMarkConverter.ProcessStage2(doc, settings);
+                return doc;
+            }
+        }
+
         public static void ExecuteTest(string commonMark, string html, CommonMarkSettings settings = null)
         {
             // Arrange
