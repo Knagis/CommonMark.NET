@@ -59,7 +59,7 @@ namespace CommonMark.Parser
 
                 if (block.Tag != BlockTag.List && block.Tag != BlockTag.ListItem)
                     return false;
-                 
+
                 block = block.LastChild;
             }
         }
@@ -412,12 +412,22 @@ namespace CommonMark.Parser
 
                     case BlockTag.FencedCode:
                         {
-                            // skip optional spaces of fence offset
-                            i = container.FencedCodeData.FenceOffset;
-                            while (i > 0 && ln[offset] == ' ')
+                            // -1 means we've seen closer 
+                            if (container.FencedCodeData.FenceLength == -1)
                             {
-                                offset++;
-                                i--;
+                                all_matched = false;
+                                if (blank)
+                                    container.IsLastLineBlank = true;
+                            }
+                            else
+                            {
+                                // skip optional spaces of fence offset
+                                i = container.FencedCodeData.FenceOffset;
+                                while (i > 0 && ln[offset] == ' ')
+                                {
+                                    offset++;
+                                    i--;
+                                }
                             }
 
                             break;
@@ -665,9 +675,8 @@ namespace CommonMark.Parser
                       && curChar == container.FencedCodeData.FenceChar)
                       && (0 != Scanner.scan_close_code_fence(ln, first_nonspace, container.FencedCodeData.FenceLength)))
                     {
-                        // if closing fence, don't add line to container; instead, close it:
-                        Finalize(container, line_number);
-                        container = container.Parent; // back up to parent
+                        // if closing fence, set fence length to -1. it will be closed when the next line is processed. 
+                        container.FencedCodeData.FenceLength = -1;
                     }
                     else
                     {

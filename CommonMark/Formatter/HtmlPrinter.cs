@@ -265,7 +265,8 @@ namespace CommonMark.Formatter
                     case BlockTag.FencedCode:
                         writer.EnsureLine();
                         writer.Write("<pre><code");
-                        if (block.FencedCodeData.Info.Length > 0)
+                        var info = block.FencedCodeData.Info;
+                        if (info != null && info.Length > 0)
                         {
                             string[] info_words = block.FencedCodeData.Info.Split(new[] { ' ' });
                             writer.Write(" class=\"language-");
