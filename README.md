@@ -31,7 +31,7 @@ both .NET 2.0 and .NET 4.0 Portable Class Library that targets .NET Framework 4.
 Windows Phone 8.1, Windows Phone Silverlight 8, Xamarin.Android and Xamarin.iOS. A special .NET 4.5 build is
 also created that hints certain optimizations to the runtime that were not available in earlier versions.
 
-For working with the source code you will need Visual Studio 2013.3 or newer.
+For working with the source code you will need Visual Studio 2013.3 or newer (Community edition is supported).
 
 ## Performance
 
@@ -39,13 +39,6 @@ Using a [simple tool][3] to compare the performance of various Markdown implemen
 following results:
 
      CommonMark.NET 0.4.1      4 ms   7%      
-	 CommonMark.NET 0.3.0      5 ms   8%
-     CommonMark.NET 0.2.1      6 ms   10%
-     CommonMark.NET 0.2.0      7 ms   11%     
-     CommonMark.NET 0.1.3      7 ms   11%     
-     CommonMark.NET 0.1.2     15 ms   23%
-     CommonMark.NET 0.1.1     27 ms   42%
-     CommonMark.NET 0.1.0     56 ms   84%     (first public release)
 
     CommonMarkSharp 0.3.2     30 ms   46%
        MarkdownSharp 1.13     55 ms   84%     (might not conform to CommonMark specification)
