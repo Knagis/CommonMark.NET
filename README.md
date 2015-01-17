@@ -66,10 +66,8 @@ processing if the application needs it and then formatted into HTML.
 All tests from `spec.txt` are merged into the unit testing project and can be executed from within Visual Studio.
 
 The project also includes a slightly modified version of `runtests.pl` for compatibility with the original
-implementation.
-
-Note that if you run the `runtests.pl` script on a Windows machine it will incorrectly determine that some tests
-have failed due to Unicode symbols that are not supported by the approach used in the perl script.
+implementation. Use `CommonMark.Console.exe --perltest` as the argument to `runtests.pl` so that the
+application can correctly handle input from the Perl script.
 
 [1]: http://spec.commonmark.org/
 [2]: https://github.com/jgm/stmd/commit/2cf0750a7a507eded4cf3c9a48fd1f924d0ce538
