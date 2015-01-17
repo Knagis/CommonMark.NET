@@ -7,7 +7,7 @@ namespace CommonMark.Syntax
     /// <summary>
     /// Represents a single element in the document tree when traversing through it with the enumerator.
     /// </summary>
-    /// <seealso cref="Block.AsEnumerable"/>
+    /// <seealso cref="Syntax.Block.AsEnumerable"/>
     public sealed class EnumeratorEntry
     {
         /// <summary>
@@ -48,7 +48,7 @@ namespace CommonMark.Syntax
 
         /// <summary>
         /// Gets the value indicating whether this instance represents the closing of the element (returned by the
-        /// enumerator after the children have been enumerated). Both <paramref name="IsOpening"/> and <paramref name="IsClosing"/>
+        /// enumerator after the children have been enumerated). Both <see name="IsOpening"/> and <see name="IsClosing"/>
         /// can be <c>true</c> at the same time if there are no children for the given element.
         /// </summary>
         public bool IsClosing { get; private set; }
