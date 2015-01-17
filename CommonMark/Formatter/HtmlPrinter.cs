@@ -268,9 +268,12 @@ namespace CommonMark.Formatter
                         var info = block.FencedCodeData.Info;
                         if (info != null && info.Length > 0)
                         {
-                            string[] info_words = block.FencedCodeData.Info.Split(new[] { ' ' });
+                            var x = info.IndexOf(' ');
+                            if (x == -1)
+                                x = info.Length;
+
                             writer.Write(" class=\"language-");
-                            EscapeHtml(info_words[0], writer);
+                            EscapeHtml(info.Substring(0, x), writer);
                             writer.Write("\"");
                         }
                         writer.Write(">");
