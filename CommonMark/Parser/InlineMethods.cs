@@ -317,8 +317,9 @@ namespace CommonMark.Parser
 
             if (c == '_')
             {
-                can_open = can_open && !Utilities.IsAsciiLetterOrDigit(char_before);
-                can_close = can_close && !Utilities.IsAsciiLetterOrDigit(char_after);
+                var temp = can_open;
+                can_open &= !can_close;
+                can_close &= !temp;
             }
 
             return numdelims;
