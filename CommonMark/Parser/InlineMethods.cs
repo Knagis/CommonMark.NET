@@ -274,11 +274,19 @@ namespace CommonMark.Parser
             {
                 // closing not found
                 subj.Position = startpos; // rewind to right after the opening ticks
-                return new Inline(new string('`', ticklength));
+                return new Inline(new string('`', ticklength))
+                    {
+                        SourcePosition = startpos - ticklength,
+                        SourceLastPosition = startpos
+                    };
             }
             else
             {
-                return new Inline(InlineTag.Code, NormalizeWhitespace(subj.Buffer, startpos, endpos - startpos - ticklength));
+                return new Inline(InlineTag.Code, NormalizeWhitespace(subj.Buffer, startpos, endpos - startpos - ticklength))
+                    {
+                        SourcePosition = startpos - ticklength,
+                        SourceLastPosition = endpos
+                    };
             }
         }
 

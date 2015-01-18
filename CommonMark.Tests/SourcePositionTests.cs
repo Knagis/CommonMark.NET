@@ -112,5 +112,33 @@ third";
 
             Assert.IsNull(res, "String inline '" + (res == null ? string.Empty : res.LiteralContent) + "' has invalid position or length.");
         }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionBackticksMatch()
+        {
+            var data = @"``foo``";
+            var doc = Helpers.ParseDocument(data);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.Code);
+            Assert.IsNotNull(inline);
+            Assert.AreEqual(data, data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionBackticksNoMatch()
+        {
+            var data = @"```foo``";
+            var doc = Helpers.ParseDocument(data);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "```");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("```", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "``");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("``", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
     }
 }
