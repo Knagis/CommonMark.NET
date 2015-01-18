@@ -95,6 +95,12 @@ namespace CommonMark.Syntax
         /// </summary>
         public Inline FirstChild { get; set; }
 
+        public int SourcePosition { get; set; }
+
+        internal int SourceLastPosition { get; set; }
+
+        public int SourceLength { get { return this.SourceLastPosition - this.SourcePosition; } }
+
         /// <summary>
         /// Gets the link details. This is now obsolete in favor of <see cref="TargetUrl"/> and <see cref="LiteralContent"/>
         /// properties and this property will be removed in future.
