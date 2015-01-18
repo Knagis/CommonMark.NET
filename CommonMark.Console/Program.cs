@@ -176,6 +176,12 @@ namespace CommonMark
                         CommonMarkConverter.Convert(source, target, settings);
                 }
 
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey(true);
+                }
+
                 return 0;
             }
             catch (Exception ex)
