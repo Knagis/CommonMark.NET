@@ -190,13 +190,13 @@ namespace CommonMark.Parser
                             }
                             else if (iopener.Delimeter == '~')
                             {
-                                InlineMethods.MatchTildeStack(iopener, subj, istack);
+                                InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, null, InlineTag.Strikethrough);
                                 if (istack.DelimeterCount > 1)
                                     retry = true;
                             }
                             else
                             {
-                                var useDelims = InlineMethods.MatchEmphasisStack(iopener, subj, istack.DelimeterCount, istack);
+                                var useDelims = InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, InlineTag.Emphasis, InlineTag.Strong);
                                 if (istack.DelimeterCount > 0)
                                     retry = true;
                             }
