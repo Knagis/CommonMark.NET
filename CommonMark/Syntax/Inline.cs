@@ -99,7 +99,11 @@ namespace CommonMark.Syntax
 
         internal int SourceLastPosition { get; set; }
 
-        public int SourceLength { get { return this.SourceLastPosition - this.SourcePosition; } }
+        public int SourceLength 
+        { 
+            get { return this.SourceLastPosition - this.SourcePosition; }
+            set { this.SourceLastPosition = this.SourcePosition + value; }
+        }
 
         /// <summary>
         /// Gets the link details. This is now obsolete in favor of <see cref="TargetUrl"/> and <see cref="LiteralContent"/>

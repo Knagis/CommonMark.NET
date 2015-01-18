@@ -343,11 +343,10 @@ namespace CommonMark.Parser
             else
                 useDelims = closingDelimeterCount % 2 == 0 ? 2 : 1;
 
-            Inline inl;
+            Inline inl = opener.StartingInline;
             if (openerDelims == useDelims)
             {
                 // the opener is completely used up - remove the stack entry and reuse the inline element
-                inl = opener.StartingInline;
                 inl.Tag = useDelims == 1 ? singleCharTag.Value : doubleCharTag.Value;
                 inl.LiteralContent = null;
                 inl.FirstChild = inl.NextSibling;
@@ -358,12 +357,14 @@ namespace CommonMark.Parser
             else
             {
                 // the opener will only partially be used - stack entry remains (truncated) and a new inline is added.
-                inl = opener.StartingInline;
                 opener.DelimeterCount -= useDelims;
                 inl.LiteralContent = inl.LiteralContent.Substring(0, opener.DelimeterCount);
+                inl.SourceLastPosition -= useDelims;
 
                 inl.NextSibling = new Inline(useDelims == 1 ? singleCharTag.Value : doubleCharTag.Value, inl.NextSibling);
                 inl = inl.NextSibling;
+
+                inl.SourcePosition = opener.StartingInline.SourcePosition + opener.DelimeterCount;
             }
 
             // there are two callers for this method, distinguished by the `closer` argument.
@@ -374,24 +375,31 @@ namespace CommonMark.Parser
             //   stack elements is done. The drawback is that there can be other elements after the closer.
             if (closer != null)
             {
+                var clInl = closer.StartingInline;
                 if ((closer.DelimeterCount -= useDelims) > 0)
                 {
                     // a new inline element must be created because the old one has to be the one that
                     // finalizes the children of the emphasis
-                    var newCloserInline = new Inline(closer.StartingInline.LiteralContent.Substring(useDelims));
-                    closer.StartingInline.LiteralContent = null;
-                    closer.StartingInline.NextSibling = null;
+                    var newCloserInline = new Inline(clInl.LiteralContent.Substring(useDelims));
+                    newCloserInline.SourcePosition = inl.SourceLastPosition = clInl.SourcePosition + useDelims;
+                    newCloserInline.SourceLength = closer.DelimeterCount;
+
+                    clInl.LiteralContent = null;
+                    clInl.NextSibling = null;
                     inl.NextSibling = closer.StartingInline = newCloserInline;
                 }
                 else
                 {
-                    closer.StartingInline.LiteralContent = null;
-                    inl.NextSibling = closer.StartingInline.NextSibling;
-                    closer.StartingInline.NextSibling = null;
+                    inl.SourceLastPosition = clInl.SourceLastPosition;
+
+                    clInl.LiteralContent = null;
+                    inl.NextSibling = clInl.NextSibling;
+                    clInl.NextSibling = null;
                 }
             }
             else if (subj != null)
             {
+                inl.SourceLastPosition = subj.Position - closingDelimeterCount + useDelims;
                 subj.LastInline = inl;
             }
 
@@ -427,6 +435,8 @@ namespace CommonMark.Parser
             }
 
             var inlText = new Inline(subj.Buffer.Substring(subj.Position - numdelims, numdelims));
+            inlText.SourcePosition = subj.Position - numdelims;
+            inlText.SourceLastPosition = subj.Position;
 
             if (can_open || can_close)
             {
@@ -508,10 +518,23 @@ namespace CommonMark.Parser
 
         private static Inline HandleLeftSquareBracket(Subject subj, bool isImage)
         {
+            Inline inlText;
+            
+            if (isImage)
+            {
+                inlText = new Inline("![");
+                inlText.SourcePosition = subj.Position - 1;
+                inlText.SourceLength = 2;
+            }
+            else
+            {
+                inlText = new Inline("[");
+                inlText.SourcePosition = subj.Position;
+                inlText.SourceLength = 1;
+            }
+
             // move past the '['
             subj.Position++;
-
-            var inlText = new Inline(isImage ? "![" : "[");
 
             var istack = new InlineStack();
             istack.Delimeter = '[';
@@ -997,10 +1020,11 @@ namespace CommonMark.Parser
 
             string contents;
 
+            var startpos = subj.Position;
             // we read until we hit a special character
-            var endpos = subj.Buffer.IndexOfAny(specialCharacters, subj.Position);
+            var endpos = subj.Buffer.IndexOfAny(specialCharacters, startpos);
 
-            if (endpos == subj.Position)
+            if (endpos == startpos)
             {
                 // current char is special: read a 1-character str
                 contents = subj.Buffer[endpos].ToString();
@@ -1010,13 +1034,13 @@ namespace CommonMark.Parser
             {
                 // special char not found, take whole rest of buffer:
                 endpos = subj.Buffer.Length;
-                contents = subj.Buffer.Substring(subj.Position);
+                contents = subj.Buffer.Substring(startpos);
                 subj.Position = endpos;
             }
             else
             {
                 // take buffer from subj.pos to endpos to str.
-                contents = subj.Buffer.Substring(subj.Position, endpos - subj.Position);
+                contents = subj.Buffer.Substring(startpos, endpos - startpos);
 
                 subj.Position = endpos;
                 // if we're at a newline, strip trailing spaces.
@@ -1024,7 +1048,11 @@ namespace CommonMark.Parser
                     contents = contents.TrimEnd();
             }
 
-            return new Inline(contents);
+            return new Inline(contents)
+                {
+                    SourcePosition = startpos,
+                    SourceLastPosition = endpos
+                };
         }
 
         public static Inline parse_inlines(string input, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters)
