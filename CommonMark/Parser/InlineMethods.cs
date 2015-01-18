@@ -346,67 +346,56 @@ namespace CommonMark.Parser
                     useDelims = closingDelimeterCount % 2 == 0 ? 2 : 1;
             }
 
+            Inline inl;
             if (openerDelims == useDelims)
             {
                 // the opener is completely used up - remove the stack entry and reuse the inline element
-                var inl = opener.StartingInline;
+                inl = opener.StartingInline;
                 inl.Tag = useDelims == 1 ? singleCharTag.Value : doubleCharTag.Value;
                 inl.LiteralContent = null;
-
-                if (closer != null)
-                {
-                    inl.FirstChild = inl.NextSibling;
-                    if ((closer.DelimeterCount -= useDelims) > 0)
-                    {
-                        // a new inline element must be created because the old one has to be the one that
-                        // finalizes the children of the emphasis
-                        var newCloserInline = new Inline(closer.StartingInline.LiteralContent.Substring(useDelims));
-                        closer.StartingInline.LiteralContent = null;
-                        closer.StartingInline.NextSibling = null;
-                        inl.NextSibling = closer.StartingInline = newCloserInline;
-                    }
-                    else
-                    {
-                        closer.StartingInline.LiteralContent = null;
-                        inl.NextSibling = closer.StartingInline.NextSibling;
-                        closer.StartingInline.NextSibling = null;
-                    }
-                }
-                else
-                {
-                    inl.FirstChild = inl.NextSibling;
-                    inl.NextSibling = null;
-                }
+                inl.FirstChild = inl.NextSibling;
+                inl.NextSibling = null;
 
                 InlineStack.RemoveStackEntry(opener, subj, closer);
-
-                if (subj != null)
-                    subj.LastInline = inl;
             }
             else
             {
                 // the opener will only partially be used - stack entry remains (truncated) and a new inline is added.
-                var inl = opener.StartingInline;
+                inl = opener.StartingInline;
                 opener.DelimeterCount -= useDelims;
                 inl.LiteralContent = inl.LiteralContent.Substring(0, opener.DelimeterCount);
 
-                var emph = new Inline(useDelims == 1 ? singleCharTag.Value : doubleCharTag.Value, inl.NextSibling);
-                inl.NextSibling = emph;
+                inl.NextSibling = new Inline(useDelims == 1 ? singleCharTag.Value : doubleCharTag.Value, inl.NextSibling);
+                inl = inl.NextSibling;
+            }
 
-                if (subj != null)
-                    subj.LastInline = emph;
-
-                if (closer != null)
+            // there are two callers for this method, distinguished by the `closer` argument.
+            // if closer == null it means the method is called during the initial subject parsing and the closer
+            //   characters are at the current position in the subject. The main benefit is that there is nothing
+            //   parsed that is located after the matched inline element.
+            // if closer != null it means the method is called when the second pass for previously unmatched
+            //   stack elements is done. The drawback is that there can be other elements after the closer.
+            if (closer != null)
+            {
+                if ((closer.DelimeterCount -= useDelims) > 0)
                 {
                     // a new inline element must be created because the old one has to be the one that
                     // finalizes the children of the emphasis
                     var newCloserInline = new Inline(closer.StartingInline.LiteralContent.Substring(useDelims));
-                    newCloserInline.NextSibling = closer.StartingInline.NextSibling;
-                    closer.DelimeterCount -= useDelims;
                     closer.StartingInline.LiteralContent = null;
                     closer.StartingInline.NextSibling = null;
-                    emph.NextSibling = closer.StartingInline = newCloserInline;
+                    inl.NextSibling = closer.StartingInline = newCloserInline;
                 }
+                else
+                {
+                    closer.StartingInline.LiteralContent = null;
+                    inl.NextSibling = closer.StartingInline.NextSibling;
+                    closer.StartingInline.NextSibling = null;
+                }
+            }
+            else if (subj != null)
+            {
+                subj.LastInline = inl;
             }
 
             return useDelims;
