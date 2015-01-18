@@ -336,15 +336,12 @@ namespace CommonMark.Parser
                 if (useDelims == 1 && singleCharTag == null)
                     return 0;
             }
+            else if (singleCharTag == null)
+                useDelims = 2;
+            else if (doubleCharTag == null)
+                useDelims = 1;
             else
-            {
-                if (singleCharTag == null)
-                    useDelims = 2;
-                else if (doubleCharTag == null)
-                    useDelims = 1;
-                else
-                    useDelims = closingDelimeterCount % 2 == 0 ? 2 : 1;
-            }
+                useDelims = closingDelimeterCount % 2 == 0 ? 2 : 1;
 
             Inline inl;
             if (openerDelims == useDelims)
