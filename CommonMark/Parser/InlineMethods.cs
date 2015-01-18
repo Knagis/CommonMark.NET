@@ -286,40 +286,40 @@ namespace CommonMark.Parser
         /// Scans the subject for a series of the given emphasis character, testing if they could open and/or close
         /// an emphasis element.
         /// </summary>
-        private static int ScanEmphasisDelimeters(Subject subj, char c, out bool can_open, out bool can_close)
+        private static int ScanEmphasisDelimeters(Subject subj, char delimeter, out bool canOpen, out bool canClose)
         {
             int numdelims = 0;
-            char char_before, char_after;
             int startpos = subj.Position;
             int len = subj.Buffer.Length;
 
-            while (startpos + numdelims < len && subj.Buffer[startpos + numdelims] == c)
+            while (startpos + numdelims < len && subj.Buffer[startpos + numdelims] == delimeter)
                 numdelims++;
 
             if (numdelims == 0)
             {
-                can_open = false;
-                can_close = false;
+                canOpen = false;
+                canClose = false;
                 return numdelims;
             }
 
-            char_before = startpos == 0 ? '\n' : subj.Buffer[startpos - 1];
-            subj.Position = (startpos += numdelims);
-            char_after = len == startpos ? '\n' : subj.Buffer[startpos];
-
+            char charBefore, charAfter;
             bool beforeIsSpace, beforeIsPunctuation, afterIsSpace, afterIsPunctuation;
 
-            Utilities.CheckUnicodeCategory(char_before, out beforeIsSpace, out beforeIsPunctuation);
-            Utilities.CheckUnicodeCategory(char_after, out afterIsSpace, out afterIsPunctuation);
+            charBefore = startpos == 0 ? '\n' : subj.Buffer[startpos - 1];
+            subj.Position = (startpos += numdelims);
+            charAfter = len == startpos ? '\n' : subj.Buffer[startpos];
+            
+            Utilities.CheckUnicodeCategory(charBefore, out beforeIsSpace, out beforeIsPunctuation);
+            Utilities.CheckUnicodeCategory(charAfter, out afterIsSpace, out afterIsPunctuation);
 
-            can_open = !afterIsSpace && !(afterIsPunctuation && !beforeIsSpace && !beforeIsPunctuation);
-            can_close = !beforeIsSpace && !(beforeIsPunctuation && !afterIsSpace && !afterIsPunctuation);
+            canOpen = !afterIsSpace && !(afterIsPunctuation && !beforeIsSpace && !beforeIsPunctuation);
+            canClose = !beforeIsSpace && !(beforeIsPunctuation && !afterIsSpace && !afterIsPunctuation);
 
-            if (c == '_')
+            if (delimeter == '_')
             {
-                var temp = can_open;
-                can_open &= !can_close;
-                can_close &= !temp;
+                var temp = canOpen;
+                canOpen &= !canClose;
+                canClose &= !temp;
             }
 
             return numdelims;
