@@ -62,7 +62,7 @@ namespace CommonMark.Tests
         [TestCategory("SourcePosition")]
         public void SourcePositionNestedLists()
         {
-            var data = "* animals\r\n* * *horses*\n* * dogs\n* persons\r* 1. john\n* 2. anna";
+            var data = "* ani\0mals\r\n* * *horses*\n* * dogs\n* persons\r* 1. john\n* 2. anna";
             var doc = Helpers.ParseDocument(data, Settings);
 
             var inlinesQ = doc.AsEnumerable()
@@ -73,7 +73,7 @@ namespace CommonMark.Tests
 
             var expectedInlines = new[] 
             {
-                "animals",
+                "ani\0mals",
                 "*horses*",
                 "dogs",
                 "persons",
@@ -86,6 +86,32 @@ namespace CommonMark.Tests
                 if (!inlines.Contains(ei))
                     Assert.Fail("Inline '{0}' was not parsed with correct source positions.", ei);
             }
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionTabs()
+        {
+            var data = "h\to\tr\ts\te\ts";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.String);
+            Assert.IsNotNull(inline);
+            Assert.AreEqual(data.Replace('\t', '→'),
+                data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength).Replace('\t', '→'));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionUnicodeZero()
+        {
+            var data = "h\0o\0r\0s\0e\0s";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.String);
+            Assert.IsNotNull(inline);
+            Assert.AreEqual(data.Replace('\0', '␣'),
+                data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength).Replace('\0', '␣'));
         }
 
         [TestMethod]
