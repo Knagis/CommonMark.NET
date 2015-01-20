@@ -5,13 +5,14 @@ using System.Text;
 
 namespace CommonMark.Parser
 {
-    internal class TabTextReader
+    internal sealed class TabTextReader
     {
         private const int _bufferSize = 4000;
         private readonly TextReader _inner;
         private readonly char[] _buffer;
         private int _bufferLength;
         private int _bufferPosition;
+        private int _previousBufferLength;
         private readonly StringBuilder _builder;
         private bool _endOfStream;
 
@@ -22,25 +23,33 @@ namespace CommonMark.Parser
             this._builder = new StringBuilder(256);
         }
 
-        public bool ReadBuffer()
+        private bool ReadBuffer()
         {
             if (this._endOfStream)
                 return false;
 
+            this._previousBufferLength += this._bufferLength;
             this._bufferLength = this._inner.Read(this._buffer, 0, _bufferSize);
             this._endOfStream = this._bufferLength == 0;
             this._bufferPosition = 0;
             return !this._endOfStream;
         }
 
-        public string ReadLine()
+        public void ReadLine(LineInfo line)
         {
+            line.LineOffset = this._previousBufferLength + this._bufferPosition;
+            line.LineNumber++;
+            line.OffsetCount = 0;
+            line.Line = null;
+            var tabIncreaseCount = 0;
+
             if (this._bufferPosition == this._bufferLength && !this.ReadBuffer())
-                return null;
+                return;
 
             bool useBuilder = false;
             int num;
             char c;
+
             while (true)
             {
                 num = this._bufferPosition;
@@ -59,6 +68,13 @@ namespace CommonMark.Parser
                             this._builder.Length = 0;
                         }
 
+                        if (line.IsTrackingPositions)
+                        {
+                            var delta = -3 + (this._builder.Length % 4);
+                            line.AddOffset(this._previousBufferLength + num + tabIncreaseCount, delta);
+                            tabIncreaseCount -= delta;
+                        }
+
                         this._builder.Append(this._buffer, this._bufferPosition, num - this._bufferPosition);
                         this._builder.Append(' ', 4 - (this._builder.Length % 4));
                         this._bufferPosition = num + 1;
@@ -70,6 +86,9 @@ namespace CommonMark.Parser
                             useBuilder = true;
                             this._builder.Length = 0;
                         }
+
+                        if (line.IsTrackingPositions)
+                            line.AddOffset(this._previousBufferLength + num + tabIncreaseCount, 1);
 
                         this._builder.Append(this._buffer, this._bufferPosition, num - this._bufferPosition);
                         this._bufferPosition = num + 1;
@@ -90,7 +109,8 @@ namespace CommonMark.Parser
                 if (!this.ReadBuffer())
                 {
                     this._builder.Append('\n');
-                    return this._builder.ToString();
+                    line.Line = this._builder.ToString();
+                    return;
                 }
             }
 
@@ -106,13 +126,18 @@ namespace CommonMark.Parser
             {
                 result = new string(this._buffer, this._bufferPosition, num - this._bufferPosition + 1);
             }
+
             this._bufferPosition = num + 1;
+
             if (c == '\r' && (this._bufferPosition < this._bufferLength || this.ReadBuffer()) && this._buffer[this._bufferPosition] == '\n')
             {
+                if (line.IsTrackingPositions)
+                    line.AddOffset(this._previousBufferLength + this._bufferPosition - 1 + tabIncreaseCount, 1);
+
                 this._bufferPosition++;
             }
-            return result;
-
+            
+            line.Line = result;
         }
 
         public bool EndOfStream()

@@ -1009,9 +1009,9 @@ namespace CommonMark.Parser
                 advance(subj);
 
             if (nlpos > 1 && subj.Buffer[nlpos - 1] == ' ' && subj.Buffer[nlpos - 2] == ' ')
-                return new Inline(InlineTag.LineBreak);
+                return new Inline(InlineTag.LineBreak) { SourcePosition = nlpos, SourceLastPosition = nlpos + 1 };
             else
-                return new Inline(InlineTag.SoftBreak);
+                return new Inline(InlineTag.SoftBreak) { SourcePosition = nlpos, SourceLastPosition = nlpos + 1 };
         }
 
         // Parse an inline, advancing subject, and add it to last element.

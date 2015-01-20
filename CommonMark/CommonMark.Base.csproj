@@ -52,6 +52,9 @@
     <Compile Include="OutputFormat.cs" />
     <Compile Include="Parser\EntityDecoder.cs" />
     <Compile Include="Parser\InlineStack.cs" />
+    <Compile Include="Parser\LineInfo.cs" />
+    <Compile Include="Parser\PositionOffset.cs" />
+    <Compile Include="Parser\PositionTracker.cs" />
     <Compile Include="Parser\ScannerCharacterMatcher.cs" />
     <Compile Include="Parser\ScannerHtmlTag.cs" />
     <Compile Include="Parser\TabTextReader.cs" />

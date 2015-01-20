@@ -31,7 +31,7 @@ namespace CommonMark.Parser
                     block_type == BlockTag.FencedCode);
         }
 
-        private static void AddLine(Block block, string ln, int offset, int length = -1)
+        private static void AddLine(Block block, LineInfo lineInfo, string ln, int offset, int length = -1)
         {
             if (!block.IsOpen)
                 throw new CommonMarkException(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
@@ -44,6 +44,14 @@ namespace CommonMark.Parser
             if (curSC == null)
                 block.StringContent = curSC = new StringContent();
 
+            if (lineInfo.IsTrackingPositions)
+            {
+                if (block.PositionTracker == null)
+                    block.PositionTracker = new PositionTracker(lineInfo.LineOffset);
+
+                block.PositionTracker.AddOffset(lineInfo, offset, len);
+            }
+            
             block.StringContent.Append(ln, offset, len);
         }
 
@@ -198,6 +206,39 @@ namespace CommonMark.Parser
             return child;
         }
 
+        private static void AdjustInlineSourcePosition(Inline inline, PositionTracker tracker, ref Stack<Inline> stack)
+        {
+            if (stack == null)
+                stack = new Stack<Inline>();
+
+            while (inline != null)
+            {
+                inline.SourcePosition = tracker.CalculateInlineOrigin(inline.SourcePosition, true);
+                inline.SourceLastPosition = tracker.CalculateInlineOrigin(inline.SourceLastPosition, false);
+
+                if (inline.FirstChild != null)
+                {
+                    if (inline.NextSibling != null)
+                        stack.Push(inline.NextSibling);
+
+                    inline = inline.FirstChild;
+                }
+                else if (inline.NextSibling != null)
+                {
+                    inline = inline.NextSibling;
+                }
+                else if (stack.Count > 0)
+                {
+                    inline = stack.Pop();
+                }
+                else
+                {
+                    inline = null;
+                }
+            }
+
+        }
+
         /// <summary>
         /// Walk through the block, its children and siblings, parsing string content into inline content where appropriate.
         /// </summary>
@@ -206,6 +247,7 @@ namespace CommonMark.Parser
         /// <param name="settings">The settings that influence how the inline parsing is performed.</param>
         public static void ProcessInlines(Block block, Dictionary<string, Reference> refmap, CommonMarkSettings settings)
         {
+            Stack<Inline> inlineStack = null;
             var stack = new Stack<Block>();
             var parsers = settings.InlineParsers;
             var specialCharacters = settings.InlineParserSpecialCharacters;
@@ -219,6 +261,9 @@ namespace CommonMark.Parser
                     {
                         block.InlineContent = InlineMethods.parse_inlines(block.StringContent.ToString(), refmap, parsers, specialCharacters);
                         block.StringContent = null;
+
+                        if (block.PositionTracker != null)
+                            AdjustInlineSourcePosition(block.InlineContent, block.PositionTracker, ref inlineStack);
                     }
                 }
 
@@ -325,8 +370,11 @@ namespace CommonMark.Parser
         // Process one line at a time, modifying a block.
         // Returns 0 if successful.  curptr is changed to point to
         // the currently open block.
-        public static void IncorporateLine(string ln, int line_number, ref Block curptr)
+        public static void IncorporateLine(LineInfo line, ref Block curptr)
         {
+            var ln = line.Line;
+            var line_number = line.LineNumber;
+
             Block last_matched_container;
             int offset = 0;
             int matched = 0;
@@ -644,7 +692,7 @@ namespace CommonMark.Parser
                 cur.StringContent.Length > 0)
             {
 
-                AddLine(cur, ln, offset);
+                AddLine(cur, line, ln, offset);
 
             }
             else
@@ -665,7 +713,7 @@ namespace CommonMark.Parser
                 if (container.Tag == BlockTag.IndentedCode)
                 {
 
-                    AddLine(container, ln, offset);
+                    AddLine(container, line, ln, offset);
 
                 }
                 else if (container.Tag == BlockTag.FencedCode)
@@ -680,14 +728,14 @@ namespace CommonMark.Parser
                     }
                     else
                     {
-                        AddLine(container, ln, offset);
+                        AddLine(container, line, ln, offset);
                     }
 
                 }
                 else if (container.Tag == BlockTag.HtmlBlock)
                 {
 
-                    AddLine(container, ln, offset);
+                    AddLine(container, line, ln, offset);
 
                 }
                 else if (blank)
@@ -713,7 +761,7 @@ namespace CommonMark.Parser
                     if (p < 0 || ln[p] != ' ')
                         p = ln.Length - 1;
 
-                    AddLine(container, ln, first_nonspace, p - first_nonspace + 1);
+                    AddLine(container, line, ln, first_nonspace, p - first_nonspace + 1);
                     Finalize(container, line_number);
                     container = container.Parent;
 
@@ -721,7 +769,7 @@ namespace CommonMark.Parser
                 else if (AcceptsLines(container.Tag))
                 {
 
-                    AddLine(container, ln, first_nonspace);
+                    AddLine(container, line, ln, first_nonspace);
 
                 }
                 else if (container.Tag != BlockTag.HorizontalRuler && container.Tag != BlockTag.SETextHeader)
@@ -729,7 +777,7 @@ namespace CommonMark.Parser
 
                     // create paragraph container for line
                     container = CreateChildBlock(container, BlockTag.Paragraph, line_number, first_nonspace + 1);
-                    AddLine(container, ln, first_nonspace);
+                    AddLine(container, line, ln, first_nonspace);
 
                 }
                 else

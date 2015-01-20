@@ -41,16 +41,20 @@ namespace CommonMark
             if (source == null)
                 throw new ArgumentNullException("source");
 
-            var cur = Syntax.Block.CreateDocument();
+            if (settings == null)
+                settings = CommonMarkSettings.Default;
 
-            int linenum = 1;
+            var cur = Syntax.Block.CreateDocument();
+            var doc = cur;
+            var line = new LineInfo(settings.TrackSourcePosition);
+
             try
             {
-                var reader = new Parser.TabTextReader(source);
+                var reader = new TabTextReader(source);
                 while (!reader.EndOfStream())
                 {
-                    BlockMethods.IncorporateLine(reader.ReadLine(), linenum, ref cur);
-                    linenum++;
+                    reader.ReadLine(line);
+                    BlockMethods.IncorporateLine(line, ref cur);
                 }
             }
             catch(IOException)
@@ -63,16 +67,16 @@ namespace CommonMark
             }
             catch(Exception ex)
             {
-                throw new CommonMarkException("An error occurred while parsing line " + linenum.ToString(CultureInfo.InvariantCulture), cur, ex);
+                throw new CommonMarkException("An error occurred while parsing line " + line.ToString(), cur, ex);
             }
 
             try
             {
-                while (cur != cur.Top)
+                do
                 {
-                    BlockMethods.Finalize(cur, linenum);
+                    BlockMethods.Finalize(cur, line.LineNumber + 1);
                     cur = cur.Parent;
-                }
+                } while (cur != null);
             }
             catch (CommonMarkException)
             {
@@ -83,23 +87,7 @@ namespace CommonMark
                 throw new CommonMarkException("An error occurred while finalizing open containers.", cur, ex);
             }
 
-            if (cur != cur.Top)
-                throw new CommonMarkException("Unable to finalize open containers.", cur);
-
-            try
-            {
-                BlockMethods.Finalize(cur, linenum);
-            }
-            catch(CommonMarkException)
-            {
-                throw;
-            }
-            catch(Exception ex)
-            {
-                throw new CommonMarkException("Unable to finalize document element.", cur, ex);
-            }
-
-            return cur;
+            return doc;
         }
 
         /// <summary>

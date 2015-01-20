@@ -95,10 +95,24 @@ namespace CommonMark.Syntax
         /// </summary>
         public Inline FirstChild { get; set; }
 
+        /// <summary>
+        /// Gets or sets the position of the element within the source data.
+        /// Note that if <see cref="CommonMarkSettings.TrackSourcePosition"/> is not enabled, this property will contain
+        /// the position relative to the containing block and not the whole document (not accounting for processing done
+        /// in earlier parser stage, such as converting tabs to spaces).
+        /// </summary>
+        /// <seealso cref="SourceLength"/>
         public int SourcePosition { get; set; }
 
         internal int SourceLastPosition { get; set; }
 
+        /// <summary>
+        /// Gets or sets the length of the element within the source data.
+        /// Note that if <see cref="CommonMarkSettings.TrackSourcePosition"/> is not enabled, this property will contain
+        /// the length within the containing block (not accounting for processing done in earlier parser stage, such as
+        /// converting tabs to spaces).
+        /// </summary>
+        /// <seealso cref="SourcePosition"/>
         public int SourceLength 
         { 
             get { return this.SourceLastPosition - this.SourcePosition; }
