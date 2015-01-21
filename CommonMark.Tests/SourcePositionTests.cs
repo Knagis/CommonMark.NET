@@ -510,5 +510,18 @@ third";
 
             Assert.AreEqual(3, cnt);
         }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionRemovingReferences()
+        {
+            var data = "[foo]: /url\n[bar]: /url\n*asd*";
+
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.Emphasis);
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("*asd*", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
     }
 }
