@@ -22,7 +22,7 @@ namespace CommonMark.Parser
             p['\n'] = handle_newline;
             p['`'] = handle_backticks;
             p['\\'] = handle_backslash;
-            p['&'] = handle_entity;
+            p['&'] = HandleEntity;
             p['<'] = handle_pointy_brace;
             p['_'] = HandleEmphasis;
             p['*'] = HandleEmphasis;
@@ -695,9 +695,21 @@ namespace CommonMark.Parser
             }
         }
 
-        // Parse an entity or a regular "&" string.
-        // Assumes the subject has an '&' character at the current position.
-        private static Inline handle_entity(Subject subj)
+        /// <summary>
+        /// Parses the entity at the current position. Returns a new string inline.
+        /// Assumes that there is a <c>&amp;</c> at the current position.
+        /// </summary>
+        private static Inline HandleEntity(Subject subj)
+        {
+            var origPos = subj.Position;
+            return new Inline(ParseEntity(subj), origPos, subj.Position);
+        }
+
+        /// <summary>
+        /// Parses the entity at the current position.
+        /// Assumes that there is a <c>&amp;</c> at the current position.
+        /// </summary>
+        private static string ParseEntity(Subject subj)
         {
             int match;
             string namedEntity;
@@ -712,42 +724,53 @@ namespace CommonMark.Parser
                 {
                     var decoded = EntityDecoder.DecodeEntity(namedEntity);
                     if (decoded != null)
-                        return new Inline(decoded, origPos, subj.Position);
+                        return decoded;
                 }
                 else if (numericEntity > 0)
                 {
                     var decoded = EntityDecoder.DecodeEntity(numericEntity);
                     if (decoded != null)
-                        return new Inline(decoded, origPos, subj.Position);
-                    return new Inline("\uFFFD", origPos, subj.Position);
+                        return decoded;
+
+                    return "\uFFFD";
                 }
 
-                return new Inline(subj.Buffer.Substring(origPos, match), origPos, subj.Position);
+                return subj.Buffer.Substring(origPos, match);
             }
             else
             {
                 advance(subj);
-                return new Inline("&", origPos, subj.Position);
+                return "&";
             }
         }
 
         /// <summary>
         /// Creates a new <see cref="Inline"/> element that represents string content but the given content
         /// is processed to decode any HTML entities in it.
+        /// This method is guaranteed to return just one Inline, without nested elements.
         /// </summary>
-        static Inline ParseStringEntities(string s)
+        private static Inline ParseStringEntities(string s)
         {
-            Inline result = null;
-            Inline inew;
+            string result = null;
+            StringBuilder builder = null;
+
             int searchpos;
             char c;
             Subject subj = make_subject(s, null);
 
             while ('\0' != (c = peek_char(subj)))
             {
+                if (result != null)
+                {
+                    if (builder == null)
+                        builder = new StringBuilder(result, s.Length);
+                    else
+                        builder.Append(result);
+                }
+
                 if (c == '&')
                 {
-                    inew = handle_entity(subj);
+                    result = ParseEntity(subj);
                 }
                 else
                 {
@@ -755,14 +778,17 @@ namespace CommonMark.Parser
                     if (searchpos == -1)
                         searchpos = subj.Buffer.Length;
 
-                    inew = new Inline(subj.Buffer.Substring(subj.Position, searchpos - subj.Position));
+                    result = subj.Buffer.Substring(subj.Position, searchpos - subj.Position);
                     subj.Position = searchpos;
                 }
-
-                result = append_inlines(result, inew);
             }
 
-            return result;
+            if (builder == null)
+                return new Inline(result);
+
+            builder.Append(result);
+
+            return new Inline(builder.ToString());
         }
 
         /// <summary>
@@ -893,7 +919,6 @@ namespace CommonMark.Parser
         {
             int matchlen = 0;
             string contents;
-            Inline result;
 
             // advance past first <
             advance(subj);  
@@ -903,8 +928,15 @@ namespace CommonMark.Parser
             if (matchlen > 0)
             {
                 contents = subj.Buffer.Substring(subj.Position, matchlen - 1);
+                var resultContents = ParseStringEntities(contents);
+                var result = Inline.CreateLink(resultContents, contents, string.Empty);
+
+                result.SourcePosition = subj.Position - 1;
+                resultContents.SourcePosition = subj.Position;
                 subj.Position += matchlen;
-                result = Inline.CreateLink(ParseStringEntities(contents), contents, string.Empty);
+                result.SourceLastPosition = subj.Position;
+                resultContents.SourceLastPosition = subj.Position - 1;
+                
                 return result;
             }
 
@@ -913,8 +945,15 @@ namespace CommonMark.Parser
             if (matchlen > 0)
             {
                 contents = subj.Buffer.Substring(subj.Position, matchlen - 1);
+                var resultContents = ParseStringEntities(contents);
+                var result = Inline.CreateLink(resultContents, "mailto:" + contents, string.Empty);
+                
+                result.SourcePosition = subj.Position - 1;
+                resultContents.SourcePosition = subj.Position;
                 subj.Position += matchlen;
-                result = Inline.CreateLink(ParseStringEntities(contents), "mailto:" + contents, string.Empty);
+                result.SourceLastPosition = subj.Position;
+                resultContents.SourceLastPosition = subj.Position - 1;
+
                 return result;
             }
 

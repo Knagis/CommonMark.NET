@@ -353,5 +353,30 @@ third";
             Assert.IsNotNull(inline);
             Assert.AreEqual("&", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
         }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionAutoLinks()
+        {
+            var data = "foo <http://google.com> bar <no@spam.org> foo";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.TargetUrl == "http://google.com");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("<http://google.com>", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.String && o.Inline.LiteralContent == "http://google.com");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("http://google.com", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.TargetUrl == "mailto:no@spam.org");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("<no@spam.org>", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.String && o.Inline.LiteralContent == "no@spam.org");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("no@spam.org", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
+
     }
 }
