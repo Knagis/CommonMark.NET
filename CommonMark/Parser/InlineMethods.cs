@@ -464,7 +464,7 @@ namespace CommonMark.Parser
             var numdelims = ScanEmphasisDelimeters(subj, '~', out can_open, out can_close);
 
             if (numdelims == 1)
-                return new Inline("~");
+                return new Inline("~", subj.Position - 1, subj.Position);
 
             if (can_close)
             {
@@ -488,7 +488,8 @@ namespace CommonMark.Parser
                 }
             }
 
-            var inlText = new Inline(subj.Buffer.Substring(subj.Position - numdelims, numdelims));
+            var inlText = new Inline(subj.Buffer.Substring(subj.Position - numdelims, numdelims),
+                subj.Position - numdelims, subj.Position);
 
             if (can_open || can_close)
             {

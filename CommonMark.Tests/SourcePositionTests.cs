@@ -397,5 +397,26 @@ third";
             Assert.IsNotNull(inline);
             Assert.AreEqual("<", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
         }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionStrikethrough()
+        {
+            // this method verifies only simple case because most of the code is common with emphasis parser
+            // so those tests will apply to strikethrough as well.
+
+            var data = "~~~~foo~~~~";
+            var stng = Settings.Clone();
+            stng.AdditionalFeatures |= CommonMarkAdditionalFeatures.StrikethroughTilde;
+            var doc = Helpers.ParseDocument(data, stng);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.Strikethrough);
+            Assert.IsNotNull(inline);
+            Assert.AreEqual(data, data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().Last(o => o.Inline != null && o.IsOpening && o.Inline.Tag == Syntax.InlineTag.Strikethrough);
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("~~foo~~", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
     }
 }
