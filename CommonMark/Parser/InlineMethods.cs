@@ -702,6 +702,7 @@ namespace CommonMark.Parser
             int match;
             string namedEntity;
             int numericEntity;
+            var origPos = subj.Position;
             match = Scanner.scan_entity(subj.Buffer, subj.Position, subj.Buffer.Length - subj.Position, out namedEntity, out numericEntity);
             if (match > 0)
             {
@@ -711,22 +712,22 @@ namespace CommonMark.Parser
                 {
                     var decoded = EntityDecoder.DecodeEntity(namedEntity);
                     if (decoded != null)
-                        return new Inline(decoded);
+                        return new Inline(decoded, origPos, subj.Position);
                 }
                 else if (numericEntity > 0)
                 {
                     var decoded = EntityDecoder.DecodeEntity(numericEntity);
                     if (decoded != null)
-                        return new Inline(decoded);
-                    return new Inline("\uFFFD");
+                        return new Inline(decoded, origPos, subj.Position);
+                    return new Inline("\uFFFD", origPos, subj.Position);
                 }
 
-                return new Inline(subj.Buffer.Substring(subj.Position - match, match));
+                return new Inline(subj.Buffer.Substring(origPos, match), origPos, subj.Position);
             }
             else
             {
                 advance(subj);
-                return new Inline("&");
+                return new Inline("&", origPos, subj.Position);
             }
         }
 

@@ -316,14 +316,42 @@ third";
             Assert.AreEqual("\\", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
 
             // escaped char
-            inline = doc.AsEnumerable().Last(o => o.Inline != null && o.Inline.LiteralContent == "*");
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "*");
             Assert.IsNotNull(inline);
             Assert.AreEqual("\\*", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
 
             // linebreak
-            inline = doc.AsEnumerable().Last(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.LineBreak);
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.LineBreak);
             Assert.IsNotNull(inline);
             Assert.AreEqual("\\\r\n", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionEntities()
+        {
+            var data = "foo &copy; &#1234; &#98765432; &MadeUp; &test";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "©");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("&copy;", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "Ӓ");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("&#1234;", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "�");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("&#98765432;", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "&MadeUp;");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("&MadeUp;", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "&");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("&", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
         }
     }
 }
