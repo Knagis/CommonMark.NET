@@ -274,11 +274,7 @@ namespace CommonMark.Parser
             {
                 // closing not found
                 subj.Position = startpos; // rewind to right after the opening ticks
-                return new Inline(new string('`', ticklength))
-                    {
-                        SourcePosition = startpos - ticklength,
-                        SourceLastPosition = startpos
-                    };
+                return new Inline(new string('`', ticklength), startpos - ticklength, startpos);
             }
             else
             {
@@ -530,15 +526,11 @@ namespace CommonMark.Parser
             
             if (isImage)
             {
-                inlText = new Inline("![");
-                inlText.SourcePosition = subj.Position - 1;
-                inlText.SourceLength = 2;
+                inlText = new Inline("![", subj.Position - 1, subj.Position + 1);
             }
             else
             {
-                inlText = new Inline("[");
-                inlText.SourcePosition = subj.Position;
-                inlText.SourceLength = 1;
+                inlText = new Inline("[", subj.Position, subj.Position + 1);
             }
 
             // move past the '['
@@ -1060,11 +1052,7 @@ namespace CommonMark.Parser
                     contents = contents.TrimEnd();
             }
 
-            return new Inline(contents)
-                {
-                    SourcePosition = startpos,
-                    SourceLastPosition = endpos
-                };
+            return new Inline(contents, startpos, endpos);
         }
 
         public static Inline parse_inlines(string input, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters)
