@@ -297,5 +297,33 @@ third";
             Assert.IsNotNull(inline);
             Assert.AreEqual("``", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
         }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionBackslash()
+        {
+            var data = "a\\b\\*d\\\r\ne\\";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            // backslash before "b" (unescapable char)
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "\\");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("\\", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            // backslash at the end of the string
+            inline = doc.AsEnumerable().Last(o => o.Inline != null && o.Inline.LiteralContent == "\\");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("\\", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            // escaped char
+            inline = doc.AsEnumerable().Last(o => o.Inline != null && o.Inline.LiteralContent == "*");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("\\*", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            // linebreak
+            inline = doc.AsEnumerable().Last(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.LineBreak);
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("\\\r\n", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
     }
 }

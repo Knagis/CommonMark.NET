@@ -677,7 +677,7 @@ namespace CommonMark.Parser
             advance(subj);
 
             if (subj.Position >= subj.Buffer.Length)
-                return new Inline("\\");
+                return new Inline("\\", subj.Position - 1, subj.Position); 
 
             var nextChar = subj.Buffer[subj.Position];
 
@@ -686,16 +686,20 @@ namespace CommonMark.Parser
                 // only ascii symbols and newline can be escaped
                 // the exception is the unicode bullet char since it can be used for defining list items
                 advance(subj);
-                return new Inline(nextChar.ToString());
+                return new Inline(nextChar.ToString(), subj.Position - 2, subj.Position);
             }
             else if (nextChar == '\n')
             {
                 advance(subj);
-                return new Inline(InlineTag.LineBreak);
+                return new Inline(InlineTag.LineBreak) 
+                {
+                    SourcePosition = subj.Position - 2,
+                    SourceLastPosition = subj.Position
+                };
             }
             else
             {
-                return new Inline("\\");
+                return new Inline("\\", subj.Position - 1, subj.Position);
             }
         }
 

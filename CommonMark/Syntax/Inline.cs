@@ -49,6 +49,16 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Inline"/> class. The element type is set to <see cref="InlineTag.String"/>
+        /// </summary>
+        internal Inline(string content, int sourcePosition, int sourceLastPosition)
+        {
+            this.LiteralContent = content;
+            this.SourcePosition = sourcePosition;
+            this.SourceLastPosition = sourceLastPosition;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Inline"/> class.
         /// </summary>
         /// <param name="tag">The type of inline element. Should be one of the types that contain child elements, for example, <see cref="InlineTag.Emphasis"/>.</param>
