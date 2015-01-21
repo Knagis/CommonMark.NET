@@ -135,6 +135,20 @@ namespace CommonMark.Tests
 
         [TestMethod]
         [TestCategory("SourcePosition")]
+        public void SourcePositionLineBreak()
+        {
+            var data = "a  \nb\\\nc";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var breaks = doc.AsEnumerable().Where(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.LineBreak).ToList();
+            Assert.AreEqual(2, breaks.Count);
+
+            Assert.AreEqual("  ↓", data.Substring(breaks[0].Inline.SourcePosition, breaks[0].Inline.SourceLength).Replace("\n", "↓"));
+            Assert.AreEqual("\\↓", data.Substring(breaks[1].Inline.SourcePosition, breaks[1].Inline.SourceLength).Replace("\n", "↓"));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
         public void SourcePositionSoftBreak1()
         {
             var data = "**foo**\0\r\n\0*bar*";
@@ -405,31 +419,39 @@ third";
             // this method verifies only simple case because most of the code is common with emphasis parser
             // so those tests will apply to strikethrough as well.
 
-            var data = "~~~~foo~~~~";
+            var data = "~~~~foo~~~~ ~";
             var stng = Settings.Clone();
             stng.AdditionalFeatures |= CommonMarkAdditionalFeatures.StrikethroughTilde;
             var doc = Helpers.ParseDocument(data, stng);
 
             var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.Strikethrough);
             Assert.IsNotNull(inline);
-            Assert.AreEqual(data, data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+            Assert.AreEqual("~~~~foo~~~~", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
 
             inline = doc.AsEnumerable().Last(o => o.Inline != null && o.IsOpening && o.Inline.Tag == Syntax.InlineTag.Strikethrough);
             Assert.IsNotNull(inline);
             Assert.AreEqual("~~foo~~", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().Last(o => o.Inline != null && o.IsOpening && o.Inline.LiteralContent == "~");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("~", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
         }
 
         [TestMethod]
         [TestCategory("SourcePosition")]
         public void SourcePositionImage()
         {
-            var data = "![bar](/url)";
+            var data = "![bar](/url) !foo";
             
             var doc = Helpers.ParseDocument(data, Settings);
 
             var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.Image);
             Assert.IsNotNull(inline);
-            Assert.AreEqual(data, data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+            Assert.AreEqual("![bar](/url)", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "!");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("!", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
         }
 
         [TestMethod]
@@ -469,6 +491,24 @@ third";
             var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.Link);
             Assert.IsNotNull(inline);
             Assert.AreEqual("[foo][bar]", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionLinkInvalid()
+        {
+            var data = "] [foo]\n\n[bar [x](/u)](/u)";
+
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var cnt = 0;
+            foreach (var inline in doc.AsEnumerable().Where(o => o.Inline != null && o.Inline.LiteralContent == "]"))
+            {
+                cnt++;
+                Assert.AreEqual("]", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+            }
+
+            Assert.AreEqual(3, cnt);
         }
     }
 }
