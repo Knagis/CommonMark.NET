@@ -19,9 +19,9 @@ namespace CommonMark.Syntax
         public Block(BlockTag tag, int startLine, int startColumn)
         {
             this.Tag = tag;
-            this.StartLine = startLine;
-            this.EndLine = startLine;
-            this.StartColumn = startColumn;
+            this.SourceStartLine = startLine;
+            this.SourceEndLine = startLine;
+            this.SourceStartColumn = startColumn;
             this.IsOpen = true;
         }
 
@@ -54,17 +54,35 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Gets or sets the number of the first line in the source text that contains this element.
         /// </summary>
-        public int StartLine { get; set; }
+        [Obsolete("Use SourceStartLine instead", false)]
+        public int StartLine { get { return this.SourceStartLine; } }
 
         /// <summary>
         /// Gets or sets the number of the first column (within the first line) in the source text that contains this element.
         /// </summary>
-        public int StartColumn { get; set; }
+        [Obsolete("Use SourceStartColumn instead", false)]
+        public int StartColumn { get { return this.SourceStartColumn; } }
 
         /// <summary>
         /// Gets or sets the number of the last line in the source text that contains this element.
         /// </summary>
-        public int EndLine { get; set; }
+        [Obsolete("Use SourceEndLine instead", false)]
+        public int EndLine { get { return this.SourceEndLine; } }
+
+        /// <summary>
+        /// Gets or sets the number of the first line in the source text that contains this element.
+        /// </summary>
+        public int SourceStartLine { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of the first column (within the first line) in the source text that contains this element.
+        /// </summary>
+        public int SourceStartColumn { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of the last line in the source text that contains this element.
+        /// </summary>
+        public int SourceEndLine { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this block element has been completed (and thus new lines cannot be added

@@ -105,10 +105,10 @@ namespace CommonMark.Parser
 
             b.IsOpen = false;
 
-            if (line_number > b.StartLine)
-                b.EndLine = line_number - 1;
+            if (line_number > b.SourceStartLine)
+                b.SourceEndLine = line_number - 1;
             else
-                b.EndLine = line_number;
+                b.SourceEndLine = line_number;
 
             switch (b.Tag)
             {
@@ -676,7 +676,7 @@ namespace CommonMark.Parser
                                           container.Tag != BlockTag.FencedCode &&
                                           !(container.Tag == BlockTag.ListItem &&
                                             container.FirstChild == null &&
-                                            container.StartLine == line_number));
+                                            container.SourceStartLine == line_number));
 
             Block cont = container;
             while (cont.Parent != null)
