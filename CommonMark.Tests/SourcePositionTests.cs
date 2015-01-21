@@ -418,5 +418,57 @@ third";
             Assert.IsNotNull(inline);
             Assert.AreEqual("~~foo~~", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
         }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionImage()
+        {
+            var data = "![bar](/url)";
+            
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.Image);
+            Assert.IsNotNull(inline);
+            Assert.AreEqual(data, data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionLink1()
+        {
+            var data = "[bar](/url)";
+
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.Link);
+            Assert.IsNotNull(inline);
+            Assert.AreEqual(data, data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionLink2()
+        {
+            var data = "[bar]\n\n[bar]: /url";
+
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.Link);
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("[bar]", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionLink3()
+        {
+            var data = "[foo][bar]\n\n[bar]: /url";
+
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.Link);
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("[foo][bar]", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
     }
 }

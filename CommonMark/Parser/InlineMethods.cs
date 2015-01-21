@@ -513,7 +513,7 @@ namespace CommonMark.Parser
             if (peek_char(subj) == '[')
                 return HandleLeftSquareBracket(subj, true);
             else
-                return new Inline("!");
+                return new Inline("!", subj.Position - 1, subj.Position);
         }
 
         private static Inline HandleLeftSquareBracket(Subject subj)
@@ -549,7 +549,7 @@ namespace CommonMark.Parser
             return inlText;
         }
 
-        internal static void MatchSquareBracketStack(InlineStack opener, Subject subj, InlineStack closer, Reference details)
+        internal static void MatchSquareBracketStack(InlineStack opener, Subject subj, Reference details)
         {
             if (details != null)
             {
@@ -558,6 +558,7 @@ namespace CommonMark.Parser
                 inl.Tag = isImage ? InlineTag.Image : InlineTag.Link;
                 inl.FirstChild = inl.NextSibling;
                 inl.NextSibling = null;
+                inl.SourceLastPosition = subj.Position;
 
                 inl.TargetUrl = details.Url;
                 inl.LiteralContent = details.Title;
@@ -581,7 +582,7 @@ namespace CommonMark.Parser
                     }
                 }
 
-                InlineStack.RemoveStackEntry(opener, subj, closer);
+                InlineStack.RemoveStackEntry(opener, subj, null);
 
                 if (subj != null)
                     subj.LastInline = inl;
@@ -589,17 +590,12 @@ namespace CommonMark.Parser
             else
             {
                 // this looked like a link, but was not.
-                // remove the opener and closer stack entries but leave the inbetween intact
+                // remove the opener stack entry but leave the inbetween intact
                 InlineStack.RemoveStackEntry(opener, subj, opener);
 
-                if (closer != null)
-                    InlineStack.RemoveStackEntry(closer, subj, closer);
-                else
-                {
-                    var inl = new Inline("]");
-                    subj.LastInline.LastSibling.NextSibling = inl;
-                    subj.LastInline = inl;
-                }
+                var inl = new Inline("]", subj.Position - 1, subj.Position);
+                subj.LastInline.LastSibling.NextSibling = inl;
+                subj.LastInline = inl;
             }
         }
 
@@ -617,7 +613,7 @@ namespace CommonMark.Parser
                 if (istack.DelimeterCount == -1)
                 {
                     InlineStack.RemoveStackEntry(istack, subj, istack);
-                    return new Inline("]");
+                    return new Inline("]", subj.Position - 1, subj.Position);
                 }
 
                 var endpos = subj.Position;
@@ -637,11 +633,11 @@ namespace CommonMark.Parser
                 if (details == Reference.InvalidReference)
                     details = null;
 
-                MatchSquareBracketStack(istack, subj, null, details);
+                MatchSquareBracketStack(istack, subj, details);
                 return null;
             }
 
-            var inlText = new Inline("]");
+            var inlText = new Inline("]", subj.Position - 1, subj.Position);
 
             if (can_close)
             {

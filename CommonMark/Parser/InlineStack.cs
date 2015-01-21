@@ -184,11 +184,7 @@ namespace CommonMark.Parser
                         if (iopener != null)
                         {
                             bool retry = false;
-                            if (iopener.Delimeter == '[')
-                            {
-                                InlineMethods.MatchSquareBracketStack(iopener, subj, istack, null);
-                            }
-                            else if (iopener.Delimeter == '~')
+                            if (iopener.Delimeter == '~')
                             {
                                 InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, null, InlineTag.Strikethrough);
                                 if (istack.DelimeterCount > 1)
