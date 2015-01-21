@@ -26,13 +26,32 @@ namespace CommonMark.Tests
             // Arrange
             commonMark = Helpers.Normalize(commonMark);
             html = Helpers.Normalize(html);
+            
+            string actual;
+            Syntax.Block document;
 
             // Act
-            var actual = CommonMarkConverter.Convert(commonMark, settings);
+            using (var reader = new System.IO.StringReader(commonMark))
+            using (var writer = new System.IO.StringWriter())
+            {
+                document = CommonMarkConverter.ProcessStage1(reader, settings);
+                CommonMarkConverter.ProcessStage2(document, settings);
+                CommonMarkConverter.ProcessStage3(document, writer, settings);
+                actual = writer.ToString();
+            }
 
             // Assert
             Helpers.LogValue("Actual", Denormalize(actual));
             Assert.AreEqual(Helpers.Tidy(html), Helpers.Tidy(actual));
+
+            // Additionally verify that the parser included source position information.
+            // This is done here to catch cases during specification tests that might not be 
+            // covered in SourcePositionTests.cs.
+            var firstFail = document.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.IsOpening && o.Inline.SourceLength <= 0);
+            if (firstFail != null)
+            {
+                Assert.Fail("Incorrect source position: " + firstFail);
+            }
         }
 
         private static string Denormalize(string value)

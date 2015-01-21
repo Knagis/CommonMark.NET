@@ -19,5 +19,18 @@ namespace CommonMark.Tests
         {
             Helpers.ExecuteTest("\u0000*foo*\0", "<p><em>foo</em></p>");
         }
+
+        [TestMethod]
+        [TestCategory("CommonMarkConverter")]
+        public void ConvertShortcutMethod()
+        {
+            var expected = "<p><strong>foo</strong></p>";
+            var result = CommonMarkConverter.Convert("**foo**");
+
+            // Assert
+            Helpers.LogValue("Expected", expected);
+            Helpers.LogValue("Actual", result);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(result));
+        }
     }
 }
