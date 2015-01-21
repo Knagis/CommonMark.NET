@@ -92,13 +92,15 @@ namespace CommonMark.Tests
         [TestCategory("SourcePosition")]
         public void SourcePositionTabs()
         {
-            var data = "h\to\tr\ts\te\ts";
-            var doc = Helpers.ParseDocument(data, Settings);
+            foreach (var data in new[] { "h\to", "h\to\tr", "h\to\tr\ts\te\ts" })
+            {
+                var doc = Helpers.ParseDocument(data, Settings);
 
-            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.String);
-            Assert.IsNotNull(inline);
-            Assert.AreEqual(data.Replace('\t', '→'),
-                data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength).Replace('\t', '→'));
+                var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.Tag == Syntax.InlineTag.String);
+                Assert.IsNotNull(inline, "Cannot find the string inline in '{0}'", data.Replace('\t', '→'));
+                Assert.AreEqual(data.Replace('\t', '→'),
+                    data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength).Replace('\t', '→'));
+            }
         }
 
         [TestMethod]

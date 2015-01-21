@@ -68,6 +68,8 @@ namespace CommonMark.Parser
                             this._builder.Length = 0;
                         }
 
+                        this._builder.Append(this._buffer, this._bufferPosition, num - this._bufferPosition);
+
                         if (line.IsTrackingPositions)
                         {
                             var delta = -3 + (this._builder.Length % 4);
@@ -75,7 +77,6 @@ namespace CommonMark.Parser
                             tabIncreaseCount -= delta;
                         }
 
-                        this._builder.Append(this._buffer, this._bufferPosition, num - this._bufferPosition);
                         this._builder.Append(' ', 4 - (this._builder.Length % 4));
                         this._bufferPosition = num + 1;
                     }
