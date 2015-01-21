@@ -962,13 +962,16 @@ namespace CommonMark.Parser
             if (matchlen > 0)
             {
                 contents = subj.Buffer.Substring(subj.Position - 1, matchlen + 1);
+                var result = new Inline(InlineTag.RawHtml, contents);
+                result.SourcePosition = subj.Position - 1;
                 subj.Position += matchlen;
-                return new Inline(InlineTag.RawHtml, contents);
+                result.SourceLastPosition = subj.Position;
+                return result;
             }
             else
             {
                 // if nothing matches, just return the opening <:
-                return new Inline("<");
+                return new Inline("<", subj.Position - 1, subj.Position);
             }
         }
 

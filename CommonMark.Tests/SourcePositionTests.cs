@@ -378,5 +378,24 @@ third";
             Assert.AreEqual("no@spam.org", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
         }
 
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionInlineRawHtml()
+        {
+            var data = "foo <strong x=1>bar</strong> x<";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "<strong x=1>");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("<strong x=1>", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "</strong>");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("</strong>", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+
+            inline = doc.AsEnumerable().FirstOrDefault(o => o.Inline != null && o.Inline.LiteralContent == "<");
+            Assert.IsNotNull(inline);
+            Assert.AreEqual("<", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
+        }
     }
 }
