@@ -160,7 +160,5 @@ namespace CommonMark.Syntax
         /// Gets or sets the previous sibling of this block element. <c>null</c> if this is the first element.
         /// </summary>
         public Block Previous { get; set; }
-
-        internal Parser.PositionTracker PositionTracker;
     }
 }

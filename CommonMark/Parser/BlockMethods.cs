@@ -42,17 +42,16 @@ namespace CommonMark.Parser
 
             var curSC = block.StringContent;
             if (curSC == null)
+            {
                 block.StringContent = curSC = new StringContent();
+                if (lineInfo.IsTrackingPositions)
+                    curSC.PositionTracker = new PositionTracker(lineInfo.LineOffset);
+            }
 
             if (lineInfo.IsTrackingPositions)
-            {
-                if (block.PositionTracker == null)
-                    block.PositionTracker = new PositionTracker(lineInfo.LineOffset);
+                curSC.PositionTracker.AddOffset(lineInfo, offset, len);
 
-                block.PositionTracker.AddOffset(lineInfo, offset, len);
-            }
-            
-            block.StringContent.Append(ln, offset, len);
+            curSC.Append(ln, offset, len);
         }
 
         /// <summary>
@@ -251,19 +250,21 @@ namespace CommonMark.Parser
             var stack = new Stack<Block>();
             var parsers = settings.InlineParsers;
             var specialCharacters = settings.InlineParserSpecialCharacters;
+            StringContent sc;
 
             while (block != null)
             {
                 var tag = block.Tag;
                 if (tag == BlockTag.Paragraph || tag == BlockTag.AtxHeader || tag == BlockTag.SETextHeader)
                 {
-                    if (block.StringContent != null)
+                    sc = block.StringContent;
+                    if (sc != null)
                     {
-                        block.InlineContent = InlineMethods.parse_inlines(block.StringContent.ToString(), refmap, parsers, specialCharacters);
+                        block.InlineContent = InlineMethods.parse_inlines(sc.ToString(), refmap, parsers, specialCharacters);
                         block.StringContent = null;
 
-                        if (block.PositionTracker != null)
-                            AdjustInlineSourcePosition(block.InlineContent, block.PositionTracker, ref inlineStack);
+                        if (sc.PositionTracker != null)
+                            AdjustInlineSourcePosition(block.InlineContent, sc.PositionTracker, ref inlineStack);
                     }
                 }
 

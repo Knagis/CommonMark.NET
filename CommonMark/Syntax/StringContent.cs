@@ -15,6 +15,8 @@ namespace CommonMark.Syntax
         private int _partsLength = 2;
         private StringPart[] _parts = new StringPart[2];
 
+        internal Parser.PositionTracker PositionTracker;
+
         /// <summary>
         /// Gets the total length of string data.
         /// </summary>
