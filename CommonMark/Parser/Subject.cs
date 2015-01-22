@@ -6,9 +6,9 @@ namespace CommonMark.Parser
     [System.Diagnostics.DebuggerDisplay("{DebugToString()}")]
     internal sealed class Subject
     {
-        internal Subject(StringPart part, Dictionary<string, Reference> referenceMap)
-            : this(part.Source, part.StartIndex, part.Length, referenceMap)
+        public Subject(Dictionary<string, Reference> referenceMap)
         {
+            this.ReferenceMap = referenceMap;
         }
 
         public Subject(string buffer, Dictionary<string, Reference> referenceMap)
@@ -18,26 +18,14 @@ namespace CommonMark.Parser
             this.ReferenceMap = referenceMap;
         }
 
-        public Subject(string buffer, int startIndex, int length, Dictionary<string, Reference> referenceMap)
-        {
-            this.Buffer = buffer;
-            this.ReferenceMap = referenceMap;
-            this.Position = startIndex;
-            this.Length = startIndex + length;
-
 #if DEBUG
-            this.StartIndex = startIndex;
-#endif
-        }
-
-#if DEBUG
-        private int StartIndex;
+        public int DebugStartIndex;
 #endif
 
         /// <summary>
         /// Gets or sets the whole buffer this instance is created over.
         /// </summary>
-        public readonly string Buffer;
+        public string Buffer;
 
         /// <summary>
         /// Gets or sets the current position in the buffer.
@@ -76,7 +64,7 @@ namespace CommonMark.Parser
             res = res.Insert(this.Position, "⁞");
 
 #if DEBUG
-            res.Insert(this.StartIndex, "|");
+            res.Insert(this.DebugStartIndex, "|");
 #endif
 
             return res;

@@ -117,7 +117,8 @@ namespace CommonMark.Parser
                     if (!sc.StartsWith('['))
                         break;
 
-                    var subj = sc.CreateSubject(b.Top.ReferenceMap);
+                    var subj = new Subject(b.Top.ReferenceMap);
+                    sc.FillSubject(subj);
                     var origPos = subj.Position;
                     while (subj.Position < subj.Buffer.Length 
                         && subj.Buffer[subj.Position] == '[' 
@@ -264,6 +265,8 @@ namespace CommonMark.Parser
             var parsers = settings.InlineParsers;
             var specialCharacters = settings.InlineParserSpecialCharacters;
             StringContent sc;
+            Subject subj = new Subject(refmap);
+            int delta;
 
             while (block != null)
             {
@@ -273,11 +276,17 @@ namespace CommonMark.Parser
                     sc = block.StringContent;
                     if (sc != null)
                     {
-                        block.InlineContent = InlineMethods.parse_inlines(sc, refmap, parsers, specialCharacters);
+                        sc.FillSubject(subj);
+                        delta = subj.Position;
+
+                        block.InlineContent = InlineMethods.parse_inlines(subj, refmap, parsers, specialCharacters);
                         block.StringContent = null;
 
                         if (sc.PositionTracker != null)
+                        {
+                            sc.PositionTracker.AddBlockOffset(-delta);
                             AdjustInlineSourcePosition(block.InlineContent, sc.PositionTracker, ref inlineStack);
+                        }
                     }
                 }
 

@@ -1086,13 +1086,8 @@ namespace CommonMark.Parser
             return new Inline(contents, startpos, endpos);
         }
 
-        public static Inline parse_inlines(StringContent input, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters)
+        public static Inline parse_inlines(Subject subj, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters)
         {
-            if (input == null)
-                return null;
-
-            var subj = input.CreateSubject(refmap);
-
             var len = subj.Length;
 
             if (len == 0)

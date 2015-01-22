@@ -92,17 +92,43 @@ namespace CommonMark.Syntax
         /// This method will result in a more optimal solution if there is just one part.
         /// Note that this method calls <see cref="TrimEnd"/> thus changing the source data as well.
         /// </summary>
-        internal Parser.Subject CreateSubject(Dictionary<string, Reference> referenceMap)
+        /// <returns>The starting index of the usable part of the subject.</returns>
+        internal void FillSubject(Parser.Subject subj)
         {
+            subj.LastInline = null;
+            subj.LastPendingInline = null;
+            subj.FirstPendingInline = null;
+
             if (this._partCounter == 0)
-                return new Parser.Subject(string.Empty, 0, 0, referenceMap);
+            {
+                subj.Buffer = string.Empty;
+                subj.Position = 0;
+                subj.Length = 0;
+#if DEBUG
+                subj.DebugStartIndex = 0;
+#endif
+                return;
+            }
 
             this.TrimEnd();
 
             if (this._partCounter > 1)
-                return new Parser.Subject(this.ToString(), referenceMap);
+            {
+                subj.Buffer = this.ToString();
+                subj.Position = 0;
+                subj.Length = subj.Buffer.Length;
+#if DEBUG
+                subj.DebugStartIndex = 0;
+#endif
+                return;
+            }
 
-            return new Parser.Subject(this._parts[0], referenceMap);
+            subj.Buffer = this._parts[0].Source;
+            subj.Position = this._parts[0].StartIndex;
+            subj.Length = this._parts[0].StartIndex + this._parts[0].Length;
+#if DEBUG
+            subj.DebugStartIndex = this._parts[0].StartIndex;
+#endif
         }
 
         /// <summary>
