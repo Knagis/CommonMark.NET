@@ -88,11 +88,9 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
-        /// Creates a new parser subject from this string content.
-        /// This method will result in a more optimal solution if there is just one part.
+        /// Resets the given subject instance with data from this string content.
         /// Note that this method calls <see cref="TrimEnd"/> thus changing the source data as well.
         /// </summary>
-        /// <returns>The starting index of the usable part of the subject.</returns>
         internal void FillSubject(Parser.Subject subj)
         {
             subj.LastInline = null;
@@ -243,6 +241,9 @@ namespace CommonMark.Syntax
             throw new ArgumentOutOfRangeException("length", "The length of the substring cannot be greater than the length of the string.");
         }
 
+        /// <summary>
+        /// Removes any space or newline characters from the end of the string data.
+        /// </summary>
         public void TrimEnd()
         {
             int pos, si;

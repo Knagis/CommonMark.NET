@@ -79,7 +79,7 @@ namespace CommonMark
         }
 
         /// <summary>
-        /// Determines if the first line (ignoring the first <param name="startIndex"/>) of a string contains only spaces.
+        /// Determines if the first line (ignoring the first <paramref name="startIndex"/>) of a string contains only spaces.
         /// </summary>
         public static bool IsFirstLineBlank(string source, int startIndex)
         {
