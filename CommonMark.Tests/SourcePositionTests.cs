@@ -515,7 +515,7 @@ third";
         [TestCategory("SourcePosition")]
         public void SourcePositionRemovingReferences()
         {
-            var data = "[foo]: /url\n[bar]: /url\n*asd*";
+            var data = "\0[foo]: /url\n[bar]:\t/url\n*asd*";
 
             var doc = Helpers.ParseDocument(data, Settings);
 

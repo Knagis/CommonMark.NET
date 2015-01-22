@@ -15,6 +15,11 @@ namespace CommonMark.Parser
 
         private int _blockOffset;
 
+        public void AddBlockOffset(int offset)
+        {
+            this._blockOffset += offset;
+        }
+
         public void AddOffset(LineInfo line, int startIndex, int length)
         {
             if (this.OffsetCount + line.OffsetCount + 2 >= this.Offsets.Length)

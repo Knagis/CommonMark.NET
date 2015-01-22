@@ -1219,30 +1219,30 @@ namespace CommonMark.Parser
         // Modify refmap if a reference is encountered.
         // Return 0 if no reference found, otherwise position of subject
         // after reference is parsed.
-        public static int ParseReference(Syntax.StringContent input, Dictionary<string, Reference> refmap)
+        public static int ParseReference(Subject subj)
         {
-            Subject subj = make_subject(input.ToString(), null);
             string url = null;
             string title = null;
             int matchlen = 0;
             int beforetitle;
+            var startPos = subj.Position;
 
             // parse label:
             var lab = ParseReferenceLabel(subj);
             if (lab == null || lab.Value.Length > Reference.MaximumReferenceLabelLength)
-                return 0;
+                goto INVALID;
 
             // colon:
             if (peek_char(subj) == ':')
                 advance(subj);
             else
-                return 0;
+                goto INVALID;
 
             // parse link url:
             spnl(subj);
             matchlen = Scanner.scan_link_url(subj.Buffer, subj.Position);
             if (matchlen == 0)
-                return 0;
+                goto INVALID;
 
             url = subj.Buffer.Substring(subj.Position, matchlen);
             url = CleanUrl(url);
@@ -1271,12 +1271,16 @@ namespace CommonMark.Parser
             if (peek_char(subj) == '\n')
                 advance(subj);
             else if (peek_char(subj) != '\0')
-                return 0;
+                goto INVALID;
 
             // insert reference into refmap
-            add_reference(refmap, make_reference(lab.Value, url, title));
+            add_reference(subj.ReferenceMap, make_reference(lab.Value, url, title));
 
             return subj.Position;
+
+        INVALID:
+            subj.Position = startPos;
+            return 0;
         }
     }
 }

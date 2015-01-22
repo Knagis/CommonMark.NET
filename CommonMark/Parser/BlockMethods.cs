@@ -113,12 +113,27 @@ namespace CommonMark.Parser
             {
 
                 case BlockTag.Paragraph:
-                    var pos = 0;
-                    while (b.StringContent.StartsWith('[') && 0 != (pos = InlineMethods.ParseReference(b.StringContent, b.Top.ReferenceMap)))
-                        b.StringContent.TrimStart(pos);
+                    var sc = b.StringContent;
+                    if (!sc.StartsWith('['))
+                        break;
 
-                    if (b.StringContent.IsFirstLineBlank())
-                        b.Tag = BlockTag.ReferenceDefinition;
+                    var subj = new Subject(sc.ToString(), b.Top.ReferenceMap);
+                    while (subj.Position < subj.Buffer.Length 
+                        && subj.Buffer[subj.Position] == '[' 
+                        && 0 != InlineMethods.ParseReference(subj))
+                    {
+                    }
+
+                    if (subj.Position != 0)
+                    {
+                        sc.TrimStart(subj.Position);
+
+                        if (sc.PositionTracker != null)
+                            sc.PositionTracker.AddBlockOffset(subj.Position);
+
+                        if (sc.IsFirstLineBlank())
+                            b.Tag = BlockTag.ReferenceDefinition;
+                    }
 
                     break;
 
@@ -165,9 +180,6 @@ namespace CommonMark.Parser
                         item = item.NextSibling;
                     }
 
-                    break;
-
-                default:
                     break;
             }
         }
