@@ -88,6 +88,24 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
+        /// Creates a new parser subject from this string content.
+        /// This method will result in a more optimal solution if there is just one part.
+        /// Note that this method calls <see cref="TrimEnd"/> thus changing the source data as well.
+        /// </summary>
+        internal Parser.Subject CreateSubject(Dictionary<string, Reference> referenceMap)
+        {
+            if (this._partCounter == 0)
+                return new Parser.Subject(string.Empty, 0, 0, referenceMap);
+
+            this.TrimEnd();
+
+            if (this._partCounter > 1)
+                return new Parser.Subject(this.ToString(), referenceMap);
+
+            return new Parser.Subject(this._parts[0], referenceMap);
+        }
+
+        /// <summary>
         /// Writes the data contained in this instance to the given text writer.
         /// </summary>
         public void WriteTo(System.IO.TextWriter writer)
@@ -197,6 +215,34 @@ namespace CommonMark.Syntax
             }
 
             throw new ArgumentOutOfRangeException("length", "The length of the substring cannot be greater than the length of the string.");
+        }
+
+        public void TrimEnd()
+        {
+            int pos, si;
+            char c;
+            string source;
+            for (var i = this._partCounter - 1; i >= 0; i--)
+            {
+                source = this._parts[i].Source;
+                si = this._parts[i].StartIndex;
+                pos = si + this._parts[i].Length - 1;
+
+                while (pos >= si)
+                {
+                    c = source[pos];
+                    if (c != ' ' && c != '\n')
+                    {
+                        this._parts[i].Length = pos - si + 1;
+                        return;
+                    }
+
+                    pos--;
+                }
+
+                this._length -= this._parts[i].Length;
+                this._partCounter--;
+            }
         }
 
         /// <summary>

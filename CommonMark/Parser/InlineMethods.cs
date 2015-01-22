@@ -97,15 +97,6 @@ namespace CommonMark.Parser
             return a;
         }
 
-        // Make a 'subject' from an input string.
-#if OptimizeFor45
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-#endif
-        private static Subject make_subject(string s, Dictionary<string, Reference> refmap)
-        {
-            return new Subject(s.TrimEnd(), refmap);
-        }
-
         // Return the next character in the subject, without advancing.
         // Return 0 if at the end of the subject.
 #if OptimizeFor45
@@ -113,7 +104,7 @@ namespace CommonMark.Parser
 #endif
         private static char peek_char(Subject subj)
         {
-            return subj.Buffer.Length <= subj.Position ? '\0' : subj.Buffer[subj.Position];
+            return subj.Length <= subj.Position ? '\0' : subj.Buffer[subj.Position];
         }
 
         // Advance the subject.  Doesn't check for eof.
@@ -261,7 +252,7 @@ namespace CommonMark.Parser
         static Inline handle_backticks(Subject subj)
         {
             int ticklength = 0;
-            var bl = subj.Buffer.Length;
+            var bl = subj.Length;
             while (subj.Position < bl && (subj.Buffer[subj.Position] == '`'))
             {
                 ticklength++;
@@ -295,7 +286,7 @@ namespace CommonMark.Parser
             int numdelims = 0;
             char char_before, char_after;
             int startpos = subj.Position;
-            int len = subj.Buffer.Length;
+            int len = subj.Length;
 
             while (startpos + numdelims < len && subj.Buffer[startpos + numdelims] == c)
                 numdelims++;
@@ -665,7 +656,7 @@ namespace CommonMark.Parser
         {
             advance(subj);
 
-            if (subj.Position >= subj.Buffer.Length)
+            if (subj.Position >= subj.Length)
                 return new Inline("\\", subj.Position - 1, subj.Position); 
 
             var nextChar = subj.Buffer[subj.Position];
@@ -712,7 +703,7 @@ namespace CommonMark.Parser
             string namedEntity;
             int numericEntity;
             var origPos = subj.Position;
-            match = Scanner.scan_entity(subj.Buffer, subj.Position, subj.Buffer.Length - subj.Position, out namedEntity, out numericEntity);
+            match = Scanner.scan_entity(subj.Buffer, subj.Position, subj.Length - subj.Position, out namedEntity, out numericEntity);
             if (match > 0)
             {
                 subj.Position += match;
@@ -753,7 +744,7 @@ namespace CommonMark.Parser
 
             int searchpos;
             char c;
-            Subject subj = make_subject(s, null);
+            var subj = new Subject(s, null);
 
             while ('\0' != (c = peek_char(subj)))
             {
@@ -773,7 +764,7 @@ namespace CommonMark.Parser
                 {
                     searchpos = subj.Buffer.IndexOf('&', subj.Position);
                     if (searchpos == -1)
-                        searchpos = subj.Buffer.Length;
+                        searchpos = subj.Length;
 
                     result = subj.Buffer.Substring(subj.Position, searchpos - subj.Position);
                     subj.Position = searchpos;
@@ -921,7 +912,7 @@ namespace CommonMark.Parser
             advance(subj);  
 
             // first try to match a URL autolink
-            matchlen = Scanner.scan_autolink_uri(subj.Buffer, subj.Position);
+            matchlen = Scanner.scan_autolink_uri(subj.Buffer, subj.Position, subj.Length);
             if (matchlen > 0)
             {
                 contents = subj.Buffer.Substring(subj.Position, matchlen - 1);
@@ -938,7 +929,7 @@ namespace CommonMark.Parser
             }
 
             // next try to match an email autolink
-            matchlen = Scanner.scan_autolink_email(subj.Buffer, subj.Position);
+            matchlen = Scanner.scan_autolink_email(subj.Buffer, subj.Position, subj.Length);
             if (matchlen > 0)
             {
                 contents = subj.Buffer.Substring(subj.Position, matchlen - 1);
@@ -955,7 +946,7 @@ namespace CommonMark.Parser
             }
 
             // finally, try to match an html tag
-            matchlen = Scanner.scan_html_tag(subj.Buffer, subj.Position);
+            matchlen = Scanner.scan_html_tag(subj.Buffer, subj.Position, subj.Length);
             if (matchlen > 0)
             {
                 contents = subj.Buffer.Substring(subj.Position - 1, matchlen + 1);
@@ -984,18 +975,18 @@ namespace CommonMark.Parser
             var c = peek_char(subj);
 
             if (c == '(' &&
-                    ((sps = Scanner.scan_spacechars(subj.Buffer, subj.Position + 1)) > -1) &&
-                    ((n = Scanner.scan_link_url(subj.Buffer, subj.Position + 1 + sps)) > -1))
+                    ((sps = Scanner.scan_spacechars(subj.Buffer, subj.Position + 1, subj.Length)) > -1) &&
+                    ((n = Scanner.scan_link_url(subj.Buffer, subj.Position + 1 + sps, subj.Length)) > -1))
             {
                 // try to parse an explicit link:
                 starturl = subj.Position + 1 + sps; // after (
                 endurl = starturl + n;
-                starttitle = endurl + Scanner.scan_spacechars(subj.Buffer, endurl);
+                starttitle = endurl + Scanner.scan_spacechars(subj.Buffer, endurl, subj.Length);
                 // ensure there are spaces btw url and title
                 endtitle = (starttitle == endurl) ? starttitle :
-                           starttitle + Scanner.scan_link_title(subj.Buffer, starttitle);
-                endall = endtitle + Scanner.scan_spacechars(subj.Buffer, endtitle);
-                if (endall < subj.Buffer.Length && subj.Buffer[endall] == ')')
+                           starttitle + Scanner.scan_link_title(subj.Buffer, starttitle, subj.Length);
+                endall = endtitle + Scanner.scan_spacechars(subj.Buffer, endtitle, subj.Length);
+                if (endall < subj.Length && subj.Buffer[endall] == ')')
                 {
                     subj.Position = endall + 1;
                     url = subj.Buffer.Substring(starturl, endurl - starturl);
@@ -1040,7 +1031,7 @@ namespace CommonMark.Parser
             advance(subj);
 
             // skip spaces at beginning of line
-            var len = subj.Buffer.Length;
+            var len = subj.Length;
             while (subj.Position < len && subj.Buffer[subj.Position] == ' ')
                 advance(subj);
 
@@ -1066,7 +1057,7 @@ namespace CommonMark.Parser
 
             var startpos = subj.Position;
             // we read until we hit a special character
-            var endpos = subj.Buffer.IndexOfAny(specialCharacters, startpos);
+            var endpos = subj.Buffer.IndexOfAny(specialCharacters, startpos, subj.Length - startpos);
 
             if (endpos == startpos)
             {
@@ -1077,8 +1068,8 @@ namespace CommonMark.Parser
             else if (endpos == -1)
             {
                 // special char not found, take whole rest of buffer:
-                endpos = subj.Buffer.Length;
-                contents = subj.Buffer.Substring(startpos);
+                endpos = subj.Length;
+                contents = subj.Buffer.Substring(startpos, subj.Length - startpos);
                 subj.Position = endpos;
             }
             else
@@ -1095,14 +1086,14 @@ namespace CommonMark.Parser
             return new Inline(contents, startpos, endpos);
         }
 
-        public static Inline parse_inlines(string input, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters)
+        public static Inline parse_inlines(StringContent input, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters)
         {
             if (input == null)
                 return null;
 
-            Subject subj = make_subject(input, refmap);
+            var subj = input.CreateSubject(refmap);
 
-            var len = subj.Buffer.Length;
+            var len = subj.Length;
 
             if (len == 0)
                 return null;
@@ -1130,7 +1121,7 @@ namespace CommonMark.Parser
         private static void spnl(Subject subj)
         {
             bool seen_newline = false;
-            var len = subj.Buffer.Length;
+            var len = subj.Length;
             char c;
             while (subj.Position < len)
             {
@@ -1158,7 +1149,7 @@ namespace CommonMark.Parser
         {
             var startPos = subj.Position;
             var source = subj.Buffer;
-            var len = source.Length;
+            var len = subj.Length;
 
             char c = '\0';
             while (subj.Position < len)
@@ -1240,7 +1231,7 @@ namespace CommonMark.Parser
 
             // parse link url:
             spnl(subj);
-            matchlen = Scanner.scan_link_url(subj.Buffer, subj.Position);
+            matchlen = Scanner.scan_link_url(subj.Buffer, subj.Position, subj.Length);
             if (matchlen == 0)
                 goto INVALID;
 
@@ -1251,7 +1242,7 @@ namespace CommonMark.Parser
             // parse optional link_title
             beforetitle = subj.Position;
             spnl(subj);
-            matchlen = Scanner.scan_link_title(subj.Buffer, subj.Position);
+            matchlen = Scanner.scan_link_title(subj.Buffer, subj.Position, subj.Length);
             if (matchlen > 0)
             {
                 title = subj.Buffer.Substring(subj.Position, matchlen);

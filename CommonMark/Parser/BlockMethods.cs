@@ -117,19 +117,20 @@ namespace CommonMark.Parser
                     if (!sc.StartsWith('['))
                         break;
 
-                    var subj = new Subject(sc.ToString(), b.Top.ReferenceMap);
+                    var subj = sc.CreateSubject(b.Top.ReferenceMap);
+                    var origPos = subj.Position;
                     while (subj.Position < subj.Buffer.Length 
                         && subj.Buffer[subj.Position] == '[' 
                         && 0 != InlineMethods.ParseReference(subj))
                     {
                     }
 
-                    if (subj.Position != 0)
+                    if (subj.Position != origPos)
                     {
                         sc.Replace(subj.Buffer, subj.Position, subj.Buffer.Length - subj.Position);
 
                         if (sc.PositionTracker != null)
-                            sc.PositionTracker.AddBlockOffset(subj.Position);
+                            sc.PositionTracker.AddBlockOffset(subj.Position - origPos);
 
                         if (Utilities.IsFirstLineBlank(subj.Buffer, subj.Position))
                             b.Tag = BlockTag.ReferenceDefinition;
@@ -272,7 +273,7 @@ namespace CommonMark.Parser
                     sc = block.StringContent;
                     if (sc != null)
                     {
-                        block.InlineContent = InlineMethods.parse_inlines(sc.ToString(), refmap, parsers, specialCharacters);
+                        block.InlineContent = InlineMethods.parse_inlines(sc, refmap, parsers, specialCharacters);
                         block.StringContent = null;
 
                         if (sc.PositionTracker != null)
@@ -318,7 +319,7 @@ namespace CommonMark.Parser
             startpos = pos;
             c = ln[pos];
 
-            if (c == '+' || c == '•' || ((c == '*' || c == '-') && 0 == Scanner.scan_hrule(ln, pos)))
+            if (c == '+' || c == '•' || ((c == '*' || c == '-') && 0 == Scanner.scan_hrule(ln, pos, len)))
             {
                 pos++;
                 if (pos == len || (ln[pos] != ' ' && ln[pos] != '\n'))
@@ -571,7 +572,7 @@ namespace CommonMark.Parser
                     container = CreateChildBlock(container, BlockTag.BlockQuote, line_number, offset + 1);
 
                 }
-                else if (curChar == '#' && 0 != (matched = Scanner.scan_atx_header_start(ln, first_nonspace, out i)))
+                else if (curChar == '#' && 0 != (matched = Scanner.scan_atx_header_start(ln, first_nonspace, ln.Length, out i)))
                 {
 
                     offset = first_nonspace + matched;
@@ -579,7 +580,7 @@ namespace CommonMark.Parser
                     container.HeaderLevel = i;
 
                 }
-                else if ((curChar == '`' || curChar == '~') && 0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace)))
+                else if ((curChar == '`' || curChar == '~') && 0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace, ln.Length)))
                 {
 
                     container = CreateChildBlock(container, BlockTag.FencedCode, line_number, first_nonspace + 1);
@@ -590,7 +591,7 @@ namespace CommonMark.Parser
                     offset = first_nonspace + matched;
 
                 }
-                else if (curChar == '<' && Scanner.scan_html_block_tag(ln, first_nonspace))
+                else if (curChar == '<' && Scanner.scan_html_block_tag(ln, first_nonspace, ln.Length))
                 {
 
                     container = CreateChildBlock(container, BlockTag.HtmlBlock, line_number, first_nonspace + 1);
@@ -598,7 +599,7 @@ namespace CommonMark.Parser
 
                 }
                 else if (container.Tag == BlockTag.Paragraph && (curChar == '=' || curChar == '-')
-                        && 0 != (matched = Scanner.scan_setext_header_line(ln, first_nonspace))
+                        && 0 != (matched = Scanner.scan_setext_header_line(ln, first_nonspace, ln.Length))
                         && ContainsSingleLine(container.StringContent))
                 {
 
@@ -607,7 +608,7 @@ namespace CommonMark.Parser
                     offset = ln.Length - 1;
 
                 }
-                else if (!(container.Tag == BlockTag.Paragraph && !all_matched) && 0 != (matched = Scanner.scan_hrule(ln, first_nonspace)))
+                else if (!(container.Tag == BlockTag.Paragraph && !all_matched) && 0 != (matched = Scanner.scan_hrule(ln, first_nonspace, ln.Length)))
                 {
 
                     // it's only now that we know the line is not part of a setext header:
@@ -734,7 +735,7 @@ namespace CommonMark.Parser
 
                     if ((indent <= 3
                       && curChar == container.FencedCodeData.FenceChar)
-                      && (0 != Scanner.scan_close_code_fence(ln, first_nonspace, container.FencedCodeData.FenceLength)))
+                      && (0 != Scanner.scan_close_code_fence(ln, first_nonspace, container.FencedCodeData.FenceLength, ln.Length)))
                     {
                         // if closing fence, set fence length to -1. it will be closed when the next line is processed. 
                         container.FencedCodeData.FenceLength = -1;
