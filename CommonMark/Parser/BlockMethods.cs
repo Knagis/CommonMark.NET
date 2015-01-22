@@ -126,12 +126,12 @@ namespace CommonMark.Parser
 
                     if (subj.Position != 0)
                     {
-                        sc.TrimStart(subj.Position);
+                        sc.Replace(subj.Buffer, subj.Position, subj.Buffer.Length - subj.Position);
 
                         if (sc.PositionTracker != null)
                             sc.PositionTracker.AddBlockOffset(subj.Position);
 
-                        if (sc.IsFirstLineBlank())
+                        if (Utilities.IsFirstLineBlank(subj.Buffer, subj.Position))
                             b.Tag = BlockTag.ReferenceDefinition;
                     }
 

@@ -117,30 +117,14 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
-        /// Removes a given number of characters from the beginning of this instance.
+        /// Replaces the whole string content with the given substring.
         /// </summary>
-        public void TrimStart(int charactersToRemove)
+        public void Replace(string data, int startIndex, int length)
         {
-            this._length -= charactersToRemove;
-            if (this._length < 0)
-                this._length = 0;
-
-            for (var i = 0; charactersToRemove > 0 && i < this._partCounter; i++)
-            {
-                if (charactersToRemove < this._parts[i].Length)
-                {
-                    this._parts[i].StartIndex += charactersToRemove;
-                    this._parts[i].Length -= charactersToRemove;
-                    return;
-                }
-                else
-                {
-                    charactersToRemove -= this._parts[i].Length;
-                    this._parts[i].Source = string.Empty;
-                    this._parts[i].Length = 0;
-                    this._parts[i].StartIndex = 0;
-                }
-            }
+            this._partCounter = 1;
+            this._parts[0].Source = data;
+            this._parts[0].StartIndex = startIndex;
+            this._parts[0].Length = length;
         }
 
         /// <summary>
@@ -213,35 +197,6 @@ namespace CommonMark.Syntax
             }
 
             throw new ArgumentOutOfRangeException("length", "The length of the substring cannot be greater than the length of the string.");
-        }
-
-        /// <summary>
-        /// Determines if the first line of this instance contains only spaces.
-        /// </summary>
-        public bool IsFirstLineBlank()
-        {
-            char c;
-            int offset;
-            int lastIndex;
-
-            for (var i = 0; i < this._partCounter; i++)
-            {
-                offset = this._parts[i].StartIndex;
-                lastIndex = offset + this._parts[i].Length;
-                while (offset < lastIndex)
-                {
-                    c = this._parts[i].Source[offset];
-                    if (c == '\n')
-                        return true;
-
-                    if (c != ' ')
-                        return false;
-
-                    offset++;
-                }
-            }
-
-            return true;
         }
 
         /// <summary>
