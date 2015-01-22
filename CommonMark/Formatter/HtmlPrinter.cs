@@ -11,6 +11,11 @@ namespace CommonMark.Formatter
         private static readonly char[] EscapeHtmlCharacters = new[] { '&', '<', '>', '"' };
         private const string HexCharacters = "0123456789ABCDEF";
 
+        private static readonly char[] EscapeHtmlLessThan = "&lt;".ToCharArray();
+        private static readonly char[] EscapeHtmlGreaterThan = "&gt;".ToCharArray();
+        private static readonly char[] EscapeHtmlAmpersand = "&amp;".ToCharArray();
+        private static readonly char[] EscapeHtmlQuote = "&quot;".ToCharArray();
+
         private static readonly bool[] UrlSafeCharacters = new[] {
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -26,15 +31,25 @@ namespace CommonMark.Formatter
         /// Escapes special URL characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeUrl(string input, System.IO.TextWriter target)
+        private static void EscapeUrl(string input, HtmlTextWriter target)
         {
             if (input == null)
                 return;
 
             char c;
             int lastPos = 0;
-            char[] buffer = input.ToCharArray();
-            for (var pos = 0; pos < buffer.Length; pos++)
+            int len = input.Length;
+            char[] buffer;
+
+            if (target.Buffer.Length < len)
+                buffer = target.Buffer = input.ToCharArray();
+            else
+            {
+                buffer = target.Buffer;
+                input.CopyTo(0, buffer, 0, len);
+            }
+
+            for (var pos = 0; pos < len; pos++)
             {
                 c = buffer[pos];
 
@@ -42,14 +57,14 @@ namespace CommonMark.Formatter
                 {
                     target.Write(buffer, lastPos, pos - lastPos);
                     lastPos = pos + 1;
-                    target.Write("&amp;");
+                    target.WriteConstant(EscapeHtmlAmpersand);
                 }
                 else if (c < 128 && !UrlSafeCharacters[c])
                 {
                     target.Write(buffer, lastPos, pos - lastPos);
                     lastPos = pos + 1;
 
-                    target.Write(new[] { '%', HexCharacters[c / 16], HexCharacters[c % 16] });
+                    target.WriteConstant(new[] { '%', HexCharacters[c / 16], HexCharacters[c % 16] });
                 }
                 else if (c > 127)
                 {
@@ -57,7 +72,7 @@ namespace CommonMark.Formatter
                     lastPos = pos + 1;
 
                     byte[] bytes;
-                    if (c >= '\ud800' && c <= '\udfff' && buffer.Length != lastPos)
+                    if (c >= '\ud800' && c <= '\udfff' && len != lastPos)
                     {
                         // this char is the first of UTF-32 character pair
                         bytes = Encoding.UTF8.GetBytes(new[] { c, buffer[lastPos] });
@@ -69,18 +84,18 @@ namespace CommonMark.Formatter
                     }
 
                     for (var i = 0; i < bytes.Length; i++)
-                        target.Write(new[] { '%', HexCharacters[bytes[i] / 16], HexCharacters[bytes[i] % 16] });
+                        target.WriteConstant(new[] { '%', HexCharacters[bytes[i] / 16], HexCharacters[bytes[i] % 16] });
                 }
             }
 
-            target.Write(buffer, lastPos, buffer.Length - lastPos);
+            target.Write(buffer, lastPos, len - lastPos);
         }
 
         /// <summary>
         /// Escapes special HTML characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeHtml(string input, System.IO.TextWriter target)
+        private static void EscapeHtml(string input, HtmlTextWriter target)
         {
             if (input == null)
                 return;
@@ -92,7 +107,15 @@ namespace CommonMark.Formatter
             while ((pos = input.IndexOfAny(EscapeHtmlCharacters, lastPos)) != -1)
             {
                 if (buffer == null)
-                    buffer = input.ToCharArray();
+                {
+                    if (target.Buffer.Length < input.Length)
+                        buffer = target.Buffer = input.ToCharArray();
+                    else
+                    {
+                        buffer = target.Buffer;
+                        input.CopyTo(0, buffer, 0, input.Length);
+                    }
+                }
 
                 target.Write(buffer, lastPos, pos - lastPos);
                 lastPos = pos + 1;
@@ -100,16 +123,16 @@ namespace CommonMark.Formatter
                 switch (buffer[pos])
                 {
                     case '<':
-                        target.Write("&lt;");
+                        target.WriteConstant(EscapeHtmlLessThan);
                         break;
                     case '>':
-                        target.Write("&gt;");
+                        target.WriteConstant(EscapeHtmlGreaterThan);
                         break;
                     case '&':
-                        target.Write("&amp;");
+                        target.WriteConstant(EscapeHtmlAmpersand);
                         break;
                     case '"':
-                        target.Write("&quot;");
+                        target.WriteConstant(EscapeHtmlQuote);
                         break;
                 }
             }
@@ -124,19 +147,19 @@ namespace CommonMark.Formatter
         /// Escapes special HTML characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeHtml(StringContent inp, System.IO.TextWriter target)
+        private static void EscapeHtml(StringContent inp, HtmlTextWriter target)
         {
             int pos;
             int lastPos;
-            char[] buffer = null;
+            char[] buffer = target.Buffer;
 
             var parts = inp.RetrieveParts();
             for (var i = parts.Offset; i < parts.Offset + parts.Count; i++)
             {
                 var part = parts.Array[i];
 
-                if (buffer == null || buffer.Length < part.Length)
-                    buffer = new char[part.Length];
+                if (buffer.Length < part.Length)
+                    buffer = target.Buffer = new char[part.Length];
 
                 part.Source.CopyTo(part.StartIndex, buffer, 0, part.Length);
 
@@ -149,16 +172,16 @@ namespace CommonMark.Formatter
                     switch (part.Source[pos])
                     {
                         case '<':
-                            target.Write("&lt;");
+                            target.WriteConstant(EscapeHtmlLessThan);
                             break;
                         case '>':
-                            target.Write("&gt;");
+                            target.WriteConstant(EscapeHtmlGreaterThan);
                             break;
                         case '&':
-                            target.Write("&amp;");
+                            target.WriteConstant(EscapeHtmlAmpersand);
                             break;
                         case '"':
-                            target.Write("&quot;");
+                            target.WriteConstant(EscapeHtmlQuote);
                             break;
                     }
                 }
@@ -207,15 +230,15 @@ namespace CommonMark.Formatter
                         else
                         {
                             writer.EnsureLine();
-                            writer.Write("<p>");
+                            writer.WriteConstant("<p>");
                             InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
-                            writer.WriteLine("</p>");
+                            writer.WriteLineConstant("</p>");
                         }
                         break;
 
                     case BlockTag.BlockQuote:
                         writer.EnsureLine();
-                        writer.WriteLine("<blockquote>");
+                        writer.WriteLineConstant("<blockquote>");
 
                         stackLiteral = "</blockquote>" + Environment.NewLine;
                         stackTight = false;
@@ -224,7 +247,7 @@ namespace CommonMark.Formatter
 
                     case BlockTag.ListItem:
                         writer.EnsureLine();
-                        writer.Write("<li>");
+                        writer.WriteConstant("<li>");
 
                         stackLiteral = "</li>" + Environment.NewLine;
                         stackTight = tight;
@@ -236,10 +259,10 @@ namespace CommonMark.Formatter
                         writer.EnsureLine();
                         var data = block.ListData;
                         tag = data.ListType == ListType.Bullet ? "ul" : "ol";
-                        writer.Write("<" + tag);
+                        writer.WriteConstant("<" + tag);
                         if (data.Start != 1)
-                            writer.Write(" start=\"" + data.Start.ToString(System.Globalization.CultureInfo.InvariantCulture) + "\"");
-                        writer.WriteLine(">");
+                            writer.WriteConstant(" start=\"" + data.Start.ToString(System.Globalization.CultureInfo.InvariantCulture) + "\"");
+                        writer.WriteLineConstant(">");
 
                         stackLiteral = "</" + tag + ">" + Environment.NewLine;
                         stackTight = data.IsTight;
@@ -250,21 +273,21 @@ namespace CommonMark.Formatter
                     case BlockTag.SETextHeader:
                         tag = "h" + block.HeaderLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
                         writer.EnsureLine();
-                        writer.Write("<" + tag + ">");
+                        writer.WriteConstant("<" + tag + ">");
                         InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
-                        writer.WriteLine("</" + tag + ">");
+                        writer.WriteLineConstant("</" + tag + ">");
                         break;
 
                     case BlockTag.IndentedCode:
                         writer.EnsureLine();
-                        writer.Write("<pre><code>");
+                        writer.WriteConstant("<pre><code>");
                         EscapeHtml(block.StringContent, writer);
-                        writer.WriteLine("</code></pre>");
+                        writer.WriteLineConstant("</code></pre>");
                         break;
 
                     case BlockTag.FencedCode:
                         writer.EnsureLine();
-                        writer.Write("<pre><code");
+                        writer.WriteConstant("<pre><code");
                         var info = block.FencedCodeData.Info;
                         if (info != null && info.Length > 0)
                         {
@@ -272,13 +295,13 @@ namespace CommonMark.Formatter
                             if (x == -1)
                                 x = info.Length;
 
-                            writer.Write(" class=\"language-");
+                            writer.WriteConstant(" class=\"language-");
                             EscapeHtml(info.Substring(0, x), writer);
-                            writer.Write("\"");
+                            writer.Write('\"');
                         }
-                        writer.Write(">");
+                        writer.Write('>');
                         EscapeHtml(block.StringContent, writer);
-                        writer.WriteLine("</code></pre>");
+                        writer.WriteLineConstant("</code></pre>");
                         break;
 
                     case BlockTag.HtmlBlock:
@@ -286,7 +309,7 @@ namespace CommonMark.Formatter
                         break;
 
                     case BlockTag.HorizontalRuler:
-                        writer.WriteLine("<hr />");
+                        writer.WriteLineConstant("<hr />");
                         break;
 
                     case BlockTag.ReferenceDefinition:
@@ -433,20 +456,20 @@ namespace CommonMark.Formatter
                         break;
 
                     case InlineTag.LineBreak:
-                        writer.WriteLine("<br />");
+                        writer.WriteLineConstant("<br />");
                         break;
 
                     case InlineTag.SoftBreak:
                         if (settings.RenderSoftLineBreaksAsLineBreaks)
-                            writer.WriteLine("<br />");
+                            writer.WriteLineConstant("<br />");
                         else
                             writer.WriteLine();
                         break;
 
                     case InlineTag.Code:
-                        writer.Write("<code>");
+                        writer.WriteConstant("<code>");
                         EscapeHtml(inline.LiteralContent, writer);
-                        writer.Write("</code>");
+                        writer.WriteConstant("</code>");
                         break;
 
                     case InlineTag.RawHtml:
@@ -463,7 +486,7 @@ namespace CommonMark.Formatter
                         }
                         else
                         {
-                            writer.Write("<a href=\"");
+                            writer.WriteConstant("<a href=\"");
                             if (uriResolver != null)
                                 EscapeUrl(uriResolver(inline.TargetUrl), writer);
                             else
@@ -472,7 +495,7 @@ namespace CommonMark.Formatter
                             writer.Write('\"');
                             if (!string.IsNullOrEmpty(inline.LiteralContent))
                             {
-                                writer.Write(" title=\"");
+                                writer.WriteConstant(" title=\"");
                                 EscapeHtml(inline.LiteralContent, writer);
                                 writer.Write('\"');
                             }
@@ -486,40 +509,40 @@ namespace CommonMark.Formatter
                         break;
 
                     case InlineTag.Image:
-                        writer.Write("<img src=\"");
+                        writer.WriteConstant("<img src=\"");
                         if (uriResolver != null)
                             EscapeUrl(uriResolver(inline.TargetUrl), writer);
                         else
                             EscapeUrl(inline.TargetUrl, writer);
 
-                        writer.Write("\" alt=\"");
+                        writer.WriteConstant("\" alt=\"");
                         InlinesToPlainText(writer, inline.FirstChild, stack);
-                        writer.Write("\"");
+                        writer.Write('\"');
                         if (!string.IsNullOrEmpty(inline.LiteralContent))
                         {
-                            writer.Write(" title=\"");
+                            writer.WriteConstant(" title=\"");
                             EscapeHtml(inline.LiteralContent, writer);
-                            writer.Write("\"");
+                            writer.Write('\"');
                         }
-                        writer.Write(" />");
+                        writer.WriteConstant(" />");
                         break;
 
                     case InlineTag.Strong:
-                        writer.Write("<strong>");
+                        writer.WriteConstant("<strong>");
                         stackLiteral = "</strong>";
                         stackWithinLink = withinLink;
                         visitChildren = true;
                         break;
 
                     case InlineTag.Emphasis:
-                        writer.Write("<em>");
+                        writer.WriteConstant("<em>");
                         stackLiteral = "</em>";
                         visitChildren = true;
                         stackWithinLink = withinLink;
                         break;
 
                     case InlineTag.Strikethrough:
-                        writer.Write("<del>");
+                        writer.WriteConstant("<del>");
                         stackLiteral = "</del>";
                         visitChildren = true;
                         stackWithinLink = withinLink;

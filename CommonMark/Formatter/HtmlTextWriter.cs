@@ -12,7 +12,13 @@ namespace CommonMark.Formatter
         private System.IO.TextWriter _inner;
         private char _last = '\n';
         private bool _windowsNewLine;
-        private char[] _buffer = new char[256];
+        
+        /// <summary>
+        /// A reusable char buffer. This is used internally in <see cref="Write(string)"/>
+        /// and <see cref="WriteConstant(string)"/> (and thus will modify the buffer)
+        /// but can also be used from <see cref="HtmlPrinter"/> class.
+        /// </summary>
+        internal char[] Buffer = new char[256];
 
         public HtmlTextWriter(System.IO.TextWriter inner)
             : base(System.Globalization.CultureInfo.InvariantCulture)
@@ -22,6 +28,12 @@ namespace CommonMark.Formatter
             var nl = inner.NewLine;
             this.CoreNewLine = nl.ToCharArray();
             this._windowsNewLine = nl == "\r\n";
+        }
+
+        public override void WriteLine()
+        {
+            this._inner.Write(this.CoreNewLine);
+            this._last = '\n';
         }
 
         public override void WriteLine(string value)
@@ -42,10 +54,10 @@ namespace CommonMark.Formatter
                 var lastC = this._last;
                 int pos = 0;
 
-                if (this._buffer.Length < value.Length)
-                    this._buffer = value.ToCharArray();
+                if (this.Buffer.Length < value.Length)
+                    this.Buffer = value.ToCharArray();
                 else
-                    value.CopyTo(0, this._buffer, 0, value.Length);
+                    value.CopyTo(0, this.Buffer, 0, value.Length);
 
                 while (-1 != (pos = value.IndexOf('\n', pos)))
                 {
@@ -53,7 +65,7 @@ namespace CommonMark.Formatter
 
                     if (lastC != '\r')
                     {
-                        this._inner.Write(this._buffer, lastPos, pos - lastPos);
+                        this._inner.Write(this.Buffer, lastPos, pos - lastPos);
                         this._inner.Write('\r');
                         lastPos = pos;
                     }
@@ -61,7 +73,7 @@ namespace CommonMark.Formatter
                     pos++;
                 }
 
-                this._inner.Write(this._buffer, lastPos, value.Length - lastPos);
+                this._inner.Write(this.Buffer, lastPos, value.Length - lastPos);
             }
             else
             {
@@ -69,6 +81,44 @@ namespace CommonMark.Formatter
             }
 
             this._last = value[value.Length - 1];
+        }
+        
+        /// <summary>
+        /// Writes a value that is known not to contain any newlines.
+        /// </summary>
+        public void WriteConstant(char[] value)
+        {
+            this._last = 'c';
+            this._inner.Write(value, 0, value.Length);
+        }
+
+        /// <summary>
+        /// Writes a value that is known not to contain any newlines.
+        /// </summary>
+        public void WriteConstant(string value)
+        {
+            if (this.Buffer.Length < value.Length)
+                this.Buffer = value.ToCharArray();
+            else
+                value.CopyTo(0, this.Buffer, 0, value.Length);
+
+            this._last = 'c';
+            this._inner.Write(this.Buffer, 0, value.Length);
+        }
+
+        /// <summary>
+        /// Writes a value that is known not to contain any newlines.
+        /// </summary>
+        public void WriteLineConstant(string value)
+        {
+            if (this.Buffer.Length < value.Length)
+                this.Buffer = value.ToCharArray();
+            else
+                value.CopyTo(0, this.Buffer, 0, value.Length);
+
+            this._last = '\n';
+            this._inner.Write(this.Buffer, 0, value.Length);
+            this._inner.WriteLine();
         }
 
         public override void Write(char[] value, int index, int count)
