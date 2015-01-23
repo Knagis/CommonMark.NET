@@ -49,26 +49,28 @@ namespace CommonMark.Formatter
                 input.CopyTo(0, buffer, 0, len);
             }
 
+            // since both \r and \n are not url-safe characters and will be encoded, all calls are
+            // made to WriteConstant.
             for (var pos = 0; pos < len; pos++)
             {
                 c = buffer[pos];
 
                 if (c == '&')
                 {
-                    target.Write(buffer, lastPos, pos - lastPos);
+                    target.WriteConstant(buffer, lastPos, pos - lastPos);
                     lastPos = pos + 1;
                     target.WriteConstant(EscapeHtmlAmpersand);
                 }
                 else if (c < 128 && !UrlSafeCharacters[c])
                 {
-                    target.Write(buffer, lastPos, pos - lastPos);
+                    target.WriteConstant(buffer, lastPos, pos - lastPos);
                     lastPos = pos + 1;
 
                     target.WriteConstant(new[] { '%', HexCharacters[c / 16], HexCharacters[c % 16] });
                 }
                 else if (c > 127)
                 {
-                    target.Write(buffer, lastPos, pos - lastPos);
+                    target.WriteConstant(buffer, lastPos, pos - lastPos);
                     lastPos = pos + 1;
 
                     byte[] bytes;
@@ -88,7 +90,7 @@ namespace CommonMark.Formatter
                 }
             }
 
-            target.Write(buffer, lastPos, len - lastPos);
+            target.WriteConstant(buffer, lastPos, len - lastPos);
         }
 
         /// <summary>

@@ -95,6 +95,15 @@ namespace CommonMark.Formatter
         /// <summary>
         /// Writes a value that is known not to contain any newlines.
         /// </summary>
+        public void WriteConstant(char[] value, int startIndex, int length)
+        {
+            this._last = 'c';
+            this._inner.Write(value, startIndex, length);
+        }
+
+        /// <summary>
+        /// Writes a value that is known not to contain any newlines.
+        /// </summary>
         public void WriteConstant(string value)
         {
             this._last = 'c';
