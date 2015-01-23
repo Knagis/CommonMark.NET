@@ -701,25 +701,25 @@ namespace CommonMark.Parser
         private static string ParseEntity(Subject subj)
         {
             int match;
-            string namedEntity;
+            string entity;
             int numericEntity;
             var origPos = subj.Position;
-            match = Scanner.scan_entity(subj.Buffer, subj.Position, subj.Length - subj.Position, out namedEntity, out numericEntity);
+            match = Scanner.scan_entity(subj.Buffer, subj.Position, subj.Length - subj.Position, out entity, out numericEntity);
             if (match > 0)
             {
                 subj.Position += match;
 
-                if (namedEntity != null)
+                if (entity != null)
                 {
-                    var decoded = EntityDecoder.DecodeEntity(namedEntity);
-                    if (decoded != null)
-                        return decoded;
+                    entity = EntityDecoder.DecodeEntity(entity);
+                    if (entity != null)
+                        return entity;
                 }
                 else if (numericEntity > 0)
                 {
-                    var decoded = EntityDecoder.DecodeEntity(numericEntity);
-                    if (decoded != null)
-                        return decoded;
+                    entity = EntityDecoder.DecodeEntity(numericEntity);
+                    if (entity != null)
+                        return entity;
 
                     return "\uFFFD";
                 }
