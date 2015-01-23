@@ -196,8 +196,8 @@ namespace CommonMark.Formatter
         /// <remarks>Orig: blocks_to_html</remarks>
         public static void BlocksToHtml(System.IO.TextWriter writer, Block block, CommonMarkSettings settings)
         {
-            using (var wrapper = new HtmlTextWriter(writer))
-                BlocksToHtmlInner(wrapper, block, settings);
+            var wrapper = new HtmlTextWriter(writer);
+            BlocksToHtmlInner(wrapper, block, settings);
         }
 
         private static void BlocksToHtmlInner(HtmlTextWriter writer, Block block, CommonMarkSettings settings)

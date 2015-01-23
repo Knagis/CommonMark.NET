@@ -7,43 +7,43 @@ namespace CommonMark.Formatter
     /// <summary>
     /// A wrapper for <see cref="HtmlPrinter"/> that keeps track if the last symbol has been a newline.
     /// </summary>
-    internal class HtmlTextWriter : System.IO.TextWriter
+    internal sealed class HtmlTextWriter
     {
         private System.IO.TextWriter _inner;
         private char _last = '\n';
         private bool _windowsNewLine;
+        private char[] _newline;
         
         /// <summary>
         /// A reusable char buffer. This is used internally in <see cref="Write(string)"/>
-        /// and <see cref="WriteConstant(string)"/> (and thus will modify the buffer)
+        /// and <see cref="WriteLine(string)"/> (and thus will modify the buffer)
         /// but can also be used from <see cref="HtmlPrinter"/> class.
         /// </summary>
         internal char[] Buffer = new char[256];
 
         public HtmlTextWriter(System.IO.TextWriter inner)
-            : base(System.Globalization.CultureInfo.InvariantCulture)
         {
             this._inner = inner;
 
             var nl = inner.NewLine;
-            this.CoreNewLine = nl.ToCharArray();
+            this._newline = nl.ToCharArray();
             this._windowsNewLine = nl == "\r\n";
         }
 
-        public override void WriteLine()
+        public void WriteLine()
         {
-            this._inner.Write(this.CoreNewLine);
+            this._inner.Write(this._newline);
             this._last = '\n';
         }
 
-        public override void WriteLine(string value)
+        public void WriteLine(string value)
         {
             this.Write(value);
-            this._inner.Write(this.CoreNewLine);
+            this._inner.Write(this._newline);
             this._last = '\n';
         }
 
-        public override void Write(string value)
+        public void Write(string value)
         {
             if (value == null || value.Length == 0)
                 return;
@@ -97,13 +97,8 @@ namespace CommonMark.Formatter
         /// </summary>
         public void WriteConstant(string value)
         {
-            if (this.Buffer.Length < value.Length)
-                this.Buffer = value.ToCharArray();
-            else
-                value.CopyTo(0, this.Buffer, 0, value.Length);
-
             this._last = 'c';
-            this._inner.Write(this.Buffer, 0, value.Length);
+            this._inner.Write(value);
         }
 
         /// <summary>
@@ -111,17 +106,12 @@ namespace CommonMark.Formatter
         /// </summary>
         public void WriteLineConstant(string value)
         {
-            if (this.Buffer.Length < value.Length)
-                this.Buffer = value.ToCharArray();
-            else
-                value.CopyTo(0, this.Buffer, 0, value.Length);
-
             this._last = '\n';
-            this._inner.Write(this.Buffer, 0, value.Length);
-            this._inner.WriteLine();
+            this._inner.Write(value);
+            this._inner.Write(this._newline);
         }
 
-        public override void Write(char[] value, int index, int count)
+        public void Write(char[] value, int index, int count)
         {
             if (value == null || count == 0)
                 return;
@@ -162,7 +152,7 @@ namespace CommonMark.Formatter
             this._last = value[index + count - 1];
         }
 
-        public override void Write(char value)
+        public void Write(char value)
         {
             if (this._windowsNewLine && _last != '\r' && value == '\n')
                 this._inner.Write('\r');
@@ -171,15 +161,10 @@ namespace CommonMark.Formatter
             this._inner.Write(value);
         }
 
-        public override Encoding Encoding
-        {
-            get { return Encoding.UTF8; }
-        }
-
         /// <summary>
         /// Adds a newline if the writer does not currently end with a newline.
         /// </summary>
-        public virtual void EnsureLine()
+        public void EnsureLine()
         {
             if (this._last != '\n')
                 this.WriteLine();
