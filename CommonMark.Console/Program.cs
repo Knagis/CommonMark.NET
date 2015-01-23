@@ -144,6 +144,9 @@ namespace CommonMark
                     {
                         // by using a in-memory source, the disparity of results is reduced.
                         var data = source.ReadToEnd();
+                        
+                        // in-memory source that gets reused further reduces the disparity.
+                        var builder = new StringBuilder(2 * 1024 * 1024);
 
                         var sw = new System.Diagnostics.Stopwatch();
                         var mem = GC.GetTotalMemory(true);
@@ -154,8 +157,9 @@ namespace CommonMark
                             if (x == 0)
                                 sw.Start();
 
+                            builder.Length = 0;
                             using (var reader = new System.IO.StringReader(data))
-                            using (var twriter = new System.IO.StringWriter())
+                            using (var twriter = new System.IO.StringWriter(builder))
                                 CommonMarkConverter.Convert(reader, twriter, settings);
 
                             if (mem2 == 0)
