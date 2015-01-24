@@ -597,6 +597,10 @@ namespace CommonMark.Parser
                     container.FencedCodeData.FenceChar = curChar;
                     container.FencedCodeData.FenceLength = matched;
                     container.FencedCodeData.FenceOffset = first_nonspace - offset;
+
+                    if (line.IsTrackingPositions)
+                        container.FencedCodeData.SourcePosition = line.CalculateOrigin(ln.Length, true);
+
                     offset = first_nonspace + matched;
 
                 }
@@ -748,6 +752,7 @@ namespace CommonMark.Parser
                     {
                         // if closing fence, set fence length to -1. it will be closed when the next line is processed. 
                         container.FencedCodeData.FenceLength = -1;
+                        container.FencedCodeData.SourceLastPosition = line.CalculateOrigin(0, false);
                     }
                     else
                     {

@@ -28,5 +28,23 @@ namespace CommonMark.Syntax
         /// Gets or sets the additional information that was present in the same line as the opening fence.
         /// </summary>
         public string Info { get; set; }
+
+        /// <summary>
+        /// Gets or sets the position of the contents of the fenced code block within the source data.
+        /// </summary>
+        /// <seealso cref="SourceLength"/>
+        public int SourcePosition { get; set; }
+
+        internal int SourceLastPosition { get; set; }
+
+        /// <summary>
+        /// Gets or sets the length of the contents of the fenced code block within the source data.
+        /// </summary>
+        /// <seealso cref="SourcePosition"/>
+        public int SourceLength
+        {
+            get { return this.SourceLastPosition - this.SourcePosition; }
+            set { this.SourceLastPosition = this.SourcePosition + value; }
+        }
     }
 }

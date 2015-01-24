@@ -28,6 +28,41 @@ namespace CommonMark.Tests
 
         [TestMethod]
         [TestCategory("SourcePosition")]
+        public void SourcePositionFencedCode()
+        {
+            var data = "foo\n\n```c#\nConsole.WriteLine('foo');\n```";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var code = doc.AsEnumerable()
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.FencedCode);
+
+            Assert.IsNotNull(code);
+            Assert.AreEqual("Console.WriteLine('foo');\n",
+                data.Substring(code.Block.FencedCodeData.SourcePosition, code.Block.FencedCodeData.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionFencedCodeInList()
+        {
+            var data = @"
+1. foo
+2. `````c# code
+   Console.WriteLine('foo');
+   ``````
+3. bar";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var code = doc.AsEnumerable()
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.FencedCode);
+
+            Assert.IsNotNull(code);
+            Assert.AreEqual("   Console.WriteLine('foo');\r\n",
+                data.Substring(code.Block.FencedCodeData.SourcePosition, code.Block.FencedCodeData.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
         public void SourcePositionComplex()
         {
             var data = "\0\0   **foo**\r\n\t\0bar \n\n> *quoting **is nice***, `right`?";

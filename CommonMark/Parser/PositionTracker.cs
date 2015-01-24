@@ -92,7 +92,7 @@ namespace CommonMark.Parser
             return CalculateOrigin(this.Offsets, this.OffsetCount, this._blockOffset + position, true, isStartPosition);
         }
 
-        private static int CalculateOrigin(PositionOffset[] offsets, int offsetCount, int position, bool includeReduce, bool isStart)
+        internal static int CalculateOrigin(PositionOffset[] offsets, int offsetCount, int position, bool includeReduce, bool isStart)
         {
             if (isStart)
                 position++;

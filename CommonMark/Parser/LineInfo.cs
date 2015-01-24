@@ -50,5 +50,10 @@ namespace CommonMark.Parser
             return this.LineNumber.ToString(System.Globalization.CultureInfo.InvariantCulture)
                 + ": " + ln;
         }
+
+        public int CalculateOrigin(int position, bool isStartPosition)
+        {
+            return PositionTracker.CalculateOrigin(this.Offsets, this.OffsetCount, this.LineOffset + position, true, isStartPosition);
+        }
     }
 }
