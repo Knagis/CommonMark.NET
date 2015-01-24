@@ -61,12 +61,16 @@ namespace CommonMark.Syntax
         /// Gets or sets the number of the first column (within the first line) in the source text that contains this element.
         /// </summary>
         [Obsolete("Use SourceStartColumn instead", false)]
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public int StartColumn { get { return this.SourceStartColumn; } }
 
         /// <summary>
         /// Gets or sets the number of the last line in the source text that contains this element.
         /// </summary>
         [Obsolete("Use SourceEndLine instead", false)]
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public int EndLine { get { return this.SourceEndLine; } }
 
         /// <summary>
