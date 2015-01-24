@@ -19,5 +19,18 @@ namespace CommonMark.Tests
         {
             Helpers.ExecuteTest("\u0000*foo*\0", "<p><em>foo</em></p>");
         }
+
+        /// <summary>
+        /// Verifies that the U+0000 characters are removed from the source data.
+        /// </summary>
+        [TestMethod]
+        [TestCategory("Other")]
+        public void Version()
+        {
+            var version = CommonMarkConverter.Version;
+
+            Assert.AreEqual(0, version.Major, "The version number is incorrect: {0}", version);
+            Assert.IsTrue(version.Minor > 5, "The version number is incorrect: {0}", version);
+        }
     }
 }

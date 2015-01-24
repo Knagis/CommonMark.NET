@@ -80,6 +80,9 @@
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\CommonMark.NET.nuspec">
+      <Link>Properties\CommonMark.NET.nuspec</Link>
+    </EmbeddedResource>
     <None Include="Properties\public.snk" />
   </ItemGroup>
   <Import Project="CommonMark.Targets.csproj" />

@@ -13,10 +13,49 @@ namespace CommonMark
     /// </summary>
     public static class CommonMarkConverter
     {
+        private static Version _version = new Version(0, 0);
+
+        /// <summary>
+        /// Gets the CommonMark package version number.
+        /// Note that this might differ from the actual assembly version which is updated less often to
+        /// reduce problems when upgrading the nuget package.
+        /// </summary>
+        public static Version Version
+        {
+            get
+            {
+                if (_version.Major != 0 || _version.Minor != 0)
+                    return _version;
+
+                var assembly = typeof(CommonMarkConverter).Assembly;
+                
+                // System.Xml is not available so resort to string parsing.
+                using (var stream = assembly.GetManifestResourceStream("CommonMark.Properties.CommonMark.NET.nuspec"))
+                using (var reader = new System.IO.StreamReader(stream, Encoding.UTF8))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var i = line.IndexOf("<version>", StringComparison.Ordinal);
+                        if (i == -1)
+                            continue;
+
+                        i += 9;
+                        return _version = new Version(line.Substring(i, line.IndexOf("</version>", StringComparison.Ordinal) - i));
+                    }
+                }
+
+                return _version;
+            }
+        }
+
         /// <summary>
         /// Gets the CommonMark assembly version number. Note that might differ from the actual release version
         /// since the assembly version is not always incremented to reduce possible reference errors when updating.
         /// </summary>
+        [Obsolete("Use Version property instead.", false)] 
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)] 
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)] 
         public static Version AssemblyVersion
         {
             get
