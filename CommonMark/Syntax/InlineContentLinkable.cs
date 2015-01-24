@@ -8,6 +8,7 @@ namespace CommonMark.Syntax
     /// An obsolete class. Used to contain properties specific to link inline elements.
     /// </summary>
     [Obsolete("These properties have been moved directly into the Inline element.")]
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public sealed class InlineContentLinkable
     {
         /// <summary>

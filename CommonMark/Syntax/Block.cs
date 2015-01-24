@@ -55,6 +55,8 @@ namespace CommonMark.Syntax
         /// Gets or sets the number of the first line in the source text that contains this element.
         /// </summary>
         [Obsolete("Use SourceStartLine instead", false)]
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public int StartLine { get { return this.SourceStartLine; } }
 
         /// <summary>
