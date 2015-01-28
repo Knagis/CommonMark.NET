@@ -51,10 +51,11 @@ namespace CommonMark
             try
             {
                 var reader = new TabTextReader(source);
-                while (!reader.EndOfStream())
+                reader.ReadLine(line);
+                while (line.Line != null)
                 {
-                    reader.ReadLine(line);
                     BlockMethods.IncorporateLine(line, ref cur);
+                    reader.ReadLine(line);
                 }
             }
             catch(IOException)
@@ -74,7 +75,7 @@ namespace CommonMark
             {
                 do
                 {
-                    BlockMethods.Finalize(cur, line.LineNumber + 1);
+                    BlockMethods.Finalize(cur, line);
                     cur = cur.Parent;
                 } while (cur != null);
             }

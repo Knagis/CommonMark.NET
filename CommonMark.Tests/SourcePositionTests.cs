@@ -27,7 +27,39 @@ namespace CommonMark.Tests
         }
 
         [TestMethod]
-        [TestCategory("SourcePosition")]
+        [TestCategory("SourcePosition - Blocks")]
+        public void SourcePositionBlockQuotes()
+        {
+            var data = @"
+foo
+
+>**something**
+>
+> ---
+>
+> *else*
+is it?
+
+bar
+";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var block = doc.AsEnumerable()
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.BlockQuote);
+
+            Assert.IsNotNull(block);
+            Assert.AreEqual(@">**something**
+>
+> ---
+>
+> *else*
+is it?
+",
+                data.Substring(block.Block.SourcePosition, block.Block.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition - Blocks")]
         public void SourcePositionFencedCode()
         {
             var data = "foo\n\n```c#\nConsole.WriteLine('foo');\n```";
@@ -37,12 +69,12 @@ namespace CommonMark.Tests
                 .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.FencedCode);
 
             Assert.IsNotNull(code);
-            Assert.AreEqual("Console.WriteLine('foo');\n",
-                data.Substring(code.Block.FencedCodeData.SourcePosition, code.Block.FencedCodeData.SourceLength));
+            Assert.AreEqual("```c#\nConsole.WriteLine('foo');\n```",
+                data.Substring(code.Block.SourcePosition, code.Block.SourceLength));
         }
 
         [TestMethod]
-        [TestCategory("SourcePosition")]
+        [TestCategory("SourcePosition - Blocks")]
         public void SourcePositionFencedCodeInList()
         {
             var data = @"
@@ -57,8 +89,11 @@ namespace CommonMark.Tests
                 .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.FencedCode);
 
             Assert.IsNotNull(code);
-            Assert.AreEqual("   Console.WriteLine('foo');\r\n",
-                data.Substring(code.Block.FencedCodeData.SourcePosition, code.Block.FencedCodeData.SourceLength));
+            Assert.AreEqual(@"`````c# code
+   Console.WriteLine('foo');
+   ``````
+",
+                data.Substring(code.Block.SourcePosition, code.Block.SourceLength));
         }
 
         [TestMethod]

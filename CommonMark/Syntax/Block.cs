@@ -14,14 +14,29 @@ namespace CommonMark.Syntax
         /// Initializes a new instance of the <see cref="Block"/> class.
         /// </summary>
         /// <param name="tag">The type of the element this instance represents.</param>
-        /// <param name="startLine">The number of the first line in the source text that contains this element.</param>
-        /// <param name="startColumn">The number of the first column (within the first line) in the source text that contains this element.</param>
-        public Block(BlockTag tag, int startLine, int startColumn)
+        /// <param name="sourcePosition">The position of the first character of this block in the source text.</param>
+        public Block(BlockTag tag, int sourcePosition)
         {
             this.Tag = tag;
-            this.SourceStartLine = startLine;
-            this.SourceEndLine = startLine;
-            this.SourceStartColumn = startColumn;
+            this.SourcePosition = sourcePosition;
+            this.IsOpen = true;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Block"/> class.
+        /// </summary>
+        /// <param name="tag">The type of the element this instance represents.</param>
+        /// <param name="startLine">The number of the first line in the source text that contains this element.</param>
+        /// <param name="startColumn">The number of the first column (within the first line) in the source text that contains this element.</param>
+        /// <param name="sourcePosition">The position of the first character of this block in the source text.</param>
+        [Obsolete("StartLine/StartColumn are deprecated in favor of SourcePosition/SourceLength and will be removed in future. If you have a use case where this property cannot be replaced with the new ones, please log an issue at https://github.com/Knagis/CommonMark.NET", false)]
+        public Block(BlockTag tag, int startLine, int startColumn, int sourcePosition)
+        {
+            this.Tag = tag;
+            this.StartLine = startLine;
+            this.EndLine = startLine;
+            this.StartColumn = startColumn;
+            this.SourcePosition = sourcePosition;
             this.IsOpen = true;
         }
 
@@ -40,7 +55,9 @@ namespace CommonMark.Syntax
         /// </summary>
         internal static Block CreateDocument()
         {
-            Block e = new Block(BlockTag.Document, 1, 1);
+#pragma warning disable 0618
+            Block e = new Block(BlockTag.Document, 1, 1, 0);
+#pragma warning restore 0618
             e.ReferenceMap = new Dictionary<string, Reference>();
             e.Top = e;
             return e;
@@ -54,41 +71,48 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Gets or sets the number of the first line in the source text that contains this element.
         /// </summary>
-        [Obsolete("Use SourceStartLine instead", false)]
+        [Obsolete("This is deprecated in favor of SourcePosition/SourceLength and will be removed in future. If you have a use case where this property cannot be replaced with the new ones, please log an issue at https://github.com/Knagis/CommonMark.NET", false)]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-        public int StartLine { get { return this.SourceStartLine; } }
+        public int StartLine { get; set; }
 
         /// <summary>
         /// Gets or sets the number of the first column (within the first line) in the source text that contains this element.
         /// </summary>
-        [Obsolete("Use SourceStartColumn instead", false)]
+        [Obsolete("This is deprecated in favor of SourcePosition/SourceLength and will be removed in future. If you have a use case where this property cannot be replaced with the new ones, please log an issue at https://github.com/Knagis/CommonMark.NET", false)]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-        public int StartColumn { get { return this.SourceStartColumn; } }
+        public int StartColumn { get; set; }
 
         /// <summary>
         /// Gets or sets the number of the last line in the source text that contains this element.
         /// </summary>
-        [Obsolete("Use SourceEndLine instead", false)]
+        [Obsolete("This is deprecated in favor of SourcePosition/SourceLength and will be removed in future. If you have a use case where this property cannot be replaced with the new ones, please log an issue at https://github.com/Knagis/CommonMark.NET", false)]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-        public int EndLine { get { return this.SourceEndLine; } }
+        public int EndLine { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of the first line in the source text that contains this element.
+        /// Gets or sets the position of the block element within the source data. This position is before 
+        /// any opening characters. <see cref="CommonMarkSettings.TrackSourcePosition"/> must be enabled
+        /// for this value to be defined.
         /// </summary>
-        public int SourceStartLine { get; set; }
+        /// <seealso cref="SourceLength"/>
+        public int SourcePosition { get; set; }
+
+        internal int SourceLastPosition { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of the first column (within the first line) in the source text that contains this element.
+        /// Gets or sets the length of the block element within the source data. This includes also characters that
+        /// close the block element and in most cases the newline characters right after the block element.
+        /// <see cref="CommonMarkSettings.TrackSourcePosition"/> must be enabled for this value to be defined.
         /// </summary>
-        public int SourceStartColumn { get; set; }
-
-        /// <summary>
-        /// Gets or sets the number of the last line in the source text that contains this element.
-        /// </summary>
-        public int SourceEndLine { get; set; }
+        /// <seealso cref="SourcePosition"/>
+        public int SourceLength
+        {
+            get { return this.SourceLastPosition - this.SourcePosition; }
+            set { this.SourceLastPosition = this.SourcePosition + value; }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether this block element has been completed (and thus new lines cannot be added
