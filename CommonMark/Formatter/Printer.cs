@@ -7,38 +7,39 @@ namespace CommonMark.Formatter
 {
     internal static class Printer
     {
-        private static string format_str(string s)
+        private static string format_str(string s, StringBuilder buffer)
         {
             if (s == null)
                 return string.Empty;
 
             int pos = 0;
             int len = s.Length;
-            StringBuilder result = new StringBuilder();
             char c;
-            result.Append("\"");
+
+            buffer.Length = 0;
+            buffer.Append('\"');
             while (pos < len)
             {
                 c = s[pos];
                 switch (c)
                 {
                     case '\n':
-                        result.Append("\\n");
+                        buffer.Append("\\n");
                         break;
                     case '"':
-                        result.Append("\\\"");
+                        buffer.Append("\\\"");
                         break;
                     case '\\':
-                        result.Append("\\\\");
+                        buffer.Append("\\\\");
                         break;
                     default:
-                        result.Append(c);
+                        buffer.Append(c);
                         break;
                 }
                 pos++;
             }
-            result.Append("\"");
-            return result.ToString();
+            buffer.Append('\"');
+            return buffer.ToString();
         }
 
         /// <summary>
@@ -102,18 +103,18 @@ namespace CommonMark.Formatter
                         break;
 
                     case BlockTag.IndentedCode:
-                        writer.WriteLine("indented_code {0}", format_str(block.StringContent.ToString(buffer)));
+                        writer.WriteLine("indented_code {0}", format_str(block.StringContent.ToString(buffer), buffer));
                         break;
 
                     case BlockTag.FencedCode:
                         writer.WriteLine("fenced_code length={0} info={1} {2}",
                                block.FencedCodeData.FenceLength,
-                               format_str(block.FencedCodeData.Info),
-                               format_str(block.StringContent.ToString(buffer)));
+                               format_str(block.FencedCodeData.Info, buffer),
+                               format_str(block.StringContent.ToString(buffer), buffer));
                         break;
 
                     case BlockTag.HtmlBlock:
-                        writer.WriteLine("html_block {0}", format_str(block.StringContent.ToString(buffer)));
+                        writer.WriteLine("html_block {0}", format_str(block.StringContent.ToString(buffer), buffer));
                         break;
 
                     case BlockTag.ReferenceDefinition:
@@ -126,7 +127,7 @@ namespace CommonMark.Formatter
 
                 if (block.InlineContent != null)
                 {
-                    PrintInlines(writer, block.InlineContent, indent + 2, inlineStack);
+                    PrintInlines(writer, block.InlineContent, indent + 2, inlineStack, buffer);
                 }
 
                 if (block.FirstChild != null)
@@ -154,7 +155,7 @@ namespace CommonMark.Formatter
             }
         }
 
-        private static void PrintInlines(System.IO.TextWriter writer, Inline inline, int indent, Stack<InlineStackEntry> stack)
+        private static void PrintInlines(System.IO.TextWriter writer, Inline inline, int indent, Stack<InlineStackEntry> stack, StringBuilder buffer)
         {
             while (inline != null)
             {
@@ -163,7 +164,7 @@ namespace CommonMark.Formatter
                 switch (inline.Tag)
                 {
                     case InlineTag.String:
-                        writer.WriteLine("str {0}", format_str(inline.LiteralContent));
+                        writer.WriteLine("str {0}", format_str(inline.LiteralContent, buffer));
                         break;
 
                     case InlineTag.LineBreak:
@@ -175,23 +176,23 @@ namespace CommonMark.Formatter
                         break;
 
                     case InlineTag.Code:
-                        writer.WriteLine("code {0}", format_str(inline.LiteralContent));
+                        writer.WriteLine("code {0}", format_str(inline.LiteralContent, buffer));
                         break;
 
                     case InlineTag.RawHtml:
-                        writer.WriteLine("html {0}", format_str(inline.LiteralContent));
+                        writer.WriteLine("html {0}", format_str(inline.LiteralContent, buffer));
                         break;
 
                     case InlineTag.Link:
                         writer.WriteLine("link url={0} title={1}",
-                               format_str(inline.TargetUrl),
-                               format_str(inline.LiteralContent));
+                               format_str(inline.TargetUrl, buffer),
+                               format_str(inline.LiteralContent, buffer));
                         break;
 
                     case InlineTag.Image:
                         writer.WriteLine("image url={0} title={1}",
-                               format_str(inline.TargetUrl),
-                               format_str(inline.LiteralContent));
+                               format_str(inline.TargetUrl, buffer),
+                               format_str(inline.LiteralContent, buffer));
                         break;
 
                     case InlineTag.Strong:
