@@ -189,6 +189,9 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Gets or sets the previous sibling of this block element. <c>null</c> if this is the first element.
         /// </summary>
+        [Obsolete("This property will be removed in future. If you have a use case where this property is required, please log an issue at https://github.com/Knagis/CommonMark.NET", false)]
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public Block Previous { get; set; }
     }
 }
