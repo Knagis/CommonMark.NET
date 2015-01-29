@@ -213,7 +213,9 @@ namespace CommonMark.Parser
             if (lastChild != null)
             {
                 lastChild.NextSibling = child;
+#pragma warning disable 0618
                 child.Previous = lastChild;
+#pragma warning restore 0618
             }
             else
             {
