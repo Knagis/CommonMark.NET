@@ -1,7 +1,6 @@
-﻿using CommonMark.Parser;
-using CommonMark.Syntax;
-using System;
+﻿using CommonMark.Syntax;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace CommonMark.Formatter
@@ -15,6 +14,9 @@ namespace CommonMark.Formatter
         private static readonly char[] EscapeHtmlGreaterThan = "&gt;".ToCharArray();
         private static readonly char[] EscapeHtmlAmpersand = "&amp;".ToCharArray();
         private static readonly char[] EscapeHtmlQuote = "&quot;".ToCharArray();
+
+        private static readonly string[] HeaderOpenerTags = new[] { "<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<h6>" };
+        private static readonly string[] HeaderCloserTags = new[] { "</h1>", "</h2>", "</h3>", "</h4>", "</h5>", "</h6>" };
 
         private static readonly bool[] UrlSafeCharacters = new[] {
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -210,8 +212,8 @@ namespace CommonMark.Formatter
             string stackLiteral = null;
             bool stackTight = false;
             bool tight = false;
+            int x;
 
-            string tag;
             while (block != null)
             {
                 visitChildren = false;
@@ -242,7 +244,7 @@ namespace CommonMark.Formatter
                         writer.EnsureLine();
                         writer.WriteLineConstant("<blockquote>");
 
-                        stackLiteral = "</blockquote>" + Environment.NewLine;
+                        stackLiteral = "</blockquote>";
                         stackTight = false;
                         visitChildren = true;
                         break;
@@ -251,7 +253,7 @@ namespace CommonMark.Formatter
                         writer.EnsureLine();
                         writer.WriteConstant("<li>");
 
-                        stackLiteral = "</li>" + Environment.NewLine;
+                        stackLiteral = "</li>";
                         stackTight = tight;
                         visitChildren = true;
                         break;
@@ -260,24 +262,28 @@ namespace CommonMark.Formatter
                         // make sure a list starts at the beginning of the line:
                         writer.EnsureLine();
                         var data = block.ListData;
-                        tag = data.ListType == ListType.Bullet ? "ul" : "ol";
-                        writer.WriteConstant("<" + tag);
+                        writer.WriteConstant(data.ListType == ListType.Bullet ? "<ul" : "<ol");
                         if (data.Start != 1)
-                            writer.WriteConstant(" start=\"" + data.Start.ToString(System.Globalization.CultureInfo.InvariantCulture) + "\"");
+                        {
+                            writer.WriteConstant(" start=\"");
+                            writer.WriteConstant(data.Start.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                            writer.Write('\"');
+                        }
                         writer.WriteLineConstant(">");
 
-                        stackLiteral = "</" + tag + ">" + Environment.NewLine;
+                        stackLiteral = data.ListType == ListType.Bullet ? "</ul>" : "</ol>";
                         stackTight = data.IsTight;
                         visitChildren = true;
                         break;
 
                     case BlockTag.AtxHeader:
                     case BlockTag.SETextHeader:
-                        tag = "h" + block.HeaderLevel.ToString(System.Globalization.CultureInfo.InvariantCulture);
                         writer.EnsureLine();
-                        writer.WriteConstant("<" + tag + ">");
+
+                        x = block.HeaderLevel;
+                        writer.WriteConstant(x > 0 && x < 7 ? HeaderOpenerTags[x - 1] : "<h" + x.ToString(CultureInfo.InvariantCulture) + ">");
                         InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
-                        writer.WriteLineConstant("</" + tag + ">");
+                        writer.WriteLineConstant(x > 0 && x < 7 ? HeaderCloserTags[x - 1] : "</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
                         break;
 
                     case BlockTag.IndentedCode:
@@ -293,7 +299,7 @@ namespace CommonMark.Formatter
                         var info = block.FencedCodeData.Info;
                         if (info != null && info.Length > 0)
                         {
-                            var x = info.IndexOf(' ');
+                            x = info.IndexOf(' ');
                             if (x == -1)
                                 x = info.Length;
 
@@ -341,7 +347,7 @@ namespace CommonMark.Formatter
                 {
                     var entry = stack.Pop();
 
-                    writer.Write(entry.Literal);
+                    writer.WriteLineConstant(entry.Literal);
                     tight = entry.IsTight;
                     block = entry.Target;
                 }
@@ -429,7 +435,7 @@ namespace CommonMark.Formatter
                 while (inline == null && stack.Count > origStackCount)
                 {
                     var entry = stack.Pop();
-                    writer.Write(entry.Literal);
+                    writer.WriteConstant(entry.Literal);
                     inline = entry.Target;
                     withinLink = entry.IsWithinLink;
                 }
@@ -573,7 +579,7 @@ namespace CommonMark.Formatter
                 while (inline == null && stack.Count > 0)
                 {
                     var entry = stack.Pop();
-                    writer.Write(entry.Literal);
+                    writer.WriteConstant(entry.Literal);
                     inline = entry.Target;
                     withinLink = entry.IsWithinLink;
                 }
