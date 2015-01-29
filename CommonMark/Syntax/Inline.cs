@@ -37,6 +37,17 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Inline"/> class.
+        /// </summary>
+        internal Inline(InlineTag tag, string content, int startIndex, int length)
+        {
+            this.Tag = tag;
+            this.LiteralContentValue.Source = content;
+            this.LiteralContentValue.StartIndex = startIndex;
+            this.LiteralContentValue.Length = length;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Inline"/> class. The element type is set to <see cref="InlineTag.String"/>
         /// </summary>
         /// <param name="content">The literal string contents of the inline element.</param>
@@ -63,7 +74,9 @@ namespace CommonMark.Syntax
         /// </summary>
         internal Inline(string content, int startIndex, int length, int sourcePosition, int sourceLastPosition)
         {
-            this.LiteralContentValue = new StringPart(content, startIndex, length);
+            this.LiteralContentValue.Source = content;
+            this.LiteralContentValue.StartIndex = startIndex;
+            this.LiteralContentValue.Length = length; 
             this.SourcePosition = sourcePosition;
             this.SourceLastPosition = sourceLastPosition;
         }

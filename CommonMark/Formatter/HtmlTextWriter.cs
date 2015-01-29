@@ -47,17 +47,17 @@ namespace CommonMark.Formatter
 
             if (this._windowsNewLine)
             {
-                var lastPos = 0;
+                var lastPos = value.StartIndex;
+                var pos = lastPos;
                 var lastC = this._last;
-                int pos = 0;
 
-                while (-1 != (pos = value.Source.IndexOf('\n', value.StartIndex + pos, value.Length - pos)))
+                while (-1 != (pos = value.Source.IndexOf('\n', pos, value.Length - pos + value.StartIndex)))
                 {
-                    lastC = pos == 0 ? this._last : this.Buffer[pos - 1];
+                    lastC = pos == 0 ? this._last : value.Source[pos - 1];
 
                     if (lastC != '\r')
                     {
-                        this._inner.Write(this.Buffer, lastPos, pos - lastPos);
+                        this._inner.Write(this.Buffer, lastPos - value.StartIndex, pos - lastPos);
                         this._inner.Write('\r');
                         lastPos = pos;
                     }
@@ -65,7 +65,7 @@ namespace CommonMark.Formatter
                     pos++;
                 }
 
-                this._inner.Write(this.Buffer, lastPos, value.Length - lastPos);
+                this._inner.Write(this.Buffer, lastPos - value.StartIndex, value.Length - lastPos + value.StartIndex);
             }
             else
             {

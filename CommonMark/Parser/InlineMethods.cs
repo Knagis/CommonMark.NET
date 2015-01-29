@@ -405,9 +405,7 @@ namespace CommonMark.Parser
                 }
             }
 
-            var inlText = new Inline(subj.Buffer.Substring(subj.Position - numdelims, numdelims));
-            inlText.SourcePosition = subj.Position - numdelims;
-            inlText.SourceLastPosition = subj.Position;
+            var inlText = new Inline(subj.Buffer, subj.Position - numdelims, numdelims, subj.Position - numdelims, subj.Position);
 
             if (can_open || can_close)
             {
@@ -455,7 +453,7 @@ namespace CommonMark.Parser
                 }
             }
 
-            var inlText = new Inline(subj.Buffer.Substring(subj.Position - numdelims, numdelims),
+            var inlText = new Inline(subj.Buffer, subj.Position - numdelims, numdelims,
                 subj.Position - numdelims, subj.Position);
 
             if (can_open || can_close)
@@ -925,8 +923,7 @@ namespace CommonMark.Parser
             matchlen = Scanner.scan_html_tag(subj.Buffer, subj.Position, subj.Length);
             if (matchlen > 0)
             {
-                contents = subj.Buffer.Substring(subj.Position - 1, matchlen + 1);
-                var result = new Inline(InlineTag.RawHtml, contents);
+                var result = new Inline(InlineTag.RawHtml, subj.Buffer, subj.Position - 1, matchlen + 1);
                 result.SourcePosition = subj.Position - 1;
                 subj.Position += matchlen;
                 result.SourceLastPosition = subj.Position;
