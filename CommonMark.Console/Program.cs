@@ -152,7 +152,7 @@ namespace CommonMark
                         var mem = GC.GetTotalMemory(true);
                         long mem2 = 0;
 
-                        for (var x = -1; x < benchmarkIterations; x++)
+                        for (var x = -1 - benchmarkIterations / 10; x < benchmarkIterations; x++)
                         {
                             if (x == 0)
                                 sw.Start();
