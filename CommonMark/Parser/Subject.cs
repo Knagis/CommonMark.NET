@@ -1,5 +1,6 @@
 ﻿using CommonMark.Syntax;
 using System.Collections.Generic;
+using System.Text;
 
 namespace CommonMark.Parser
 {
@@ -52,6 +53,11 @@ namespace CommonMark.Parser
         /// The first entry of the current stack of possible emphasis openers. Can be <c>null</c>.
         /// </summary>
         public InlineStack FirstPendingInline;
+
+        /// <summary>
+        /// A reusable StringBuilder that should be used instead of creating new instances to conserve memory.
+        /// </summary>
+        public StringBuilder ReusableStringBuilder = new StringBuilder();
 
         public readonly Dictionary<string, Reference> ReferenceMap;
 

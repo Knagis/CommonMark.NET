@@ -48,6 +48,7 @@ namespace CommonMark.Formatter
         {
             var stack = new Stack<BlockStackEntry>();
             var inlineStack = new Stack<InlineStackEntry>();
+            var buffer = new StringBuilder();
 
             while (block != null)
             {
@@ -101,18 +102,18 @@ namespace CommonMark.Formatter
                         break;
 
                     case BlockTag.IndentedCode:
-                        writer.WriteLine("indented_code {0}", format_str(block.StringContent.ToString()));
+                        writer.WriteLine("indented_code {0}", format_str(block.StringContent.ToString(buffer)));
                         break;
 
                     case BlockTag.FencedCode:
                         writer.WriteLine("fenced_code length={0} info={1} {2}",
                                block.FencedCodeData.FenceLength,
                                format_str(block.FencedCodeData.Info),
-                               format_str(block.StringContent.ToString()));
+                               format_str(block.StringContent.ToString(buffer)));
                         break;
 
                     case BlockTag.HtmlBlock:
-                        writer.WriteLine("html_block {0}", format_str(block.StringContent.ToString()));
+                        writer.WriteLine("html_block {0}", format_str(block.StringContent.ToString(buffer)));
                         break;
 
                     case BlockTag.ReferenceDefinition:

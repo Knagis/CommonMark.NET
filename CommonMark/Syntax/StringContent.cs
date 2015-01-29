@@ -56,7 +56,8 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Returns all of the data as a single string.
         /// </summary>
-        public override string ToString()
+        /// <param name="buffer">A reusable instance of <see cref="StringBuilder"/>. Any existing content will be removed from it.</param>
+        public string ToString(StringBuilder buffer)
         {
             if (this._partCounter == 0)
                 return string.Empty;
@@ -70,54 +71,54 @@ namespace CommonMark.Syntax
                      + this._parts[1].Source.Substring(this._parts[1].StartIndex, this._parts[1].Length);
             }
 
-            if (this._partCounter == 3)
-            {
-                return this._parts[0].Source.Substring(this._parts[0].StartIndex, this._parts[0].Length)
-                     + this._parts[1].Source.Substring(this._parts[1].StartIndex, this._parts[1].Length)
-                     + this._parts[2].Source.Substring(this._parts[2].StartIndex, this._parts[2].Length);
-            }
-
-            var sb = new StringBuilder(this._length);
+            buffer.Length = 0;
 
             for (var i = 0; i < this._partCounter; i++ )
             {
-                sb.Append(this._parts[i].Source, this._parts[i].StartIndex, this._parts[i].Length);
+                buffer.Append(this._parts[i].Source, this._parts[i].StartIndex, this._parts[i].Length);
             }
 
-            return sb.ToString();
+            return buffer.ToString();
+        }
+
+        /// <summary>
+        /// Returns all of the data as a single string.
+        /// </summary>
+        public override string ToString()
+        {
+            return this.ToString(new StringBuilder());
         }
 
         /// <summary>
         /// Resets the given subject instance with data from this string content.
         /// Note that this method calls <see cref="TrimEnd"/> thus changing the source data as well.
         /// </summary>
+        /// <param name="subj">The subject instance which will be reinitialized with the data from this instance.</param>
         internal void FillSubject(Parser.Subject subj)
         {
             subj.LastInline = null;
             subj.LastPendingInline = null;
             subj.FirstPendingInline = null;
 
+#if DEBUG
+            subj.DebugStartIndex = 0;
+#endif
+
+            this.TrimEnd();
+
             if (this._partCounter == 0)
             {
                 subj.Buffer = string.Empty;
                 subj.Position = 0;
                 subj.Length = 0;
-#if DEBUG
-                subj.DebugStartIndex = 0;
-#endif
                 return;
             }
 
-            this.TrimEnd();
-
             if (this._partCounter > 1)
             {
-                subj.Buffer = this.ToString();
+                subj.Buffer = this.ToString(subj.ReusableStringBuilder);
                 subj.Position = 0;
                 subj.Length = subj.Buffer.Length;
-#if DEBUG
-                subj.DebugStartIndex = 0;
-#endif
                 return;
             }
 

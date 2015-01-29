@@ -271,8 +271,9 @@ namespace CommonMark.Parser
             var stack = new Stack<Block>();
             var parsers = settings.InlineParsers;
             var specialCharacters = settings.InlineParserSpecialCharacters;
+            var subj = new Subject(refmap);
+
             StringContent sc;
-            Subject subj = new Subject(refmap);
             int delta;
 
             while (block != null)
