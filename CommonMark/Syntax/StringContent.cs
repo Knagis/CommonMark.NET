@@ -15,6 +15,8 @@ namespace CommonMark.Syntax
         private int _partsLength = 2;
         private StringPart[] _parts = new StringPart[2];
 
+        internal Parser.PositionTracker PositionTracker;
+
         /// <summary>
         /// Gets the total length of string data.
         /// </summary>
@@ -86,6 +88,48 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
+        /// Resets the given subject instance with data from this string content.
+        /// Note that this method calls <see cref="TrimEnd"/> thus changing the source data as well.
+        /// </summary>
+        internal void FillSubject(Parser.Subject subj)
+        {
+            subj.LastInline = null;
+            subj.LastPendingInline = null;
+            subj.FirstPendingInline = null;
+
+            if (this._partCounter == 0)
+            {
+                subj.Buffer = string.Empty;
+                subj.Position = 0;
+                subj.Length = 0;
+#if DEBUG
+                subj.DebugStartIndex = 0;
+#endif
+                return;
+            }
+
+            this.TrimEnd();
+
+            if (this._partCounter > 1)
+            {
+                subj.Buffer = this.ToString();
+                subj.Position = 0;
+                subj.Length = subj.Buffer.Length;
+#if DEBUG
+                subj.DebugStartIndex = 0;
+#endif
+                return;
+            }
+
+            subj.Buffer = this._parts[0].Source;
+            subj.Position = this._parts[0].StartIndex;
+            subj.Length = this._parts[0].StartIndex + this._parts[0].Length;
+#if DEBUG
+            subj.DebugStartIndex = this._parts[0].StartIndex;
+#endif
+        }
+
+        /// <summary>
         /// Writes the data contained in this instance to the given text writer.
         /// </summary>
         public void WriteTo(System.IO.TextWriter writer)
@@ -131,30 +175,14 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
-        /// Removes a given number of characters from the beginning of this instance.
+        /// Replaces the whole string content with the given substring.
         /// </summary>
-        public void TrimStart(int charactersToRemove)
+        public void Replace(string data, int startIndex, int length)
         {
-            this._length -= charactersToRemove;
-            if (this._length < 0)
-                this._length = 0;
-
-            for (var i = 0; charactersToRemove > 0 && i < this._partCounter; i++)
-            {
-                if (charactersToRemove < this._parts[i].Length)
-                {
-                    this._parts[i].StartIndex += charactersToRemove;
-                    this._parts[i].Length -= charactersToRemove;
-                    return;
-                }
-                else
-                {
-                    charactersToRemove -= this._parts[i].Length;
-                    this._parts[i].Source = string.Empty;
-                    this._parts[i].Length = 0;
-                    this._parts[i].StartIndex = 0;
-                }
-            }
+            this._partCounter = 1;
+            this._parts[0].Source = data;
+            this._parts[0].StartIndex = startIndex;
+            this._parts[0].Length = length;
         }
 
         /// <summary>
@@ -230,32 +258,34 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
-        /// Determines if the first line of this instance contains only spaces.
+        /// Removes any space or newline characters from the end of the string data.
         /// </summary>
-        public bool IsFirstLineBlank()
+        public void TrimEnd()
         {
+            int pos, si;
             char c;
-            int offset;
-            int lastIndex;
-
-            for (var i = 0; i < this._partCounter; i++)
+            string source;
+            for (var i = this._partCounter - 1; i >= 0; i--)
             {
-                offset = this._parts[i].StartIndex;
-                lastIndex = offset + this._parts[i].Length;
-                while (offset < lastIndex)
+                source = this._parts[i].Source;
+                si = this._parts[i].StartIndex;
+                pos = si + this._parts[i].Length - 1;
+
+                while (pos >= si)
                 {
-                    c = this._parts[i].Source[offset];
-                    if (c == '\n')
-                        return true;
+                    c = source[pos];
+                    if (c != ' ' && c != '\n')
+                    {
+                        this._parts[i].Length = pos - si + 1;
+                        return;
+                    }
 
-                    if (c != ' ')
-                        return false;
-
-                    offset++;
+                    pos--;
                 }
-            }
 
-            return true;
+                this._length -= this._parts[i].Length;
+                this._partCounter--;
+            }
         }
 
         /// <summary>

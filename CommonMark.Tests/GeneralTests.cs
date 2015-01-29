@@ -32,5 +32,18 @@ namespace CommonMark.Tests
             Assert.AreEqual(0, version.Major, "The version number is incorrect: {0}", version);
             Assert.IsTrue(version.Minor > 5, "The version number is incorrect: {0}", version);
         }
+
+        [TestMethod]
+        [TestCategory("CommonMarkConverter")]
+        public void ConvertShortcutMethod()
+        {
+            var expected = "<p><strong>foo</strong></p>";
+            var result = CommonMarkConverter.Convert("**foo**");
+
+            // Assert
+            Helpers.LogValue("Expected", expected);
+            Helpers.LogValue("Actual", result);
+            Assert.AreEqual(Helpers.Tidy(expected), Helpers.Tidy(result));
+        }
     }
 }

@@ -6,11 +6,11 @@ namespace CommonMark.Parser
 {
     internal static partial class Scanner
     {
-        private static int _scanHtmlTagCloseTag(string s, int pos)
+        private static int _scanHtmlTagCloseTag(string s, int pos, int sourceLength)
         {
             // Orignal regexp: "[/]" + tagname + @"\s*[>]"
 
-            if (pos + 2 >= s.Length)
+            if (pos + 2 >= sourceLength)
                 return 0;
 
             var nextChar = s[pos + 1];
@@ -18,7 +18,7 @@ namespace CommonMark.Parser
                 return 0;
 
             var tagNameEnded = false;
-            for (var i = pos + 2; i < s.Length; i++)
+            for (var i = pos + 2; i < sourceLength; i++)
             {
                 nextChar = s[i];
                 if (nextChar == '>')
@@ -39,14 +39,14 @@ namespace CommonMark.Parser
             return 0;
         }
 
-        private static int _scanHtmlTagProcessingInstruction(string s, int pos)
+        private static int _scanHtmlTagProcessingInstruction(string s, int pos, int sourceLength)
         {
             // Original regexp: "\\?(([^?>\\x00]+)|([?][^>\\x00]))*\\?>"
             // note the original regexp is invalid since it does not allow '>' within the tag.
 
             char nextChar;
             char lastChar = '\0';
-            for (var i = pos + 1; i < s.Length; i++)
+            for (var i = pos + 1; i < sourceLength; i++)
             {
                 nextChar = s[i];
 
@@ -59,10 +59,10 @@ namespace CommonMark.Parser
             return 0;
         }
 
-        private static int _scanHtmlTagHtmlComment(string s, int pos)
+        private static int _scanHtmlTagHtmlComment(string s, int pos, int sourceLength)
         {
             // we know that the initial "!-" has already been verified
-            if (pos + 5 >= s.Length)
+            if (pos + 5 >= sourceLength)
                 return 0;
 
             if (s[pos + 2] != '-')
@@ -73,7 +73,7 @@ namespace CommonMark.Parser
                 return 0;
 
             byte hyphenCount = 0;
-            for (var i = pos + 3; i < s.Length ; i++)
+            for (var i = pos + 3; i < sourceLength ; i++)
             {
                 nextChar = s[i];
 
@@ -89,11 +89,11 @@ namespace CommonMark.Parser
             return 0;
         }
 
-        private static int _scanHtmlTagCData(string s, int pos)
+        private static int _scanHtmlTagCData(string s, int pos, int sourceLength)
         {
             // Original regexp: "\\!\\[CDATA\\[(([^\\]\\x00]+)|(\\][^\\]\\x00])|(\\]\\][^>\\x00]))*\\]\\]>"
 
-            if (pos + 10 >= s.Length)
+            if (pos + 10 >= sourceLength)
                 return 0;
 
             if (!string.Equals(s.Substring(pos, 8), "![CDATA[", StringComparison.Ordinal))
@@ -101,7 +101,7 @@ namespace CommonMark.Parser
 
             var bracketCount = 0;
             char nextChar;
-            for (var i = pos + 8; i < s.Length; i++ )
+            for (var i = pos + 8; i < sourceLength; i++ )
             {
                 nextChar = s[i];
 
@@ -117,12 +117,12 @@ namespace CommonMark.Parser
             return 0;
         }
 
-        private static int _scanHtmlTagDeclaration(string s, int pos)
+        private static int _scanHtmlTagDeclaration(string s, int pos, int sourceLength)
         {
             // Original regexp: "\\![A-Z]+\\s+[^>\\x00]*>"
 
             // minimum value: "!A >"
-            if (pos + 4 >= s.Length)
+            if (pos + 4 >= sourceLength)
                 return 0;
 
             var spaceFound = false;
@@ -130,7 +130,7 @@ namespace CommonMark.Parser
             if (nextChar < 'A' || nextChar > 'Z')
                 return 0;
 
-            for (var i = pos + 3; i < s.Length; i++)
+            for (var i = pos + 3; i < sourceLength; i++)
             {
                 nextChar = s[i];
 
@@ -144,9 +144,9 @@ namespace CommonMark.Parser
             return 0;
         }
 
-        private static int _scanHtmlTagOpenTag(string s, int pos)
+        private static int _scanHtmlTagOpenTag(string s, int pos, int sourceLength)
         {
-            var lastPosition = s.Length - 1;
+            var lastPosition = sourceLength - 1;
 
             // the minimum length valid tag is "a>"
             if (lastPosition < pos + 1)
@@ -245,32 +245,32 @@ namespace CommonMark.Parser
         /// <summary>
         /// Try to match an HTML tag after first &lt;, returning number of chars matched.
         /// </summary>
-        public static int scan_html_tag(string s, int pos)
+        public static int scan_html_tag(string s, int pos, int sourceLength)
         {
-            if (pos + 2 >= s.Length)
+            if (pos + 2 >= sourceLength)
                 return 0;
 
             var firstChar = s[pos];
 
             if (firstChar == '/')
-                return _scanHtmlTagCloseTag(s, pos);
+                return _scanHtmlTagCloseTag(s, pos, sourceLength);
 
             if (firstChar == '?')
-                return _scanHtmlTagProcessingInstruction(s, pos);
+                return _scanHtmlTagProcessingInstruction(s, pos, sourceLength);
 
             if (firstChar == '!')
             {
                 var nextChar = s[pos + 1];
                 if (nextChar == '-')
-                    return _scanHtmlTagHtmlComment(s, pos);
+                    return _scanHtmlTagHtmlComment(s, pos, sourceLength);
 
                 if (nextChar == '[')
-                    return _scanHtmlTagCData(s, pos);
+                    return _scanHtmlTagCData(s, pos, sourceLength);
 
-                return _scanHtmlTagDeclaration(s, pos);
+                return _scanHtmlTagDeclaration(s, pos, sourceLength);
             }
 
-            return _scanHtmlTagOpenTag(s, pos);
+            return _scanHtmlTagOpenTag(s, pos, sourceLength);
         }
     }
 }

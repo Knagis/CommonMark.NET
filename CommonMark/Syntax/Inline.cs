@@ -49,6 +49,16 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Inline"/> class. The element type is set to <see cref="InlineTag.String"/>
+        /// </summary>
+        internal Inline(string content, int sourcePosition, int sourceLastPosition)
+        {
+            this.LiteralContent = content;
+            this.SourcePosition = sourcePosition;
+            this.SourceLastPosition = sourceLastPosition;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Inline"/> class.
         /// </summary>
         /// <param name="tag">The type of inline element. Should be one of the types that contain child elements, for example, <see cref="InlineTag.Emphasis"/>.</param>
@@ -96,10 +106,36 @@ namespace CommonMark.Syntax
         public Inline FirstChild { get; set; }
 
         /// <summary>
+        /// Gets or sets the position of the element within the source data.
+        /// Note that if <see cref="CommonMarkSettings.TrackSourcePosition"/> is not enabled, this property will contain
+        /// the position relative to the containing block and not the whole document (not accounting for processing done
+        /// in earlier parser stage, such as converting tabs to spaces).
+        /// </summary>
+        /// <seealso cref="SourceLength"/>
+        public int SourcePosition { get; set; }
+
+        internal int SourceLastPosition { get; set; }
+
+        /// <summary>
+        /// Gets or sets the length of the element within the source data.
+        /// Note that if <see cref="CommonMarkSettings.TrackSourcePosition"/> is not enabled, this property will contain
+        /// the length within the containing block (not accounting for processing done in earlier parser stage, such as
+        /// converting tabs to spaces).
+        /// </summary>
+        /// <seealso cref="SourcePosition"/>
+        public int SourceLength 
+        { 
+            get { return this.SourceLastPosition - this.SourcePosition; }
+            set { this.SourceLastPosition = this.SourcePosition + value; }
+        }
+
+        /// <summary>
         /// Gets the link details. This is now obsolete in favor of <see cref="TargetUrl"/> and <see cref="LiteralContent"/>
         /// properties and this property will be removed in future.
         /// </summary>
         [Obsolete("The link properties have been moved to TargetUrl and LiteralContent (previously Title) properties to reduce number of objects created. This property will be removed in future versions.", false)]
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public InlineContentLinkable Linkable { get { return new InlineContentLinkable() { Url = this.TargetUrl, Title = this.LiteralContent }; } }
 
         private Inline _next;

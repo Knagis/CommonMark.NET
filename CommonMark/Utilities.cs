@@ -77,5 +77,28 @@ namespace CommonMark
                     || category == System.Globalization.UnicodeCategory.OtherPunctuation);
             }
         }
+
+        /// <summary>
+        /// Determines if the first line (ignoring the first <paramref name="startIndex"/>) of a string contains only spaces.
+        /// </summary>
+        public static bool IsFirstLineBlank(string source, int startIndex)
+        {
+            char c;
+            var lastIndex = source.Length;
+            
+            while (startIndex < lastIndex)
+            {
+                c = source[startIndex];
+                if (c == '\n')
+                    return true;
+
+                if (c != ' ')
+                    return false;
+
+                startIndex++;
+            }
+
+            return true;
+        }
     }
 }

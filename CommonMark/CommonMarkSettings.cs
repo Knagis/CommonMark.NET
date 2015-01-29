@@ -22,6 +22,17 @@ namespace CommonMark
         /// </summary>
         public bool RenderSoftLineBreaksAsLineBreaks { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the parser tracks precise positions in the source data for
+        /// inline elements. This is disabled by default because it incurs an additional performance cost to
+        /// keep track of the original position.
+        /// Setting this to <c>true</c> will populate <see cref="Syntax.Inline.SourcePosition"/>, 
+        /// <see cref="Syntax.Inline.SourceLength"/>, <see cref="Syntax.Block.SourcePosition"/> and 
+        /// <see cref="Syntax.Block.SourceLength"/> properties with correct information, otherwise the values
+        /// of these properties are undefined.
+        /// </summary>
+        public bool TrackSourcePosition { get; set; }
+
         private CommonMarkAdditionalFeatures _additionalFeatures;
 
         /// <summary>

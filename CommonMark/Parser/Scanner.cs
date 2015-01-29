@@ -19,7 +19,7 @@ namespace CommonMark.Parser
         /// <summary>
         /// Try to match URI autolink after first &lt;, returning number of chars matched.
         /// </summary>
-        public static int scan_autolink_uri(string s, int pos)
+        public static int scan_autolink_uri(string s, int pos, int sourceLength)
         {
             /*!re2c
               scheme [:]([^\x00-\x20<>\\]|escaped_char)*[>]  { return (p - start); }
@@ -28,7 +28,7 @@ namespace CommonMark.Parser
             // for now the tests do not include anything that would require the use of `escaped_char` part so it is ignored.
 
             // 24 is the maximum length of a valid scheme
-            var checkLen = s.Length - pos;
+            var checkLen = sourceLength - pos;
             if (checkLen > 24)
                 checkLen = 24;
 
@@ -44,7 +44,7 @@ namespace CommonMark.Parser
                 return 0;
 
             char c;
-            for (var i = colonpos + 1; i < s.Length; i++)
+            for (var i = colonpos + 1; i < sourceLength; i++)
             {
                 c = s[i];
                 if (c == '>')
@@ -60,7 +60,7 @@ namespace CommonMark.Parser
         /// <summary>
         /// Try to match email autolink after first &lt;, returning num of chars matched.
         /// </summary>
-        public static int scan_autolink_email(string s, int pos)
+        public static int scan_autolink_email(string s, int pos, int sourceLength)
         {
             /*!re2c
               [a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+
@@ -71,7 +71,7 @@ namespace CommonMark.Parser
               .? { return 0; }
             */
 
-            if (pos + 6 >= s.Length)
+            if (pos + 6 >= sourceLength)
                 return 0;
 
             char c = s[pos];
@@ -79,7 +79,7 @@ namespace CommonMark.Parser
                 return 0;
 
             int i = pos;
-            int ln = s.Length - 1;
+            int ln = sourceLength - 1;
             while (i <= ln)
             {
                 if (c == '@')
@@ -122,7 +122,7 @@ namespace CommonMark.Parser
         /// <summary>
         /// Try to match an HTML block tag including first &lt;.
         /// </summary>
-        public static bool scan_html_block_tag(string s, int pos)
+        public static bool scan_html_block_tag(string s, int pos, int sourceLength)
         {
             /*!re2c
               [<] [/] blocktagname (spacechar | [>])  { return (p - start); }
@@ -131,7 +131,7 @@ namespace CommonMark.Parser
               .? { return 0; }
             */
 
-            if (pos + 1 >= s.Length)
+            if (pos + 1 >= sourceLength)
                 return false;
 
             if (s[pos] != '<')
@@ -148,7 +148,7 @@ namespace CommonMark.Parser
 
             var j = 0;
             var tagname = new char[10];
-            while (((nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z') || (nextChar >= '1' && nextChar <= '6')) && j < 10 && ++i < s.Length)
+            while (((nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z') || (nextChar >= '1' && nextChar <= '6')) && j < 10 && ++i < sourceLength)
             {
                 tagname[j++] = nextChar;
                 nextChar = s[i];
@@ -167,7 +167,7 @@ namespace CommonMark.Parser
         /// whitespace and unbalanced right parentheses aren't allowed.
         /// Newlines aren't ever allowed.
         /// </summary>
-        public static int scan_link_url(string s, int pos)
+        public static int scan_link_url(string s, int pos, int sourceLength)
         {
             /*!re2c
               [ \n]* [<] ([^<>\n\\\x00] | escaped_char | [\\])* [>] { return (p - start); }
@@ -175,13 +175,13 @@ namespace CommonMark.Parser
               .? { return 0; }
             */
 
-            if (pos + 1 >= s.Length)
+            if (pos + 1 >= sourceLength)
                 return 0;
 
             var i = pos;
             var c = s[i];
             var nextEscaped = false;
-            var lastPos = s.Length - 1;
+            var lastPos = sourceLength - 1;
             // move past any whitespaces
             ScannerCharacterMatcher.MatchWhitespaces(s, ref c, ref i, lastPos);
 
@@ -234,7 +234,7 @@ namespace CommonMark.Parser
         /// in parentheses), returning number of chars matched.  Allow one
         /// level of internal nesting (quotes within quotes).
         /// </summary>
-        public static int scan_link_title(string s, int pos)
+        public static int scan_link_title(string s, int pos, int sourceLength)
         {
             /*!re2c
               ["] (escaped_char|[^"\x00])* ["]   { return (p - start); }
@@ -243,7 +243,7 @@ namespace CommonMark.Parser
               .? { return 0; }
             */
 
-            if (pos + 2 >= s.Length)
+            if (pos + 2 >= sourceLength)
                 return 0;
 
             var c1 = s[pos];
@@ -254,7 +254,7 @@ namespace CommonMark.Parser
 
             char c;
             bool nextEscaped = false;
-            for (var i = pos + 1; i < s.Length; i++)
+            for (var i = pos + 1; i < sourceLength; i++)
             {
                 c = s[i];
                 if (c == c1 && !nextEscaped)
@@ -269,28 +269,28 @@ namespace CommonMark.Parser
         /// <summary>
         /// Match space characters, including newlines.
         /// </summary>
-        public static int scan_spacechars(string s, int pos)
+        public static int scan_spacechars(string s, int pos, int sourceLength)
         {
             /*!re2c
               [ \t\n]* { return (p - start); }
               . { return 0; }
             */
-            if (pos >= s.Length)
+            if (pos >= sourceLength)
                 return 0;
 
-            for (var i = pos; i < s.Length; i++)
+            for (var i = pos; i < sourceLength; i++)
             {
                 if (s[i] != ' ' && s[i] != '\n')
                     return i - pos;
             }
 
-            return s.Length - pos;
+            return sourceLength - pos;
         }
 
         /// <summary>
         /// Match ATX header start.
         /// </summary>
-        public static int scan_atx_header_start(string s, int pos, out int headerLevel)
+        public static int scan_atx_header_start(string s, int pos, int sourceLength, out int headerLevel)
         {
             /*!re2c
               [#]{1,6} ([ ]+|[\n])  { return (p - start); }
@@ -298,7 +298,7 @@ namespace CommonMark.Parser
             */
 
             headerLevel = 1;
-            if (pos + 1 >= s.Length)
+            if (pos + 1 >= sourceLength)
                 return 0;
 
             if (s[pos] != '#')
@@ -306,7 +306,7 @@ namespace CommonMark.Parser
 
             bool spaceExists = false;
             char c;
-            for (var i = pos + 1; i < s.Length; i++)
+            for (var i = pos + 1; i < sourceLength; i++)
             {
                 c = s[i];
 
@@ -335,7 +335,7 @@ namespace CommonMark.Parser
             }
 
             if (spaceExists)
-                return s.Length - pos;
+                return sourceLength - pos;
 
             return 0;
         }
@@ -344,7 +344,7 @@ namespace CommonMark.Parser
         /// Match sexext header line.  Return 1 for level-1 header,
         /// 2 for level-2, 0 for no match.
         /// </summary>
-        public static int scan_setext_header_line(string s, int pos)
+        public static int scan_setext_header_line(string s, int pos, int sourceLength)
         {
             /*!re2c
               [=]+ [ ]* [\n] { return 1; }
@@ -352,7 +352,7 @@ namespace CommonMark.Parser
               .? { return 0; }
             */
 
-            if (pos >= s.Length)
+            if (pos >= sourceLength)
                 return 0;
 
             var c1 = s[pos];
@@ -362,7 +362,7 @@ namespace CommonMark.Parser
 
             char c;
             var fin = false;
-            for (var i = pos + 1; i < s.Length; i++)
+            for (var i = pos + 1; i < sourceLength; i++)
             {
                 c = s[i];
                 if (c == c1 && !fin)
@@ -386,7 +386,7 @@ namespace CommonMark.Parser
         /// or underscores on a line by themselves. If you wish, you may use
         /// spaces between the hyphens or asterisks."
         /// </summary>
-        public static int scan_hrule(string s, int pos)
+        public static int scan_hrule(string s, int pos, int sourceLength)
         {
             // @"^([\*][ ]*){3,}[\s]*$",
             // @"^([_][ ]*){3,}[\s]*$",
@@ -396,7 +396,7 @@ namespace CommonMark.Parser
             char c;
             char x = '\0';
             var ipos = pos;
-            while (ipos < s.Length)
+            while (ipos < sourceLength)
             {
                 c = s[ipos++];
 
@@ -420,13 +420,13 @@ namespace CommonMark.Parser
             if (count < 3)
                 return 0;
 
-            return s.Length - pos;
+            return sourceLength - pos;
         }
 
         /// <summary>
         /// Scan an opening code fence. Returns the number of characters forming the fence.
         /// </summary>
-        public static int scan_open_code_fence(string s, int pos)
+        public static int scan_open_code_fence(string s, int pos, int sourceLength)
         {
             /*!re2c
               [`]{3,} / [^`\n\x00]*[\n] { return (p - start); }
@@ -434,7 +434,7 @@ namespace CommonMark.Parser
               .?                        { return 0; }
             */
 
-            if (pos + 3 >= s.Length)
+            if (pos + 3 >= sourceLength)
                 return 0;
 
             var fchar = s[pos];
@@ -444,7 +444,7 @@ namespace CommonMark.Parser
             var cnt = 1;
             var fenceDone = false;
             char c;
-            for (var i = pos + 1; i < s.Length; i++)
+            for (var i = pos + 1; i < sourceLength; i++)
             {
                 c = s[i];
 
@@ -474,7 +474,7 @@ namespace CommonMark.Parser
         /// <summary>
         /// Scan a closing code fence with length at least len.
         /// </summary>
-        public static int scan_close_code_fence(string s, int pos, int len)
+        public static int scan_close_code_fence(string s, int pos, int len, int sourceLength)
         {
             /*!re2c
               ([`]{3,} | [~]{3,}) / spacechar* [\n]
@@ -485,7 +485,7 @@ namespace CommonMark.Parser
                                           } }
               .? { return 0; }
             */
-            if (pos + len >= s.Length)
+            if (pos + len >= sourceLength)
                 return 0;
 
             var c1 = s[pos];
@@ -495,7 +495,7 @@ namespace CommonMark.Parser
             char c;
             var cnt = 1;
             var spaces = false;
-            for (var i = pos + 1; i < s.Length; i++)
+            for (var i = pos + 1; i < sourceLength; i++)
             {
                 c = s[i];
                 if (c == c1 && !spaces)
