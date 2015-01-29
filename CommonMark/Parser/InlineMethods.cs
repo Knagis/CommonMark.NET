@@ -1017,10 +1017,10 @@ namespace CommonMark.Parser
                 return new Inline(InlineTag.SoftBreak) { SourcePosition = nlpos, SourceLastPosition = nlpos + 1 };
         }
 
-        // Parse an inline, advancing subject, and add it to last element.
-        // Adjust tail to point to new last element of list.
-        // Return 0 if no inline can be parsed, 1 otherwise.
-        public static Inline parse_inline(Subject subj, Func<Subject, Inline>[] parsers, char[] specialCharacters)
+        /// <summary>
+        /// Parse an inline element from the subject. The subject position is updated to after the element.
+        /// </summary>
+        public static Inline ParseInline(Subject subj, Func<Subject, Inline>[] parsers, char[] specialCharacters)
         {
             var c = subj.Buffer[subj.Position];
 
@@ -1029,36 +1029,23 @@ namespace CommonMark.Parser
             if (parser != null)
                 return parser(subj);
 
-            string contents;
-
             var startpos = subj.Position;
+
             // we read until we hit a special character
-            var endpos = subj.Buffer.IndexOfAny(specialCharacters, startpos, subj.Length - startpos);
+            // +1 is so that any special character at the current position is ignored.
+            var endpos = subj.Buffer.IndexOfAny(specialCharacters, startpos + 1, subj.Length - startpos - 1);
 
-            if (endpos == startpos)
-            {
-                // current char is special: read a 1-character str
-                contents = subj.Buffer[endpos].ToString();
-                subj.Position++;
-            }
-            else if (endpos == -1)
-            {
-                // special char not found, take whole rest of buffer:
+            if (endpos == -1)
                 endpos = subj.Length;
-                contents = subj.Buffer.Substring(startpos, subj.Length - startpos);
-                subj.Position = endpos;
-            }
-            else
-            {
-                // take buffer from subj.pos to endpos to str.
-                contents = subj.Buffer.Substring(startpos, endpos - startpos);
 
-                subj.Position = endpos;
-                // if we're at a newline, strip trailing spaces.
-                if (peek_char(subj) == '\n')
-                    contents = contents.TrimEnd();
-            }
+            subj.Position = endpos;
 
+            // if we're at a newline, strip trailing spaces.
+            if (endpos < subj.Length && subj.Buffer[endpos] == '\n')
+                while (endpos > startpos && subj.Buffer[endpos - 1] == ' ')
+                    endpos--;
+
+            var contents = subj.Buffer.Substring(startpos, endpos - startpos);
             return new Inline(contents, startpos, endpos);
         }
 
@@ -1069,13 +1056,13 @@ namespace CommonMark.Parser
             if (len == 0)
                 return null;
 
-            var first = parse_inline(subj, parsers, specialCharacters);
+            var first = ParseInline(subj, parsers, specialCharacters);
             subj.LastInline = first.LastSibling;
 
             Inline cur;
             while (subj.Position < len)
             {
-                cur = parse_inline(subj, parsers, specialCharacters);
+                cur = ParseInline(subj, parsers, specialCharacters);
                 if (cur != null)
                 {
                     subj.LastInline.NextSibling = cur;
