@@ -48,9 +48,12 @@ namespace CommonMark.Parser
             return NormalizeWhitespace(s.Source, s.StartIndex, s.Length).ToUpperInvariant();
         }
 
-        // Returns reference if refmap contains a reference with matching
-        // label, otherwise null.
-        public static Reference lookup_reference(Dictionary<string, Reference> refmap, StringPart lab)
+        /// <summary>
+        /// Checks if the reference dictionary contains a reference with the given label and returns it,
+        /// otherwise returns <c>null</c>.
+        /// Returns <see cref="Reference.InvalidReference"/> if the reference label is not valid.
+        /// </summary>
+        private static Reference LookupReference(Dictionary<string, Reference> refmap, StringPart lab)
         {
             if (refmap == null)
                 return null;
@@ -67,34 +70,17 @@ namespace CommonMark.Parser
             return null;
         }
 
-        public static Reference make_reference(StringPart label, string url, string title)
+        /// <summary>
+        /// Adds a new reference to the dictionary, if the label does not already exist there.
+        /// Assumes that the length of the label does not exceed <see cref="Reference.MaximumReferenceLabelLength"/>.
+        /// </summary>
+        private static void AddReference(Dictionary<string, Reference> refmap, StringPart label, string url, string title)
         {
-            Reference r = new Reference();
-            r.Label = NormalizeReference(label);
-            r.Url = url;
-            r.Title = title;
-            return r;
-        }
-
-        public static void add_reference(Dictionary<string, Reference> refmap, Reference refer)
-        {
-            if (refmap.ContainsKey(refer.Label))
+            var normalizedLabel = NormalizeReference(label);
+            if (refmap.ContainsKey(normalizedLabel))
                 return;
 
-            refmap.Add(refer.Label, refer);
-        }
-
-        // Append inline list b to the end of inline list a.
-        // Return pointer to head of new list.
-        private static Inline append_inlines(Inline a, Inline b)
-        {
-            if (a == null)
-            {  // null acts like an empty list
-                return b;
-            }
-
-            a.LastSibling.NextSibling = b;
-            return a;
+            refmap.Add(normalizedLabel, new Reference(normalizedLabel, url, title));
         }
 
         // Return the next character in the subject, without advancing.
@@ -105,15 +91,6 @@ namespace CommonMark.Parser
         private static char peek_char(Subject subj)
         {
             return subj.Length <= subj.Position ? '\0' : subj.Buffer[subj.Position];
-        }
-
-        // Advance the subject.  Doesn't check for eof.
-#if OptimizeFor45
-        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-#endif
-        private static void advance(Subject subj)
-        {
-            subj.Position += 1;
         }
 
         // Try to process a backtick code span that began with a
@@ -164,7 +141,7 @@ namespace CommonMark.Parser
         /// Collapses consecutive space and newline characters into a single space.
         /// Additionaly removes leading and trailing spaces.
         /// </summary>
-        private static string NormalizeWhitespace(string s, int startIndex, int count)
+        internal static string NormalizeWhitespace(string s, int startIndex, int count)
         {
             char c;
 
@@ -501,7 +478,7 @@ namespace CommonMark.Parser
 
         private static Inline HandleExclamation(Subject subj)
         {
-            advance(subj);
+            subj.Position++;
             if (peek_char(subj) == '[')
                 return HandleLeftSquareBracket(subj, true);
             else
@@ -619,7 +596,7 @@ namespace CommonMark.Parser
                     var startpos = istack.StartPosition;
                     var label = new StringPart(subj.Buffer, startpos, endpos - startpos - 1);
 
-                    details = lookup_reference(subj.ReferenceMap, label);
+                    details = LookupReference(subj.ReferenceMap, label);
                 }
 
                 if (details == Reference.InvalidReference)
@@ -655,7 +632,7 @@ namespace CommonMark.Parser
         // Parse backslash-escape or just a backslash, returning an inline.
         private static Inline handle_backslash(Subject subj)
         {
-            advance(subj);
+            subj.Position++;
 
             if (subj.Position >= subj.Length)
                 return new Inline("\\", subj.Position - 1, subj.Position); 
@@ -666,12 +643,12 @@ namespace CommonMark.Parser
             {
                 // only ascii symbols and newline can be escaped
                 // the exception is the unicode bullet char since it can be used for defining list items
-                advance(subj);
+                subj.Position++;
                 return new Inline(nextChar.ToString(), subj.Position - 2, subj.Position);
             }
             else if (nextChar == '\n')
             {
-                advance(subj);
+                subj.Position++;
                 return new Inline(InlineTag.LineBreak) 
                 {
                     SourcePosition = subj.Position - 2,
@@ -728,7 +705,7 @@ namespace CommonMark.Parser
             }
             else
             {
-                advance(subj);
+                subj.Position++;
                 return "&";
             }
         }
@@ -910,7 +887,7 @@ namespace CommonMark.Parser
             string contents;
 
             // advance past first <
-            advance(subj);  
+            subj.Position++;  
 
             // first try to match a URL autolink
             matchlen = Scanner.scan_autolink_uri(subj.Buffer, subj.Position, subj.Length);
@@ -1006,7 +983,7 @@ namespace CommonMark.Parser
                     if (label.Value.Length == 0)
                         return Reference.SelfReference;
 
-                    var details = lookup_reference(subj.ReferenceMap, label.Value);
+                    var details = LookupReference(subj.ReferenceMap, label.Value);
                     if (details != null)
                         return details;
 
@@ -1029,12 +1006,12 @@ namespace CommonMark.Parser
             int nlpos = subj.Position;
 
             // skip over newline
-            advance(subj);
+            subj.Position++;
 
             // skip spaces at beginning of line
             var len = subj.Length;
             while (subj.Position < len && subj.Buffer[subj.Position] == ' ')
-                advance(subj);
+                subj.Position++;
 
             if (nlpos > 1 && subj.Buffer[nlpos - 1] == ' ' && subj.Buffer[nlpos - 2] == ' ')
                 return new Inline(InlineTag.LineBreak) { SourcePosition = nlpos - 2, SourceLastPosition = nlpos + 1 };
@@ -1064,7 +1041,7 @@ namespace CommonMark.Parser
             {
                 // current char is special: read a 1-character str
                 contents = subj.Buffer[endpos].ToString();
-                advance(subj);
+                subj.Position++;
             }
             else if (endpos == -1)
             {
@@ -1123,7 +1100,7 @@ namespace CommonMark.Parser
             {
                 c = subj.Buffer[subj.Position];
                 if (c == ' ' || (!seen_newline && (seen_newline = c == '\n')))
-                    advance(subj);
+                    subj.Position++;
                 else
                     return;
             }
@@ -1221,7 +1198,7 @@ namespace CommonMark.Parser
 
             // colon:
             if (peek_char(subj) == ':')
-                advance(subj);
+                subj.Position++;
             else
                 goto INVALID;
 
@@ -1253,15 +1230,15 @@ namespace CommonMark.Parser
 
             // parse final spaces and newline:
             while (peek_char(subj) == ' ')
-                advance(subj);
+                subj.Position++;
 
             if (peek_char(subj) == '\n')
-                advance(subj);
+                subj.Position++;
             else if (peek_char(subj) != '\0')
                 goto INVALID;
 
             // insert reference into refmap
-            add_reference(subj.ReferenceMap, make_reference(lab.Value, url, title));
+            AddReference(subj.ReferenceMap, lab.Value, url, title);
 
             return subj.Position;
 

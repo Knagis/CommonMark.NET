@@ -10,6 +10,23 @@ namespace CommonMark.Syntax
     public sealed class Reference
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="Reference"/> class.
+        /// </summary>
+        public Reference()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Reference"/> class.
+        /// </summary>
+        public Reference(string label, string url, string title)
+        {
+            this.Label = label;
+            this.Url = url;
+            this.Title = title;
+        }
+
+        /// <summary>
         /// Represents the maximum allowed length of a reference definition (<c>foo</c> in <c>[foo]: /url</c>).
         /// </summary>
         public const int MaximumReferenceLabelLength = 1000;
