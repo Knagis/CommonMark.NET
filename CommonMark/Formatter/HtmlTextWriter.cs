@@ -15,8 +15,7 @@ namespace CommonMark.Formatter
         private char[] _newline;
         
         /// <summary>
-        /// A reusable char buffer. This is used internally in <see cref="Write(string)"/>
-        /// and <see cref="WriteLine(string)"/> (and thus will modify the buffer)
+        /// A reusable char buffer. This is used internally in <see cref="Write(StringPart)"/> (and thus will modify the buffer)
         /// but can also be used from <see cref="HtmlPrinter"/> class.
         /// </summary>
         internal char[] Buffer = new char[256];
@@ -36,17 +35,15 @@ namespace CommonMark.Formatter
             this._last = '\n';
         }
 
-        public void WriteLine(string value)
+        public void Write(Syntax.StringPart value)
         {
-            this.Write(value);
-            this._inner.Write(this._newline);
-            this._last = '\n';
-        }
-
-        public void Write(string value)
-        {
-            if (value == null || value.Length == 0)
+            if (value.Length == 0)
                 return;
+
+            if (this.Buffer.Length < value.Length)
+                this.Buffer = new char[value.Length];
+
+            value.Source.CopyTo(value.StartIndex, this.Buffer, 0, value.Length);
 
             if (this._windowsNewLine)
             {
@@ -54,14 +51,9 @@ namespace CommonMark.Formatter
                 var lastC = this._last;
                 int pos = 0;
 
-                if (this.Buffer.Length < value.Length)
-                    this.Buffer = value.ToCharArray();
-                else
-                    value.CopyTo(0, this.Buffer, 0, value.Length);
-
-                while (-1 != (pos = value.IndexOf('\n', pos)))
+                while (-1 != (pos = value.Source.IndexOf('\n', value.StartIndex + pos, value.Length - pos)))
                 {
-                    lastC = pos == 0 ? this._last : value[pos - 1];
+                    lastC = pos == 0 ? this._last : this.Buffer[pos - 1];
 
                     if (lastC != '\r')
                     {
@@ -77,10 +69,10 @@ namespace CommonMark.Formatter
             }
             else
             {
-                this._inner.Write(value);
+                this._inner.Write(this.Buffer, 0, value.Length);
             }
 
-            this._last = value[value.Length - 1];
+            this._last = this.Buffer[value.Length - 1];
         }
         
         /// <summary>

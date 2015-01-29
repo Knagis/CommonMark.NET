@@ -59,6 +59,16 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Inline"/> class. The element type is set to <see cref="InlineTag.String"/>
+        /// </summary>
+        internal Inline(string content, int startIndex, int length, int sourcePosition, int sourceLastPosition)
+        {
+            this.LiteralContentValue = new StringPart(content, startIndex, length);
+            this.SourcePosition = sourcePosition;
+            this.SourceLastPosition = sourceLastPosition;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Inline"/> class.
         /// </summary>
         /// <param name="tag">The type of inline element. Should be one of the types that contain child elements, for example, <see cref="InlineTag.Emphasis"/>.</param>
@@ -91,7 +101,23 @@ namespace CommonMark.Syntax
         /// 
         /// Note that for <see cref="InlineTag.Link"/> this property contains the title of the link.
         /// </summary>
-        public string LiteralContent { get; set; }
+        public string LiteralContent 
+        {
+            get 
+            {
+                // since the .ToString() has been called once, cache the value.
+                return this.LiteralContent = this.LiteralContentValue.ToString(); 
+            }
+
+            set 
+            { 
+                this.LiteralContentValue.Source = value; 
+                this.LiteralContentValue.StartIndex = 0; 
+                this.LiteralContentValue.Length = value == null ? 0 : value.Length;
+            }
+        }
+
+        internal StringPart LiteralContentValue;
 
         /// <summary>
         /// Gets or sets the target URL for this element. Only used for <see cref="InlineTag.Link"/> and 

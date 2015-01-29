@@ -1045,8 +1045,7 @@ namespace CommonMark.Parser
                 while (endpos > startpos && subj.Buffer[endpos - 1] == ' ')
                     endpos--;
 
-            var contents = subj.Buffer.Substring(startpos, endpos - startpos);
-            return new Inline(contents, startpos, endpos);
+            return new Inline(subj.Buffer, startpos, endpos - startpos, startpos, endpos);
         }
 
         public static Inline parse_inlines(Subject subj, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters)

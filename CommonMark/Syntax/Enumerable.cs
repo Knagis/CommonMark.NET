@@ -55,7 +55,7 @@ namespace CommonMark.Syntax
             {
                 if (inline.Tag == InlineTag.String
                     && inline.FirstChild == null
-                    && string.IsNullOrEmpty(inline.LiteralContent))
+                    && inline.LiteralContentValue.Length == 0)
                     return true;
 
                 return false;

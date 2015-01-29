@@ -99,32 +99,28 @@ namespace CommonMark.Formatter
         /// Escapes special HTML characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeHtml(string input, HtmlTextWriter target)
+        private static void EscapeHtml(StringPart input, HtmlTextWriter target)
         {
-            if (input == null)
+            if (input.Length == 0)
                 return;
 
-            int pos = 0;
-            int lastPos = 0;
-            char[] buffer = null;
+            int pos;
+            int lastPos = input.StartIndex;
+            char[] buffer;
 
-            while ((pos = input.IndexOfAny(EscapeHtmlCharacters, lastPos)) != -1)
+            if (target.Buffer.Length < input.Length)
+                buffer = target.Buffer = new char[input.Length];
+            else
+                buffer = target.Buffer;
+                 
+            input.Source.CopyTo(input.StartIndex, buffer, 0, input.Length);
+
+            while ((pos = input.Source.IndexOfAny(EscapeHtmlCharacters, lastPos, input.Length - lastPos + input.StartIndex)) != -1)
             {
-                if (buffer == null)
-                {
-                    if (target.Buffer.Length < input.Length)
-                        buffer = target.Buffer = input.ToCharArray();
-                    else
-                    {
-                        buffer = target.Buffer;
-                        input.CopyTo(0, buffer, 0, input.Length);
-                    }
-                }
-
-                target.Write(buffer, lastPos, pos - lastPos);
+                target.Write(buffer, lastPos - input.StartIndex, pos - lastPos);
                 lastPos = pos + 1;
 
-                switch (buffer[pos])
+                switch (input.Source[pos])
                 {
                     case '<':
                         target.WriteConstant(EscapeHtmlLessThan);
@@ -141,10 +137,7 @@ namespace CommonMark.Formatter
                 }
             }
 
-            if (buffer == null)
-                target.Write(input);
-            else
-                target.Write(buffer, lastPos, input.Length - lastPos);
+            target.Write(buffer, lastPos - input.StartIndex, input.Length - lastPos + input.StartIndex);
         }
 
         /// <summary>
@@ -304,7 +297,7 @@ namespace CommonMark.Formatter
                                 x = info.Length;
 
                             writer.WriteConstant(" class=\"language-");
-                            EscapeHtml(info.Substring(0, x), writer);
+                            EscapeHtml(new StringPart(info, 0, x), writer);
                             writer.Write('\"');
                         }
                         writer.Write('>');
@@ -375,7 +368,7 @@ namespace CommonMark.Formatter
                     case InlineTag.String:
                     case InlineTag.Code:
                     case InlineTag.RawHtml:
-                        EscapeHtml(inline.LiteralContent, writer);
+                        EscapeHtml(inline.LiteralContentValue, writer);
                         break;
 
                     case InlineTag.LineBreak:
@@ -460,7 +453,7 @@ namespace CommonMark.Formatter
                 switch (inline.Tag)
                 {
                     case InlineTag.String:
-                        EscapeHtml(inline.LiteralContent, writer);
+                        EscapeHtml(inline.LiteralContentValue, writer);
                         break;
 
                     case InlineTag.LineBreak:
@@ -476,12 +469,12 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Code:
                         writer.WriteConstant("<code>");
-                        EscapeHtml(inline.LiteralContent, writer);
+                        EscapeHtml(inline.LiteralContentValue, writer);
                         writer.WriteConstant("</code>");
                         break;
 
                     case InlineTag.RawHtml:
-                        writer.Write(inline.LiteralContent);
+                        writer.Write(inline.LiteralContentValue);
                         break;
 
                     case InlineTag.Link:
@@ -501,10 +494,10 @@ namespace CommonMark.Formatter
                                 EscapeUrl(inline.TargetUrl, writer);
 
                             writer.Write('\"');
-                            if (!string.IsNullOrEmpty(inline.LiteralContent))
+                            if (inline.LiteralContentValue.Length > 0)
                             {
                                 writer.WriteConstant(" title=\"");
-                                EscapeHtml(inline.LiteralContent, writer);
+                                EscapeHtml(inline.LiteralContentValue, writer);
                                 writer.Write('\"');
                             }
 
@@ -526,10 +519,10 @@ namespace CommonMark.Formatter
                         writer.WriteConstant("\" alt=\"");
                         InlinesToPlainText(writer, inline.FirstChild, stack);
                         writer.Write('\"');
-                        if (!string.IsNullOrEmpty(inline.LiteralContent))
+                        if (inline.LiteralContentValue.Length > 0)
                         {
                             writer.WriteConstant(" title=\"");
-                            EscapeHtml(inline.LiteralContent, writer);
+                            EscapeHtml(inline.LiteralContentValue, writer);
                             writer.Write('\"');
                         }
                         writer.WriteConstant(" />");
