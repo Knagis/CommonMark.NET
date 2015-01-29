@@ -15,7 +15,7 @@ namespace CommonMark.Formatter
         private char[] _newline;
         
         /// <summary>
-        /// A reusable char buffer. This is used internally in <see cref="Write(StringPart)"/> (and thus will modify the buffer)
+        /// A reusable char buffer. This is used internally in <see cref="Write(Syntax.StringPart)"/> (and thus will modify the buffer)
         /// but can also be used from <see cref="HtmlPrinter"/> class.
         /// </summary>
         internal char[] Buffer = new char[256];
