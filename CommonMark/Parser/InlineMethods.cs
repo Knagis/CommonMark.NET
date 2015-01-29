@@ -93,18 +93,22 @@ namespace CommonMark.Parser
             return subj.Length <= subj.Position ? '\0' : subj.Buffer[subj.Position];
         }
 
-        // Try to process a backtick code span that began with a
-        // span of ticks of length openticklength length (already
-        // parsed).  Return 0 if you don't find matching closing
-        // backticks, otherwise return the position in the subject
-        // after the closing backticks.
-        static int scan_to_closing_backticks(Subject subj, int openticklength)
+        /// <summary>
+        /// Searches the subject for a span of backticks that matches the given length.
+        /// Returns <c>0</c> if the closing backticks cannot be found, otherwise returns
+        /// the position in the subject after the closing backticks.
+        /// Also updates the position on the subject itself.
+        /// </summary>
+        private static int ScanToClosingBackticks(Subject subj, int openticklength)
         {
-            // read non backticks
+            // note - attempt to optimize by using string.IndexOf("````",...) proved to
+            // be ~2x times slower than the current implementation.
+            // but - buf.IndexOf('`') gives ~1.5x better performance than iterating over
+            // every char in the loop.
+
             var buf = subj.Buffer;
             var len = buf.Length;
             var cc = 0;
-            var pos = subj.Position;
 
             for (var i = subj.Position; i < len; i++)
             {
@@ -115,12 +119,9 @@ namespace CommonMark.Parser
                 else
                 {
                     if (cc == openticklength)
-                    {
-                        subj.Position = i;
-                        return i;
-                    }
+                        return subj.Position = i;
 
-                    i = buf.IndexOf('`', i) - 1;
+                    i = buf.IndexOf('`', i, len - i) - 1;
                     if (i == -2)
                         return 0;
 
@@ -129,10 +130,7 @@ namespace CommonMark.Parser
             }
 
             if (cc == openticklength)
-            {
-                subj.Position = len;
-                return len;
-            }
+                return subj.Position = len;
 
             return 0;
         }
@@ -237,7 +235,7 @@ namespace CommonMark.Parser
             }
 
             int startpos = subj.Position;
-            int endpos = scan_to_closing_backticks(subj, ticklength);
+            int endpos = ScanToClosingBackticks(subj, ticklength);
             if (endpos == 0)
             {
                 // closing not found
