@@ -32,7 +32,7 @@ SOFTWARE.
 <#@ import namespace="System.CodeDom" #>
 <#@ import namespace="System.CodeDom.Compiler" #>
 <#@ output extension=".cs" #><#
-    var specFile = this.Host.ResolvePath(@"..\..\spec.txt");
+    var specFile = "https://raw.githubusercontent.com/jgm/CommonMark/master/spec.txt";
     var emptyLines = false;
     var displayEmptyLines = false;
 #>
@@ -159,7 +159,8 @@ private IEnumerable<object> ReadSpecs(string fileName)
     var sectionSpecNumbers = new Dictionary<string, int>();
     var endOfTests = false;
 
-    using (var reader = File.OpenText(fileName))
+	using (var client = new System.Net.WebClient() { Encoding = Encoding.UTF8 })
+    using (var reader = new StringReader(client.DownloadString(fileName)))
     {
         while (!endOfTests && (line = reader.ReadLine()) != null)
         {
