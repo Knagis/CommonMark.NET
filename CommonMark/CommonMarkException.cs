@@ -8,7 +8,7 @@ namespace CommonMark
     /// <summary>
     /// An exception that is caught during CommonMark parsing or formatting.
     /// </summary>
-#if OptimizeFor45
+#if v2_0 || v3_5 || v4_0 || v4_5
     [Serializable]
 #endif
     public class CommonMarkException : Exception
@@ -55,7 +55,7 @@ namespace CommonMark
             this.BlockElement = block;
         }
 
-#if OptimizeFor45
+#if v2_0 || v3_5 || v4_0 || v4_5
         /// <summary>Initializes a new instance of the <see cref="CommonMarkException" /> class from the specified instances of the <see cref="System.Runtime.Serialization.SerializationInfo" /> and <see cref="System.Runtime.Serialization.StreamingContext" /> classes.</summary>
 		/// <param name="serializationInfo">A <see cref="System.Runtime.Serialization.SerializationInfo" /> instance that contains the information required to deserialize the new <see cref="T:System.Security.Authentication.InvalidCredentialException" /> instance. </param>
 		/// <param name="streamingContext">A <see cref="System.Runtime.Serialization.StreamingContext" /> instance. </param>

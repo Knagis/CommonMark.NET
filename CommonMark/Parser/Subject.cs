@@ -61,7 +61,9 @@ namespace CommonMark.Parser
 
         public readonly Dictionary<string, Reference> ReferenceMap;
 
+#if !NETCore
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by [DebuggerDisplay]")]
+#endif
         private string DebugToString()
         {
             var pos = (this.Position > this.Length) ? this.Position + 1 : this.Position;

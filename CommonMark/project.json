@@ -1,0 +1,22 @@
+{
+    "version": "0.7.0",
+    "dependencies": { },
+    "frameworks": {
+        "aspnetcore50": {
+            "compilationOptions": {
+                "define": [
+                    "NETCore",
+                    "OptimizeFor45"
+                ]
+            },
+            "dependencies": {
+                "System.Collections": "4.0.10-beta-22416",
+                "System.Diagnostics.Debug": "4.0.10-beta-22416",
+                "System.IO": "4.0.10-beta-22416",
+                "System.Globalization.Extensions": "4.0.0-beta-22416",
+                "System.Runtime": "4.0.20-beta-22416",
+                "System.Reflection": "4.0.10-beta-22416"
+            }
+        }
+    }
+}

@@ -26,12 +26,24 @@ See [issue #4] [issue4] for an example how the parser can be extended with addit
 
 ## Compatibility
 
-The library uses no references except for `System` - it has no external dependencies. It is cross compiled to
-both .NET 2.0 and .NET 4.0 Portable Class Library that targets .NET Framework 4.0, Silverlight 5, Windows 8,
-Windows Phone 8.1, Windows Phone Silverlight 8, Xamarin.Android and Xamarin.iOS. A special .NET 4.5 build is
-also created that hints certain optimizations to the runtime that were not available in earlier versions.
+The library uses no references except for `System` - it has no external dependencies. It is cross compiled to:
 
-For working with the source code you will need Visual Studio 2013.3 or newer (Community edition is supported).
+* .NET Framework 2.0 
+* .NET Framework 3.5 Client Profile
+* .NET Framework 4.0 Client Profile
+* .NET 4.0 Portable Class Library
+    * .NET Framework 4.0 Client Profile
+    * Silverlight 5
+    * Windows 8
+    * Windows Phone 8.1
+    * Windows Phone Silverlight 8
+    * Xamarin.Android
+    * Xamarin.iOS
+* .NET Framework 4.5
+* .NET Framework 5.0 Core (also known as ASP.NET vNext Core CLR)
+
+For working with the source code you will need Visual Studio 2013.3 or newer (Community edition is supported)
+except for the .NET Core project which requires Visual Studio 2015.
 
 ## Performance
 

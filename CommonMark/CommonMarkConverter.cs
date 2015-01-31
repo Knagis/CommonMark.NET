@@ -15,6 +15,24 @@ namespace CommonMark
     {
         private static Version _version = new Version(0, 0);
 
+#if NETCore
+        /// <summary>
+        /// Gets the CommonMark package version number.
+        /// </summary>
+        public static Version Version
+        {
+            get
+            {
+                if (_version.Major != 0 || _version.Minor != 0)
+                    return _version;
+                var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(CommonMarkConverter)).Assembly;
+				_version = new System.Reflection.AssemblyName(assembly.FullName).Version;
+                return _version;
+            }
+        }
+#endif
+
+#if !NETCore
         /// <summary>
         /// Gets the CommonMark package version number.
         /// Note that this might differ from the actual assembly version which is updated less often to
@@ -28,7 +46,7 @@ namespace CommonMark
                     return _version;
 
                 var assembly = typeof(CommonMarkConverter).Assembly;
-                
+
                 // System.Xml is not available so resort to string parsing.
                 using (var stream = assembly.GetManifestResourceStream("CommonMark.Properties.CommonMark.NET.nuspec"))
                 using (var reader = new System.IO.StreamReader(stream, Encoding.UTF8))
@@ -48,6 +66,7 @@ namespace CommonMark
                 return _version;
             }
         }
+#endif
 
         /// <summary>
         /// Gets the CommonMark assembly version number. Note that might differ from the actual release version
@@ -60,8 +79,12 @@ namespace CommonMark
         {
             get
             {
-                var assembly = typeof(CommonMarkConverter).Assembly.FullName;
-                var aName = new System.Reflection.AssemblyName(assembly);
+#if NETCore
+                var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(CommonMarkConverter)).Assembly;
+#else
+                var assembly = typeof(CommonMarkConverter).Assembly;
+#endif
+                var aName = new System.Reflection.AssemblyName(assembly.FullName);
                 return aName.Version;
             }
         }
