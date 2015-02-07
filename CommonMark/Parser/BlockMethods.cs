@@ -629,6 +629,7 @@ namespace CommonMark.Parser
                     // it's only now that we know the line is not part of a setext header:
                     container = CreateChildBlock(container, line, BlockTag.HorizontalRuler, first_nonspace);
                     Finalize(container, line);
+                    container.SourceLastPosition += ln.Length;
                     container = container.Parent;
                     offset = ln.Length - 1;
 
