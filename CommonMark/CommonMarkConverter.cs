@@ -98,6 +98,7 @@ namespace CommonMark
         /// <exception cref="ArgumentNullException">when <paramref name="source"/> is <c>null</c></exception>
         /// <exception cref="CommonMarkException">when errors occur during block parsing.</exception>
         /// <exception cref="IOException">when error occur while reading the data.</exception>
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)] 
         public static Syntax.Block ProcessStage1(TextReader source, CommonMarkSettings settings = null)
         {
             if (source == null)
@@ -161,6 +162,7 @@ namespace CommonMark
         /// <exception cref="ArgumentException">when <paramref name="document"/> does not represent a top level document.</exception>
         /// <exception cref="ArgumentNullException">when <paramref name="document"/> is <c>null</c></exception>
         /// <exception cref="CommonMarkException">when errors occur during inline parsing.</exception>
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)] 
         public static void ProcessStage2(Syntax.Block document, CommonMarkSettings settings = null)
         {
             if (document == null)
@@ -196,6 +198,7 @@ namespace CommonMark
         /// <exception cref="ArgumentNullException">when <paramref name="document"/> or <paramref name="target"/> is <c>null</c></exception>
         /// <exception cref="CommonMarkException">when errors occur during formatting.</exception>
         /// <exception cref="IOException">when error occur while writing the data to the target.</exception>
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)] 
         public static void ProcessStage3(Syntax.Block document, TextWriter target, CommonMarkSettings settings = null)
         {
             if (document == null)
@@ -233,6 +236,40 @@ namespace CommonMark
             {
                 throw new CommonMarkException("An error occurred during formatting of the document.", ex);
             }
+        }
+
+        /// <summary>
+        /// Parses the given source data and returns the document syntax tree. Use <see cref="ProcessStage3"/> to
+        /// convert the document to HTML using the built-in converter.
+        /// </summary>
+        /// <param name="source">The reader that contains the source data.</param>
+        /// <param name="settings">The object containing settings for the parsing and formatting process.</param>
+        /// <exception cref="ArgumentNullException">when <paramref name="source"/> is <c>null</c></exception>
+        /// <exception cref="CommonMarkException">when errors occur during parsing.</exception>
+        /// <exception cref="IOException">when error occur while reading or writing the data.</exception>
+        public static Syntax.Block Parse(TextReader source, CommonMarkSettings settings = null)
+        {
+            if (settings == null)
+                settings = CommonMarkSettings.Default;
+
+            var document = ProcessStage1(source, settings);
+            ProcessStage2(document, settings);
+            return document;
+        }
+
+        /// <summary>
+        /// Parses the given source data and returns the document syntax tree. Use <see cref="ProcessStage3"/> to
+        /// convert the document to HTML using the built-in converter.
+        /// </summary>
+        /// <param name="source">The source data.</param>
+        /// <param name="settings">The object containing settings for the parsing and formatting process.</param>
+        /// <exception cref="ArgumentNullException">when <paramref name="source"/> is <c>null</c></exception>
+        /// <exception cref="CommonMarkException">when errors occur during parsing.</exception>
+        /// <exception cref="IOException">when error occur while reading or writing the data.</exception>
+        public static Syntax.Block Parse(string source, CommonMarkSettings settings = null)
+        {
+            using (var reader = new System.IO.StringReader(source))
+                return Parse(reader, settings);
         }
 
         /// <summary>

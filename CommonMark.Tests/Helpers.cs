@@ -12,9 +12,7 @@ namespace CommonMark.Tests
         {
             using (var reader = new System.IO.StringReader(Helpers.Normalize(commonMark)))
             {
-                var doc = CommonMarkConverter.ProcessStage1(reader, settings);
-                CommonMarkConverter.ProcessStage2(doc, settings);
-                return doc;
+                return CommonMarkConverter.Parse(reader, settings);
             }
         }
 
