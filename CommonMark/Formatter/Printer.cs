@@ -42,14 +42,46 @@ namespace CommonMark.Formatter
             return buffer.ToString();
         }
 
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
+        private static void PrintPosition(bool enabled, System.IO.TextWriter writer, Block block)
+        {
+            if (enabled)
+            {
+                writer.Write(" [");
+                writer.Write(block.SourcePosition);
+                writer.Write('-');
+                writer.Write(block.SourceLastPosition);
+                writer.Write(']');
+            }
+        }
+
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
+        private static void PrintPosition(bool enabled, System.IO.TextWriter writer, Inline inline)
+        {
+            if (enabled)
+            {
+                writer.Write(" [");
+                writer.Write(inline.SourcePosition);
+                writer.Write('-');
+                writer.Write(inline.SourceLastPosition);
+                writer.Write(']');
+            }
+        }
+
         /// <summary>
         /// Write the block data to the given writer.
         /// </summary>
-        public static void PrintBlocks(System.IO.TextWriter writer, Block block, int indent)
+        public static void PrintBlocks(System.IO.TextWriter writer, Block block, CommonMarkSettings settings)
         {
+            int indent = 0;
             var stack = new Stack<BlockStackEntry>();
             var inlineStack = new Stack<InlineStackEntry>();
             var buffer = new StringBuilder();
+            var trackPositions = settings.TrackSourcePosition;
 
             while (block != null)
             {
@@ -58,76 +90,99 @@ namespace CommonMark.Formatter
                 switch (block.Tag)
                 {
                     case BlockTag.Document:
-                        writer.WriteLine("document");
+                        writer.Write("document");
+                        PrintPosition(trackPositions, writer, block);
                         break;
 
                     case BlockTag.BlockQuote:
-                        writer.WriteLine("block_quote");
+                        writer.Write("block_quote");
+                        PrintPosition(trackPositions, writer, block);
                         break;
 
                     case BlockTag.ListItem:
-                        writer.WriteLine("list_item");
+                        writer.Write("list_item");
+                        PrintPosition(trackPositions, writer, block);
                         break;
 
                     case BlockTag.List:
+                        writer.Write("list");
+                        PrintPosition(trackPositions, writer, block);
+
                         var data = block.ListData;
                         if (data.ListType == ListType.Ordered)
                         {
-                            writer.WriteLine("list (type=ordered tight={0} start={1} delim={2})",
+                            writer.Write(" (type=ordered tight={0} start={1} delim={2})",
                                  data.IsTight,
                                  data.Start,
                                  data.Delimiter);
                         }
                         else
                         {
-                            writer.WriteLine("list (type=bullet tight={0} bullet_char={1})",
+                            writer.Write("(type=bullet tight={0} bullet_char={1})",
                                  data.IsTight,
                                  data.BulletChar);
                         }
                         break;
 
                     case BlockTag.AtxHeader:
-                        writer.WriteLine("atx_header (level={0})", block.HeaderLevel);
+                        writer.Write("atx_header");
+                        PrintPosition(trackPositions, writer, block);
+                        writer.Write(" (level={0})", block.HeaderLevel);
                         break;
 
                     case BlockTag.SETextHeader:
-                        writer.WriteLine("setext_header (level={0})", block.HeaderLevel);
+                        writer.Write("setext_header");
+                        PrintPosition(trackPositions, writer, block);
+                        writer.Write(" (level={0})", block.HeaderLevel);
                         break;
 
                     case BlockTag.Paragraph:
-                        writer.WriteLine("paragraph");
+                        writer.Write("paragraph");
+                        PrintPosition(trackPositions, writer, block);
                         break;
 
                     case BlockTag.HorizontalRuler:
-                        writer.WriteLine("hrule");
+                        writer.Write("hrule");
+                        PrintPosition(trackPositions, writer, block);
                         break;
 
                     case BlockTag.IndentedCode:
-                        writer.WriteLine("indented_code {0}", format_str(block.StringContent.ToString(buffer), buffer));
+                        writer.Write("indented_code {0}", format_str(block.StringContent.ToString(buffer), buffer));
+                        PrintPosition(trackPositions, writer, block);
+                        writer.Write(' ');
+                        writer.Write(format_str(block.StringContent.ToString(buffer), buffer));
                         break;
 
                     case BlockTag.FencedCode:
-                        writer.WriteLine("fenced_code length={0} info={1} {2}",
+                        writer.Write("fenced_code");
+                        PrintPosition(trackPositions, writer, block);
+                        writer.Write(" length={0} info={1} {2}",
                                block.FencedCodeData.FenceLength,
                                format_str(block.FencedCodeData.Info, buffer),
                                format_str(block.StringContent.ToString(buffer), buffer));
                         break;
 
                     case BlockTag.HtmlBlock:
-                        writer.WriteLine("html_block {0}", format_str(block.StringContent.ToString(buffer), buffer));
+                        writer.Write("html_block");
+                        PrintPosition(trackPositions, writer, block);
+                        writer.Write(' ');
+                        writer.Write(format_str(block.StringContent.ToString(buffer), buffer));
                         break;
 
                     case BlockTag.ReferenceDefinition:
-                        writer.WriteLine("reference_def");
+                        writer.Write("reference_def");
+                        PrintPosition(trackPositions, writer, block);
                         break;
 
                     default:
                         throw new CommonMarkException("Block type " + block.Tag + " is not supported.", block);
                 }
 
+                writer.WriteLine();
+
                 if (block.InlineContent != null)
                 {
-                    PrintInlines(writer, block.InlineContent, indent + 2, inlineStack, buffer);
+                    PrintInlines(writer, block.InlineContent, indent + 2, inlineStack, buffer, trackPositions);
                 }
 
                 if (block.FirstChild != null)
@@ -155,7 +210,7 @@ namespace CommonMark.Formatter
             }
         }
 
-        private static void PrintInlines(System.IO.TextWriter writer, Inline inline, int indent, Stack<InlineStackEntry> stack, StringBuilder buffer)
+        private static void PrintInlines(System.IO.TextWriter writer, Inline inline, int indent, Stack<InlineStackEntry> stack, StringBuilder buffer, bool trackPositions)
         {
             while (inline != null)
             {
@@ -164,53 +219,73 @@ namespace CommonMark.Formatter
                 switch (inline.Tag)
                 {
                     case InlineTag.String:
-                        writer.WriteLine("str {0}", format_str(inline.LiteralContent, buffer));
+                        writer.Write("str");
+                        PrintPosition(trackPositions, writer, inline);
+                        writer.Write(' ');
+                        writer.Write(format_str(inline.LiteralContent, buffer));
                         break;
 
                     case InlineTag.LineBreak:
-                        writer.WriteLine("linebreak");
+                        writer.Write("linebreak");
+                        PrintPosition(trackPositions, writer, inline);
                         break;
 
                     case InlineTag.SoftBreak:
-                        writer.WriteLine("softbreak");
+                        writer.Write("softbreak");
+                        PrintPosition(trackPositions, writer, inline);
                         break;
 
                     case InlineTag.Code:
-                        writer.WriteLine("code {0}", format_str(inline.LiteralContent, buffer));
+                        writer.Write("code {0}", format_str(inline.LiteralContent, buffer));
+                        PrintPosition(trackPositions, writer, inline);
+                        writer.Write(' ');
+                        writer.Write(format_str(inline.LiteralContent, buffer));
                         break;
 
                     case InlineTag.RawHtml:
-                        writer.WriteLine("html {0}", format_str(inline.LiteralContent, buffer));
+                        writer.Write("html {0}", format_str(inline.LiteralContent, buffer));
+                        writer.Write(' ');
+                        writer.Write(format_str(inline.LiteralContent, buffer));
                         break;
 
                     case InlineTag.Link:
-                        writer.WriteLine("link url={0} title={1}",
+                        writer.Write("link");
+                        PrintPosition(trackPositions, writer, inline);
+                        writer.Write(" url={0} title={1}",
                                format_str(inline.TargetUrl, buffer),
                                format_str(inline.LiteralContent, buffer));
                         break;
 
                     case InlineTag.Image:
-                        writer.WriteLine("image url={0} title={1}",
+                        writer.Write("image");
+                        PrintPosition(trackPositions, writer, inline);
+                        writer.Write(" url={0} title={1}",
                                format_str(inline.TargetUrl, buffer),
                                format_str(inline.LiteralContent, buffer));
                         break;
 
                     case InlineTag.Strong:
-                        writer.WriteLine("strong");
+                        writer.Write("strong");
+                        PrintPosition(trackPositions, writer, inline);
                         break;
 
                     case InlineTag.Emphasis:
-                        writer.WriteLine("emph");
+                        writer.Write("emph");
+                        PrintPosition(trackPositions, writer, inline);
                         break;
 
                     case InlineTag.Strikethrough:
-                        writer.WriteLine("del");
+                        writer.Write("del");
+                        PrintPosition(trackPositions, writer, inline);
                         break;
 
                     default:
-                        writer.WriteLine("unknown: " + inline.Tag.ToString());
+                        writer.Write("unknown: " + inline.Tag.ToString());
+                        PrintPosition(trackPositions, writer, inline);
                         break;
                 }
+
+                writer.WriteLine();
 
                 if (inline.FirstChild != null)
                 {

@@ -35,6 +35,16 @@ namespace CommonMark.Formatter
             this._last = '\n';
         }
 
+        public void WriteLine(char data)
+        {
+            if (data == '\n' && this._windowsNewLine && this._last != '\r')
+                this._inner.Write('\r');
+
+            this._inner.Write(data);
+            this._inner.Write(this._newline);
+            this._last = '\n';
+        }
+
         public void Write(Syntax.StringPart value)
         {
             if (value.Length == 0)
@@ -155,7 +165,7 @@ namespace CommonMark.Formatter
 
         public void Write(char value)
         {
-            if (this._windowsNewLine && _last != '\r' && value == '\n')
+            if (value == '\n' && this._windowsNewLine && this._last != '\r')
                 this._inner.Write('\r');
 
             this._last = value;

@@ -19,6 +19,7 @@ namespace CommonMark
             Console.WriteLine("Usage:   CommonMark.Console [FILE*] [--out FILE]");
             Console.WriteLine("Options: --help, -h    Print usage information");
             Console.WriteLine("         --ast         Print AST instead of HTML");
+            Console.WriteLine("         --sourcepos   Enable source position tracking and output");
             Console.WriteLine("         --bench 20    Execute a benchmark on the given input, optionally");
             Console.WriteLine("                       specify the number of iterations, default is 20");
             Console.WriteLine("         --perltest    Changes console input handling for runtests.pl");
@@ -29,11 +30,11 @@ namespace CommonMark
         static int Main(string[] args)
         {
             var sources = new List<System.IO.TextReader>();
-            var ast = false;
             var benchmark = false;
             var benchmarkIterations = 20;
             var target = Console.Out;
             var runPerlTests = false;
+            var settings = new CommonMarkSettings();
 
             try
             {
@@ -57,7 +58,11 @@ namespace CommonMark
                     }
                     else if (string.Equals(args[i], "--ast", StringComparison.OrdinalIgnoreCase))
                     {
-                        ast = true;
+                        settings.OutputFormat = OutputFormat.SyntaxTree;
+                    }
+                    else if (string.Equals(args[i], "--sourcepos", StringComparison.OrdinalIgnoreCase))
+                    {
+                        settings.TrackSourcePosition = true;
                     }
                     else if (string.Equals(args[i], "--bench", StringComparison.OrdinalIgnoreCase))
                     {
@@ -133,9 +138,6 @@ namespace CommonMark
                         sources.Add(Console.In);
                     }
                 }
-
-                var settings = new CommonMarkSettings();
-                settings.OutputFormat = ast ? OutputFormat.SyntaxTree : OutputFormat.Html;
 
                 if (benchmark)
                 {

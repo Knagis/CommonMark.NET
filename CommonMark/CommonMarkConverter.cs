@@ -217,7 +217,7 @@ namespace CommonMark
             {
                 if (settings.OutputFormat == OutputFormat.SyntaxTree)
                 {
-                    Printer.PrintBlocks(target, document, 0);
+                    Printer.PrintBlocks(target, document, settings);
                 }
                 else
                 {

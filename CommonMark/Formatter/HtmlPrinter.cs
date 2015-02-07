@@ -186,15 +186,29 @@ namespace CommonMark.Formatter
                 target.Write(buffer, lastPos - part.StartIndex, part.Length - lastPos + part.StartIndex);
             }
         }
-
-        /// <summary>
-        /// Convert a block list to HTML.  Returns 0 on success, and sets result.
-        /// </summary>
-        /// <remarks>Orig: blocks_to_html</remarks>
+        
         public static void BlocksToHtml(System.IO.TextWriter writer, Block block, CommonMarkSettings settings)
         {
             var wrapper = new HtmlTextWriter(writer);
             BlocksToHtmlInner(wrapper, block, settings);
+        }
+
+        private static void PrintPosition(HtmlTextWriter writer, Block block)
+        {
+            writer.WriteConstant(" data-sourcepos=\"");
+            writer.WriteConstant(block.SourcePosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.Write('-');
+            writer.WriteConstant(block.SourceLastPosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.WriteConstant("\"");
+        }
+
+        private static void PrintPosition(HtmlTextWriter writer, Inline inline)
+        {
+            writer.WriteConstant(" data-sourcepos=\"");
+            writer.WriteConstant(inline.SourcePosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.Write('-');
+            writer.WriteConstant(inline.SourceLastPosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.WriteConstant("\"");
         }
 
         private static void BlocksToHtmlInner(HtmlTextWriter writer, Block block, CommonMarkSettings settings)
@@ -205,6 +219,7 @@ namespace CommonMark.Formatter
             string stackLiteral = null;
             bool stackTight = false;
             bool tight = false;
+            bool trackPositions = settings.TrackSourcePosition;
             int x;
 
             while (block != null)
@@ -227,7 +242,9 @@ namespace CommonMark.Formatter
                         else
                         {
                             writer.EnsureLine();
-                            writer.WriteConstant("<p>");
+                            writer.WriteConstant("<p");
+                            if (trackPositions) PrintPosition(writer, block);
+                            writer.Write('>');
                             InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
                             writer.WriteLineConstant("</p>");
                         }
@@ -235,7 +252,9 @@ namespace CommonMark.Formatter
 
                     case BlockTag.BlockQuote:
                         writer.EnsureLine();
-                        writer.WriteLineConstant("<blockquote>");
+                        writer.WriteConstant("<blockquote");
+                        if (trackPositions) PrintPosition(writer, block);
+                        writer.WriteLine('>');
 
                         stackLiteral = "</blockquote>";
                         stackTight = false;
@@ -244,7 +263,9 @@ namespace CommonMark.Formatter
 
                     case BlockTag.ListItem:
                         writer.EnsureLine();
-                        writer.WriteConstant("<li>");
+                        writer.WriteConstant("<li");
+                        if (trackPositions) PrintPosition(writer, block);
+                        writer.Write('>');
 
                         stackLiteral = "</li>";
                         stackTight = tight;
@@ -262,7 +283,8 @@ namespace CommonMark.Formatter
                             writer.WriteConstant(data.Start.ToString(System.Globalization.CultureInfo.InvariantCulture));
                             writer.Write('\"');
                         }
-                        writer.WriteLineConstant(">");
+                        if (trackPositions) PrintPosition(writer, block);
+                        writer.WriteLine('>');
 
                         stackLiteral = data.ListType == ListType.Bullet ? "</ul>" : "</ol>";
                         stackTight = data.IsTight;
@@ -274,22 +296,30 @@ namespace CommonMark.Formatter
                         writer.EnsureLine();
 
                         x = block.HeaderLevel;
-                        writer.WriteConstant(x > 0 && x < 7 ? HeaderOpenerTags[x - 1] : "<h" + x.ToString(CultureInfo.InvariantCulture) + ">");
-                        InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
-                        writer.WriteLineConstant(x > 0 && x < 7 ? HeaderCloserTags[x - 1] : "</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
+
+                        if (trackPositions)
+                        {
+                            writer.WriteConstant("<h" + x.ToString(CultureInfo.InvariantCulture));
+                            PrintPosition(writer, block);
+                            InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
+                            writer.WriteLineConstant(x > 0 && x < 7 ? HeaderCloserTags[x - 1] : "</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
+                        }
+                        else
+                        {
+                            writer.WriteConstant(x > 0 && x < 7 ? HeaderOpenerTags[x - 1] : "<h" + x.ToString(CultureInfo.InvariantCulture) + ">");
+                            InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
+                            writer.WriteLineConstant(x > 0 && x < 7 ? HeaderCloserTags[x - 1] : "</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
+                        }
+
                         break;
 
                     case BlockTag.IndentedCode:
-                        writer.EnsureLine();
-                        writer.WriteConstant("<pre><code>");
-                        EscapeHtml(block.StringContent, writer);
-                        writer.WriteLineConstant("</code></pre>");
-                        break;
-
                     case BlockTag.FencedCode:
                         writer.EnsureLine();
                         writer.WriteConstant("<pre><code");
-                        var info = block.FencedCodeData.Info;
+                        if (trackPositions) PrintPosition(writer, block);
+
+                        var info = block.FencedCodeData == null ? null : block.FencedCodeData.Info;
                         if (info != null && info.Length > 0)
                         {
                             x = info.IndexOf(' ');
@@ -306,11 +336,23 @@ namespace CommonMark.Formatter
                         break;
 
                     case BlockTag.HtmlBlock:
+                        // cannot output source position for HTML blocks
                         block.StringContent.WriteTo(writer);
+
                         break;
 
                     case BlockTag.HorizontalRuler:
-                        writer.WriteLineConstant("<hr />");
+                        if (trackPositions)
+                        {
+                            writer.WriteConstant("<hr");
+                            PrintPosition(writer, block);
+                            writer.WriteLine();
+                        }
+                        else
+                        {
+                            writer.WriteLineConstant("<hr />");
+                        }
+
                         break;
 
                     case BlockTag.ReferenceDefinition:
@@ -444,6 +486,7 @@ namespace CommonMark.Formatter
             bool withinLink = false;
             bool stackWithinLink = false;
             bool visitChildren;
+            bool trackPositions = settings.TrackSourcePosition;
             string stackLiteral = null;
 
             while (inline != null)
@@ -453,7 +496,19 @@ namespace CommonMark.Formatter
                 switch (inline.Tag)
                 {
                     case InlineTag.String:
-                        EscapeHtml(inline.LiteralContentValue, writer);
+                        if (trackPositions)
+                        {
+                            writer.WriteConstant("<span");
+                            PrintPosition(writer, inline);
+                            writer.Write('>');
+                            EscapeHtml(inline.LiteralContentValue, writer);
+                            writer.WriteConstant("</span>");
+                        }
+                        else
+                        {
+                            EscapeHtml(inline.LiteralContentValue, writer);
+                        }
+
                         break;
 
                     case InlineTag.LineBreak:
@@ -468,12 +523,15 @@ namespace CommonMark.Formatter
                         break;
 
                     case InlineTag.Code:
-                        writer.WriteConstant("<code>");
+                        writer.WriteConstant("<code");
+                        if (trackPositions) PrintPosition(writer, inline);
+                        writer.Write('>');
                         EscapeHtml(inline.LiteralContentValue, writer);
                         writer.WriteConstant("</code>");
                         break;
 
                     case InlineTag.RawHtml:
+                        // cannot output source position for HTML blocks
                         writer.Write(inline.LiteralContentValue);
                         break;
 
@@ -501,6 +559,8 @@ namespace CommonMark.Formatter
                                 writer.Write('\"');
                             }
 
+                            if (trackPositions) PrintPosition(writer, inline);
+
                             writer.Write('>');
 
                             visitChildren = true;
@@ -525,25 +585,34 @@ namespace CommonMark.Formatter
                             EscapeHtml(inline.LiteralContentValue, writer);
                             writer.Write('\"');
                         }
+
+                        if (trackPositions) PrintPosition(writer, inline);
                         writer.WriteConstant(" />");
+
                         break;
 
                     case InlineTag.Strong:
-                        writer.WriteConstant("<strong>");
+                        writer.WriteConstant("<strong");
+                        if (trackPositions) PrintPosition(writer, inline);
+                        writer.Write('>');
                         stackLiteral = "</strong>";
                         stackWithinLink = withinLink;
                         visitChildren = true;
                         break;
 
                     case InlineTag.Emphasis:
-                        writer.WriteConstant("<em>");
+                        writer.WriteConstant("<em");
+                        if (trackPositions) PrintPosition(writer, inline);
+                        writer.Write('>');
                         stackLiteral = "</em>";
                         visitChildren = true;
                         stackWithinLink = withinLink;
                         break;
 
                     case InlineTag.Strikethrough:
-                        writer.WriteConstant("<del>");
+                        writer.WriteConstant("<del");
+                        if (trackPositions) PrintPosition(writer, inline);
+                        writer.Write('>');
                         stackLiteral = "</del>";
                         visitChildren = true;
                         stackWithinLink = withinLink;
