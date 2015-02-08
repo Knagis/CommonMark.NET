@@ -20,6 +20,13 @@ namespace CommonMark.Tests
             Helpers.ExecuteTest("\u0000*foo*\0", "<p><em>foo</em></p>");
         }
 
+        [TestMethod]
+        [TestCategory("Other")]
+        public void EmptyString()
+        {
+            Helpers.ExecuteTest("", "");
+        }
+
         /// <summary>
         /// Verifies that the U+0000 characters are removed from the source data.
         /// </summary>

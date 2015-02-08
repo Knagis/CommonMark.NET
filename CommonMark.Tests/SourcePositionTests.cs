@@ -27,6 +27,13 @@ namespace CommonMark.Tests
         }
 
         [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionEmptyString()
+        {
+            Helpers.ExecuteTest("", "", Settings);
+        }
+
+        [TestMethod]
         [TestCategory("SourcePosition - Blocks")]
         public void SourcePositionSETextHeader()
         {

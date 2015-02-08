@@ -107,7 +107,10 @@ namespace CommonMark.Parser
             if (line.IsTrackingPositions)
             {
                 // (b.SourcePosition >= line.LineOffset) determines if the block started on this line.
-                b.SourceLastPosition = line.CalculateOrigin(b.SourcePosition >= line.LineOffset ? line.Line.Length : 0, false);
+                if (b.SourcePosition >= line.LineOffset && line.Line != null)
+                    b.SourceLastPosition = line.CalculateOrigin(line.Line.Length, false);
+                else
+                    b.SourceLastPosition = line.CalculateOrigin(0, false);
             }
 
 #pragma warning disable 0618

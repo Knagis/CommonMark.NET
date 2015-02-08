@@ -268,6 +268,9 @@ namespace CommonMark
         /// <exception cref="IOException">when error occur while reading or writing the data.</exception>
         public static Syntax.Block Parse(string source, CommonMarkSettings settings = null)
         {
+            if (source == null)
+                return null;
+
             using (var reader = new System.IO.StringReader(source))
                 return Parse(reader, settings);
         }
