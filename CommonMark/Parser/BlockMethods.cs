@@ -105,7 +105,10 @@ namespace CommonMark.Parser
             b.IsOpen = false;
 
             if (line.IsTrackingPositions)
-                b.SourceLastPosition = line.CalculateOrigin(0, false);
+            {
+                // (b.SourcePosition >= line.LineOffset) determines if the block started on this line.
+                b.SourceLastPosition = line.CalculateOrigin(b.SourcePosition >= line.LineOffset ? line.Line.Length : 0, false);
+            }
 
 #pragma warning disable 0618
             b.EndLine = (line.LineNumber > b.StartLine) ? line.LineNumber - 1 : line.LineNumber;
@@ -629,7 +632,6 @@ namespace CommonMark.Parser
                     // it's only now that we know the line is not part of a setext header:
                     container = CreateChildBlock(container, line, BlockTag.HorizontalRuler, first_nonspace);
                     Finalize(container, line);
-                    container.SourceLastPosition += ln.Length;
                     container = container.Parent;
                     offset = ln.Length - 1;
 
