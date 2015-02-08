@@ -20,7 +20,16 @@ namespace CommonMark.Tests
             s.TrackSourcePosition = true;
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 210, "Container blocks - Lists");
-            Helpers.ExecuteTest("* a\n*\n\n* c", "<ul>\n<li>\n<p>a</p>\n</li>\n<li></li>\n<li>\n<p>c</p>\n</li>\n</ul>", s);
+            Helpers.ExecuteTest("* a\n*\n\n* c", @"<ul␣data-sourcepos=""0-10"">
+<li␣data-sourcepos=""0-4"">
+<p␣data-sourcepos=""2-4""><span␣data-sourcepos=""2-3"">a</span></p>
+</li>
+<li␣data-sourcepos=""4-7""></li>
+<li␣data-sourcepos=""7-10"">
+<p␣data-sourcepos=""9-10""><span␣data-sourcepos=""9-10"">c</span></p>
+</li>
+</ul>
+", s);
         }
 
         [TestMethod]
