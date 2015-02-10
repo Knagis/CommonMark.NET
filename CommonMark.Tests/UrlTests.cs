@@ -52,5 +52,15 @@ namespace CommonMark.Tests
 
             Assert.IsTrue(gotException, "A required exception was not thrown.");
         }
-    }
+
+		[TestMethod]
+		[TestCategory("Inlines - Image")]
+		public void Image()
+		{
+			var settings = CommonMarkSettings.Default.Clone();
+
+			Helpers.ExecuteTest(@"![image](http://localhost/image.jpg?id=foo&file=bar)", "<p><img src=\"http://localhost/image.jpg?id=foo&file=bar\" alt=\"image\" /></p>", settings);
+		}
+
+	}
 }
