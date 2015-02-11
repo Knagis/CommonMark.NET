@@ -53,14 +53,22 @@ namespace CommonMark.Tests
             Assert.IsTrue(gotException, "A required exception was not thrown.");
         }
 
-		[TestMethod]
-		[TestCategory("Inlines - Image")]
-		public void Image()
-		{
-			var settings = CommonMarkSettings.Default.Clone();
+        [TestMethod]
+        [TestCategory("Inlines - Image")]
+        public void Images_should_not_have_URL_query_string_separators_escaped()
+        {
+            var settings = CommonMarkSettings.Default.Clone();
 
-			Helpers.ExecuteTest(@"![image](http://localhost/image.jpg?id=foo&file=bar)", "<p><img src=\"http://localhost/image.jpg?id=foo&file=bar\" alt=\"image\" /></p>", settings);
-		}
-
-	}
+            Helpers.ExecuteTest(@"![image](http://localhost/image.jpg?id=foo&file=bar)", "<p><img src=\"http://localhost/image.jpg?id=foo&file=bar\" alt=\"image\" /></p>", settings);
+        }
+        
+        [TestMethod]
+        [TestCategory("Inlines - Links")]
+        public void Links_should_not_have_URL_query_string_separators_escaped()
+        {
+            var settings = CommonMarkSettings.Default.Clone();
+        
+            Helpers.ExecuteTest(@"[link](http://localhost/route?id=foo&file=bar)", "<p><a href=\"http://localhost/route?id=foo&file=bar\">link</a></p>", settings);
+         }
+    }
 }
