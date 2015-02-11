@@ -21,7 +21,7 @@ namespace CommonMark.Formatter
         private static readonly bool[] UrlSafeCharacters = new[] {
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-            false, true,  false, true,  true,  true,  false, false, true,  true,  true,  true,  true,  true,  true,  true, 
+            false, true,  false, true,  true,  true,  true, false, true,  true,  true,  true,  true,  true,  true,  true, 
             true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  false, true,  false, true, 
             true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, 
             true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  false, false, false, false, true, 
@@ -57,13 +57,7 @@ namespace CommonMark.Formatter
             {
                 c = buffer[pos];
 
-                if (c == '&')
-                {
-                    target.WriteConstant(buffer, lastPos, pos - lastPos);
-                    lastPos = pos + 1;
-                    target.WriteConstant(EscapeHtmlAmpersand);
-                }
-                else if (c < 128 && !UrlSafeCharacters[c])
+                if (c < 128 && !UrlSafeCharacters[c])
                 {
                     target.WriteConstant(buffer, lastPos, pos - lastPos);
                     lastPos = pos + 1;
