@@ -238,8 +238,8 @@ namespace CommonMark.Tests.Specification
         // The following definitions of character classes will be used in this spec:
         //
         // A [whitespace character](@whitespace-character) is a space
-        // (`U+0020`), tab (`U+0009`), carriage return (`U+000D`), or
-        // newline (`U+000A`).
+        // (`U+0020`), tab (`U+0009`), newline (`U+000A`), line tabulation (`U+000B`),
+        // form feed (`U+000C`), or carriage return (`U+000D`).
         //
         // [Whitespace](@whitespace) is a sequence of one or more [whitespace
         // character]s.
@@ -7576,12 +7576,14 @@ namespace CommonMark.Tests.Specification
         // A [left-flanking delimiter run](@left-flanking-delimiter-run) is
         // a [delimiter run] that is (a) not followed by [unicode whitespace],
         // and (b) either not followed by a [punctuation character], or
-        // preceded by [unicode whitespace] or a [punctuation character].
+        // preceded by [unicode whitespace] or a [punctuation character] or
+        // the beginning of a line.
         //
         // A [right-flanking delimiter run](@right-flanking-delimiter-run) is
         // a [delimiter run] that is (a) not preceded by [unicode whitespace],
         // and (b) either not preceded by a [punctuation character], or
-        // followed by [unicode whitespace] or a [punctuation character].
+        // followed by [unicode whitespace] or a [punctuation character] or
+        // the end of a line.
         //
         // Here are some examples of delimiter runs.
         //
@@ -10065,13 +10067,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     **a<http://foo.bar?q=**>
+            //     **a<http://foo.bar/?q=**>
             //
             // Should be rendered as:
-            //     <p>**a<a href="http://foo.bar?q=**">http://foo.bar?q=**</a></p>
+            //     <p>**a<a href="http://foo.bar/?q=**">http://foo.bar/?q=**</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 391, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("**a<http://foo.bar?q=**>", "<p>**a<a href=\"http://foo.bar?q=**\">http://foo.bar?q=**</a></p>");
+			Helpers.ExecuteTest("**a<http://foo.bar/?q=**>", "<p>**a<a href=\"http://foo.bar/?q=**\">http://foo.bar/?q=**</a></p>");
         }
 
         [TestMethod]
@@ -10083,13 +10085,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Emphasis and strong emphasis
             //
             // The following CommonMark:
-            //     __a<http://foo.bar?q=__>
+            //     __a<http://foo.bar/?q=__>
             //
             // Should be rendered as:
-            //     <p>__a<a href="http://foo.bar?q=__">http://foo.bar?q=__</a></p>
+            //     <p>__a<a href="http://foo.bar/?q=__">http://foo.bar/?q=__</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 392, "Inlines - Emphasis and strong emphasis");
-			Helpers.ExecuteTest("__a<http://foo.bar?q=__>", "<p>__a<a href=\"http://foo.bar?q=__\">http://foo.bar?q=__</a></p>");
+			Helpers.ExecuteTest("__a<http://foo.bar/?q=__>", "<p>__a<a href=\"http://foo.bar/?q=__\">http://foo.bar/?q=__</a></p>");
         }
 
         // ## Links
@@ -10857,13 +10859,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [foo<http://example.com?search=](uri)>
+            //     [foo<http://example.com/?search=](uri)>
             //
             // Should be rendered as:
-            //     <p>[foo<a href="http://example.com?search=%5D(uri)">http://example.com?search=](uri)</a></p>
+            //     <p>[foo<a href="http://example.com/?search=%5D(uri)">http://example.com/?search=](uri)</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 428, "Inlines - Links");
-			Helpers.ExecuteTest("[foo<http://example.com?search=](uri)>", "<p>[foo<a href=\"http://example.com?search=%5D(uri)\">http://example.com?search=](uri)</a></p>");
+			Helpers.ExecuteTest("[foo<http://example.com/?search=](uri)>", "<p>[foo<a href=\"http://example.com/?search=%5D(uri)\">http://example.com/?search=](uri)</a></p>");
         }
 
         // There are three kinds of [reference link](@reference-link)s:
@@ -11135,15 +11137,15 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Links
             //
             // The following CommonMark:
-            //     [foo<http://example.com?search=][ref]>
+            //     [foo<http://example.com/?search=][ref]>
             //     
             //     [ref]: /uri
             //
             // Should be rendered as:
-            //     <p>[foo<a href="http://example.com?search=%5D%5Bref%5D">http://example.com?search=][ref]</a></p>
+            //     <p>[foo<a href="http://example.com/?search=%5D%5Bref%5D">http://example.com/?search=][ref]</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 440, "Inlines - Links");
-			Helpers.ExecuteTest("[foo<http://example.com?search=][ref]>\n\n[ref]: /uri", "<p>[foo<a href=\"http://example.com?search=%5D%5Bref%5D\">http://example.com?search=][ref]</a></p>");
+			Helpers.ExecuteTest("[foo<http://example.com/?search=][ref]>\n\n[ref]: /uri", "<p>[foo<a href=\"http://example.com/?search=%5D%5Bref%5D\">http://example.com/?search=][ref]</a></p>");
         }
 
         // Matching is case-insensitive:
@@ -12269,13 +12271,13 @@ namespace CommonMark.Tests.Specification
             // Section: Inlines - Autolinks
             //
             // The following CommonMark:
-            //     <http://foo.bar.baz?q=hello&id=22&boolean>
+            //     <http://foo.bar.baz/test?q=hello&id=22&boolean>
             //
             // Should be rendered as:
-            //     <p><a href="http://foo.bar.baz?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz?q=hello&amp;id=22&amp;boolean</a></p>
+            //     <p><a href="http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>
 
             Helpers.Log("Example {0}" + Environment.NewLine + "Section: {0}" + Environment.NewLine, 491, "Inlines - Autolinks");
-			Helpers.ExecuteTest("<http://foo.bar.baz?q=hello&id=22&boolean>", "<p><a href=\"http://foo.bar.baz?q=hello&amp;id=22&amp;boolean\">http://foo.bar.baz?q=hello&amp;id=22&amp;boolean</a></p>");
+			Helpers.ExecuteTest("<http://foo.bar.baz/test?q=hello&id=22&boolean>", "<p><a href=\"http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean\">http://foo.bar.baz/test?q=hello&amp;id=22&amp;boolean</a></p>");
         }
 
         [TestMethod]
