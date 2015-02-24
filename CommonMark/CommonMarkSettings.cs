@@ -77,7 +77,7 @@ namespace CommonMark
         }
 
         /// <summary>
-        /// Custom output printer used instead of the built-in printer
+        /// Gets of sets the custom output printer used instead of the built-in printer
         /// </summary>
         public IPrinter CustomOutputPrinter { get; set; }
 

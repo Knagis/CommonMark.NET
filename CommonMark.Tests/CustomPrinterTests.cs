@@ -1,5 +1,4 @@
-﻿using CommonMark.Formatter;
-using CommonMark.Syntax;
+﻿using CommonMark.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 
@@ -12,7 +11,9 @@ namespace CommonMark.Tests
         [TestCategory("Inlines - Custom Printer")]
         public void CustomHelloPrinter()
         {
-            var settings = new CommonMarkSettings { CustomOutputPrinter = new HelloPrinter() };
+            var settings = CommonMarkSettings.Default.Clone();
+            settings.CustomOutputPrinter = new HelloPrinter();
+
             Helpers.ExecuteTest("foo <h1>asd</h1> bar", "hello", settings);
         }
 
