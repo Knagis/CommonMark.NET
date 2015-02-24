@@ -240,6 +240,18 @@ is it?
 
         [TestMethod]
         [TestCategory("SourcePosition")]
+        public void SourcePositionSingleListItem()
+        {
+            var data = "*  *";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var bl = doc.AsEnumerable().FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.List);
+            Assert.IsNotNull(bl);
+            Assert.AreEqual(data, data.Substring(bl.Block.SourcePosition, bl.Block.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
         public void SourcePositionStringNodes()
         {
             var data = "**foo** bar";

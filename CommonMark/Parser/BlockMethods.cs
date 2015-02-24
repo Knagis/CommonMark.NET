@@ -68,6 +68,9 @@ namespace CommonMark.Parser
                     return false;
 
                 block = block.LastChild;
+
+                if (block == null)
+                    return false;
             }
         }
 
