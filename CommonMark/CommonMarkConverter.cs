@@ -215,7 +215,11 @@ namespace CommonMark
 
             try
             {
-                if (settings.OutputFormat == OutputFormat.SyntaxTree)
+                if(settings.CustomOutputPrinter != null)
+                {
+                    settings.CustomOutputPrinter.Print(target, document, settings);
+                }
+                else if (settings.OutputFormat == OutputFormat.SyntaxTree)
                 {
                     Printer.PrintBlocks(target, document, settings);
                 }

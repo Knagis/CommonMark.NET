@@ -649,7 +649,7 @@ namespace CommonMark.Formatter
             }
         }
 
-        private struct BlockStackEntry
+        internal struct BlockStackEntry
         {
             public readonly string Literal;
             public readonly Block Target;
@@ -661,7 +661,7 @@ namespace CommonMark.Formatter
                 this.IsTight = isTight;
             }
         }
-        private struct InlineStackEntry
+        internal struct InlineStackEntry
         {
             public readonly string Literal;
             public readonly Inline Target;
