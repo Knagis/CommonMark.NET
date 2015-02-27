@@ -301,6 +301,7 @@ namespace CommonMark.Formatter
                         {
                             writer.WriteConstant("<h" + x.ToString(CultureInfo.InvariantCulture));
                             PrintPosition(writer, block);
+                            writer.Write('>');
                             InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
                             writer.WriteLineConstant(x > 0 && x < 7 ? HeaderCloserTags[x - 1] : "</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
                         }
