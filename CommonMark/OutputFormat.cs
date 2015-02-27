@@ -17,6 +17,11 @@ namespace CommonMark
         /// <summary>
         /// The output is a debug view of the syntax tree. Usable for debugging.
         /// </summary>
-        SyntaxTree
+        SyntaxTree,
+
+        /// <summary>
+        /// The output is pretty-formatted version of the source Markdown text.
+        /// </summary>
+        Markdown
     }
 }

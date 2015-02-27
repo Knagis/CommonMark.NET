@@ -215,13 +215,17 @@ namespace CommonMark
 
             try
             {
-                if (settings.OutputFormat == OutputFormat.SyntaxTree)
+                if (settings.OutputFormat == OutputFormat.Html)
                 {
-                    Printer.PrintBlocks(target, document, settings);
+                    HtmlPrinter.BlocksToHtml(target, document, settings);
+                }
+                else if (settings.OutputFormat == OutputFormat.Markdown)
+                {
+                    MarkdownPrinter.PrintBlocks(target, document, settings);
                 }
                 else
                 {
-                    HtmlPrinter.BlocksToHtml(target, document, settings);
+                    Printer.PrintBlocks(target, document, settings);
                 }
             }
             catch (CommonMarkException)
