@@ -6,7 +6,7 @@ namespace CommonMark
     /// <summary>
     /// Printer for a CommonMark document
     /// </summary>
-    public interface IPrinter
+    public interface IBlockWriter
     {
         /// <summary>
         /// Prints the block in the writer
@@ -14,6 +14,6 @@ namespace CommonMark
         /// <param name="writer">Writer</param>
         /// <param name="block">Block to print</param>
         /// <param name="settings">Settings</param>
-        void Print(TextWriter writer, Block block, CommonMarkSettings settings);
+        void Write(TextWriter writer, Block block, CommonMarkSettings settings);
     }
 }

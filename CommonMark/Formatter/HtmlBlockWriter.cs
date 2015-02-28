@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CommonMark.Formatter
 {
-    internal static class HtmlPrinter
+    internal static class HtmlBlockWriter
     {
         private static readonly char[] EscapeHtmlCharacters = new[] { '&', '<', '>', '"' };
         private const string HexCharacters = "0123456789ABCDEF";
@@ -15,8 +15,8 @@ namespace CommonMark.Formatter
         private static readonly char[] EscapeHtmlAmpersand = "&amp;".ToCharArray();
         private static readonly char[] EscapeHtmlQuote = "&quot;".ToCharArray();
 
-        private static readonly string[] HeaderOpenerTags = new[] { "<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<h6>" };
-        private static readonly string[] HeaderCloserTags = new[] { "</h1>", "</h2>", "</h3>", "</h4>", "</h5>", "</h6>" };
+        internal static readonly string[] HeaderOpenerTags = new[] { "<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<h6>" };
+        internal static readonly string[] HeaderCloserTags = new[] { "</h1>", "</h2>", "</h3>", "</h4>", "</h5>", "</h6>" };
 
         private static readonly bool[] UrlSafeCharacters = new[] {
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -33,7 +33,7 @@ namespace CommonMark.Formatter
         /// Escapes special URL characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeUrl(string input, HtmlTextWriter target)
+        internal static void EscapeUrl(string input, HtmlTextWriter target)
         {
             if (input == null)
                 return;
@@ -99,7 +99,7 @@ namespace CommonMark.Formatter
         /// Escapes special HTML characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeHtml(StringPart input, HtmlTextWriter target)
+        internal static void EscapeHtml(StringPart input, HtmlTextWriter target)
         {
             if (input.Length == 0)
                 return;
@@ -144,7 +144,7 @@ namespace CommonMark.Formatter
         /// Escapes special HTML characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeHtml(StringContent inp, HtmlTextWriter target)
+        internal static void EscapeHtml(StringContent inp, HtmlTextWriter target)
         {
             int pos;
             int lastPos;

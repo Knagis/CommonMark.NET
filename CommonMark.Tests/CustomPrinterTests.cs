@@ -23,7 +23,7 @@ namespace CommonMark.Tests
         public void CustomPrinterBaseOnExtensibleHtmlPrinter_Paragraph()
         {
             var settings = CommonMarkSettings.Default.Clone();
-            settings.CustomOutputPrinter = new OverridedHtmlPrinter();
+            settings.CustomOutputPrinter = new OverriddenHtmlPrinter();
             
             Helpers.ExecuteTest("foo <h1>asd</h1> bar", "<span>foo <h1>asd</h1> bar</span>", settings);
         }
@@ -33,7 +33,7 @@ namespace CommonMark.Tests
         public void CustomPrinterBaseOnExtensibleHtmlPrinter_List()
         {
             var settings = CommonMarkSettings.Default.Clone();
-            settings.CustomOutputPrinter = new OverridedHtmlPrinter();
+            settings.CustomOutputPrinter = new OverriddenHtmlPrinter();
 
             Helpers.ExecuteTest(" 1. summary\r\n 1. summary2\r\n 2. summary3", @"<ul class=""srn-priority"">
 <li>summary</li>
@@ -42,24 +42,24 @@ namespace CommonMark.Tests
 </ul>", settings);
         }
 
-        public class HelloPrinter : IPrinter
+        public class HelloPrinter : IBlockWriter
         {
-            public void Print(TextWriter writer, Block block, CommonMarkSettings settings)
+            public void Write(TextWriter writer, Block block, CommonMarkSettings settings)
             {
                 writer.Write("hello");
             }
         }
 
-        public class OverridedHtmlPrinter : ExtensibleHtmlPrinter
+        public class OverriddenHtmlPrinter : ExtensibleHtmlBlockWriter
         {
-            protected override void PrintParagraph(TextWriter writer, Block block, CommonMarkSettings settings)
+            protected override void WriteParagraph(Block block)
             {
                 WriteConstant("<span>");
-                InlinesToHtml(writer, block.InlineContent, settings);
+                InlinesToHtml(block.InlineContent);
                 WriteLineConstant("</span>");
             }
 
-            protected override void PrintList(TextWriter writer, Block block)
+            protected override void WriteList(Block block)
             {
                 EnsureLine();
                 WriteLineConstant("<ul class=\"srn-priority\">");

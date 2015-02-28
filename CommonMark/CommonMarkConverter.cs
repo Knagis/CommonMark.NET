@@ -215,9 +215,9 @@ namespace CommonMark
 
             try
             {
-                if(settings.CustomOutputPrinter != null)
+                if (settings.CustomOutputPrinter != null)
                 {
-                    settings.CustomOutputPrinter.Print(target, document, settings);
+                    settings.CustomOutputPrinter.Write(target, document, settings);
                 }
                 else if (settings.OutputFormat == OutputFormat.SyntaxTree)
                 {
@@ -225,7 +225,7 @@ namespace CommonMark
                 }
                 else
                 {
-                    HtmlPrinter.BlocksToHtml(target, document, settings);
+                    HtmlBlockWriter.BlocksToHtml(target, document, settings);
                 }
             }
             catch (CommonMarkException)

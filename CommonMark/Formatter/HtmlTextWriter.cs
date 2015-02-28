@@ -5,7 +5,7 @@ using System.Text;
 namespace CommonMark.Formatter
 {
     /// <summary>
-    /// A wrapper for <see cref="HtmlPrinter"/> that keeps track if the last symbol has been a newline.
+    /// A wrapper for <see cref="HtmlBlockWriter"/> that keeps track if the last symbol has been a newline.
     /// </summary>
     internal sealed class HtmlTextWriter
     {
@@ -16,7 +16,7 @@ namespace CommonMark.Formatter
         
         /// <summary>
         /// A reusable char buffer. This is used internally in <see cref="Write(Syntax.StringPart)"/> (and thus will modify the buffer)
-        /// but can also be used from <see cref="HtmlPrinter"/> class.
+        /// but can also be used from <see cref="HtmlBlockWriter"/> class.
         /// </summary>
         internal char[] Buffer = new char[256];
 
