@@ -148,7 +148,7 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Writes the data contained in this instance to the given html text writer.
         /// </summary>
-        internal void WriteTo(Formatter.HtmlTextWriter writer)
+        internal void WriteTo(Formatters.HtmlTextWriter writer)
         {
             var buffer = writer.Buffer;
             for (var i = 0; i < this._partCounter; i++)

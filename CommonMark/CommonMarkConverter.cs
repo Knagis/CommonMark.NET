@@ -1,4 +1,4 @@
-﻿using CommonMark.Formatter;
+﻿using CommonMark.Formatters;
 using CommonMark.Parser;
 using System;
 using System.Collections.Generic;

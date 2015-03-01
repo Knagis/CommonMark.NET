@@ -49,7 +49,6 @@
     <Compile Include="CommonMarkException.cs" />
     <Compile Include="CommonMarkSettings.cs" />
     <Compile Include="Formatter\HtmlFormatter.cs" />
-    <Compile Include="Formatter\MarkdownPrinter.cs" />
     <Compile Include="Func.cs" />
     <Compile Include="OutputFormat.cs" />
     <Compile Include="Parser\EntityDecoder.cs" />

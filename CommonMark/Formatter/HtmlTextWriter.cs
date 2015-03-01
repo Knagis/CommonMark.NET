@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonMark.Formatter
+namespace CommonMark.Formatters
 {
     /// <summary>
     /// A wrapper for <see cref="HtmlPrinter"/> that keeps track if the last symbol has been a newline.
