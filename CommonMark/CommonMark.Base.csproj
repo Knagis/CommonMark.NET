@@ -48,6 +48,8 @@
     <Compile Include="CommonMarkConverter.cs" />
     <Compile Include="CommonMarkException.cs" />
     <Compile Include="CommonMarkSettings.cs" />
+    <Compile Include="Formatter\HtmlFormatter.cs" />
+    <Compile Include="Formatter\MarkdownPrinter.cs" />
     <Compile Include="Func.cs" />
     <Compile Include="OutputFormat.cs" />
     <Compile Include="Parser\EntityDecoder.cs" />
@@ -64,7 +66,7 @@
     <Compile Include="Syntax\Enumerable.cs" />
     <Compile Include="Syntax\EnumeratorEntry.cs" />
     <Compile Include="Syntax\FencedCodeData.cs" />
-    <Compile Include="Formatter\HtmlPrinter.cs" />
+    <Compile Include="Formatter\HtmlFormatterSlim.cs" />
     <Compile Include="Formatter\HtmlTextWriter.cs" />
     <Compile Include="Syntax\Inline.cs" />
     <Compile Include="Parser\InlineMethods.cs" />

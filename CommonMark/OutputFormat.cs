@@ -17,6 +17,11 @@ namespace CommonMark
         /// <summary>
         /// The output is a debug view of the syntax tree. Usable for debugging.
         /// </summary>
-        SyntaxTree
+        SyntaxTree,
+
+        /// <summary>
+        /// The output is written using a delegate function specified in <see cref="OutputDelegate"/>
+        /// </summary>
+        CustomDelegate
     }
 }
