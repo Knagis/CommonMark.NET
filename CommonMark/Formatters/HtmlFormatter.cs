@@ -15,6 +15,7 @@ namespace CommonMark.Formatters
         private readonly HtmlTextWriter _target;
         private readonly CommonMarkSettings _settings;
         private readonly Stack<bool> _renderTightParagraphs = new Stack<bool>(new bool[] { false });
+        private readonly Stack<bool> _renderPlainTextInlines = new Stack<bool>(new bool[] { false });
 
         /// <summary>
         /// Gets a stack of values indicating whether the paragraph tags should be ommitted.
@@ -24,13 +25,13 @@ namespace CommonMark.Formatters
         protected Stack<bool> RenderTightParagraphs { get { return this._renderTightParagraphs; } }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the inline elements should be rendered as plain text
+        /// Gets a stack of values indicating whether the inline elements should be rendered as plain text
         /// (without formatting). This usually is done within image description attributes that do not support
         /// HTML tags.
-        /// Every element that requires this behavior must increase the value when opening and decrease it when
-        /// closing.
+        /// Every element that impacts this setting has to push a value when opening and pop it when closing.
+        /// The most recent value is used to determine the current state.
         /// </summary>
-        protected int RenderPlainTextInlines { get; set; }
+        protected Stack<bool> RenderPlainTextInlines { get { return this._renderPlainTextInlines; } }
 
         /// <summary>Initializes a new instance of the <see cref="HtmlFormatter" /> class.</summary>
         /// <param name="target">The target text writer.</param>
@@ -287,7 +288,7 @@ namespace CommonMark.Formatters
         /// <param name="ignoreChildNodes">Instructs the caller whether to skip processing of child nodes or not.</param>
         protected virtual void WriteInline(Inline inline, bool isOpening, bool isClosing, out bool ignoreChildNodes)
         {
-            if (this.RenderPlainTextInlines > 0)
+            if (this.RenderPlainTextInlines.Peek())
             {
                 switch (inline.Tag)
                 {
@@ -304,13 +305,13 @@ namespace CommonMark.Formatters
 
                     case InlineTag.Image:
                         if (isOpening)
-                            this.RenderPlainTextInlines++;
+                            this.RenderPlainTextInlines.Push(true);
 
                         if (isClosing)
                         {
-                            this.RenderPlainTextInlines--;
+                            this.RenderPlainTextInlines.Pop();
 
-                            if (this.RenderPlainTextInlines == 0)
+                            if (!this.RenderPlainTextInlines.Peek())
                                 goto useFullRendering;
                         }
 
@@ -426,12 +427,12 @@ namespace CommonMark.Formatters
                         this.Write("\" alt=\"");
 
                         if (!isClosing)
-                            this.RenderPlainTextInlines++;
+                            this.RenderPlainTextInlines.Push(true);
                     }
 
                     if (isClosing)
                     {
-                        // this.RenderPlainTextInlines-- is done by the plain text renderer above.
+                        // this.RenderPlainTextInlines.Pop() is done by the plain text renderer above.
 
                         this.Write('\"');
                         if (inline.LiteralContentValue.Length > 0)
