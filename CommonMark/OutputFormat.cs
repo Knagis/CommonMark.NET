@@ -20,7 +20,7 @@ namespace CommonMark
         SyntaxTree,
 
         /// <summary>
-        /// The output is written using a delegate function specified in <see cref="OutputDelegate"/>
+        /// The output is written using a delegate function specified in <see cref="CommonMarkSettings.OutputDelegate"/>.
         /// </summary>
         CustomDelegate
     }

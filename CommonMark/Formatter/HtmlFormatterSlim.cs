@@ -193,7 +193,7 @@ namespace CommonMark.Formatters
             BlocksToHtmlInner(wrapper, block, settings);
         }
 
-        private static void PrintPosition(HtmlTextWriter writer, Block block)
+        internal static void PrintPosition(HtmlTextWriter writer, Block block)
         {
             writer.WriteConstant(" data-sourcepos=\"");
             writer.WriteConstant(block.SourcePosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -202,7 +202,7 @@ namespace CommonMark.Formatters
             writer.WriteConstant("\"");
         }
 
-        private static void PrintPosition(HtmlTextWriter writer, Inline inline)
+        internal static void PrintPosition(HtmlTextWriter writer, Inline inline)
         {
             writer.WriteConstant(" data-sourcepos=\"");
             writer.WriteConstant(inline.SourcePosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -443,6 +443,7 @@ namespace CommonMark.Formatters
 
                     case InlineTag.Strong:
                     case InlineTag.Emphasis:
+                    case InlineTag.Strikethrough:
                         stackLiteral = string.Empty;
                         stackWithinLink = withinLink;
                         visitChildren = true;
