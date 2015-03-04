@@ -12,6 +12,12 @@ namespace CommonMark
     /// behaviour is undefined.</remarks>
     public sealed class CommonMarkSettings
     {
+        /// <summary>Initializes a new instance of the <see cref="CommonMarkSettings" /> class.</summary>
+        [Obsolete("Use CommonMarkSettings.Default.Clone() instead", false)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public CommonMarkSettings()
+        { }
+
         /// <summary>
         /// Gets or sets the output format used by the last stage of conversion.
         /// </summary>
@@ -76,7 +82,9 @@ namespace CommonMark
             }
         }
 
+#pragma warning disable 0618
         private static readonly CommonMarkSettings _default = new CommonMarkSettings();
+#pragma warning restore 0618
 
         /// <summary>
         /// The default settings for the converter. If the properties of this instance are modified, the changes will be applied to all
