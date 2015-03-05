@@ -228,6 +228,9 @@ namespace CommonMark
                             throw new CommonMarkException("If `settings.OutputFormat` is set to `CustomDelegate`, the `settings.OutputDelegate` property must be populated.");
                         settings.OutputDelegate(document, target, settings);
                         break;
+                    case OutputFormat.Markdown:
+                        MarkdownFormatter.PrintBlocks(target, document, settings);
+                        break;
                     default:
                         throw new CommonMarkException("Unsupported value '" + settings.OutputFormat + "' in `settings.OutputFormat`.");
                 }

@@ -1,115 +1,138 @@
-﻿using CommonMark.Syntax;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using CommonMark.Syntax;
 
-namespace CommonMark.Formatter
+namespace CommonMark.Formatters
 {
-    internal class MarkdownPrinter
+    internal class MarkdownFormatter
     {
         /// <summary>
         /// Write the block data to the given writer.
         /// </summary>
         public static void PrintBlocks(System.IO.TextWriter writer, Block block, CommonMarkSettings settings)
         {
+            PrintBlocksInner(new MarkdownTextWriter(writer), block, settings);
+        }
+
+        /// <summary>
+        /// Write the block data to the given writer.
+        /// </summary>
+        public static void PrintBlocksInner(MarkdownTextWriter writer, Block block, CommonMarkSettings settings)
+        {
             var stack = new Stack<BlockStackEntry>();
             var inlineStack = new Stack<InlineStackEntry>();
-            var buffer = new StringBuilder();
-            string prefix = string.Empty;
-            string stackLiteral = null;
+
+            // TODO: use a better approach for keeping track of list items already rendered.
+            var listItemNumbering = new Dictionary<ListData, int>();
             string stackPrefix = null;
             bool visitChildren;
+            bool tight = false;
+            bool stackTight = false;
 
             while (block != null)
             {
                 visitChildren = false;
+                stackTight = tight;
+                stackPrefix = null;
 
                 switch (block.Tag)
                 {
                     case BlockTag.Document:
                     case BlockTag.ReferenceDefinition:
                         visitChildren = true;
-                        stackPrefix = null;
-                        stackLiteral = null;
                         break;
 
                     case BlockTag.Paragraph:
-                        PrintInlines(writer, block.InlineContent, prefix, inlineStack, buffer);
-                        writer.WriteLine();
-                        writer.WriteLine();
+                        PrintInlines(writer, block.InlineContent, inlineStack);
+                        writer.EnsureLine();
+                        if (!tight) writer.WriteLine();
                         break;
 
                     case BlockTag.BlockQuote:
-                        writer.Write("block_quote");
+                        stackPrefix = "> ";
+                        visitChildren = true;
                         break;
 
                     case BlockTag.ListItem:
-                        writer.Write("list_item");
-                        break;
+                        visitChildren = true;
+                        var data = block.Parent.ListData;
+                        if (data == null)
+                            throw new CommonMarkException("ListItem block node is not nested within a List node.");
 
-                    case BlockTag.List:
-                        writer.Write("list");
-
-                        var data = block.ListData;
-                        if (data.ListType == ListType.Ordered)
+                        if (data.ListType == ListType.Bullet)
                         {
-                            writer.Write(" (type=ordered tight={0} start={1} delim={2})",
-                                 data.IsTight,
-                                 data.Start,
-                                 data.Delimiter);
+                            writer.Write(data.BulletChar);
+                            writer.Write(' ');
+                            stackPrefix = "  ";
                         }
                         else
                         {
-                            writer.Write("(type=bullet tight={0} bullet_char={1})",
-                                 data.IsTight,
-                                 data.BulletChar);
+                            int delta;
+                            if (!listItemNumbering.TryGetValue(data, out delta))
+                                listItemNumbering.Add(data, 1);
+                            else
+                                listItemNumbering[data]++;
+
+                            var deltastr = (delta + data.Start).ToString(System.Globalization.CultureInfo.InvariantCulture);
+                            writer.WriteConstant(deltastr);
+                            writer.Write(data.Delimiter == ListDelimiter.Parenthesis ? ')' : '.');
+                            writer.Write(' ');
+
+                            stackPrefix = new string(' ', 2 + deltastr.Length);
                         }
+
+                        break;
+
+                    case BlockTag.List:
+                        stackTight = block.ListData.IsTight;
+                        visitChildren = true;
                         break;
 
                     case BlockTag.AtxHeader:
-                        writer.Write(new string('#', block.HeaderLevel));
-                        writer.Write(" ");
-                        PrintInlines(writer, block.InlineContent, prefix, inlineStack, buffer);
-                        writer.WriteLine();
-                        writer.WriteLine();
+                        writer.WriteConstant(new string('#', block.HeaderLevel));
+                        writer.Write(' ');
+                        PrintInlines(writer, block.InlineContent, inlineStack);
+                        writer.EnsureLine();
+                        if (!tight) writer.WriteLine();
                         break;
 
                     case BlockTag.SETextHeader:
-                        PrintInlines(writer, block.InlineContent, prefix, inlineStack, buffer);
-                        writer.WriteLine();
-                        writer.WriteLine(block.HeaderLevel == 1 ? "===" : "---");
-                        writer.WriteLine();
-                        writer.WriteLine();
+                        PrintInlines(writer, block.InlineContent, inlineStack);
+                        writer.EnsureLine();
+                        writer.WriteLineConstant(block.HeaderLevel == 1 ? "===" : "---");
+                        if (!tight) writer.WriteLine();
                         break;
 
                     case BlockTag.HorizontalRuler:
-                        writer.WriteLine();
-                        writer.WriteLine();
-                        writer.Write("---");
-                        writer.WriteLine();
-                        writer.WriteLine();
+                        writer.WriteLineConstant("---");
+                        if (!tight) writer.WriteLine();
                         break;
 
                     case BlockTag.IndentedCode:
-                        stackPrefix = prefix;
-                        prefix += "    ";
-                        writer.WriteLine(block.StringContent.ToString(buffer));
+                        stackPrefix = writer.Prefix;
+                        writer.Prefix += "    ";
+                        writer.Write(block.StringContent);
+                        writer.EnsureLine();
+                        if (!tight) writer.WriteLine();
 
-                        prefix = stackPrefix;
+                        writer.Prefix = stackPrefix;
 
                         break;
 
                     case BlockTag.FencedCode:
-                        writer.Write("~~~");
-                        writer.WriteLine(block.FencedCodeData.Info);
-                        writer.WriteLine(block.StringContent.ToString(buffer));
-                        writer.Write("~~~");
+                        writer.WriteConstant("~~~");
+                        writer.WriteLineConstant(block.FencedCodeData.Info);
+                        writer.Write(block.StringContent);
+                        writer.EnsureLine();
+                        writer.WriteLineConstant("~~~");
+                        if (!tight) writer.WriteLine();
                         break;
 
                     case BlockTag.HtmlBlock:
-                        writer.WriteLine(block.StringContent.ToString(buffer));
-                        writer.WriteLine();
+                        writer.Write(block.StringContent);
+                        writer.EnsureLine();
+                        if (!tight) writer.WriteLine();
                         break;
 
                     default:
@@ -118,8 +141,10 @@ namespace CommonMark.Formatter
 
                 if (visitChildren)
                 {
-                    stack.Push(new BlockStackEntry(stackPrefix, stackLiteral, block.NextSibling));
+                    stack.Push(new BlockStackEntry(writer.Prefix, tight, block.NextSibling));
                     block = block.FirstChild;
+                    writer.Prefix = writer.Prefix + stackPrefix;
+                    tight = stackTight;
                 }
                 else if (block.NextSibling != null)
                 {
@@ -134,17 +159,8 @@ namespace CommonMark.Formatter
                 {
                     var entry = stack.Pop();
 
-                    stackLiteral = entry.Literal;
-                    if (stackLiteral != null)
-                    {
-                        writer.WriteLine();
-                        writer.Write(entry.Literal);
-                    }
-
-                    writer.WriteLine();
-                    writer.WriteLine();
-
-                    prefix = entry.Prefix;
+                    writer.Prefix = entry.Prefix;
+                    tight = entry.IsTight;
                     block = entry.Target;
                 }
             }
@@ -152,7 +168,7 @@ namespace CommonMark.Formatter
             writer.WriteLine();
         }
 
-        private static void PrintInlines(System.IO.TextWriter writer, Inline inline, string prefix, Stack<InlineStackEntry> stack, StringBuilder buffer)
+        private static void PrintInlines(MarkdownTextWriter writer, Inline inline, Stack<InlineStackEntry> stack)
         {
             string stackLiteral = null;
             bool visitChildren;
@@ -164,7 +180,7 @@ namespace CommonMark.Formatter
                 switch (inline.Tag)
                 {
                     case InlineTag.String:
-                        writer.Write(inline.LiteralContent);
+                        writer.Write(inline.LiteralContentValue);
                         break;
 
                     case InlineTag.LineBreak:
@@ -172,45 +188,45 @@ namespace CommonMark.Formatter
                         break;
 
                     case InlineTag.SoftBreak:
-                        writer.Write(" ");
+                        writer.Write(' ');
                         break;
 
                     case InlineTag.Code:
-                        writer.Write("`");
-                        writer.Write(inline.LiteralContent);
-                        writer.Write("`");
+                        writer.Write('`');
+                        writer.Write(inline.LiteralContentValue);
+                        writer.Write('`');
                         break;
 
                     case InlineTag.RawHtml:
-                        writer.Write(inline.LiteralContent);
+                        writer.Write(inline.LiteralContentValue);
                         break;
 
                     case InlineTag.Link:
-                        writer.Write("[");
+                        writer.Write('[');
                         visitChildren = true;
                         stackLiteral = "](" + inline.TargetUrl + ")";
                         break;
 
                     case InlineTag.Image:
-                        writer.Write("[");
+                        writer.Write('[');
                         visitChildren = true;
                         stackLiteral = "](" + inline.TargetUrl + ")";
                         break;
 
                     case InlineTag.Strong:
-                        writer.Write("**");
+                        writer.WriteConstant("**");
                         visitChildren = true;
                         stackLiteral = "**";
                         break;
 
                     case InlineTag.Emphasis:
-                        writer.Write("*");
+                        writer.Write('*');
                         visitChildren = true;
                         stackLiteral = "*";
                         break;
 
                     case InlineTag.Strikethrough:
-                        writer.Write("~~");
+                        writer.WriteConstant("~~");
                         visitChildren = true;
                         stackLiteral = "~~";
                         break;
@@ -236,7 +252,7 @@ namespace CommonMark.Formatter
                 while (inline == null && stack.Count > 0)
                 {
                     var entry = stack.Pop();
-                    writer.Write(entry.Literal);
+                    writer.WriteConstant(entry.Literal);
                     inline = entry.Target;
                 }
             }
@@ -246,12 +262,12 @@ namespace CommonMark.Formatter
         {
             public readonly Block Target;
             public readonly string Prefix;
-            public readonly string Literal;
-            public BlockStackEntry(string prefix, string literal, Block target)
+            public readonly bool IsTight;
+            public BlockStackEntry(string prefix, bool tight, Block target)
             {
-                this.Literal = literal;
                 this.Target = target;
                 this.Prefix = prefix;
+                this.IsTight = tight;
             }
         }
         private struct InlineStackEntry
