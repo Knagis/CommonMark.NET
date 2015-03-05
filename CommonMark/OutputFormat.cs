@@ -20,6 +20,11 @@ namespace CommonMark
         SyntaxTree,
 
         /// <summary>
+        /// The output is written using a delegate function specified in <see cref="CommonMarkSettings.OutputDelegate"/>.
+        /// </summary>
+        CustomDelegate,
+
+        /// <summary>
         /// The output is pretty-formatted version of the source Markdown text.
         /// </summary>
         Markdown

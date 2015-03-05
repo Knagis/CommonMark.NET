@@ -17,6 +17,24 @@ namespace CommonMark
         /// </summary>
         public OutputFormat OutputFormat { get; set; }
 
+        private Action<Syntax.Block, System.IO.TextWriter, CommonMarkSettings> _outputDelegate;
+        /// <summary>
+        /// Gets or sets the custom output delegate function used for formatting CommonMark output.
+        /// Setting this to a non-null value will also set <see cref="OutputFormat"/> to <see cref="OutputFormat.CustomDelegate"/>.
+        /// </summary>
+        public Action<Syntax.Block, System.IO.TextWriter, CommonMarkSettings> OutputDelegate
+        {
+            get { return this._outputDelegate; }
+            set
+            {
+                if (this._outputDelegate != value)
+                {
+                    this._outputDelegate = value;
+                    this.OutputFormat = value == null ? default(OutputFormat) : OutputFormat.CustomDelegate;
+                }
+            }
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether soft line breaks should be rendered as hard line breaks.
         /// </summary>

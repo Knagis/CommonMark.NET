@@ -1,4 +1,4 @@
-﻿using CommonMark.Formatter;
+﻿using CommonMark.Formatters;
 using CommonMark.Parser;
 using System;
 using System.Collections.Generic;
@@ -215,17 +215,21 @@ namespace CommonMark
 
             try
             {
-                if (settings.OutputFormat == OutputFormat.Html)
+                switch (settings.OutputFormat)
                 {
-                    HtmlPrinter.BlocksToHtml(target, document, settings);
-                }
-                else if (settings.OutputFormat == OutputFormat.Markdown)
-                {
-                    MarkdownPrinter.PrintBlocks(target, document, settings);
-                }
-                else
-                {
-                    Printer.PrintBlocks(target, document, settings);
+                    case OutputFormat.Html:
+                        HtmlFormatterSlim.BlocksToHtml(target, document, settings);
+                        break;
+                    case OutputFormat.SyntaxTree:
+                        Printer.PrintBlocks(target, document, settings);
+                        break;
+                    case OutputFormat.CustomDelegate:
+                        if (settings.OutputDelegate == null)
+                            throw new CommonMarkException("If `settings.OutputFormat` is set to `CustomDelegate`, the `settings.OutputDelegate` property must be populated.");
+                        settings.OutputDelegate(document, target, settings);
+                        break;
+                    default:
+                        throw new CommonMarkException("Unsupported value '" + settings.OutputFormat + "' in `settings.OutputFormat`.");
                 }
             }
             catch (CommonMarkException)
