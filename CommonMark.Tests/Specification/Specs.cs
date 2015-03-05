@@ -14,8 +14,8 @@ namespace CommonMark.Tests.Specification
         // ---
         // title: CommonMark Spec
         // author: John MacFarlane
-        // version: 0.17
-        // date: 2015-01-24
+        // version: 0.18
+        // date: 2015-03-03
         // license: '[CC-BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)'
         // ...
         //
@@ -205,8 +205,8 @@ namespace CommonMark.Tests.Specification
         //
         // This document is generated from a text file, `spec.txt`, written
         // in Markdown with a small extension for the side-by-side tests.
-        // The script `spec2md.pl` can be used to turn `spec.txt` into pandoc
-        // Markdown, which can then be converted into other formats.
+        // The script `tools/makespec.py` can be used to convert `spec.txt` into
+        // HTML or CommonMark (which can then be converted into other formats).
         //
         // In the examples, the `→` character is used to represent tabs.
         //
@@ -5867,7 +5867,7 @@ namespace CommonMark.Tests.Specification
         // its initial list item.  The numbers of subsequent list items are
         // disregarded.
         //
-        // A list is [loose](@loose) if it any of its constituent
+        // A list is [loose](@loose) if any of its constituent
         // list items are separated by blank lines, or if any of its constituent
         // list items directly contain two block-level elements with a blank line
         // between them.  Otherwise a list is [tight](@tight).

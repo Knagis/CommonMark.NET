@@ -17,6 +17,24 @@ namespace CommonMark.Tests
             Helpers.ExecuteTest("foo <h1>asd</h1> bar", "<p>foo <h1>asd</h1> bar</p>");
         }
 
+        [TestMethod]
+        [TestCategory("Inlines - Raw HTML")]
+        public void HtmlTagAttributes()
+        {
+            Helpers.ExecuteTest(
+                "foo <a href=\"`~1!@#$%^&*()-_=+{}[];:'\\|/.,><čā\uD83D\uDF13\">asd</a> bar",
+                "<p>foo <a href=\"`~1!@#$%^&*()-_=+{}[];:'\\|/.,><čā\uD83D\uDF13\">asd</a> bar</p>");
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Raw HTML")]
+        public void HtmlTagAttributesLink()
+        {
+            Helpers.ExecuteTest(
+                "foo <a href=\"http://foo.baz\">asd</a> bar",
+                "<p>foo <a href=\"http://foo.baz\">asd</a> bar</p>");
+        }
+
         /// <summary>
         /// Tests HTML block tag names of various lengths (see https://github.com/Knagis/CommonMark.NET/issues/16)
         /// </summary>

@@ -39,7 +39,7 @@ namespace CommonMark.Parser
                 return 0;
 
             var potentialScheme = s.Substring(pos, colonpos - pos).ToUpperInvariant();
-            if (Array.BinarySearch(schemeArray, potentialScheme, StringComparer.Ordinal) < -1)
+            if (Array.BinarySearch(schemeArray, potentialScheme, StringComparer.Ordinal) < 0)
                 return 0;
 
             char c;
