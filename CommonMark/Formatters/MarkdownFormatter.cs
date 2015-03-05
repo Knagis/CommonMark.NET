@@ -208,7 +208,7 @@ namespace CommonMark.Formatters
                         break;
 
                     case InlineTag.Image:
-                        writer.Write('[');
+                        writer.WriteConstant("![");
                         visitChildren = true;
                         stackLiteral = "](" + inline.TargetUrl + ")";
                         break;
