@@ -422,6 +422,12 @@ namespace CommonMark.Formatter
             {
                 visitChildren = false;
 
+				if (settings != null && settings.HtmlPrinterVisitor != null)
+				{
+					string enterText = settings.HtmlPrinterVisitor.OnEnter(inline);
+					writer.Write(enterText);
+				}
+
                 switch (inline.Tag)
                 {
                     case InlineTag.String:
@@ -517,6 +523,12 @@ namespace CommonMark.Formatter
                     default:
                         throw new CommonMarkException("Inline type " + inline.Tag + " is not supported.", inline);
                 }
+
+				if (settings != null && settings.HtmlPrinterVisitor != null)
+				{
+					string exitText = settings.HtmlPrinterVisitor.OnExit(inline);
+					writer.Write(exitText);
+				}
 
                 if (visitChildren)
                 {

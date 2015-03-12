@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using CommonMark.Formatter;
 
 namespace CommonMark
 {
@@ -56,6 +57,11 @@ namespace CommonMark
         /// future conversions that do not specify their own settings.
         /// </summary>
         public static CommonMarkSettings Default { get { return _default; } }
+
+		/// <summary>
+		/// A <see cref="IHtmlPrinterVisitor"/> called during HTML conversion.
+		/// </summary>
+		public IHtmlPrinterVisitor HtmlPrinterVisitor { get; set; }
 
         /// <summary>
         /// Creates a copy of this configuration object.

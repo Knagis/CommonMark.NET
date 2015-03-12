@@ -47,6 +47,7 @@
     <Compile Include="CommonMarkConverter.cs" />
     <Compile Include="CommonMarkException.cs" />
     <Compile Include="CommonMarkSettings.cs" />
+    <Compile Include="Formatter\IHtmlPrinterVisitor.cs" />
     <Compile Include="Func.cs" />
     <Compile Include="OutputFormat.cs" />
     <Compile Include="Parser\EntityDecoder.cs" />
