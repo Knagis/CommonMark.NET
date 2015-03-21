@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace CommonMark.Formatter
+namespace CommonMark.Formatters
 {
-    internal static class HtmlPrinter
+    internal static class HtmlFormatterSlim
     {
         private static readonly char[] EscapeHtmlCharacters = new[] { '&', '<', '>', '"' };
         private const string HexCharacters = "0123456789ABCDEF";
@@ -33,7 +33,7 @@ namespace CommonMark.Formatter
         /// Escapes special URL characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeUrl(string input, HtmlTextWriter target)
+        internal static void EscapeUrl(string input, HtmlTextWriter target)
         {
             if (input == null)
                 return;
@@ -99,7 +99,7 @@ namespace CommonMark.Formatter
         /// Escapes special HTML characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeHtml(StringPart input, HtmlTextWriter target)
+        internal static void EscapeHtml(StringPart input, HtmlTextWriter target)
         {
             if (input.Length == 0)
                 return;
@@ -144,7 +144,7 @@ namespace CommonMark.Formatter
         /// Escapes special HTML characters.
         /// </summary>
         /// <remarks>Orig: escape_html(inp, preserve_entities)</remarks>
-        private static void EscapeHtml(StringContent inp, HtmlTextWriter target)
+        internal static void EscapeHtml(StringContent inp, HtmlTextWriter target)
         {
             int pos;
             int lastPos;
@@ -193,7 +193,7 @@ namespace CommonMark.Formatter
             BlocksToHtmlInner(wrapper, block, settings);
         }
 
-        private static void PrintPosition(HtmlTextWriter writer, Block block)
+        internal static void PrintPosition(HtmlTextWriter writer, Block block)
         {
             writer.WriteConstant(" data-sourcepos=\"");
             writer.WriteConstant(block.SourcePosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -202,7 +202,7 @@ namespace CommonMark.Formatter
             writer.WriteConstant("\"");
         }
 
-        private static void PrintPosition(HtmlTextWriter writer, Inline inline)
+        internal static void PrintPosition(HtmlTextWriter writer, Inline inline)
         {
             writer.WriteConstant(" data-sourcepos=\"");
             writer.WriteConstant(inline.SourcePosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
@@ -443,6 +443,7 @@ namespace CommonMark.Formatter
 
                     case InlineTag.Strong:
                     case InlineTag.Emphasis:
+                    case InlineTag.Strikethrough:
                         stackLiteral = string.Empty;
                         stackWithinLink = withinLink;
                         visitChildren = true;

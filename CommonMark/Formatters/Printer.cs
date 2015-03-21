@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonMark.Formatter
+namespace CommonMark.Formatters
 {
     internal static class Printer
     {
