@@ -16,7 +16,8 @@ namespace CommonMark
                 Console.WriteLine();
             }
 
-            Console.WriteLine("Usage:   CommonMark.Console [FILE*] [--out FILE]");
+            var fname = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+            Console.WriteLine("Usage:   " + fname + " [FILE*] [--out FILE]");
             Console.WriteLine("Options: --help, -h    Print usage information");
             Console.WriteLine("         --ast         Print AST instead of HTML");
             Console.WriteLine("         --sourcepos   Enable source position tracking and output");
