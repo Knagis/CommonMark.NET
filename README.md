@@ -1,6 +1,6 @@
 # CommonMark.NET
 
-Implementation of [CommonMark] [1] specification (passes tests from version 0.18) in C# for converting Markdown documents to HTML.
+Implementation of [CommonMark] [1] specification (passes tests from version 0.19) in C# for converting Markdown documents to HTML.
 
 The current version of the library is also [available on NuGet] [nuget].
 
@@ -20,7 +20,7 @@ To convert data stored in a string:
 var result = CommonMark.CommonMarkConverter.Convert("**Hello world!**");
 ```
 
-See [issue #4] [issue4] for an example how the parser can be extended with additional logic.
+See [wiki] [extensibility] for an example how the parser can be extended with additional logic.
 
 **Important:** The converter [does not include any HTML sanitizing][XSS].
 
@@ -84,6 +84,6 @@ application can correctly handle input from the Perl script.
 [1]: http://spec.commonmark.org/
 [2]: https://github.com/jgm/stmd/commit/2cf0750a7a507eded4cf3c9a48fd1f924d0ce538
 [3]: https://github.com/Knagis/CommonMarkBenchmark
-[issue4]: https://github.com/Knagis/CommonMark.NET/issues/4
+[extensibility]: https://github.com/Knagis/CommonMark.NET/wiki
 [XSS]: http://talk.commonmark.org/t/cross-site-scripting-issue-in-standard-markdown-example-at-try-standardmarkdown-com/55
 [nuget]: https://www.nuget.org/packages/CommonMark.NET/
