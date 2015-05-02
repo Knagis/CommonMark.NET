@@ -288,8 +288,8 @@ namespace CommonMark.Parser
             if (delimeter == '_')
             {
                 var temp = canOpen;
-                canOpen &= !canClose;
-                canClose &= !temp;
+                canOpen &= (!canClose || beforeIsPunctuation);
+                canClose &= (!temp || afterIsPunctuation);
             }
 
             return numdelims;
