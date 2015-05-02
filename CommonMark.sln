@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.22512.0
+VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.Base", "CommonMark\CommonMark.Base.csproj", "{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}"
 EndProject
@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.NET45", "CommonM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.Tests", "CommonMark.Tests\CommonMark.Tests.csproj", "{B3158916-F54D-4F00-B553-E86D4370FF96}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CommonMark.NETCore", "CommonMark\CommonMark.NETCore.kproj", "{47C48819-62B7-4BD3-89FF-BA9A0B16C8FB}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CommonMark.NETCore", "CommonMark\CommonMark.NETCore.xproj", "{47C48819-62B7-4BD3-89FF-BA9A0B16C8FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
