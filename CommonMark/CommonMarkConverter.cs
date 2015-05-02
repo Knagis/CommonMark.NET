@@ -102,7 +102,7 @@ namespace CommonMark
         public static Syntax.Block ProcessStage1(TextReader source, CommonMarkSettings settings = null)
         {
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             if (settings == null)
                 settings = CommonMarkSettings.Default;
@@ -166,10 +166,10 @@ namespace CommonMark
         public static void ProcessStage2(Syntax.Block document, CommonMarkSettings settings = null)
         {
             if (document == null)
-                throw new ArgumentNullException("document");
+                throw new ArgumentNullException(nameof(document));
 
             if (document.Tag != Syntax.BlockTag.Document)
-                throw new ArgumentException("The block element passed to this method must represent a top level document.", "document");
+                throw new ArgumentException("The block element passed to this method must represent a top level document.", nameof(document));
 
             if (settings == null)
                 settings = CommonMarkSettings.Default;
@@ -202,13 +202,13 @@ namespace CommonMark
         public static void ProcessStage3(Syntax.Block document, TextWriter target, CommonMarkSettings settings = null)
         {
             if (document == null)
-                throw new ArgumentNullException("document");
+                throw new ArgumentNullException(nameof(document));
 
             if (target == null)
-                throw new ArgumentNullException("target");
+                throw new ArgumentNullException(nameof(target));
 
             if (document.Tag != Syntax.BlockTag.Document)
-                throw new ArgumentException("The block element passed to this method must represent a top level document.", "document");
+                throw new ArgumentException("The block element passed to this method must represent a top level document.", nameof(document));
 
             if (settings == null)
                 settings = CommonMarkSettings.Default;

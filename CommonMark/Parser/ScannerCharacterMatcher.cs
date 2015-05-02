@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CommonMark.Parser
+﻿namespace CommonMark.Parser
 {
     /// <summary>
     /// Class containing methods for fast forward matching of string contents

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CommonMark.Parser
 {
@@ -42,10 +40,9 @@ namespace CommonMark.Parser
             if (Array.BinarySearch(schemeArray, potentialScheme, StringComparer.Ordinal) < 0)
                 return 0;
 
-            char c;
             for (var i = colonpos + 1; i < sourceLength; i++)
             {
-                c = s[i];
+                var c = s[i];
                 if (c == '>')
                     return i - pos + 1;
 
@@ -251,11 +248,10 @@ namespace CommonMark.Parser
 
             if (c1 == '(') c1 = ')';
 
-            char c;
-            bool nextEscaped = false;
+            var nextEscaped = false;
             for (var i = pos + 1; i < sourceLength; i++)
             {
-                c = s[i];
+                var c = s[i];
                 if (c == c1 && !nextEscaped)
                     return i - pos + 1;
 
@@ -303,11 +299,10 @@ namespace CommonMark.Parser
             if (s[pos] != '#')
                 return 0;
 
-            bool spaceExists = false;
-            char c;
+            var spaceExists = false;
             for (var i = pos + 1; i < sourceLength; i++)
             {
-                c = s[i];
+                var c = s[i];
 
                 if (c == '#')
                 {
@@ -359,11 +354,10 @@ namespace CommonMark.Parser
             if (c1 != '=' && c1 != '-')
                 return 0;
 
-            char c;
             var fin = false;
             for (var i = pos + 1; i < sourceLength; i++)
             {
-                c = s[i];
+                var c = s[i];
                 if (c == c1 && !fin)
                     continue;
 
@@ -391,13 +385,12 @@ namespace CommonMark.Parser
             // @"^([_][ ]*){3,}[\s]*$",
             // @"^([-][ ]*){3,}[\s]*$",
 
-            int count = 0;
-            char c;
-            char x = '\0';
+            var count = 0;
+            var x = '\0';
             var ipos = pos;
             while (ipos < sourceLength)
             {
-                c = s[ipos++];
+                var c = s[ipos++];
 
                 if (c == ' ' || c == '\n')
                     continue;
@@ -442,10 +435,9 @@ namespace CommonMark.Parser
 
             var cnt = 1;
             var fenceDone = false;
-            char c;
             for (var i = pos + 1; i < sourceLength; i++)
             {
-                c = s[i];
+                var c = s[i];
 
                 if (c == fchar)
                 {
@@ -491,12 +483,11 @@ namespace CommonMark.Parser
             if (c1 != '`' && c1 != '~')
                 return 0;
 
-            char c;
             var cnt = 1;
             var spaces = false;
             for (var i = pos + 1; i < sourceLength; i++)
             {
-                c = s[i];
+                var c = s[i];
                 if (c == c1 && !spaces)
                     cnt++;
                 else if (c == ' ')

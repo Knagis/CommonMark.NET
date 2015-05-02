@@ -1,7 +1,6 @@
-﻿using CommonMark.Syntax;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using CommonMark.Syntax;
 
 namespace CommonMark.Parser
 {
@@ -34,7 +33,7 @@ namespace CommonMark.Parser
         private static void AddLine(Block block, LineInfo lineInfo, string ln, int offset, int length = -1)
         {
             if (!block.IsOpen)
-                throw new CommonMarkException(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
+                throw new CommonMarkException(string.Format(CultureInfo.InvariantCulture, "Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
 
             var len = length == -1 ? ln.Length - offset : length;
             if (len <= 0)
@@ -399,12 +398,12 @@ namespace CommonMark.Parser
             return (i == -1 || i == content.Length - 1);
         }
 
-        private static bool ListsMatch(ListData list_data, ListData item_data)
+        private static bool ListsMatch(ListData listData, ListData itemData)
         {
-            return (list_data.ListType == item_data.ListType &&
-                    list_data.Delimiter == item_data.Delimiter &&
+            return (listData.ListType == itemData.ListType &&
+                    listData.Delimiter == itemData.Delimiter &&
                 // list_data.marker_offset == item_data.marker_offset &&
-                    list_data.BulletChar == item_data.BulletChar);
+                    listData.BulletChar == itemData.BulletChar);
         }
 
         // Process one line at a time, modifying a block.
@@ -415,12 +414,11 @@ namespace CommonMark.Parser
             var ln = line.Line;
 
             Block last_matched_container;
-            int offset = 0;
-            int matched = 0;
+            var offset = 0;
+            int matched;
             int i;
             ListData data;
             bool all_matched = true;
-            Block container;
             Block cur = curptr;
             bool blank = false;
             int first_nonspace;
@@ -428,7 +426,7 @@ namespace CommonMark.Parser
             int indent;
 
             // container starts at the document root.
-            container = cur.Top;
+            var container = cur.Top;
 
             // for each containing block, try to parse the associated line start.
             // bail out on failure:  container will point to the last matching block.
@@ -632,7 +630,7 @@ namespace CommonMark.Parser
                     offset = ln.Length - 1;
 
                 }
-                else if (!(container.Tag == BlockTag.Paragraph && !all_matched) && 0 != (matched = Scanner.scan_hrule(ln, first_nonspace, ln.Length)))
+                else if (!(container.Tag == BlockTag.Paragraph && !all_matched) && 0 != (Scanner.scan_hrule(ln, first_nonspace, ln.Length)))
                 {
 
                     // it's only now that we know the line is not part of a setext header:

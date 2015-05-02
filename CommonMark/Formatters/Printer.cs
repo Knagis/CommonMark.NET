@@ -1,7 +1,7 @@
-﻿using CommonMark.Syntax;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using CommonMark.Syntax;
 
 namespace CommonMark.Formatters
 {
@@ -45,7 +45,7 @@ namespace CommonMark.Formatters
 #if OptimizeFor45
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        private static void PrintPosition(bool enabled, System.IO.TextWriter writer, Block block)
+        private static void PrintPosition(bool enabled, TextWriter writer, Block block)
         {
             if (enabled)
             {
@@ -60,7 +60,7 @@ namespace CommonMark.Formatters
 #if OptimizeFor45
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        private static void PrintPosition(bool enabled, System.IO.TextWriter writer, Inline inline)
+        private static void PrintPosition(bool enabled, TextWriter writer, Inline inline)
         {
             if (enabled)
             {
@@ -75,7 +75,7 @@ namespace CommonMark.Formatters
         /// <summary>
         /// Write the block data to the given writer.
         /// </summary>
-        public static void PrintBlocks(System.IO.TextWriter writer, Block block, CommonMarkSettings settings)
+        public static void PrintBlocks(TextWriter writer, Block block, CommonMarkSettings settings)
         {
             int indent = 0;
             var stack = new Stack<BlockStackEntry>();
@@ -210,7 +210,7 @@ namespace CommonMark.Formatters
             }
         }
 
-        private static void PrintInlines(System.IO.TextWriter writer, Inline inline, int indent, Stack<InlineStackEntry> stack, StringBuilder buffer, bool trackPositions)
+        private static void PrintInlines(TextWriter writer, Inline inline, int indent, Stack<InlineStackEntry> stack, StringBuilder buffer, bool trackPositions)
         {
             while (inline != null)
             {

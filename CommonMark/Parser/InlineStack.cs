@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using CommonMark.Syntax;
 
 namespace CommonMark.Parser
@@ -81,7 +79,7 @@ namespace CommonMark.Parser
                 }
 
                 if (istack.Priority > priority ||
-                    (istack.Delimeter == delimeter && 0 != (istack.Flags & InlineStack.InlineStackFlags.Closer)))
+                    (istack.Delimeter == delimeter && 0 != (istack.Flags & InlineStackFlags.Closer)))
                 {
                     // there might be a closer further back but we cannot go there yet because a higher priority element is blocking
                     // the other option is that the stack entry could be a closer for the same char - this means
@@ -163,7 +161,7 @@ namespace CommonMark.Parser
             // handle case like [*b*] (the whole [..] is being removed but the inner *..* must still be matched).
             // this is not done automatically because the initial * is recognized as a potential closer (assuming
             // potential scenario '*[*' ).
-            InlineStack.PostProcessInlineStack(null, first, last, curPriority);
+            PostProcessInlineStack(null, first, last, curPriority);
         }
 
         public static void PostProcessInlineStack(Subject subj, InlineStack first, InlineStack last, InlineStackPriority ignorePriority)
@@ -175,12 +173,12 @@ namespace CommonMark.Parser
                 {
                     if (istack.Priority >= ignorePriority)
                     {
-                        InlineStack.RemoveStackEntry(istack, subj, istack);
+                        RemoveStackEntry(istack, subj, istack);
                     }
                     else if (0 != (istack.Flags & InlineStackFlags.Closer))
                     {
                         bool canClose;
-                        var iopener = InlineStack.FindMatchingOpener(istack.Previous, istack.Priority, istack.Delimeter, out canClose);
+                        var iopener = FindMatchingOpener(istack.Previous, istack.Priority, istack.Delimeter, out canClose);
                         if (iopener != null)
                         {
                             bool retry = false;
@@ -201,14 +199,14 @@ namespace CommonMark.Parser
                             {
                                 // remove everything between opened and closer (not inclusive).
                                 if (iopener.Next != istack.Previous)
-                                    InlineStack.RemoveStackEntry(iopener.Next, subj, istack.Previous);
+                                    RemoveStackEntry(iopener.Next, subj, istack.Previous);
 
                                 continue;
                             }
                             else
                             {
                                 // remove opener, everything in between, and the closer
-                                InlineStack.RemoveStackEntry(iopener, subj, istack);
+                                RemoveStackEntry(iopener, subj, istack);
                             }
                         }
                         else if (!canClose)

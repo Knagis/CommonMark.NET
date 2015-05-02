@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.IO;
+using CommonMark.Syntax;
 
 namespace CommonMark.Formatters
 {
@@ -9,10 +8,10 @@ namespace CommonMark.Formatters
     /// </summary>
     internal sealed class HtmlTextWriter
     {
-        private System.IO.TextWriter _inner;
+        private readonly TextWriter _inner;
         private char _last = '\n';
-        private bool _windowsNewLine;
-        private char[] _newline;
+        private readonly bool _windowsNewLine;
+        private readonly char[] _newline;
         
         /// <summary>
         /// A reusable char buffer. This is used internally in <see cref="Write(Syntax.StringPart)"/> (and thus will modify the buffer)
@@ -20,7 +19,7 @@ namespace CommonMark.Formatters
         /// </summary>
         internal char[] Buffer = new char[256];
 
-        public HtmlTextWriter(System.IO.TextWriter inner)
+        public HtmlTextWriter(TextWriter inner)
         {
             this._inner = inner;
 
@@ -45,7 +44,7 @@ namespace CommonMark.Formatters
             this._last = '\n';
         }
 
-        public void Write(Syntax.StringPart value)
+        public void Write(StringPart value)
         {
             if (value.Length == 0)
                 return;
@@ -59,11 +58,10 @@ namespace CommonMark.Formatters
             {
                 var lastPos = value.StartIndex;
                 var pos = lastPos;
-                var lastC = this._last;
 
                 while (-1 != (pos = value.Source.IndexOf('\n', pos, value.Length - pos + value.StartIndex)))
                 {
-                    lastC = pos == 0 ? this._last : value.Source[pos - 1];
+                    var lastC = pos == 0 ? this._last : value.Source[pos - 1];
 
                     if (lastC != '\r')
                     {
@@ -130,8 +128,7 @@ namespace CommonMark.Formatters
             if (this._windowsNewLine)
             {
                 var lastPos = index;
-                var lastC = this._last;
-                int pos = index;
+                var pos = index;
 
                 while (pos < index + count)
                 {
@@ -141,7 +138,7 @@ namespace CommonMark.Formatters
                         continue;
                     }
 
-                    lastC = pos == index ? this._last : value[pos - 1];
+                    var lastC = pos == index ? this._last : value[pos - 1];
 
                     if (lastC != '\r')
                     {

@@ -1,9 +1,8 @@
-﻿using CommonMark.Syntax;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
+using CommonMark.Syntax;
 
 namespace CommonMark.Formatters
 {
@@ -14,15 +13,15 @@ namespace CommonMark.Formatters
     {
         private readonly HtmlTextWriter _target;
         private readonly CommonMarkSettings _settings;
-        private readonly Stack<bool> _renderTightParagraphs = new Stack<bool>(new bool[] { false });
-        private readonly Stack<bool> _renderPlainTextInlines = new Stack<bool>(new bool[] { false });
+        private readonly Stack<bool> _renderTightParagraphs = new Stack<bool>(new[] { false });
+        private readonly Stack<bool> _renderPlainTextInlines = new Stack<bool>(new[] { false });
 
         /// <summary>
         /// Gets a stack of values indicating whether the paragraph tags should be ommitted.
         /// Every element that impacts this setting has to push a value when opening and pop it when closing.
         /// The most recent value is used to determine the current state.
         /// </summary>
-        protected Stack<bool> RenderTightParagraphs { get { return this._renderTightParagraphs; } }
+        protected Stack<bool> RenderTightParagraphs { get { return _renderTightParagraphs; } }
 
         /// <summary>
         /// Gets a stack of values indicating whether the inline elements should be rendered as plain text
@@ -31,7 +30,7 @@ namespace CommonMark.Formatters
         /// Every element that impacts this setting has to push a value when opening and pop it when closing.
         /// The most recent value is used to determine the current state.
         /// </summary>
-        protected Stack<bool> RenderPlainTextInlines { get { return this._renderPlainTextInlines; } }
+        protected Stack<bool> RenderPlainTextInlines { get { return _renderPlainTextInlines; } }
 
         /// <summary>Initializes a new instance of the <see cref="HtmlFormatter" /> class.</summary>
         /// <param name="target">The target text writer.</param>
@@ -40,19 +39,19 @@ namespace CommonMark.Formatters
         public HtmlFormatter(TextWriter target, CommonMarkSettings settings)
         {
             if (target == null)
-                throw new ArgumentNullException("target");
+                throw new ArgumentNullException(nameof(target));
 
             if (settings == null)
                 settings = CommonMarkSettings.Default;
 
-            this._target = new HtmlTextWriter(target);
-            this._settings = settings;
+            _target = new HtmlTextWriter(target);
+            _settings = settings;
         }
 
         /// <summary>
         /// Gets the settings used for formatting data.
         /// </summary>
-        protected CommonMarkSettings Settings { get { return this._settings; } }
+        protected CommonMarkSettings Settings { get { return _settings; } }
 
         /// <summary>
         /// Writes the given CommonMark document to the output stream as HTML.
@@ -60,7 +59,7 @@ namespace CommonMark.Formatters
         public void WriteDocument(Block document)
         {
             if (document == null)
-                throw new ArgumentNullException("document");
+                throw new ArgumentNullException(nameof(document));
 
             bool ignoreChildNodes;
             Block ignoreUntilBlockCloses = null;
@@ -78,7 +77,7 @@ namespace CommonMark.Formatters
                         ignoreUntilBlockCloses = null;
                     }
 
-                    this.WriteBlock(node.Block, node.IsOpening, node.IsClosing, out ignoreChildNodes);
+                    WriteBlock(node.Block, node.IsOpening, node.IsClosing, out ignoreChildNodes);
                     if (ignoreChildNodes && !node.IsClosing)
                         ignoreUntilBlockCloses = node.Block;
                 }
@@ -92,9 +91,9 @@ namespace CommonMark.Formatters
                         ignoreUntilInlineCloses = null;
                     }
 
-                    this.WriteInline(node.Inline, node.IsOpening, node.IsClosing, out ignoreChildNodes);
+                    WriteInline(node.Inline, node.IsOpening, node.IsClosing, out ignoreChildNodes);
                     if (ignoreChildNodes && !node.IsClosing)
-                        ignoreUntilBlockCloses = node.Block;
+                        ignoreUntilInlineCloses = node.Inline;
                 }
             }
         }
@@ -121,37 +120,37 @@ namespace CommonMark.Formatters
                     break;
 
                 case BlockTag.Paragraph:
-                    if (this.RenderTightParagraphs.Peek())
+                    if (RenderTightParagraphs.Peek())
                         break;
 
                     if (isOpening)
                     {
-                        this.EnsureNewLine();
-                        this.Write("<p");
-                        if (this.Settings.TrackSourcePosition) this.WritePositionAttribute(block);
-                        this.Write('>');
+                        EnsureNewLine();
+                        Write("<p");
+                        if (Settings.TrackSourcePosition) WritePositionAttribute(block);
+                        Write('>');
                     }
 
                     if (isClosing)
-                        this.WriteLine("</p>");
+                        WriteLine("</p>");
 
                     break;
 
                 case BlockTag.BlockQuote:
                     if (isOpening)
                     {
-                        this.EnsureNewLine();
-                        this.Write("<blockquote");
-                        if (this.Settings.TrackSourcePosition) this.WritePositionAttribute(block);
-                        this.WriteLine(">");
+                        EnsureNewLine();
+                        Write("<blockquote");
+                        if (Settings.TrackSourcePosition) WritePositionAttribute(block);
+                        WriteLine(">");
 
-                        this.RenderTightParagraphs.Push(false);
+                        RenderTightParagraphs.Push(false);
                     }
 
                     if (isClosing)
                     {
-                        this.RenderTightParagraphs.Pop();
-                        this.WriteLine("</blockquote>");
+                        RenderTightParagraphs.Pop();
+                        WriteLine("</blockquote>");
                     }
 
                     break;
@@ -159,14 +158,14 @@ namespace CommonMark.Formatters
                 case BlockTag.ListItem:
                     if (isOpening)
                     {
-                        this.EnsureNewLine();
-                        this.Write("<li");
-                        if (this.Settings.TrackSourcePosition) this.WritePositionAttribute(block);
-                        this.Write('>');
+                        EnsureNewLine();
+                        Write("<li");
+                        if (Settings.TrackSourcePosition) WritePositionAttribute(block);
+                        Write('>');
                     }
 
                     if (isClosing)
-                        this.WriteLine("</li>");
+                        WriteLine("</li>");
 
                     break;
 
@@ -175,24 +174,24 @@ namespace CommonMark.Formatters
 
                     if (isOpening)
                     {
-                        this.EnsureNewLine();
-                        this.Write(data.ListType == ListType.Bullet ? "<ul" : "<ol");
+                        EnsureNewLine();
+                        Write(data.ListType == ListType.Bullet ? "<ul" : "<ol");
                         if (data.Start != 1)
                         {
-                            this.Write(" start=\"");
-                            this.Write(data.Start.ToString(System.Globalization.CultureInfo.InvariantCulture));
-                            this.Write('\"');
+                            Write(" start=\"");
+                            Write(data.Start.ToString(CultureInfo.InvariantCulture));
+                            Write('\"');
                         }
-                        if (this.Settings.TrackSourcePosition) this.WritePositionAttribute(block);
-                        this.WriteLine(">");
+                        if (Settings.TrackSourcePosition) WritePositionAttribute(block);
+                        WriteLine(">");
 
-                        this.RenderTightParagraphs.Push(data.IsTight);
+                        RenderTightParagraphs.Push(data.IsTight);
                     }
 
                     if (isClosing)
                     {
-                        this.WriteLine(data.ListType == ListType.Bullet ? "</ul>" : "</ol>");
-                        this.RenderTightParagraphs.Pop();
+                        WriteLine(data.ListType == ListType.Bullet ? "</ul>" : "</ol>");
+                        RenderTightParagraphs.Pop();
                     }
 
                     break;
@@ -203,17 +202,17 @@ namespace CommonMark.Formatters
                     x = block.HeaderLevel;
                     if (isOpening)
                     {
-                        this.EnsureNewLine();
+                        EnsureNewLine();
 
-                        this.Write("<h" + x.ToString(CultureInfo.InvariantCulture));
-                        if (this.Settings.TrackSourcePosition)
-                            this.WritePositionAttribute(block);
+                        Write("<h" + x.ToString(CultureInfo.InvariantCulture));
+                        if (Settings.TrackSourcePosition)
+                            WritePositionAttribute(block);
 
-                        this.Write('>');
+                        Write('>');
                     }
 
                     if (isClosing)
-                        this.WriteLine("</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
+                        WriteLine("</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
 
                     break;
 
@@ -222,9 +221,9 @@ namespace CommonMark.Formatters
 
                     ignoreChildNodes = true;
 
-                    this.EnsureNewLine();
-                    this.Write("<pre><code");
-                    if (this.Settings.TrackSourcePosition) this.WritePositionAttribute(block);
+                    EnsureNewLine();
+                    Write("<pre><code");
+                    if (Settings.TrackSourcePosition) WritePositionAttribute(block);
 
                     var info = block.FencedCodeData == null ? null : block.FencedCodeData.Info;
                     if (info != null && info.Length > 0)
@@ -233,33 +232,33 @@ namespace CommonMark.Formatters
                         if (x == -1)
                             x = info.Length;
 
-                        this.Write(" class=\"language-");
-                        this.WriteEncodedHtml(new StringPart(info, 0, x));
-                        this.Write('\"');
+                        Write(" class=\"language-");
+                        WriteEncodedHtml(new StringPart(info, 0, x));
+                        Write('\"');
                     }
-                    this.Write('>');
-                    this.WriteEncodedHtml(block.StringContent);
-                    this.WriteLine("</code></pre>");
+                    Write('>');
+                    WriteEncodedHtml(block.StringContent);
+                    WriteLine("</code></pre>");
                     break;
 
                 case BlockTag.HtmlBlock:
                     ignoreChildNodes = true;
                     // cannot output source position for HTML blocks
-                    this.Write(block.StringContent);
+                    Write(block.StringContent);
 
                     break;
 
                 case BlockTag.HorizontalRuler:
                     ignoreChildNodes = true;
-                    if (this.Settings.TrackSourcePosition)
+                    if (Settings.TrackSourcePosition)
                     {
-                        this.Write("<hr");
-                        this.WritePositionAttribute(block);
-                        this.WriteLine();
+                        Write("<hr");
+                        WritePositionAttribute(block);
+                        WriteLine();
                     }
                     else
                     {
-                        this.WriteLine("<hr />");
+                        WriteLine("<hr />");
                     }
 
                     break;
@@ -288,30 +287,30 @@ namespace CommonMark.Formatters
         /// <param name="ignoreChildNodes">Instructs the caller whether to skip processing of child nodes or not.</param>
         protected virtual void WriteInline(Inline inline, bool isOpening, bool isClosing, out bool ignoreChildNodes)
         {
-            if (this.RenderPlainTextInlines.Peek())
+            if (RenderPlainTextInlines.Peek())
             {
                 switch (inline.Tag)
                 {
                     case InlineTag.String:
                     case InlineTag.Code:
                     case InlineTag.RawHtml:
-                        this.WriteEncodedHtml(inline.LiteralContentValue);
+                        WriteEncodedHtml(inline.LiteralContentValue);
                         break;
 
                     case InlineTag.LineBreak:
                     case InlineTag.SoftBreak:
-                        this.WriteLine();
+                        WriteLine();
                         break;
 
                     case InlineTag.Image:
                         if (isOpening)
-                            this.RenderPlainTextInlines.Push(true);
+                            RenderPlainTextInlines.Push(true);
 
                         if (isClosing)
                         {
-                            this.RenderPlainTextInlines.Pop();
+                            RenderPlainTextInlines.Pop();
 
-                            if (!this.RenderPlainTextInlines.Peek())
+                            if (!RenderPlainTextInlines.Peek())
                                 goto useFullRendering;
                         }
 
@@ -337,47 +336,47 @@ namespace CommonMark.Formatters
             {
                 case InlineTag.String:
                     ignoreChildNodes = true;
-                    if (this.Settings.TrackSourcePosition)
+                    if (Settings.TrackSourcePosition)
                     {
-                        this.Write("<span");
-                        this.WritePositionAttribute(inline);
-                        this.Write('>');
-                        this.WriteEncodedHtml(inline.LiteralContentValue);
-                        this.Write("</span>");
+                        Write("<span");
+                        WritePositionAttribute(inline);
+                        Write('>');
+                        WriteEncodedHtml(inline.LiteralContentValue);
+                        Write("</span>");
                     }
                     else
                     {
-                        this.WriteEncodedHtml(inline.LiteralContentValue);
+                        WriteEncodedHtml(inline.LiteralContentValue);
                     }
 
                     break;
 
                 case InlineTag.LineBreak:
                     ignoreChildNodes = true;
-                    this.WriteLine("<br />");
+                    WriteLine("<br />");
                     break;
 
                 case InlineTag.SoftBreak:
                     ignoreChildNodes = true;
-                    if (this.Settings.RenderSoftLineBreaksAsLineBreaks)
-                        this.WriteLine("<br />");
+                    if (Settings.RenderSoftLineBreaksAsLineBreaks)
+                        WriteLine("<br />");
                     else
-                        this.WriteLine();
+                        WriteLine();
                     break;
 
                 case InlineTag.Code:
                     ignoreChildNodes = true;
-                    this.Write("<code");
-                    if (this.Settings.TrackSourcePosition) this.WritePositionAttribute(inline);
-                    this.Write('>');
-                    this.WriteEncodedHtml(inline.LiteralContentValue);
-                    this.Write("</code>");
+                    Write("<code");
+                    if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
+                    Write('>');
+                    WriteEncodedHtml(inline.LiteralContentValue);
+                    Write("</code>");
                     break;
 
                 case InlineTag.RawHtml:
                     ignoreChildNodes = true;
                     // cannot output source position for HTML blocks
-                    this.Write(inline.LiteralContentValue);
+                    Write(inline.LiteralContentValue);
                     break;
 
                 case InlineTag.Link:
@@ -385,29 +384,29 @@ namespace CommonMark.Formatters
 
                     if (isOpening)
                     {
-                        this.Write("<a href=\"");
-                        var uriResolver = this.Settings.UriResolver;
+                        Write("<a href=\"");
+                        var uriResolver = Settings.UriResolver;
                         if (uriResolver != null)
-                            this.WriteEncodedUrl(uriResolver(inline.TargetUrl));
+                            WriteEncodedUrl(uriResolver(inline.TargetUrl));
                         else
-                            this.WriteEncodedUrl(inline.TargetUrl);
+                            WriteEncodedUrl(inline.TargetUrl);
 
-                        this.Write('\"');
+                        Write('\"');
                         if (inline.LiteralContentValue.Length > 0)
                         {
-                            this.Write(" title=\"");
-                            this.WriteEncodedHtml(inline.LiteralContentValue);
-                            this.Write('\"');
+                            Write(" title=\"");
+                            WriteEncodedHtml(inline.LiteralContentValue);
+                            Write('\"');
                         }
 
-                        if (this.Settings.TrackSourcePosition) this.WritePositionAttribute(inline);
+                        if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
 
-                        this.Write('>');
+                        Write('>');
                     }
 
                     if (isClosing)
                     {
-                        this.Write("</a>");
+                        Write("</a>");
                     }
 
                     break;
@@ -417,33 +416,33 @@ namespace CommonMark.Formatters
 
                     if (isOpening)
                     {
-                        this.Write("<img src=\"");
-                        var uriResolver = this.Settings.UriResolver;
+                        Write("<img src=\"");
+                        var uriResolver = Settings.UriResolver;
                         if (uriResolver != null)
-                            this.WriteEncodedUrl(uriResolver(inline.TargetUrl));
+                            WriteEncodedUrl(uriResolver(inline.TargetUrl));
                         else
-                            this.WriteEncodedUrl(inline.TargetUrl);
+                            WriteEncodedUrl(inline.TargetUrl);
 
-                        this.Write("\" alt=\"");
+                        Write("\" alt=\"");
 
                         if (!isClosing)
-                            this.RenderPlainTextInlines.Push(true);
+                            RenderPlainTextInlines.Push(true);
                     }
 
                     if (isClosing)
                     {
                         // this.RenderPlainTextInlines.Pop() is done by the plain text renderer above.
 
-                        this.Write('\"');
+                        Write('\"');
                         if (inline.LiteralContentValue.Length > 0)
                         {
-                            this.Write(" title=\"");
-                            this.WriteEncodedHtml(inline.LiteralContentValue);
-                            this.Write('\"');
+                            Write(" title=\"");
+                            WriteEncodedHtml(inline.LiteralContentValue);
+                            Write('\"');
                         }
 
-                        if (this.Settings.TrackSourcePosition) this.WritePositionAttribute(inline);
-                        this.Write(" />");
+                        if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
+                        Write(" />");
                     }
 
                     break;
@@ -453,14 +452,14 @@ namespace CommonMark.Formatters
 
                     if (isOpening)
                     {
-                        this.Write("<strong");
-                        if (this.Settings.TrackSourcePosition) this.WritePositionAttribute(inline);
-                        this.Write('>');
+                        Write("<strong");
+                        if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
+                        Write('>');
                     }
 
                     if (isClosing)
                     {
-                        this.Write("</strong>");
+                        Write("</strong>");
                     }
                     break;
 
@@ -469,14 +468,14 @@ namespace CommonMark.Formatters
 
                     if (isOpening)
                     {
-                        this.Write("<em");
-                        if (this.Settings.TrackSourcePosition) this.WritePositionAttribute(inline);
-                        this.Write('>');
+                        Write("<em");
+                        if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
+                        Write('>');
                     }
 
                     if (isClosing)
                     {
-                        this.Write("</em>");
+                        Write("</em>");
                     }
                     break;
 
@@ -485,14 +484,14 @@ namespace CommonMark.Formatters
 
                     if (isOpening)
                     {
-                        this.Write("<del");
-                        if (this.Settings.TrackSourcePosition) this.WritePositionAttribute(inline);
-                        this.Write('>');
+                        Write("<del");
+                        if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
+                        Write('>');
                     }
 
                     if (isClosing)
                     {
-                        this.Write("</del>");
+                        Write("</del>");
                     }
                     break;
 
@@ -508,12 +507,12 @@ namespace CommonMark.Formatters
         {
             if (text == null)
                 return;
-            this._target.Write(new StringPart(text, 0, text.Length));
+            _target.Write(new StringPart(text, 0, text.Length));
         }
 
         private void Write(StringPart text)
         {
-            this._target.Write(text);
+            _target.Write(text);
         }
 
         /// <summary>
@@ -524,7 +523,7 @@ namespace CommonMark.Formatters
             if (text == null)
                 return;
 
-            text.WriteTo(this._target);
+            text.WriteTo(_target);
         }
 
         /// <summary>
@@ -532,7 +531,7 @@ namespace CommonMark.Formatters
         /// </summary>
         protected void Write(char c)
         {
-            this._target.Write(c);
+            _target.Write(c);
         }
 
         /// <summary>
@@ -541,7 +540,7 @@ namespace CommonMark.Formatters
         /// </summary>
         protected void EnsureNewLine()
         {
-            this._target.EnsureLine();
+            _target.EnsureLine();
         }
 
         /// <summary>
@@ -549,7 +548,7 @@ namespace CommonMark.Formatters
         /// </summary>
         protected void WriteLine()
         {
-            this._target.WriteLine();
+            _target.WriteLine();
         }
 
         /// <summary>
@@ -557,8 +556,8 @@ namespace CommonMark.Formatters
         /// </summary>
         protected void WriteLine(string text)
         {
-            this._target.Write(new StringPart(text, 0, text.Length));
-            this._target.WriteLine();
+            _target.Write(new StringPart(text, 0, text.Length));
+            _target.WriteLine();
         }
 
         /// <summary>
@@ -569,7 +568,7 @@ namespace CommonMark.Formatters
             if (text == null)
                 return;
 
-            HtmlFormatterSlim.EscapeHtml(text, this._target);
+            HtmlFormatterSlim.EscapeHtml(text, _target);
         }
 
         /// <summary>
@@ -580,12 +579,12 @@ namespace CommonMark.Formatters
             if (text == null)
                 return;
 
-            HtmlFormatterSlim.EscapeHtml(new StringPart(text, 0, text.Length), this._target);
+            HtmlFormatterSlim.EscapeHtml(new StringPart(text, 0, text.Length), _target);
         }
 
         private void WriteEncodedHtml(StringPart text)
         {
-            HtmlFormatterSlim.EscapeHtml(text, this._target);
+            HtmlFormatterSlim.EscapeHtml(text, _target);
         }
 
         /// <summary>
@@ -595,7 +594,7 @@ namespace CommonMark.Formatters
         /// </summary>
         protected void WriteEncodedUrl(string url)
         {
-            HtmlFormatterSlim.EscapeUrl(url, this._target);
+            HtmlFormatterSlim.EscapeUrl(url, _target);
         }
 
         /// <summary>
@@ -605,7 +604,7 @@ namespace CommonMark.Formatters
         /// </summary>
         protected void WritePositionAttribute(Block block)
         {
-            HtmlFormatterSlim.PrintPosition(this._target, block);
+            HtmlFormatterSlim.PrintPosition(_target, block);
         }
 
         /// <summary>
@@ -615,7 +614,7 @@ namespace CommonMark.Formatters
         /// </summary>
         protected void WritePositionAttribute(Inline inline)
         {
-            HtmlFormatterSlim.PrintPosition(this._target, inline);
+            HtmlFormatterSlim.PrintPosition(_target, inline);
         }
     }
 }

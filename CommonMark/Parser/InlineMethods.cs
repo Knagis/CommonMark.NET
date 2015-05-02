@@ -14,11 +14,11 @@ namespace CommonMark.Parser
         /// Initializes the array of delegates for inline parsing.
         /// </summary>
         /// <returns></returns>
-        internal static Func<Parser.Subject, Syntax.Inline>[] InitializeParsers(CommonMarkSettings settings)
+        internal static Func<Subject, Inline>[] InitializeParsers(CommonMarkSettings settings)
         {
             var strikethroughTilde = 0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde);
 
-            var p = new Func<Parser.Subject, Syntax.Inline>[strikethroughTilde ? 127 : 97];
+            var p = new Func<Subject, Inline>[strikethroughTilde ? 127 : 97];
             p['\n'] = handle_newline;
             p['`'] = handle_backticks;
             p['\\'] = handle_backslash;
@@ -379,14 +379,14 @@ namespace CommonMark.Parser
 
         private static Inline HandleEmphasis(Subject subj)
         {
-            bool can_open, can_close;
+            bool canOpen, canClose;
             var c = subj.Buffer[subj.Position];
-            var numdelims = ScanEmphasisDelimeters(subj, c, out can_open, out can_close);
+            var numdelims = ScanEmphasisDelimeters(subj, c, out canOpen, out canClose);
 
-            if (can_close)
+            if (canClose)
             {
                 // walk the stack and find a matching opener, if there is one
-                var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, c, out can_close);
+                var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, c, out canClose);
                 if (istack != null)
                 {
                     var useDelims = MatchInlineStack(istack, subj, numdelims, null, InlineTag.Emphasis, InlineTag.Strong);
@@ -407,15 +407,15 @@ namespace CommonMark.Parser
 
             var inlText = new Inline(subj.Buffer, subj.Position - numdelims, numdelims, subj.Position - numdelims, subj.Position);
 
-            if (can_open || can_close)
+            if (canOpen || canClose)
             {
                 var istack = new InlineStack();
                 istack.DelimeterCount = numdelims;
                 istack.Delimeter = c;
                 istack.StartingInline = inlText;
                 istack.Priority = InlineStack.InlineStackPriority.Emphasis;
-                istack.Flags = (can_open ? InlineStack.InlineStackFlags.Opener : 0)
-                             | (can_close ? InlineStack.InlineStackFlags.Closer : 0);
+                istack.Flags = (canOpen ? InlineStack.InlineStackFlags.Opener : 0)
+                             | (canClose ? InlineStack.InlineStackFlags.Closer : 0);
 
                 InlineStack.AppendStackEntry(istack, subj);
             }
@@ -425,16 +425,16 @@ namespace CommonMark.Parser
 
         private static Inline HandleTilde(Subject subj)
         {
-            bool can_open, can_close;
-            var numdelims = ScanEmphasisDelimeters(subj, '~', out can_open, out can_close);
+            bool canOpen, canClose;
+            var numdelims = ScanEmphasisDelimeters(subj, '~', out canOpen, out canClose);
 
             if (numdelims == 1)
                 return new Inline("~", subj.Position - 1, subj.Position);
 
-            if (can_close)
+            if (canClose)
             {
                 // walk the stack and find a matching opener, if there is one
-                var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, '~', out can_close);
+                var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, '~', out canClose);
                 if (istack != null)
                 {
                     MatchInlineStack(istack, subj, numdelims, null, null, InlineTag.Strikethrough);
@@ -456,15 +456,15 @@ namespace CommonMark.Parser
             var inlText = new Inline(subj.Buffer, subj.Position - numdelims, numdelims,
                 subj.Position - numdelims, subj.Position);
 
-            if (can_open || can_close)
+            if (canOpen || canClose)
             {
                 var istack = new InlineStack();
                 istack.DelimeterCount = numdelims;
                 istack.Delimeter = '~';
                 istack.StartingInline = inlText;
                 istack.Priority = InlineStack.InlineStackPriority.Emphasis;
-                istack.Flags = (can_open ? InlineStack.InlineStackFlags.Opener : 0)
-                             | (can_close ? InlineStack.InlineStackFlags.Closer : 0);
+                istack.Flags = (canOpen ? InlineStack.InlineStackFlags.Opener : 0)
+                             | (canClose ? InlineStack.InlineStackFlags.Closer : 0);
 
                 InlineStack.AppendStackEntry(istack, subj);
             }
@@ -549,8 +549,7 @@ namespace CommonMark.Parser
 
                 InlineStack.RemoveStackEntry(opener, subj, null);
 
-                if (subj != null)
-                    subj.LastInline = inl;
+                subj.LastInline = inl;
             }
             else
             {
@@ -569,8 +568,8 @@ namespace CommonMark.Parser
             // move past ']'
             subj.Position++;
 
-            bool can_close;
-            var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Links, '[', out can_close);
+            bool canClose;
+            var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Links, '[', out canClose);
 
             if (istack != null)
             {
@@ -604,7 +603,7 @@ namespace CommonMark.Parser
 
             var inlText = new Inline("]", subj.Position - 1, subj.Position);
 
-            if (can_close)
+            if (canClose)
             {
                 // note that the current implementation will not work if there are other inlines with priority
                 // higher than Links.
@@ -879,7 +878,7 @@ namespace CommonMark.Parser
         // Assumes the subject has a '<' character at the current position.
         static Inline handle_pointy_brace(Subject subj)
         {
-            int matchlen = 0;
+            int matchlen;
             string contents;
 
             // advance past first <
@@ -1074,13 +1073,12 @@ namespace CommonMark.Parser
         // Parse zero or more space characters, including at most one newline.
         private static void spnl(Subject subj)
         {
-            bool seen_newline = false;
+            var seenNewline = false;
             var len = subj.Length;
-            char c;
             while (subj.Position < len)
             {
-                c = subj.Buffer[subj.Position];
-                if (c == ' ' || (!seen_newline && (seen_newline = c == '\n')))
+                var c = subj.Buffer[subj.Position];
+                if (c == ' ' || (!seenNewline && (seenNewline = c == '\n')))
                     subj.Position++;
                 else
                     return;
@@ -1105,10 +1103,9 @@ namespace CommonMark.Parser
             var source = subj.Buffer;
             var len = subj.Length;
 
-            char c = '\0';
             while (subj.Position < len)
             {
-                c = subj.Buffer[subj.Position];
+                var c = subj.Buffer[subj.Position];
                 if (c == ' ' || c == '\n')
                 {
                     subj.Position++;
@@ -1135,7 +1132,7 @@ namespace CommonMark.Parser
             subj.Position = source.IndexOfAny(BracketSpecialCharacters, subj.Position, len - subj.Position);
             while (subj.Position > -1)
             {
-                c = source[subj.Position];
+                var c = source[subj.Position];
                 if (c == '\\')
                 {
                     subj.Position += 2;
@@ -1166,10 +1163,7 @@ namespace CommonMark.Parser
         // after reference is parsed.
         public static int ParseReference(Subject subj)
         {
-            string url = null;
-            string title = null;
-            int matchlen = 0;
-            int beforetitle;
+            string title;
             var startPos = subj.Position;
 
             // parse label:
@@ -1185,16 +1179,16 @@ namespace CommonMark.Parser
 
             // parse link url:
             spnl(subj);
-            matchlen = Scanner.scan_link_url(subj.Buffer, subj.Position, subj.Length);
+            var matchlen = Scanner.scan_link_url(subj.Buffer, subj.Position, subj.Length);
             if (matchlen == 0)
                 goto INVALID;
 
-            url = subj.Buffer.Substring(subj.Position, matchlen);
+            var url = subj.Buffer.Substring(subj.Position, matchlen);
             url = CleanUrl(url);
             subj.Position += matchlen;
 
             // parse optional link_title
-            beforetitle = subj.Position;
+            var beforetitle = subj.Position;
             spnl(subj);
             matchlen = Scanner.scan_link_title(subj.Buffer, subj.Position, subj.Length);
             if (matchlen > 0)

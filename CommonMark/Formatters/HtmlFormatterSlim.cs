@@ -1,13 +1,14 @@
-﻿using CommonMark.Syntax;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
+using CommonMark.Syntax;
 
 namespace CommonMark.Formatters
 {
     internal static class HtmlFormatterSlim
     {
-        private static readonly char[] EscapeHtmlCharacters = new[] { '&', '<', '>', '"' };
+        private static readonly char[] EscapeHtmlCharacters = { '&', '<', '>', '"' };
         private const string HexCharacters = "0123456789ABCDEF";
 
         private static readonly char[] EscapeHtmlLessThan = "&lt;".ToCharArray();
@@ -15,10 +16,10 @@ namespace CommonMark.Formatters
         private static readonly char[] EscapeHtmlAmpersand = "&amp;".ToCharArray();
         private static readonly char[] EscapeHtmlQuote = "&quot;".ToCharArray();
 
-        private static readonly string[] HeaderOpenerTags = new[] { "<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<h6>" };
-        private static readonly string[] HeaderCloserTags = new[] { "</h1>", "</h2>", "</h3>", "</h4>", "</h5>", "</h6>" };
+        private static readonly string[] HeaderOpenerTags = { "<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<h6>" };
+        private static readonly string[] HeaderCloserTags = { "</h1>", "</h2>", "</h3>", "</h4>", "</h5>", "</h6>" };
 
-        private static readonly bool[] UrlSafeCharacters = new[] {
+        private static readonly bool[] UrlSafeCharacters = {
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
             false, true,  false, true,  true,  true,  false, false, true,  true,  true,  true,  true,  true,  true,  true, 
@@ -26,7 +27,7 @@ namespace CommonMark.Formatters
             true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, 
             true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  false, false, false, false, true, 
             false, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, 
-            true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  false, false, false, false, false,
+            true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  false, false, false, false, false
         };
 
         /// <summary>
@@ -160,7 +161,7 @@ namespace CommonMark.Formatters
 
                 part.Source.CopyTo(part.StartIndex, buffer, 0, part.Length);
 
-                lastPos = pos = part.StartIndex;
+                lastPos = part.StartIndex;
                 while ((pos = part.Source.IndexOfAny(EscapeHtmlCharacters, lastPos, part.Length - lastPos + part.StartIndex)) != -1)
                 {
                     target.Write(buffer, lastPos - part.StartIndex, pos - lastPos);
@@ -187,7 +188,7 @@ namespace CommonMark.Formatters
             }
         }
         
-        public static void BlocksToHtml(System.IO.TextWriter writer, Block block, CommonMarkSettings settings)
+        public static void BlocksToHtml(TextWriter writer, Block block, CommonMarkSettings settings)
         {
             var wrapper = new HtmlTextWriter(writer);
             BlocksToHtmlInner(wrapper, block, settings);
@@ -196,18 +197,18 @@ namespace CommonMark.Formatters
         internal static void PrintPosition(HtmlTextWriter writer, Block block)
         {
             writer.WriteConstant(" data-sourcepos=\"");
-            writer.WriteConstant(block.SourcePosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.WriteConstant(block.SourcePosition.ToString(CultureInfo.InvariantCulture));
             writer.Write('-');
-            writer.WriteConstant(block.SourceLastPosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.WriteConstant(block.SourceLastPosition.ToString(CultureInfo.InvariantCulture));
             writer.WriteConstant("\"");
         }
 
         internal static void PrintPosition(HtmlTextWriter writer, Inline inline)
         {
             writer.WriteConstant(" data-sourcepos=\"");
-            writer.WriteConstant(inline.SourcePosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.WriteConstant(inline.SourcePosition.ToString(CultureInfo.InvariantCulture));
             writer.Write('-');
-            writer.WriteConstant(inline.SourceLastPosition.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            writer.WriteConstant(inline.SourceLastPosition.ToString(CultureInfo.InvariantCulture));
             writer.WriteConstant("\"");
         }
 
@@ -280,7 +281,7 @@ namespace CommonMark.Formatters
                         if (data.Start != 1)
                         {
                             writer.WriteConstant(" start=\"");
-                            writer.WriteConstant(data.Start.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                            writer.WriteConstant(data.Start.ToString(CultureInfo.InvariantCulture));
                             writer.Write('\"');
                         }
                         if (trackPositions) PrintPosition(writer, block);
@@ -425,7 +426,7 @@ namespace CommonMark.Formatters
                             writer.Write('[');
                             stackLiteral = "]";
                             visitChildren = true;
-                            stackWithinLink = withinLink;
+                            stackWithinLink = true;
                         }
                         else
                         {
@@ -542,7 +543,7 @@ namespace CommonMark.Formatters
                         {
                             writer.Write('[');
                             stackLiteral = "]";
-                            stackWithinLink = withinLink;
+                            stackWithinLink = true;
                             visitChildren = true;
                         }
                         else
@@ -657,9 +658,9 @@ namespace CommonMark.Formatters
             public readonly bool IsTight;
             public BlockStackEntry(string literal, Block target, bool isTight)
             {
-                this.Literal = literal;
-                this.Target = target;
-                this.IsTight = isTight;
+                Literal = literal;
+                Target = target;
+                IsTight = isTight;
             }
         }
         private struct InlineStackEntry
@@ -669,9 +670,9 @@ namespace CommonMark.Formatters
             public readonly bool IsWithinLink;
             public InlineStackEntry(string literal, Inline target, bool isWithinLink)
             {
-                this.Literal = literal;
-                this.Target = target;
-                this.IsWithinLink = isWithinLink;
+                Literal = literal;
+                Target = target;
+                IsWithinLink = isWithinLink;
             }
         }
     }

@@ -64,15 +64,14 @@ namespace CommonMark.Parser
 #if !NETCore
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by [DebuggerDisplay]")]
 #endif
+        // ReSharper disable once UnusedMethodReturnValue.Local
         private string DebugToString()
         {
-            var pos = (this.Position > this.Length) ? this.Position + 1 : this.Position;
-
             var res = this.Buffer.Insert(this.Length, "|");
             res = res.Insert(this.Position, "⁞");
 
 #if DEBUG
-            res.Insert(this.DebugStartIndex, "|");
+            res = res.Insert(this.DebugStartIndex, "|");
 #endif
 
             return res;
