@@ -686,17 +686,17 @@ namespace CommonMark.Parser
                     entity = EntityDecoder.DecodeEntity(entity);
                     if (entity != null)
                         return entity;
+
+                    return subj.Buffer.Substring(origPos, match);
                 }
                 else if (numericEntity > 0)
                 {
                     entity = EntityDecoder.DecodeEntity(numericEntity);
                     if (entity != null)
                         return entity;
-
-                    return "\uFFFD";
                 }
 
-                return subj.Buffer.Substring(origPos, match);
+                return "\uFFFD";
             }
             else
             {
