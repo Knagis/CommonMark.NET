@@ -1171,6 +1171,9 @@ namespace CommonMark.Parser
             if (lab == null || lab.Value.Length > Reference.MaximumReferenceLabelLength)
                 goto INVALID;
 
+            if (!Scanner.HasNonWhitespace(lab.Value))
+                goto INVALID;
+
             // colon:
             if (peek_char(subj) == ':')
                 subj.Position++;

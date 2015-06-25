@@ -275,7 +275,7 @@ namespace CommonMark.Parser
 
             for (var i = pos; i < sourceLength; i++)
             {
-                if (s[i] != ' ' && s[i] != '\n')
+                if (!Utilities.IsWhitespace(s[i]))
                     return i - pos;
             }
 
@@ -610,6 +610,26 @@ namespace CommonMark.Parser
             }
 
             return 0;
+        }
+
+        /// <summary>
+        /// Determines if the given string has non-whitespace characters in it
+        /// </summary>
+        public static bool HasNonWhitespace(Syntax.StringPart part)
+        {
+            var s = part.Source;
+            var i = part.StartIndex;
+            var l = i + part.Length;
+
+            while (i < l)
+            {
+                if (!Utilities.IsWhitespace(s[i]))
+                    return true;
+
+                i++;
+            }
+
+            return false;
         }
     }
 }

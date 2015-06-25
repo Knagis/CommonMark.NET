@@ -41,6 +41,14 @@ namespace CommonMark
             return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z');
         }
 
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
+        public static bool IsWhitespace(char c)
+        {
+            return c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\f';
+        }
+
         /// <summary>
         /// Checks if the given character is an Unicode space or punctuation character.
         /// </summary>

@@ -14,7 +14,7 @@
         internal static bool MatchWhitespaces(string data, ref char currentCharacter, ref int currentPosition, int lastPosition)
         {
             var matched = false;
-            while ((currentCharacter == ' ' || currentCharacter == '\n') && currentPosition < lastPosition)
+            while (Utilities.IsWhitespace(currentCharacter) && currentPosition < lastPosition)
             {
                 currentCharacter = data[++currentPosition];
                 matched = true;
