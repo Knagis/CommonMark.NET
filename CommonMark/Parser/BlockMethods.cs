@@ -554,6 +554,8 @@ namespace CommonMark.Parser
             if (blank && container.IsLastLineBlank)
                 BreakOutOfLists(ref container, line);
 
+            var maybeLazy = cur.Tag == BlockTag.Paragraph;
+
             // unless last matched container is code block, try new container starts:
             while (container.Tag != BlockTag.FencedCode &&
                    container.Tag != BlockTag.IndentedCode &&
@@ -566,23 +568,9 @@ namespace CommonMark.Parser
 
                 indent = first_nonspace - offset;
                 blank = curChar == '\n';
+                var indented = indent >= CODE_INDENT;
 
-                if (indent >= CODE_INDENT)
-                {
-
-                    if (cur.Tag != BlockTag.Paragraph && !blank)
-                    {
-                        offset += CODE_INDENT;
-                        container = CreateChildBlock(container, line, BlockTag.IndentedCode, offset);
-                    }
-                    else
-                    {
-                        // indent > 4 in lazy line
-                        break;
-                    }
-
-                }
-                else if (curChar == '>')
+                if (!indented && curChar == '>')
                 {
 
                     offset = first_nonspace + 1;
@@ -593,7 +581,7 @@ namespace CommonMark.Parser
                     container = CreateChildBlock(container, line, BlockTag.BlockQuote, first_nonspace);
 
                 }
-                else if (curChar == '#' && 0 != (matched = Scanner.scan_atx_header_start(ln, first_nonspace, ln.Length, out i)))
+                else if (!indented && curChar == '#' && 0 != (matched = Scanner.scan_atx_header_start(ln, first_nonspace, ln.Length, out i)))
                 {
 
                     offset = first_nonspace + matched;
@@ -601,7 +589,7 @@ namespace CommonMark.Parser
                     container.HeaderLevel = i;
 
                 }
-                else if ((curChar == '`' || curChar == '~') && 0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace, ln.Length)))
+                else if (!indented && (curChar == '`' || curChar == '~') && 0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace, ln.Length)))
                 {
 
                     container = CreateChildBlock(container, line, BlockTag.FencedCode, first_nonspace);
@@ -613,14 +601,14 @@ namespace CommonMark.Parser
                     offset = first_nonspace + matched;
 
                 }
-                else if (curChar == '<' && Scanner.scan_html_block_tag(ln, first_nonspace, ln.Length))
+                else if (!indented && curChar == '<' && Scanner.scan_html_block_tag(ln, first_nonspace, ln.Length))
                 {
 
                     container = CreateChildBlock(container, line, BlockTag.HtmlBlock, first_nonspace);
                     // note, we don't adjust offset because the tag is part of the text
 
                 }
-                else if (container.Tag == BlockTag.Paragraph && (curChar == '=' || curChar == '-')
+                else if (!indented && container.Tag == BlockTag.Paragraph && (curChar == '=' || curChar == '-')
                         && 0 != (matched = Scanner.scan_setext_header_line(ln, first_nonspace, ln.Length))
                         && ContainsSingleLine(container.StringContent))
                 {
@@ -630,7 +618,9 @@ namespace CommonMark.Parser
                     offset = ln.Length - 1;
 
                 }
-                else if (!(container.Tag == BlockTag.Paragraph && !all_matched) && 0 != (Scanner.scan_hrule(ln, first_nonspace, ln.Length)))
+                else if (!indented 
+                    && !(container.Tag == BlockTag.Paragraph && !all_matched) 
+                    && 0 != (Scanner.scan_hrule(ln, first_nonspace, ln.Length)))
                 {
 
                     // it's only now that we know the line is not part of a setext header:
@@ -640,7 +630,8 @@ namespace CommonMark.Parser
                     offset = ln.Length - 1;
 
                 }
-                else if (0 != (matched = ParseListMarker(ln, first_nonspace, out data)))
+                else if ((!indented || container.Tag == BlockTag.List) 
+                    && 0 != (matched = ParseListMarker(ln, first_nonspace, out data)))
                 {
 
                     // compute padding:
@@ -677,6 +668,11 @@ namespace CommonMark.Parser
                     container = CreateChildBlock(container, line, BlockTag.ListItem, first_nonspace);
                     container.ListData = data;
                 }
+                else if (indented && !maybeLazy && !blank)
+                {
+                    offset += CODE_INDENT;
+                    container = CreateChildBlock(container, line, BlockTag.IndentedCode, offset);
+                }
                 else
                 {
                     break;
@@ -687,6 +683,8 @@ namespace CommonMark.Parser
                     // if it's a line container, it can't contain other containers
                     break;
                 }
+
+                maybeLazy = false;
             }
 
             // what remains at offset is a text line.  add the text to the
