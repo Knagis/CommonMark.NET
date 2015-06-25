@@ -66,5 +66,12 @@ namespace CommonMark.Tests
         {
             Helpers.ExecuteTest("**[foo* bar", "<p>*<em>[foo</em> bar</p>");
         }
+
+        [TestMethod]
+        [TestCategory("Inlines - Emphasis and strong emphasis")]
+        public void DelayedEmphasisMatch5()
+        {
+            Helpers.ExecuteTest("[a*b**c*]", "<p>[a<em>b</em><em>c</em>]</p>");
+        }
     }
 }
