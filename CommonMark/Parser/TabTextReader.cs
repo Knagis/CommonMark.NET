@@ -80,17 +80,7 @@ namespace CommonMark.Parser
                     }
                     else if (c == '\0')
                     {
-                        if (!useBuilder)
-                        {
-                            useBuilder = true;
-                            this._builder.Length = 0;
-                        }
-
-                        if (line.IsTrackingPositions)
-                            line.AddOffset(this._previousBufferLength + num + tabIncreaseCount, 1);
-
-                        this._builder.Append(this._buffer, this._bufferPosition, num - this._bufferPosition);
-                        this._bufferPosition = num + 1;
+                        this._buffer[num] = '\uFFFD';
                     }
 
                     num++;

@@ -165,7 +165,7 @@ is it?
             {
                 "**foo**",
                 "foo",
-                "bar",
+                "\0bar",
                 "*quoting **is nice***",
                 "**is nice**",
                 "`right`",

@@ -17,7 +17,7 @@ namespace CommonMark.Tests
         [TestCategory("Security")]
         public void TestZeroCharRemoval()
         {
-            Helpers.ExecuteTest("\u0000*foo*\0", "<p><em>foo</em></p>");
+            Helpers.ExecuteTest("\u0000*foo*\0", "<p>\uFFFD<em>foo</em>\uFFFD</p>");
         }
 
         [TestMethod]
