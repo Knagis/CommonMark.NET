@@ -161,7 +161,8 @@ namespace CommonMark.Parser
             // handle case like [*b*] (the whole [..] is being removed but the inner *..* must still be matched).
             // this is not done automatically because the initial * is recognized as a potential closer (assuming
             // potential scenario '*[*' ).
-            PostProcessInlineStack(null, first, last, curPriority);
+            if (curPriority > 0)
+                PostProcessInlineStack(null, first, last, curPriority);
         }
 
         public static void PostProcessInlineStack(Subject subj, InlineStack first, InlineStack last, InlineStackPriority ignorePriority)
@@ -198,7 +199,7 @@ namespace CommonMark.Parser
                             if (retry)
                             {
                                 // remove everything between opened and closer (not inclusive).
-                                if (iopener.Next != istack.Previous)
+                                if (istack.Previous != null && iopener.Next != istack.Previous)
                                     RemoveStackEntry(iopener.Next, subj, istack.Previous);
 
                                 continue;

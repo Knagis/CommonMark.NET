@@ -323,7 +323,7 @@ namespace CommonMark.Parser
                 inl.FirstChild = inl.NextSibling;
                 inl.NextSibling = null;
 
-                InlineStack.RemoveStackEntry(opener, subj, closer);
+                InlineStack.RemoveStackEntry(opener, subj, closer?.Previous);
             }
             else
             {
@@ -354,6 +354,7 @@ namespace CommonMark.Parser
                     var newCloserInline = new Inline(clInl.LiteralContent.Substring(useDelims));
                     newCloserInline.SourcePosition = inl.SourceLastPosition = clInl.SourcePosition + useDelims;
                     newCloserInline.SourceLength = closer.DelimeterCount;
+                    newCloserInline.NextSibling = clInl.NextSibling;
 
                     clInl.LiteralContent = null;
                     clInl.NextSibling = null;
