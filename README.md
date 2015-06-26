@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/9jo20450utqy1p0o/branch/master?svg=true)](https://ci.appveyor.com/project/Knagis/commonmark-net/branch/master)
+
 # CommonMark.NET
 
 Implementation of [CommonMark] [1] specification (passes tests from version 0.20) in C# for converting Markdown documents to HTML.
