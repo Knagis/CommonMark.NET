@@ -362,7 +362,8 @@ namespace CommonMark.Parser
                 while (pos < len - 1)
                 {
                     c = ln[++pos];
-                    if (c >= '0' && c <= '9')
+                    // We limit to 9 digits to avoid overflow, This also seems to be the limit for 'start' in some browsers. 
+                    if (c >= '0' && c <= '9' && start < 100000000)
                         start = start * 10 + (c - '0');
                     else
                         break;
