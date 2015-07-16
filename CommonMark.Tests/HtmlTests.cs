@@ -50,7 +50,7 @@ namespace CommonMark.Tests
                 if (tag == "progress2" || tag == "blockquoteX")
                     result += "<p><" + tag + ">\n<em>" + tag + "</em>\n</" + tag + "></p>\n";
                 else
-                    result += "<" + tag + ">\n    *" + tag + "*\n</" + tag + ">\n";
+                    result += "<" + tag + ">\n\t*" + tag + "*\n</" + tag + ">\n";
             }
 
             Helpers.ExecuteTest(source, result);

@@ -55,33 +55,10 @@ namespace CommonMark.Parser
                 {
                     c = this._buffer[num];
                     if (c == '\r' || c == '\n')
-                    {
                         goto IL_4A;
-                    }
-                    if (c == '\t')
-                    {
-                        if (!useBuilder)
-                        {
-                            useBuilder = true;
-                            this._builder.Length = 0;
-                        }
 
-                        this._builder.Append(this._buffer, this._bufferPosition, num - this._bufferPosition);
-
-                        if (line.IsTrackingPositions)
-                        {
-                            var delta = -3 + (this._builder.Length % 4);
-                            line.AddOffset(this._previousBufferLength + num + tabIncreaseCount, delta);
-                            tabIncreaseCount -= delta;
-                        }
-
-                        this._builder.Append(' ', 4 - (this._builder.Length % 4));
-                        this._bufferPosition = num + 1;
-                    }
-                    else if (c == '\0')
-                    {
+                    if (c == '\0')
                         this._buffer[num] = '\uFFFD';
-                    }
 
                     num++;
                 }
