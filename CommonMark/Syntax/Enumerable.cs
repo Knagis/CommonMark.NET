@@ -10,7 +10,7 @@ namespace CommonMark.Syntax
         public Enumerable(Block root)
         {
             if (root == null)
-                throw new ArgumentNullException(nameof(root));
+                throw new ArgumentNullException("root");
 
             this._root = root;
         }
