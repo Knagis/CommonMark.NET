@@ -5,9 +5,188 @@ namespace CommonMark.Parser
 {
     internal static partial class Scanner
     {
+        private static readonly string[] blockTagNames = new[] { "ADDRESS", "ARTICLE", "ASIDE", "BASE", "BASEFONT", "BLOCKQUOTE", "BODY", "CAPTION", "CENTER", "COL", "COLGROUP", "DD", "DETAILS", "DIALOG", "DIR", "DIV", "DL", "DT", "FIELDSET", "FIGCAPTION", "FIGURE", "FOOTER", "FORM", "FRAME", "FRAMESET", "H1", "HEAD", "HEADER", "HR", "HTML", "IFRAME", "LEGEND", "LI", "MAIN", "MENU", "MENUITEM", "META", "NAV", "NOFRAMES", "OL", "OPTGROUP", "OPTION", "P", "PARAM", "PRE", "SCRIPT", "SECTION", "SOURCE", "STYLE", "SUMMARY", "TABLE", "TBODY", "TD", "TFOOT", "TH", "THEAD", "TITLE", "TR", "TRACK", "UL" };
+
+        public static Syntax.HtmlBlockType scan_html_block_start(string s, int pos, int sourceLength)
+        {
+            if (pos + 2 >= sourceLength)
+                return Syntax.HtmlBlockType.None;
+
+            if (s[pos] != '<')
+                return Syntax.HtmlBlockType.None;
+
+            var c = s[++pos];
+            if (c == '!')
+            {
+                c = pos + 2 >= sourceLength ? '\0' : s[++pos];
+                if (c >= 'A' && c <= 'Z')
+                    return Syntax.HtmlBlockType.DocumentType;
+
+                if (c == '[' && pos + 7 < sourceLength
+                    && string.Equals("CDATA[", s.Substring(pos + 1, 6), StringComparison.Ordinal))
+                    return Syntax.HtmlBlockType.CData;
+
+                if (c == '-' && pos + 1 < sourceLength && s[pos + 1] == '-')
+                    return Syntax.HtmlBlockType.Comment;
+
+                return Syntax.HtmlBlockType.None;
+            }
+
+            if (c == '?')
+            {
+                return Syntax.HtmlBlockType.ProcessingInstruction;
+            }
+
+            var slashAtBeginning = c == '/';
+            if (slashAtBeginning)
+                c = s[++pos];
+
+            var j = 0;
+            var tagname = new char[10];
+            while (((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '1' && c <= '6')) && j < 10 && ++pos < sourceLength)
+            {
+                tagname[j++] = c;
+                c = s[pos];
+            }
+
+            if (c != '>' && (c != '/' || pos + 1 >= sourceLength || s[pos + 1] != '>') && !Utilities.IsWhitespace(c))
+                return Syntax.HtmlBlockType.None;
+
+            var tname = new string(tagname, 0, j).ToUpperInvariant();
+            var tagIndex = Array.BinarySearch(blockTagNames, tname, StringComparer.Ordinal);
+            if (tagIndex < 0)
+                return Syntax.HtmlBlockType.None;
+
+            if (tagIndex == 44 || tagIndex == 45 || tagIndex == 48)
+                return c == '/' ? Syntax.HtmlBlockType.None : Syntax.HtmlBlockType.InterruptingBlockWithEmptyLines;
+
+            return Syntax.HtmlBlockType.InterruptingBlock;
+        }
+
+        public static Syntax.HtmlBlockType scan_html_block_start_7(string s, int pos, int sourceLength)
+        {
+            if (pos + 2 >= sourceLength)
+                return Syntax.HtmlBlockType.None;
+
+            if (s[pos] != '<')
+                return Syntax.HtmlBlockType.None;
+
+            int i = pos;
+            if (s[++i] == '/')
+                i = _scanHtmlTagCloseTag(s, i, sourceLength);
+            else
+                i = _scanHtmlTagOpenTag(s, i, sourceLength);
+
+            if (i == 0)
+                return Syntax.HtmlBlockType.None;
+
+            i += pos;
+            while (++i < sourceLength)
+            {
+                if (!Utilities.IsWhitespace(s[i]))
+                    return Syntax.HtmlBlockType.None;
+            }
+
+            return Syntax.HtmlBlockType.NonInterruptingBlock;
+        }
+
+        public static bool scan_html_block_end(Syntax.HtmlBlockType type, string s, int pos, int sourceLength)
+        {
+            switch (type)
+            {
+                case Syntax.HtmlBlockType.InterruptingBlockWithEmptyLines:
+                    return _scan_html_block_end_1(s, pos, sourceLength);
+                case Syntax.HtmlBlockType.Comment:
+                    return _scan_html_block_end_2(s, pos, sourceLength);
+                case Syntax.HtmlBlockType.ProcessingInstruction:
+                    return _scan_html_block_end_3(s, pos, sourceLength);
+                case Syntax.HtmlBlockType.DocumentType:
+                    return _scan_html_block_end_4(s, pos, sourceLength);
+                case Syntax.HtmlBlockType.CData:
+                    return _scan_html_block_end_5(s, pos, sourceLength);
+                default:
+                    return false;
+            }
+        }
+
+        private static bool _scan_html_block_end_1(string s, int pos, int sourceLength)
+        {
+            //  .* [<] [/] ('script'|'pre'|'style') [>] { return (bufsize_t)(p - start); }
+            var i = pos;
+
+            while (i + 5 < sourceLength)
+            {
+                i = s.IndexOf('<', i, sourceLength - i - 3);
+                if (i == -1)
+                    break;
+
+                if (s[++i] != '/')
+                    continue;
+
+                var c = s[++i];
+                if (c != 's' && c != 'S' && c != 'p' && c != 'P')
+                    continue;
+
+                var j = s.IndexOf('>', i, Math.Min(sourceLength - i, 7));
+                if (j == -1)
+                    continue;
+
+                var t = s.Substring(i, j - i).ToUpperInvariant();
+                if (string.Equals("PRE", t, StringComparison.Ordinal)
+                    || string.Equals("STYLE", t, StringComparison.Ordinal)
+                    || string.Equals("SCRIPT", t, StringComparison.Ordinal))
+                    return true;
+            }
+
+            return false;
+        }
+
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
+        private static bool _scan_html_block_end_2(string s, int pos, int sourceLength)
+        {
+            //  .* '-->' { return (bufsize_t)(p - start); }
+
+            var i = s.IndexOf("-->", pos, sourceLength - pos, StringComparison.Ordinal);
+            return i > -1;
+        }
+
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
+        private static bool _scan_html_block_end_3(string s, int pos, int sourceLength)
+        {
+            //  .* '?>' { return (bufsize_t)(p - start); }
+
+            var i = s.IndexOf("?>", pos, sourceLength - pos, StringComparison.Ordinal);
+            return i > -1;
+        }
+
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
+        private static bool _scan_html_block_end_4(string s, int pos, int sourceLength)
+        {
+            //  .* '>' { return (bufsize_t)(p - start); }
+            var i = s.IndexOf('>', pos, sourceLength - pos);
+            return i > -1;
+        }
+
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
+        private static bool _scan_html_block_end_5(string s, int pos, int sourceLength)
+        {
+            //  .* ']]>' { return (bufsize_t)(p - start); }
+            var i = s.IndexOf("]]>", pos, sourceLength - pos, StringComparison.Ordinal);
+            return i > -1;
+
+        }
+
         private static int _scanHtmlTagCloseTag(string s, int pos, int sourceLength)
         {
-            // Orignal regexp: "[/]" + tagname + @"\s*[>]"
+            // Original regexp: "[/]" + tagname + @"\s*[>]"
 
             if (pos + 2 >= sourceLength)
                 return 0;
@@ -171,7 +350,7 @@ namespace CommonMark.Parser
                 return 0;
 
             // Move past any other characters that make up the tag name
-            ScannerCharacterMatcher.MatchAsciiLetterOrDigit(s, ref currentChar, ref currentPosition, lastPosition);
+            ScannerCharacterMatcher.MatchHtmlTagNameCharacter(s, ref currentChar, ref currentPosition, lastPosition);
 
             // loop while the end of string is reached or the tag is closed
             while (currentPosition <= lastPosition)

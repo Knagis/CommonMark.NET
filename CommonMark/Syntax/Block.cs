@@ -68,6 +68,8 @@ namespace CommonMark.Syntax
         /// </summary>
         public BlockTag Tag { get; set; }
 
+        public HtmlBlockType HtmlBlockType { get; set; }
+
         /// <summary>
         /// Gets or sets the number of the first line in the source text that contains this element.
         /// </summary>

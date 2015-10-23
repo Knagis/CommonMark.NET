@@ -47,10 +47,7 @@ namespace CommonMark.Tests
             foreach (var tag in new[] { "p", "h1", "map", "form", "style", "object", "section", "progress", "progress2", "blockquote", "blockquoteX" })
             {
                 source += "<" + tag + ">\n\t*" + tag + "*\n</" + tag + ">\n\n";
-                if (tag == "progress2" || tag == "blockquoteX")
-                    result += "<p><" + tag + ">\n<em>" + tag + "</em>\n</" + tag + "></p>\n";
-                else
-                    result += "<" + tag + ">\n\t*" + tag + "*\n</" + tag + ">\n";
+                result += "<" + tag + ">\n\t*" + tag + "*\n</" + tag + ">\n";
             }
 
             Helpers.ExecuteTest(source, result);

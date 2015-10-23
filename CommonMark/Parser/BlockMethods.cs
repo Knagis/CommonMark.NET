@@ -122,7 +122,6 @@ namespace CommonMark.Parser
 
             switch (b.Tag)
             {
-
                 case BlockTag.Paragraph:
                     var sc = b.StringContent;
                     if (!sc.StartsWith('['))
@@ -553,7 +552,8 @@ namespace CommonMark.Parser
 
                     case BlockTag.HtmlBlock:
                         {
-                            if (blank)
+                            // all other block types can accept blanks
+                            if (blank && container.HtmlBlockType >= HtmlBlockType.InterruptingBlock)
                             {
                                 container.IsLastLineBlank = true;
                                 all_matched = false;
@@ -636,10 +636,14 @@ namespace CommonMark.Parser
                     AdvanceOffset(ln, first_nonspace + matched - offset, false, ref offset, ref column);
 
                 }
-                else if (!indented && curChar == '<' && Scanner.scan_html_block_tag(ln, first_nonspace, ln.Length))
+                else if (!indented && curChar == '<' && 
+                    (0 != (matched = (int)Scanner.scan_html_block_start(ln, first_nonspace, ln.Length))
+                    || (container.Tag != BlockTag.Paragraph && 0 != (matched = (int)Scanner.scan_html_block_start_7(ln, first_nonspace, ln.Length)))
+                    ))
                 {
 
                     container = CreateChildBlock(container, line, BlockTag.HtmlBlock, first_nonspace);
+                    container.HtmlBlockType = (HtmlBlockType)matched;
                     // note, we don't adjust offset because the tag is part of the text
 
                 }
@@ -802,6 +806,12 @@ namespace CommonMark.Parser
                 {
 
                     AddLine(container, line, ln, offset);
+
+                    if (Scanner.scan_html_block_end(container.HtmlBlockType, ln, first_nonspace, ln.Length))
+                    {
+                        Finalize(container, line);
+                        container = container.Parent;
+                    }
 
                 }
                 else if (blank)

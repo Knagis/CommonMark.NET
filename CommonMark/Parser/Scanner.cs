@@ -11,8 +11,7 @@ namespace CommonMark.Parser
         /// List of valid schemes of an URL. The array must be sorted.
         /// </summary>
         private static readonly string[] schemeArray = new[] { "AAA", "AAAS", "ABOUT", "ACAP", "ADIUMXTRA", "AFP", "AFS", "AIM", "APT", "ATTACHMENT", "AW", "BESHARE", "BITCOIN", "BOLO", "CALLTO", "CAP", "CHROME", "CHROME-EXTENSION", "CID", "COAP", "COM-EVENTBRITE-ATTENDEE", "CONTENT", "CRID", "CVS", "DATA", "DAV", "DICT", "DLNA-PLAYCONTAINER", "DLNA-PLAYSINGLE", "DNS", "DOI", "DTN", "DVB", "ED2K", "FACETIME", "FEED", "FILE", "FINGER", "FISH", "FTP", "GEO", "GG", "GIT", "GIZMOPROJECT", "GO", "GOPHER", "GTALK", "H323", "HCP", "HTTP", "HTTPS", "IAX", "ICAP", "ICON", "IM", "IMAP", "INFO", "IPN", "IPP", "IRC", "IRC6", "IRCS", "IRIS", "IRIS.BEEP", "IRIS.LWZ", "IRIS.XPC", "IRIS.XPCS", "ITMS", "JAR", "JAVASCRIPT", "JMS", "KEYPARC", "LASTFM", "LDAP", "LDAPS", "MAGNET", "MAILTO", "MAPS", "MARKET", "MESSAGE", "MID", "MMS", "MS-HELP", "MSNIM", "MSRP", "MSRPS", "MTQP", "MUMBLE", "MUPDATE", "MVN", "NEWS", "NFS", "NI", "NIH", "NNTP", "NOTES", "OID", "OPAQUELOCKTOKEN", "PALM", "PAPARAZZI", "PLATFORM", "POP", "PRES", "PROXY", "PSYC", "QUERY", "RES", "RESOURCE", "RMI", "RSYNC", "RTMP", "RTSP", "SECONDLIFE", "SERVICE", "SESSION", "SFTP", "SGN", "SHTTP", "SIEVE", "SIP", "SIPS", "SKYPE", "SMB", "SMS", "SNMP", "SOAP.BEEP", "SOAP.BEEPS", "SOLDAT", "SPOTIFY", "SSH", "STEAM", "SVN", "TAG", "TEAMSPEAK", "TEL", "TELNET", "TFTP", "THINGS", "THISMESSAGE", "TIP", "TN3270", "TV", "UDP", "UNREAL", "URN", "UT2004", "VEMMI", "VENTRILO", "VIEW-SOURCE", "WEBCAL", "WS", "WSS", "WTAI", "WYCIWYG", "XCON", "XCON-USERID", "XFIRE", "XMLRPC.BEEP", "XMLRPC.BEEPS", "XMPP", "XRI", "YMSGR", "Z39.50R", "Z39.50S" };
-        private static readonly string[] blockTagNames = new[] { "ARTICLE", "ASIDE", "BLOCKQUOTE", "BODY", "BUTTON", "CANVAS", "CAPTION", "COL", "COLGROUP", "DD", "DIV", "DL", "DT", "EMBED", "FIELDSET", "FIGCAPTION", "FIGURE", "FOOTER", "FORM", "H1", "H2", "H3", "H4", "H5", "H6", "HEADER", "HGROUP", "HR", "IFRAME", "LI", "MAP", "OBJECT", "OL", "OUTPUT", "P", "PRE", "PROGRESS", "SCRIPT", "SECTION", "STYLE", "TABLE", "TBODY", "TD", "TEXTAREA", "TFOOT", "TH", "THEAD", "TR", "UL", "VIDEO" };
-
+        
         /// <summary>
         /// Try to match URI autolink after first &lt;, returning number of chars matched.
         /// </summary>
@@ -113,48 +112,6 @@ namespace CommonMark.Parser
                 hadDot = true;
                 c = s[++i];
             }
-        }
-
-        /// <summary>
-        /// Try to match an HTML block tag including first &lt;.
-        /// </summary>
-        public static bool scan_html_block_tag(string s, int pos, int sourceLength)
-        {
-            /*!re2c
-              [<] [/] blocktagname (spacechar | [>])  { return (p - start); }
-              [<] blocktagname (spacechar | [/>]) { return (p - start); }
-              [<] [!?] { return (p - start); }
-              .? { return 0; }
-            */
-
-            if (pos + 1 >= sourceLength)
-                return false;
-
-            if (s[pos] != '<')
-                return false;
-
-            var i = pos + 1;
-            var nextChar = s[i];
-            if (nextChar == '!' || nextChar == '?')
-                return true;
-
-            var slashAtBeginning = nextChar == '/';
-            if (slashAtBeginning)
-                nextChar = s[++i];
-
-            var j = 0;
-            var tagname = new char[10];
-            while (((nextChar >= 'A' && nextChar <= 'Z') || (nextChar >= 'a' && nextChar <= 'z') || (nextChar >= '1' && nextChar <= '6')) && j < 10 && ++i < sourceLength)
-            {
-                tagname[j++] = nextChar;
-                nextChar = s[i];
-            }
-
-            var tname = new string(tagname, 0, j).ToUpperInvariant();
-            if (Array.BinarySearch(blockTagNames, tname, StringComparer.Ordinal) < 0)
-                return false;
-
-            return nextChar == '>' || (!slashAtBeginning && nextChar == '/') || (nextChar == ' ' || nextChar == '\n');
         }
 
         /// <summary>

@@ -42,17 +42,19 @@
         }
 
         /// <summary>
-        /// Moves along the given string as long as the current character is a ASCII letter or digit.
+        /// Moves along the given string as long as the current character is a valid HTML tag character 
+        /// (ASCII letter or digit or dash).
         /// </summary>
 #if OptimizeFor45
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 #endif
-        internal static bool MatchAsciiLetterOrDigit(string data, ref char currentCharacter, ref int currentPosition, int lastPosition)
+        internal static bool MatchHtmlTagNameCharacter(string data, ref char currentCharacter, ref int currentPosition, int lastPosition)
         {
             var matched = false;
             while ((   (currentCharacter >= 'a' && currentCharacter <= 'z') 
                     || (currentCharacter >= 'A' && currentCharacter <= 'Z') 
-                    || (currentCharacter >= '0' && currentCharacter <= '9'))
+                    || (currentCharacter >= '0' && currentCharacter <= '9')
+                    || (currentCharacter == '-'))
                   && currentPosition < lastPosition)
             {
                 currentCharacter = data[++currentPosition];
