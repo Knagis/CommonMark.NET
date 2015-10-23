@@ -6,7 +6,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>47c48819-62b7-4bd3-89ff-ba9a0b16c8fb</ProjectGuid>
-    <RootNamespace>CommonMark</RootNamespace>
+    <RootNamespace>CommonMark.NETCore</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">obj\core\</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">bin\core\</OutputPath>
   </PropertyGroup>
@@ -17,6 +17,9 @@
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <ProduceOutputsOnBuild>True</ProduceOutputsOnBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <ProduceOutputsOnBuild>True</ProduceOutputsOnBuild>
   </PropertyGroup>
   <ProjectExtensions>
