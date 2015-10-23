@@ -68,6 +68,9 @@ namespace CommonMark.Syntax
         /// </summary>
         public BlockTag Tag { get; set; }
 
+        /// <summary>
+        /// Gets or sets the type of the HTML block. Only applies when <see cref="Tag"/> equals <see cref="BlockTag.HtmlBlock"/>.
+        /// </summary>
         public HtmlBlockType HtmlBlockType { get; set; }
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace CommonMark.Syntax
 {
     /// <summary>
     /// Specifies the type of the HTML block a <see cref="Block"/> instance represents.
-    /// <seealso cref="http://spec.commonmark.org/0.22/#html-block"/>
+    /// See http://spec.commonmark.org/0.22/#html-block
     /// </summary>
     public enum HtmlBlockType
     {
