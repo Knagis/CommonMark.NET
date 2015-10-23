@@ -494,11 +494,20 @@ namespace CommonMark.Parser
                     case BlockTag.ListItem:
                         {
                             if (indent >= container.ListData.MarkerOffset + container.ListData.Padding)
+                            {
                                 AdvanceOffset(ln, container.ListData.MarkerOffset + container.ListData.Padding, true, ref offset, ref column);
-                            else if (blank)
+                            }
+                            else if (blank && container.FirstChild != null)
+                            {
+                                // if container->first_child is NULL, then the opening line
+                                // of the list item was blank after the list marker; in this
+                                // case, we are done with the list item.
                                 AdvanceOffset(ln, first_nonspace - offset, false, ref offset, ref column);
+                            }
                             else
+                            {
                                 all_matched = false;
+                            }
 
                             break;
                         }
@@ -735,6 +744,11 @@ namespace CommonMark.Parser
             FindFirstNonspace(ln, offset, column, out first_nonspace, out first_nonspace_column, out curChar);
             indent = first_nonspace_column - column;
             blank = curChar == '\n';
+
+            if (blank && container.LastChild != null)
+            {
+                container.LastChild.IsLastLineBlank = true;
+            }
 
             // block quote lines are never blank as they start with >
             // and we don't count blanks in fenced code for purposes of tight/loose

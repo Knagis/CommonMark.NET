@@ -24,7 +24,7 @@ namespace CommonMark.Tests
 <li␣data-sourcepos=""0-4"">
 <p␣data-sourcepos=""2-4""><span␣data-sourcepos=""2-3"">a</span></p>
 </li>
-<li␣data-sourcepos=""4-7""></li>
+<li␣data-sourcepos=""4-6""></li>
 <li␣data-sourcepos=""7-10"">
 <p␣data-sourcepos=""9-10""><span␣data-sourcepos=""9-10"">c</span></p>
 </li>
