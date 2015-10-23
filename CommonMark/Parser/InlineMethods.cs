@@ -1194,6 +1194,7 @@ namespace CommonMark.Parser
             // parse optional link_title
             var beforetitle = subj.Position;
             spnl(subj);
+
             matchlen = Scanner.scan_link_title(subj.Buffer, subj.Position, subj.Length);
             if (matchlen > 0)
             {
@@ -1207,14 +1208,30 @@ namespace CommonMark.Parser
                 title = string.Empty;
             }
 
+            char c;
             // parse final spaces and newline:
-            while (peek_char(subj) == ' ')
-                subj.Position++;
+            while ((c = peek_char(subj)) == ' ') subj.Position++;
 
-            if (peek_char(subj) == '\n')
+            if (c == '\n')
+            {
                 subj.Position++;
-            else if (peek_char(subj) != '\0')
-                goto INVALID;
+            }
+            else if (c != '\0')
+            {
+                if (matchlen > 0)
+                { // try rewinding before title
+                    subj.Position = beforetitle;
+                    while ((c = peek_char(subj)) == ' ') subj.Position++;
+                    if (c == '\n')
+                        subj.Position++;
+                    else if (c != '\0')
+                       goto INVALID;
+                }
+                else
+                {
+                    goto INVALID;
+                }
+            }
 
             // insert reference into refmap
             AddReference(subj.ReferenceMap, lab.Value, url, title);
