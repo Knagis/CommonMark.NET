@@ -40,15 +40,12 @@ namespace CommonMark.Parser
         /// <summary>
         /// Collapses internal whitespace to single space, removes leading/trailing whitespace, folds case.
         /// </summary>
-        private static string NormalizeReference(StringPart s, bool respectCase)
+        private static string NormalizeReference(StringPart s)
         {
             if (s.Length == 0)
                 return string.Empty;
 
-            string result = NormalizeWhitespace(s.Source, s.StartIndex, s.Length);
-            if (!respectCase)
-                result = result.ToLowerInvariant();
-            return result;
+            return NormalizeWhitespace(s.Source, s.StartIndex, s.Length).ToLowerInvariant();
         }
 
         /// <summary>
@@ -64,8 +61,7 @@ namespace CommonMark.Parser
             if (lab.Length > Reference.MaximumReferenceLabelLength)
                 return Reference.InvalidReference;
 
-            bool respectCase = (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.RespectReferenceCase) != CommonMarkAdditionalFeatures.None;
-            string label = NormalizeReference(lab, respectCase);
+            string label = NormalizeReference(lab);
 
             Reference r;
             if (refmap.TryGetValue(label, out r))
@@ -80,8 +76,7 @@ namespace CommonMark.Parser
         /// </summary>
         private static void AddReference(Dictionary<string, Reference> refmap, StringPart label, string url, string title, CommonMarkSettings settings)
         {
-            bool respectCase = (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.RespectReferenceCase) != CommonMarkAdditionalFeatures.None;
-            var normalizedLabel = NormalizeReference(label, respectCase);
+            var normalizedLabel = NormalizeReference(label);
             if (refmap.ContainsKey(normalizedLabel))
                 return;
 
