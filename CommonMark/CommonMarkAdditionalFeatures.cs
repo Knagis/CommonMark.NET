@@ -21,11 +21,6 @@ namespace CommonMark
         StrikethroughTilde = 1,
 
         /// <summary>
-        /// The parser will treat the case of reference labels with sensitivitiley.
-        /// </summary>
-        RespectReferenceCase = 2,
-
-        /// <summary>
         /// All additional features are enabled.
         /// </summary>
         All = 0x7FFFFFFF
