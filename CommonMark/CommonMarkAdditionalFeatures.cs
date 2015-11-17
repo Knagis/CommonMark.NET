@@ -21,6 +21,16 @@ namespace CommonMark
         StrikethroughTilde = 1,
 
         /// <summary>
+        /// The parser will recognize syntax <c>~foo~</c> that will be rendered as <c>&lt;sub&gt;foo&lt;/sub&gt;</c>.
+        /// </summary>
+        SubscriptTilde = 2,
+
+        /// <summary>
+        /// The parser will recognize syntax <c>^foo^</c> that will be rendered as <c>&lt;sup&gt;foo&lt;/sup&gt;</c>.
+        /// </summary>
+        SuperscriptCaret = 4,
+
+        /// <summary>
         /// All additional features are enabled.
         /// </summary>
         All = 0x7FFFFFFF

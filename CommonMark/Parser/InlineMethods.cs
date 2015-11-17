@@ -16,9 +16,10 @@ namespace CommonMark.Parser
         /// <returns></returns>
         internal static Func<Subject, CommonMarkSettings, Inline>[] InitializeParsers(CommonMarkSettings settings)
         {
-            var strikethroughTilde = 0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde);
+            var handleCaret = 0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.SuperscriptCaret);
+            var handleTilde = 0 != (settings.AdditionalFeatures & (CommonMarkAdditionalFeatures.StrikethroughTilde | CommonMarkAdditionalFeatures.SubscriptTilde));
 
-            var p = new Func<Subject, CommonMarkSettings, Inline>[strikethroughTilde ? 127 : 97];
+            var p = new Func<Subject, CommonMarkSettings, Inline>[handleTilde ? 127 : 97];
             p['\n'] = handle_newline;
             p['`'] = handle_backticks;
             p['\\'] = handle_backslash;
@@ -30,7 +31,10 @@ namespace CommonMark.Parser
             p[']'] = HandleRightSquareBracket;
             p['!'] = HandleExclamation;
 
-            if (strikethroughTilde)
+            if (handleCaret)
+                p['^'] = HandleCaret;
+
+            if (handleTilde)
                 p['~'] = HandleTilde;
 
             return p;
@@ -429,8 +433,16 @@ namespace CommonMark.Parser
             bool canOpen, canClose;
             var numdelims = ScanEmphasisDelimeters(subj, '~', out canOpen, out canClose);
 
-            if (numdelims == 1)
-                return new Inline("~", subj.Position - 1, subj.Position);
+            if (numdelims <= 1)
+                return HandleSubscript(subj, canOpen, canClose, settings);
+            
+            return HandleStrikethrough(subj, numdelims, canOpen, canClose, settings);
+        }
+
+        private static Inline HandleStrikethrough(Subject subj, int numdelims, bool canOpen, bool canClose, CommonMarkSettings settings)
+        {
+            if (0 == (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde))
+                return null;
 
             if (canClose)
             {
@@ -462,6 +474,89 @@ namespace CommonMark.Parser
                 var istack = new InlineStack();
                 istack.DelimeterCount = numdelims;
                 istack.Delimeter = '~';
+                istack.StartingInline = inlText;
+                istack.Priority = InlineStack.InlineStackPriority.Emphasis;
+                istack.Flags = (canOpen ? InlineStack.InlineStackFlags.Opener : 0)
+                             | (canClose ? InlineStack.InlineStackFlags.Closer : 0);
+
+                InlineStack.AppendStackEntry(istack, subj);
+            }
+
+            return inlText;
+        }
+
+        private static Inline HandleSubscript(Subject subj, bool canOpen, bool canClose, CommonMarkSettings settings)
+        {
+            if (0 == (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.SubscriptTilde))
+                return new Inline("~", subj.Position - 1, subj.Position);
+
+            if (canClose)
+            {
+                // walk the stack and find a matching opener, if there is one
+                var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, '~', out canClose);
+                if (istack != null)
+                {
+                    MatchInlineStack(istack, subj, 1, null, null, InlineTag.Subscript);
+                    return HandleTilde(subj, settings);
+                }
+            }
+
+            var inlText = new Inline(subj.Buffer, subj.Position - 1, 1,
+                subj.Position - 1, subj.Position);
+
+            if (canOpen || canClose)
+            {
+                var istack = new InlineStack();
+                istack.DelimeterCount = 1;
+                istack.Delimeter = '~';
+                istack.StartingInline = inlText;
+                istack.Priority = InlineStack.InlineStackPriority.Emphasis;
+                istack.Flags = (canOpen ? InlineStack.InlineStackFlags.Opener : 0)
+                             | (canClose ? InlineStack.InlineStackFlags.Closer : 0);
+
+                InlineStack.AppendStackEntry(istack, subj);
+            }
+
+            return inlText;
+        }
+
+        private static Inline HandleCaret(Subject subj, CommonMarkSettings settings)
+        {
+            bool canOpen, canClose;
+            var numdelims = ScanEmphasisDelimeters(subj, '^', out canOpen, out canClose);
+
+            //if (numdelims > 1)
+            //    return new Inline("^", subj.Position - numdelims, subj.Position);
+
+            if (canClose)
+            {
+                // walk the stack and find a matching opener, if there is one
+                var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, '^', out canClose);
+                if (istack != null)
+                {
+                    var useDelims = MatchInlineStack(istack, subj, numdelims, null, InlineTag.Superscript, null);
+
+                    // if the closer was not fully used, move back a char or two and try again.
+                    if (useDelims < numdelims)
+                    {
+                        subj.Position = subj.Position - numdelims + useDelims;
+
+                        // use recursion only if it will not be very deep.
+                        if (numdelims < 10)
+                            return HandleCaret(subj, settings);
+                    }
+
+                    return null;
+                }
+            }
+
+            var inlText = new Inline(subj.Buffer, subj.Position - numdelims, numdelims, subj.Position - numdelims, subj.Position);
+
+            if (canOpen || canClose)
+            {
+                var istack = new InlineStack();
+                istack.DelimeterCount = numdelims;
+                istack.Delimeter = '^';
                 istack.StartingInline = inlText;
                 istack.Priority = InlineStack.InlineStackPriority.Emphasis;
                 istack.Flags = (canOpen ? InlineStack.InlineStackFlags.Opener : 0)
