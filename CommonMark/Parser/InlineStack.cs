@@ -114,7 +114,8 @@ namespace CommonMark.Parser
         /// <param name="first">The first entry to be removed.</param>
         /// <param name="subj">The subject associated with this stack. Can be <c>null</c> if the pointers in the subject should not be updated.</param>
         /// <param name="last">The last entry to be removed. Can be <c>null</c> if everything starting from <paramref name="first"/> has to be removed.</param>
-        public static void RemoveStackEntry(InlineStack first, Subject subj, InlineStack last)
+        /// <param name="settings">The object containing settings for the parsing process.</param>
+        public static void RemoveStackEntry(InlineStack first, Subject subj, InlineStack last, CommonMarkSettings settings)
         {
             var curPriority = first.Priority;
 
@@ -162,10 +163,10 @@ namespace CommonMark.Parser
             // this is not done automatically because the initial * is recognized as a potential closer (assuming
             // potential scenario '*[*' ).
             if (curPriority > 0)
-                PostProcessInlineStack(null, first, last, curPriority);
+                PostProcessInlineStack(null, first, last, curPriority, settings);
         }
 
-        public static void PostProcessInlineStack(Subject subj, InlineStack first, InlineStack last, InlineStackPriority ignorePriority)
+        public static void PostProcessInlineStack(Subject subj, InlineStack first, InlineStack last, InlineStackPriority ignorePriority, CommonMarkSettings settings)
         {
             while (ignorePriority > 0)
             {
@@ -174,7 +175,7 @@ namespace CommonMark.Parser
                 {
                     if (istack.Priority >= ignorePriority)
                     {
-                        RemoveStackEntry(istack, subj, istack);
+                        RemoveStackEntry(istack, subj, istack, settings);
                     }
                     else if (0 != (istack.Flags & InlineStackFlags.Closer))
                     {
@@ -185,13 +186,13 @@ namespace CommonMark.Parser
                             bool retry = false;
                             if (iopener.Delimeter == '~')
                             {
-                                InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, null, InlineTag.Strikethrough);
-                                if (istack.DelimeterCount > 1)
+                                InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, InlineTag.Subscript, InlineTag.Strikethrough, settings);
+                                if (istack.DelimeterCount > 0)
                                     retry = true;
                             }
                             else
                             {
-                                var useDelims = InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, InlineTag.Emphasis, InlineTag.Strong);
+                                var useDelims = InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, InlineTag.Emphasis, InlineTag.Strong, settings);
                                 if (istack.DelimeterCount > 0)
                                     retry = true;
                             }
@@ -200,14 +201,14 @@ namespace CommonMark.Parser
                             {
                                 // remove everything between opened and closer (not inclusive).
                                 if (istack.Previous != null && iopener.Next != istack.Previous)
-                                    RemoveStackEntry(iopener.Next, subj, istack.Previous);
+                                    RemoveStackEntry(iopener.Next, subj, istack.Previous, settings);
 
                                 continue;
                             }
                             else
                             {
                                 // remove opener, everything in between, and the closer
-                                RemoveStackEntry(iopener, subj, istack);
+                                RemoveStackEntry(iopener, subj, istack, settings);
                             }
                         }
                         else if (!canClose)
