@@ -185,8 +185,8 @@ namespace CommonMark.Parser
                             bool retry = false;
                             if (iopener.Delimeter == '~')
                             {
-                                InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, null, InlineTag.Strikethrough);
-                                if (istack.DelimeterCount > 1)
+                                InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, InlineTag.Superscript, InlineTag.Strikethrough);
+                                if (istack.DelimeterCount > 0)
                                     retry = true;
                             }
                             else
