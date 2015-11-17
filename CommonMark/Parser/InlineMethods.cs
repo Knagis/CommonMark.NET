@@ -299,7 +299,7 @@ namespace CommonMark.Parser
             return numdelims;
         }
 
-        internal static int MatchInlineStack(InlineStack opener, Subject subj, int closingDelimeterCount, InlineStack closer, InlineTag? singleCharTag, InlineTag? doubleCharTag)
+        internal static int MatchInlineStack(InlineStack opener, Subject subj, int closingDelimeterCount, InlineStack closer, InlineTag? singleCharTag, InlineTag? doubleCharTag, CommonMarkSettings settings)
         {
             // calculate the actual number of delimeters used from this closer
             int useDelims;
@@ -327,7 +327,7 @@ namespace CommonMark.Parser
                 inl.FirstChild = inl.NextSibling;
                 inl.NextSibling = null;
 
-                InlineStack.RemoveStackEntry(opener, subj, closer?.Previous);
+                InlineStack.RemoveStackEntry(opener, subj, closer?.Previous, settings);
             }
             else
             {
@@ -394,7 +394,7 @@ namespace CommonMark.Parser
                 var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, c, out canClose);
                 if (istack != null)
                 {
-                    var useDelims = MatchInlineStack(istack, subj, numdelims, null, InlineTag.Emphasis, InlineTag.Strong);
+                    var useDelims = MatchInlineStack(istack, subj, numdelims, null, InlineTag.Emphasis, InlineTag.Strong, settings);
 
                     // if the closer was not fully used, move back a char or two and try again.
                     if (useDelims < numdelims)
@@ -431,6 +431,12 @@ namespace CommonMark.Parser
         private static Inline HandleTilde(Subject subj, CommonMarkSettings settings)
         {
             bool canOpen, canClose;
+            //InlineTag? singleCharTag = null;
+            //if (0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.SubscriptTilde))
+            //    singleCharTag = InlineTag.Subscript;
+            //InlineTag? doubleCharTag = null;
+            //if (0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde))
+            //    doubleCharTag = InlineTag.Strikethrough;
             var numdelims = ScanEmphasisDelimeters(subj, '~', out canOpen, out canClose);
 
             if (canClose)
@@ -439,7 +445,7 @@ namespace CommonMark.Parser
                 var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, '~', out canClose);
                 if (istack != null)
                 {
-                    var useDelims = MatchInlineStack(istack, subj, numdelims, null, InlineTag.Subscript, InlineTag.Strikethrough);
+                    var useDelims = MatchInlineStack(istack, subj, numdelims, null, InlineTag.Subscript, InlineTag.Strikethrough, settings);
 
                     // if the closer was not fully used, move back a char or two and try again.
                     if (useDelims < numdelims)
@@ -487,7 +493,7 @@ namespace CommonMark.Parser
                 var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, '^', out canClose);
                 if (istack != null)
                 {
-                    var useDelims = MatchInlineStack(istack, subj, numdelims, null, InlineTag.Superscript, null);
+                    var useDelims = MatchInlineStack(istack, subj, numdelims, null, InlineTag.Superscript, null, settings);
 
                     // if the closer was not fully used, move back a char or two and try again.
                     if (useDelims < numdelims)
@@ -563,7 +569,7 @@ namespace CommonMark.Parser
             return inlText;
         }
 
-        internal static void MatchSquareBracketStack(InlineStack opener, Subject subj, Reference details)
+        internal static void MatchSquareBracketStack(InlineStack opener, Subject subj, Reference details, CommonMarkSettings settings)
         {
             if (details != null)
             {
@@ -596,7 +602,7 @@ namespace CommonMark.Parser
                     }
                 }
 
-                InlineStack.RemoveStackEntry(opener, subj, null);
+                InlineStack.RemoveStackEntry(opener, subj, null, settings);
 
                 subj.LastInline = inl;
             }
@@ -604,7 +610,7 @@ namespace CommonMark.Parser
             {
                 // this looked like a link, but was not.
                 // remove the opener stack entry but leave the inbetween intact
-                InlineStack.RemoveStackEntry(opener, subj, opener);
+                InlineStack.RemoveStackEntry(opener, subj, opener, settings);
 
                 var inl = new Inline("]", subj.Position - 1, subj.Position);
                 subj.LastInline.LastSibling.NextSibling = inl;
@@ -625,7 +631,7 @@ namespace CommonMark.Parser
                 // if the opener is "inactive" then it means that there was a nested link
                 if (istack.DelimeterCount == -1)
                 {
-                    InlineStack.RemoveStackEntry(istack, subj, istack);
+                    InlineStack.RemoveStackEntry(istack, subj, istack, settings);
                     return new Inline("]", subj.Position - 1, subj.Position);
                 }
 
@@ -646,7 +652,7 @@ namespace CommonMark.Parser
                 if (details == Reference.InvalidReference)
                     details = null;
 
-                MatchSquareBracketStack(istack, subj, details);
+                MatchSquareBracketStack(istack, subj, details, settings);
                 return null;
             }
 
@@ -1114,7 +1120,7 @@ namespace CommonMark.Parser
                 }
             }
 
-            InlineStack.PostProcessInlineStack(subj, subj.FirstPendingInline, subj.LastPendingInline, InlineStack.InlineStackPriority.Maximum);
+            InlineStack.PostProcessInlineStack(subj, subj.FirstPendingInline, subj.LastPendingInline, InlineStack.InlineStackPriority.Maximum, settings);
 
             return first;
         }
