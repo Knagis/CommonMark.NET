@@ -31,7 +31,7 @@ namespace CommonMark
         SuperscriptCaret = 4,
 
         /// <summary>
-        /// The parser will treat the case of reference labels with sensitivitiley.
+        /// The parser will treat reference labels as case sensitive.
         /// </summary>
         RespectReferenceCase = 0x100,
 
