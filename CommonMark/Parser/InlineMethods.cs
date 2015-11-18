@@ -434,12 +434,12 @@ namespace CommonMark.Parser
         private static Inline HandleTilde(Subject subj, CommonMarkSettings settings)
         {
             bool canOpen, canClose;
-            //InlineTag? singleCharTag = null;
+            InlineTag? singleCharTag = null;
             //if (0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.SubscriptTilde))
-            //    singleCharTag = InlineTag.Subscript;
-            //InlineTag? doubleCharTag = null;
+                singleCharTag = InlineTag.Subscript;
+            InlineTag? doubleCharTag = null;
             //if (0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde))
-            //    doubleCharTag = InlineTag.Strikethrough;
+                doubleCharTag = InlineTag.Strikethrough;
             var numdelims = ScanEmphasisDelimeters(subj, '~', out canOpen, out canClose);
 
             if (canClose)
@@ -448,7 +448,7 @@ namespace CommonMark.Parser
                 var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, '~', out canClose);
                 if (istack != null)
                 {
-                    var useDelims = MatchInlineStack(istack, subj, numdelims, null, InlineTag.Subscript, InlineTag.Strikethrough, settings);
+                    var useDelims = MatchInlineStack(istack, subj, numdelims, null, singleCharTag, doubleCharTag, settings);
 
                     // if the closer was not fully used, move back a char or two and try again.
                     if (useDelims < numdelims)

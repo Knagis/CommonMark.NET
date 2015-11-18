@@ -186,7 +186,13 @@ namespace CommonMark.Parser
                             bool retry = false;
                             if (iopener.Delimeter == '~')
                             {
-                                InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, InlineTag.Subscript, InlineTag.Strikethrough, settings);
+                                InlineTag? singleCharTag = null;
+                                //if (0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.SubscriptTilde))
+                                    singleCharTag = InlineTag.Subscript;
+                                InlineTag? doubleCharTag = null;
+                                //if (0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde))
+                                    doubleCharTag = InlineTag.Strikethrough;
+                                InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, singleCharTag, doubleCharTag, settings);
                                 if (istack.DelimeterCount > 0)
                                     retry = true;
                             }
