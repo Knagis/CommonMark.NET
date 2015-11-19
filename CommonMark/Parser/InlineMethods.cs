@@ -434,13 +434,19 @@ namespace CommonMark.Parser
         private static Inline HandleTilde(Subject subj, CommonMarkSettings settings)
         {
             bool canOpen, canClose;
-            InlineTag? singleCharTag = null;
-            //if (0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.SubscriptTilde))
-                singleCharTag = InlineTag.Subscript;
+            var numdelims = ScanEmphasisDelimeters(subj, '~', out canOpen, out canClose);
+
+            InlineTag? singleCharTag = InlineTag.Subscript;
+            if (0 == (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.SubscriptTilde))
+            {
+                if (numdelims == 1)
+                    return new Inline("~", subj.Position - 1, subj.Position);
+                singleCharTag = null;
+            }
+
             InlineTag? doubleCharTag = null;
             //if (0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde))
                 doubleCharTag = InlineTag.Strikethrough;
-            var numdelims = ScanEmphasisDelimeters(subj, '~', out canOpen, out canClose);
 
             if (canClose)
             {
