@@ -444,9 +444,9 @@ namespace CommonMark.Parser
                 singleCharTag = null;
             }
 
-            InlineTag? doubleCharTag = null;
-            //if (0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde))
-                doubleCharTag = InlineTag.Strikethrough;
+            InlineTag? doubleCharTag = InlineTag.Strikethrough;
+            //if (0 == (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde))
+            //    doubleCharTag = null;
 
             if (canClose)
             {
