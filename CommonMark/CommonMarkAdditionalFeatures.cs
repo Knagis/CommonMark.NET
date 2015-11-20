@@ -26,11 +26,6 @@ namespace CommonMark
         SubscriptTilde = 2,
 
         /// <summary>
-        /// The parser will recognize both <see cref="StrikethroughTilde"/> and <see cref="SubscriptTilde"/>.
-        /// </summary>
-        Tilde = 3,
-
-        /// <summary>
         /// The parser will recognize syntax <c>^foo^</c> that will be rendered as <c>&lt;sup&gt;foo&lt;/sup&gt;</c>.
         /// </summary>
         SuperscriptCaret = 4,
