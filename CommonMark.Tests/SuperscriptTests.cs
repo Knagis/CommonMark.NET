@@ -94,7 +94,7 @@ namespace CommonMark.Tests
         public void SuperscriptExample8()
         {
             // make sure that the fenced code blocks are not broken because of this feature
-            Helpers.ExecuteTest("^^^foo\n^", "<pre><code class=\"language-foo\">^\n</code></pre>", Settings);
+            Helpers.ExecuteTest("~~~foo\n^", "<pre><code class=\"language-foo\">^\n</code></pre>", Settings);
         }
 
         [TestMethod]
