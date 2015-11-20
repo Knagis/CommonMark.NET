@@ -5,6 +5,8 @@ namespace CommonMark
 #if v2_0
     /// <summary>An alternative to <c>System.Func</c> which is not present in .NET 2.0.</summary>
     public delegate TResult Func<in T, out TResult>(T arg);
+
+    /// <summary>An alternative to <c>System.Func</c> which is not present in .NET 2.0.</summary>
     public delegate TResult Func<in T1, in T2, out TResult>(T1 arg1, T2 arg2);
 
     /// <summary>An alternative to <c>System.Action</c> which is not present in .NET 2.0.</summary>
