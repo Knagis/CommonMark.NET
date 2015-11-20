@@ -190,8 +190,8 @@ namespace CommonMark.Parser
                                 if (0 == (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.SubscriptTilde))
                                     singleCharTag = null;
                                 InlineTag? doubleCharTag = InlineTag.Strikethrough;
-                                //if (0 == (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde))
-                                //    doubleCharTag = null;
+                                if (0 == (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde))
+                                    doubleCharTag = null;
                                 InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, singleCharTag, doubleCharTag, settings);
                                 if (istack.DelimeterCount > 0)
                                     retry = true;
