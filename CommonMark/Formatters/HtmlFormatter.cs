@@ -495,6 +495,38 @@ namespace CommonMark.Formatters
                     }
                     break;
 
+                case InlineTag.Subscript:
+                    ignoreChildNodes = false;
+
+                    if (isOpening)
+                    {
+                        Write("<sub");
+                        if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
+                        Write('>');
+                    }
+
+                    if (isClosing)
+                    {
+                        Write("</sub>");
+                    }
+                    break;
+
+                case InlineTag.Superscript:
+                    ignoreChildNodes = false;
+
+                    if (isOpening)
+                    {
+                        Write("<sup");
+                        if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
+                        Write('>');
+                    }
+
+                    if (isClosing)
+                    {
+                        Write("</sup>");
+                    }
+                    break;
+
                 default:
                     throw new CommonMarkException("Inline type " + inline.Tag + " is not supported.", inline);
             }

@@ -279,6 +279,16 @@ namespace CommonMark.Formatters
                         PrintPosition(trackPositions, writer, inline);
                         break;
 
+                    case InlineTag.Subscript:
+                        writer.Write("sub");
+                        PrintPosition(trackPositions, writer, inline);
+                        break;
+
+                    case InlineTag.Superscript:
+                        writer.Write("sup");
+                        PrintPosition(trackPositions, writer, inline);
+                        break;
+
                     default:
                         writer.Write("unknown: " + inline.Tag.ToString());
                         PrintPosition(trackPositions, writer, inline);
