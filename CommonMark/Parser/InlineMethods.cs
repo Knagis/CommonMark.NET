@@ -448,7 +448,9 @@ namespace CommonMark.Parser
 
             InlineTag? doubleCharTag = InlineTag.Strikethrough;
             if (0 == (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde))
+            {
                 doubleCharTag = null;
+            }
 
             if (canClose)
             {
@@ -494,9 +496,6 @@ namespace CommonMark.Parser
         {
             bool canOpen, canClose;
             var numdelims = ScanEmphasisDelimeters(subj, '^', out canOpen, out canClose);
-
-            //if (numdelims > 1)
-            //    return new Inline("^", subj.Position - numdelims, subj.Position);
 
             if (canClose)
             {
