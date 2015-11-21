@@ -30,7 +30,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\CommonMark\bin\portable_v4.5\Debug\</OutputPath>
+    <OutputPath>..\CommonMark\bin\portable_v4.5\Release\</OutputPath>
     <DefineConstants>TRACE;portable;v4_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
