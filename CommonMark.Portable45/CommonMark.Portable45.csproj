@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B8459EC6-0233-4235-9D2C-469E55BF05F2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CommonMark</RootNamespace>
+    <AssemblyName>CommonMark</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile344</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\portable_v4.5\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\portable_v4.5\Debug\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\CommonMark\Properties\public.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <Compile Include="..\CommonMark\CommonMarkAdditionalFeatures.cs">
+      <Link>CommonMarkAdditionalFeatures.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\CommonMarkConverter.cs">
+      <Link>CommonMarkConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\CommonMarkException.cs">
+      <Link>CommonMarkException.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\CommonMarkSettings.cs">
+      <Link>CommonMarkSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Formatters\HtmlFormatter.cs">
+      <Link>Formatters\HtmlFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Formatters\HtmlFormatterSlim.cs">
+      <Link>Formatters\HtmlFormatterSlim.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Formatters\HtmlTextWriter.cs">
+      <Link>Formatters\HtmlTextWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Formatters\Printer.cs">
+      <Link>Formatters\Printer.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Func.cs">
+      <Link>Func.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\OutputFormat.cs">
+      <Link>OutputFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\BlockMethods.cs">
+      <Link>Parser\BlockMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\EntityDecoder.cs">
+      <Link>Parser\EntityDecoder.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\InlineMethods.cs">
+      <Link>Parser\InlineMethods.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\InlineStack.cs">
+      <Link>Parser\InlineStack.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\LineInfo.cs">
+      <Link>Parser\LineInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\PositionOffset.cs">
+      <Link>Parser\PositionOffset.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\PositionTracker.cs">
+      <Link>Parser\PositionTracker.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\Scanner.cs">
+      <Link>Parser\Scanner.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\ScannerCharacterMatcher.cs">
+      <Link>Parser\ScannerCharacterMatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\ScannerHtmlTag.cs">
+      <Link>Parser\ScannerHtmlTag.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\Subject.cs">
+      <Link>Parser\Subject.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Parser\TabTextReader.cs">
+      <Link>Parser\TabTextReader.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\Block.cs">
+      <Link>Syntax\Block.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\BlockTag.cs">
+      <Link>Syntax\BlockTag.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\Enumerable.cs">
+      <Link>Syntax\Enumerable.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\EnumeratorEntry.cs">
+      <Link>Syntax\EnumeratorEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\FencedCodeData.cs">
+      <Link>Syntax\FencedCodeData.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\HtmlBlockType.cs">
+      <Link>Syntax\HtmlBlockType.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\Inline.cs">
+      <Link>Syntax\Inline.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\InlineContentLinkable.cs">
+      <Link>Syntax\InlineContentLinkable.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\InlineTag.cs">
+      <Link>Syntax\InlineTag.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\ListData.cs">
+      <Link>Syntax\ListData.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\ListDelimeter.cs">
+      <Link>Syntax\ListDelimeter.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\ListType.cs">
+      <Link>Syntax\ListType.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\Reference.cs">
+      <Link>Syntax\Reference.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\StringContent.cs">
+      <Link>Syntax\StringContent.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Syntax\StringContentPart.cs">
+      <Link>Syntax\StringContentPart.cs</Link>
+    </Compile>
+    <Compile Include="..\CommonMark\Utilities.cs">
+      <Link>Utilities.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\CommonMark\Properties\public.snk">
+      <Link>public.snk</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
