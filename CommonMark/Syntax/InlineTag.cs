@@ -72,6 +72,18 @@ namespace CommonMark.Syntax
         /// Represents an inline element that has been "removed" (visually represented as strikethrough).
         /// Only present if the <see cref="CommonMarkAdditionalFeatures.StrikethroughTilde"/> is enabled.
         /// </summary>
-        Strikethrough
+        Strikethrough,
+
+        /// <summary>
+        /// Represents a subscript element.
+        /// Only present if the <see cref="CommonMarkAdditionalFeatures.SubscriptTilde"/> is enabled.
+        /// </summary>
+        Subscript,
+
+        /// <summary>
+        /// Represents a superscript element.
+        /// Only present if the <see cref="CommonMarkAdditionalFeatures.SuperscriptCaret"/> is enabled.
+        /// </summary>
+        Superscript,
     }
 }

@@ -621,6 +621,24 @@ namespace CommonMark.Formatters
                         stackWithinLink = withinLink;
                         break;
 
+                    case InlineTag.Subscript:
+                        writer.WriteConstant("<sub");
+                        if (trackPositions) PrintPosition(writer, inline);
+                        writer.Write('>');
+                        stackLiteral = "</sub>";
+                        visitChildren = true;
+                        stackWithinLink = withinLink;
+                        break;
+
+                    case InlineTag.Superscript:
+                        writer.WriteConstant("<sup");
+                        if (trackPositions) PrintPosition(writer, inline);
+                        writer.Write('>');
+                        stackLiteral = "</sup>";
+                        visitChildren = true;
+                        stackWithinLink = withinLink;
+                        break;
+
                     default:
                         throw new CommonMarkException("Inline type " + inline.Tag + " is not supported.", inline);
                 }
