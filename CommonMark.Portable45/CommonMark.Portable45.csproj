@@ -67,9 +67,6 @@
     <Compile Include="..\CommonMark\Formatters\Printer.cs">
       <Link>Formatters\Printer.cs</Link>
     </Compile>
-    <Compile Include="..\CommonMark\Func.cs">
-      <Link>Func.cs</Link>
-    </Compile>
     <Compile Include="..\CommonMark\OutputFormat.cs">
       <Link>OutputFormat.cs</Link>
     </Compile>
