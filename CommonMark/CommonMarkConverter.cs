@@ -45,7 +45,11 @@ namespace CommonMark
                 if (_version.Major != 0 || _version.Minor != 0)
                     return _version;
 
+#if portable_v4_5
+                var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(CommonMarkConverter)).Assembly;
+#else
                 var assembly = typeof(CommonMarkConverter).Assembly;
+#endif
 
                 // System.Xml is not available so resort to string parsing.
                 using (var stream = assembly.GetManifestResourceStream("CommonMark.Properties.CommonMark.NET.nuspec"))
@@ -79,7 +83,7 @@ namespace CommonMark
         {
             get
             {
-#if NETCore
+#if NETCore || portable_v4_5
                 var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(CommonMarkConverter)).Assembly;
 #else
                 var assembly = typeof(CommonMarkConverter).Assembly;
