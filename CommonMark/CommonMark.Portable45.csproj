@@ -7,8 +7,5 @@
     <ProjectGuid>{B8459EC6-0233-4235-9D2C-469E55BF05F2}</ProjectGuid>
     <DefineConstantsEx>OptimizeFor45</DefineConstantsEx>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
   <Import Project="CommonMark.Base.csproj" />
 </Project>
