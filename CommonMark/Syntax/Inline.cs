@@ -72,13 +72,14 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Initializes a new instance of the <see cref="Inline"/> class. The element type is set to <see cref="InlineTag.String"/>
         /// </summary>
-        internal Inline(string content, int startIndex, int length, int sourcePosition, int sourceLastPosition)
+        internal Inline(string content, int startIndex, int length, int sourcePosition, int sourceLastPosition, char delimiterCharacter)
         {
             this.LiteralContentValue.Source = content;
             this.LiteralContentValue.StartIndex = startIndex;
             this.LiteralContentValue.Length = length; 
             this.SourcePosition = sourcePosition;
             this.SourceLastPosition = sourceLastPosition;
+            this.DelimiterCharacter = delimiterCharacter;
         }
 
         /// <summary>
@@ -204,6 +205,15 @@ namespace CommonMark.Syntax
 
                 return x;
             }
+        }
+
+        /// <summary>
+        /// Gets the delimiter character for this inline element.
+        /// </summary>
+        public char DelimiterCharacter
+        {
+            get;
+            private set;
         }
     }
 }
