@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-	<OutputPath>bin\$(BuildMode)\$(Configuration)\</OutputPath>
-	<BaseIntermediateOutputPath>obj\$(BuildMode)\</BaseIntermediateOutputPath>
-	<TargetFrameworkVersion Condition=" '$(TargetFrameworkVersionEx)' != '' ">$(TargetFrameworkVersionEx)</TargetFrameworkVersion>
-	<TargetFrameworkProfile Condition=" '$(BuildMode)' != 'portable' "></TargetFrameworkProfile>
-	<TargetFrameworkProfile Condition=" '$(TargetFrameworkProfileEx)' != '' ">$(TargetFrameworkProfileEx)</TargetFrameworkProfile>
-	<DocumentationFile Condition=" '$(DocumentationFile)' != ''">$(OutputPath)\CommonMark.xml</DocumentationFile>
+    <OutputPath>bin\$(BuildMode)\$(Configuration)\</OutputPath>
+    <BaseIntermediateOutputPath>obj\$(BuildMode)\</BaseIntermediateOutputPath>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersionEx)' != '' ">$(TargetFrameworkVersionEx)</TargetFrameworkVersion>
+    <TargetFrameworkProfile Condition=" '$(TargetFrameworkProfileEx)' != '' ">$(TargetFrameworkProfileEx)</TargetFrameworkProfile>
+    <TargetFrameworkProfile Condition=" '$(BuildMode)' != 'portable' And '$(BuildMode)' != 'portable_v4.5' "></TargetFrameworkProfile>
+    <DocumentationFile Condition=" '$(DocumentationFile)' != ''">$(OutputPath)\CommonMark.xml</DocumentationFile>
     <DefineConstants>$(DefineConstants);$(BuildMode.Replace('.', '_'));$(DefineConstantsEx)</DefineConstants>
   </PropertyGroup>
 
-  <Import Condition=" '$(BuildMode)' == 'portable' " Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <Import Condition=" '$(BuildMode)' != 'portable' " Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Condition=" '$(BuildMode)' == 'portable' Or  '$(BuildMode)' == 'portable_v4.5' " Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <Import Condition=" '$(BuildMode)' != 'portable' And '$(BuildMode)' != 'portable_v4.5' " Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
