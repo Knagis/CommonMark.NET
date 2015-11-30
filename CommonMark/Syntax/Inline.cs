@@ -210,10 +210,6 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Gets the delimiter character for this inline element.
         /// </summary>
-        public char DelimiterCharacter
-        {
-            get;
-            private set;
-        }
+        public char DelimiterCharacter { get; }
     }
 }
