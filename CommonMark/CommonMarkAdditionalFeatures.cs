@@ -21,6 +21,11 @@ namespace CommonMark
         StrikethroughTilde = 1,
 
         /// <summary>
+        /// The parser will recognize emphasis in indented code.
+        /// </summary>
+        EmphasisInIndentedCode = 32,
+
+        /// <summary>
         /// All additional features are enabled.
         /// </summary>
         All = 0x7FFFFFFF

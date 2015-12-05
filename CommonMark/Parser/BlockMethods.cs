@@ -277,7 +277,6 @@ namespace CommonMark.Parser
         {
             Stack<Inline> inlineStack = null;
             var stack = new Stack<Block>();
-            var parsers = settings.InlineParsers;
             var specialCharacters = settings.InlineParserSpecialCharacters;
             var subj = new Subject(refmap);
 
@@ -287,7 +286,11 @@ namespace CommonMark.Parser
             while (block != null)
             {
                 var tag = block.Tag;
-                if (tag == BlockTag.Paragraph || tag == BlockTag.AtxHeader || tag == BlockTag.SETextHeader)
+
+                var parseEmphasisInIndentedCode =
+                    tag == BlockTag.IndentedCode
+                    && 0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.EmphasisInIndentedCode);
+                if (tag == BlockTag.Paragraph || tag == BlockTag.AtxHeader || tag == BlockTag.SETextHeader || parseEmphasisInIndentedCode)
                 {
                     sc = block.StringContent;
                     if (sc != null)
@@ -295,6 +298,9 @@ namespace CommonMark.Parser
                         sc.FillSubject(subj);
                         delta = subj.Position;
 
+                        var parsers = parseEmphasisInIndentedCode
+                            ? settings.InlineEmphasisParsers
+                            : settings.InlineParsers;
                         block.InlineContent = InlineMethods.parse_inlines(subj, refmap, parsers, specialCharacters);
                         block.StringContent = null;
 

@@ -217,6 +217,29 @@ namespace CommonMark.Formatters
                     break;
 
                 case BlockTag.IndentedCode:
+
+                    if (isOpening)
+                    {
+                        EnsureNewLine();
+
+                        Write("<pre><code");
+                        if (Settings.TrackSourcePosition)
+                            WritePositionAttribute(block);
+
+                        Write('>');
+                    }
+
+                    if (0 == (_settings.AdditionalFeatures & CommonMarkAdditionalFeatures.EmphasisInIndentedCode))
+                    {
+                        ignoreChildNodes = true;
+                        WriteEncodedHtml(block.StringContent);
+                    }
+
+                    if (isClosing)
+                        WriteLine("</code></pre>");
+
+                    break;
+
                 case BlockTag.FencedCode:
 
                     ignoreChildNodes = true;
