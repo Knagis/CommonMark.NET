@@ -67,7 +67,14 @@ namespace CommonMark
         public CommonMarkAdditionalFeatures AdditionalFeatures
         {
             get { return this._additionalFeatures; }
-            set { this._additionalFeatures = value; this._inlineParsers = null; this._inlineParserSpecialCharacters = null; }
+            set
+            {
+                this._additionalFeatures = value;
+                this._inlineParsers = null;
+                this._inlineParserSpecialCharacters = null;
+                this._inlineEmphasisParsers = null;
+                this._inlineParserEmphasisSpecialCharacters = null;
+            }
         }
 
         private Func<string, string> _uriResolver;
@@ -179,6 +186,31 @@ namespace CommonMark
                             vs.Add((char)i);
 
                     v = this._inlineParserSpecialCharacters = vs.ToArray();
+                }
+
+                return v;
+            }
+        }
+
+        private char[] _inlineParserEmphasisSpecialCharacters;
+
+        /// <summary>
+        /// Gets the characters that have special meaning for inline element emphasis parsers according to these settings.
+        /// </summary>
+        internal char[] InlineParserEmphasisSpecialCharacters
+        {
+            get
+            {
+                var v = this._inlineParserEmphasisSpecialCharacters;
+                if (v == null)
+                {
+                    var p = this.InlineEmphasisParsers;
+                    var vs = new List<char>(2);
+                    for (var i = 0; i < p.Length; i++)
+                        if (p[i] != null)
+                            vs.Add((char)i);
+
+                    v = this._inlineParserEmphasisSpecialCharacters = vs.ToArray();
                 }
 
                 return v;
