@@ -227,12 +227,12 @@ namespace CommonMark.Formatters
                             WritePositionAttribute(block);
 
                         Write('>');
-                    }
 
-                    if (0 == (Settings.AdditionalFeatures & CommonMarkAdditionalFeatures.EmphasisInIndentedCode))
-                    {
-                        ignoreChildNodes = true;
-                        WriteEncodedHtml(block.StringContent);
+                        if (0 == (Settings.AdditionalFeatures & CommonMarkAdditionalFeatures.EmphasisInIndentedCode))
+                        {
+                            ignoreChildNodes = true;
+                            WriteEncodedHtml(block.StringContent);
+                        }
                     }
 
                     if (isClosing)
