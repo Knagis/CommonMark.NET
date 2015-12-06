@@ -57,8 +57,8 @@ namespace CommonMark
 
 #if v2_0 || v3_5 || v4_0 || v4_5
         /// <summary>Initializes a new instance of the <see cref="CommonMarkException" /> class from the specified instances of the <see cref="System.Runtime.Serialization.SerializationInfo" /> and <see cref="System.Runtime.Serialization.StreamingContext" /> classes.</summary>
-		/// <param name="serializationInfo">A <see cref="System.Runtime.Serialization.SerializationInfo" /> instance that contains the information required to deserialize the new <see cref="T:System.Security.Authentication.InvalidCredentialException" /> instance. </param>
-		/// <param name="streamingContext">A <see cref="System.Runtime.Serialization.StreamingContext" /> instance. </param>
+        /// <param name="serializationInfo">A <see cref="System.Runtime.Serialization.SerializationInfo" /> instance that contains the information required to deserialize the new <see cref="T:System.Security.Authentication.InvalidCredentialException" /> instance. </param>
+        /// <param name="streamingContext">A <see cref="System.Runtime.Serialization.StreamingContext" /> instance. </param>
         [System.Security.SecuritySafeCritical]
         protected CommonMarkException(
           System.Runtime.Serialization.SerializationInfo serializationInfo,
@@ -75,7 +75,7 @@ namespace CommonMark
         /// <param name="info">The <see cref="System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
         /// <param name="context">The <see cref="System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
         /// <exception cref="System.ArgumentNullException">The <paramref name="info" /> parameter is a <c>null</c> reference (<c>Nothing</c> in Visual Basic).</exception>
-        [System.Security.SecuritySafeCritical]
+        [System.Security.SecurityCritical]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
         {
             base.GetObjectData(info, context);
