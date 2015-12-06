@@ -229,7 +229,7 @@ namespace CommonMark.Formatters
                         Write('>');
                     }
 
-                    if (0 == (_settings.AdditionalFeatures & CommonMarkAdditionalFeatures.EmphasisInIndentedCode))
+                    if (0 == (Settings.AdditionalFeatures & CommonMarkAdditionalFeatures.EmphasisInIndentedCode))
                     {
                         ignoreChildNodes = true;
                         WriteEncodedHtml(block.StringContent);
