@@ -302,7 +302,7 @@ namespace CommonMark.Parser
                         delta = subj.Position;
 
                         var inlineParsers = parseEmphasisInIndentedCode ? emphasisParsers : parsers;
-                        var inlineSpecialCharacters = parseEmphasisInIndentedCode ? specialCharacters : emphasisSpecialCharacters;
+                        var inlineSpecialCharacters = parseEmphasisInIndentedCode ? emphasisSpecialCharacters : specialCharacters;
                         block.InlineContent = InlineMethods.parse_inlines(subj, refmap, inlineParsers, inlineSpecialCharacters);
                         block.StringContent = null;
 
