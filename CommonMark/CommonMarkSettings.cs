@@ -16,7 +16,9 @@ namespace CommonMark
         [Obsolete("Use CommonMarkSettings.Default.Clone() instead", false)]
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public CommonMarkSettings()
-        { }
+        {
+            Reset();
+        }
 
         /// <summary>
         /// Gets or sets the output format used by the last stage of conversion.
@@ -70,10 +72,7 @@ namespace CommonMark
             set
             {
                 this._additionalFeatures = value;
-                this._inlineParsers = null;
-                this._inlineParserSpecialCharacters = null;
-                this._inlineEmphasisParsers = null;
-                this._inlineParserEmphasisSpecialCharacters = null;
+                this.Reset();
             }
         }
 
@@ -122,7 +121,17 @@ namespace CommonMark
         /// </summary>
         public CommonMarkSettings Clone()
         {
-            return (CommonMarkSettings)this.MemberwiseClone();
+            var clone = (CommonMarkSettings)this.MemberwiseClone();
+            clone.Reset();
+            return clone;
+        }
+
+        private void Reset()
+        {
+            _inlineParsers = null;
+            _inlineParserSpecialCharacters = null;
+            _inlineEmphasisParsers = null;
+            _inlineParserEmphasisSpecialCharacters = null;
         }
 
         #region [ Properties that cache structures used in the parsers ]
