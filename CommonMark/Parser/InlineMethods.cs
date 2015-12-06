@@ -24,14 +24,14 @@ namespace CommonMark.Parser
             p['\\'] = handle_backslash;
             p['&'] = HandleEntity;
             p['<'] = handle_pointy_brace;
-            p['_'] = HandleEmphasis;
-            p['*'] = HandleEmphasis;
-            p['['] = HandleLeftSquareBracket;
-            p[']'] = HandleRightSquareBracket;
-            p['!'] = HandleExclamation;
+            p['_'] = s => HandleEmphasis(s, settings);
+            p['*'] = s => HandleEmphasis(s, settings);
+            p['['] = s => HandleLeftSquareBracket(s, settings);
+            p[']'] = s => HandleRightSquareBracket(s, settings);
+            p['!'] = s => HandleExclamation(s, settings);
 
             if (strikethroughTilde)
-                p['~'] = HandleTilde;
+                p['~'] = s => HandleTilde(s, settings);
 
             return p;
         }
@@ -40,12 +40,15 @@ namespace CommonMark.Parser
         /// <summary>
         /// Collapses internal whitespace to single space, removes leading/trailing whitespace, folds case.
         /// </summary>
-        private static string NormalizeReference(StringPart s)
+        private static string NormalizeReference(StringPart s, CommonMarkSettings settings)
         {
             if (s.Length == 0)
                 return string.Empty;
 
-            return NormalizeWhitespace(s.Source, s.StartIndex, s.Length).ToUpperInvariant();
+            var result = NormalizeWhitespace(s.Source, s.StartIndex, s.Length);
+            if (0 == (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.RespectReferenceCase))
+                result = result.ToUpperInvariant();
+            return result;
         }
 
         /// <summary>
@@ -53,7 +56,7 @@ namespace CommonMark.Parser
         /// otherwise returns <c>null</c>.
         /// Returns <see cref="Reference.InvalidReference"/> if the reference label is not valid.
         /// </summary>
-        private static Reference LookupReference(Dictionary<string, Reference> refmap, StringPart lab)
+        private static Reference LookupReference(Dictionary<string, Reference> refmap, StringPart lab, CommonMarkSettings settings)
         {
             if (refmap == null)
                 return null;
@@ -61,7 +64,7 @@ namespace CommonMark.Parser
             if (lab.Length > Reference.MaximumReferenceLabelLength)
                 return Reference.InvalidReference;
 
-            string label = NormalizeReference(lab);
+            string label = NormalizeReference(lab, settings);
 
             Reference r;
             if (refmap.TryGetValue(label, out r))
@@ -74,9 +77,9 @@ namespace CommonMark.Parser
         /// Adds a new reference to the dictionary, if the label does not already exist there.
         /// Assumes that the length of the label does not exceed <see cref="Reference.MaximumReferenceLabelLength"/>.
         /// </summary>
-        private static void AddReference(Dictionary<string, Reference> refmap, StringPart label, string url, string title)
+        private static void AddReference(Dictionary<string, Reference> refmap, StringPart label, string url, string title, CommonMarkSettings settings)
         {
-            var normalizedLabel = NormalizeReference(label);
+            var normalizedLabel = NormalizeReference(label, settings);
             if (refmap.ContainsKey(normalizedLabel))
                 return;
 
@@ -295,7 +298,7 @@ namespace CommonMark.Parser
             return numdelims;
         }
 
-        internal static int MatchInlineStack(InlineStack opener, Subject subj, int closingDelimeterCount, InlineStack closer, InlineTag singleCharTag, InlineTag doubleCharTag)
+        internal static int MatchInlineStack(InlineStack opener, Subject subj, int closingDelimeterCount, InlineStack closer, InlineTag singleCharTag, InlineTag doubleCharTag, CommonMarkSettings settings)
         {
             // calculate the actual number of delimeters used from this closer
             int useDelims;
@@ -324,7 +327,7 @@ namespace CommonMark.Parser
                 inl.FirstChild = inl.NextSibling;
                 inl.NextSibling = null;
 
-                InlineStack.RemoveStackEntry(opener, subj, closer?.Previous);
+                InlineStack.RemoveStackEntry(opener, subj, closer?.Previous, settings);
             }
             else
             {
@@ -379,17 +382,17 @@ namespace CommonMark.Parser
             return useDelims;
         }
 
-        private static Inline HandleEmphasis(Subject subj)
+        private static Inline HandleEmphasis(Subject subj, CommonMarkSettings settings)
         {
-            return HandleOpenerCloser(subj, InlineTag.Emphasis, InlineTag.Strong);
+            return HandleOpenerCloser(subj, InlineTag.Emphasis, InlineTag.Strong, settings);
         }
 
-        private static Inline HandleTilde(Subject subj)
+        private static Inline HandleTilde(Subject subj, CommonMarkSettings settings)
         {
-            return HandleOpenerCloser(subj, (InlineTag)0, InlineTag.Strikethrough);
+            return HandleOpenerCloser(subj, (InlineTag)0, InlineTag.Strikethrough, settings);
         }
 
-        private static Inline HandleOpenerCloser(Subject subj, InlineTag singleCharTag, InlineTag doubleCharTag)
+        private static Inline HandleOpenerCloser(Subject subj, InlineTag singleCharTag, InlineTag doubleCharTag, CommonMarkSettings settings)
         {
             bool canOpen, canClose;
             var c = subj.Buffer[subj.Position];
@@ -401,7 +404,7 @@ namespace CommonMark.Parser
                 var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, c, out canClose);
                 if (istack != null)
                 {
-                    var useDelims = MatchInlineStack(istack, subj, numdelims, null, singleCharTag, doubleCharTag);
+                    var useDelims = MatchInlineStack(istack, subj, numdelims, null, singleCharTag, doubleCharTag, settings);
 
                     // if the closer was not fully used, move back a char or two and try again.
                     if (useDelims < numdelims)
@@ -410,7 +413,7 @@ namespace CommonMark.Parser
 
                         // use recursion only if it will not be very deep.
                         if (numdelims < 10)
-                            return HandleOpenerCloser(subj, singleCharTag, doubleCharTag);
+                            return HandleOpenerCloser(subj, singleCharTag, doubleCharTag, settings);
                     }
 
                     return null;
@@ -435,21 +438,21 @@ namespace CommonMark.Parser
             return inlText;
         }
 
-        private static Inline HandleExclamation(Subject subj)
+        private static Inline HandleExclamation(Subject subj, CommonMarkSettings settings)
         {
             subj.Position++;
             if (peek_char(subj) == '[')
-                return HandleLeftSquareBracket(subj, true);
+                return HandleLeftSquareBracket(subj, true, settings);
             else
                 return new Inline("!", subj.Position - 1, subj.Position);
         }
 
-        private static Inline HandleLeftSquareBracket(Subject subj)
+        private static Inline HandleLeftSquareBracket(Subject subj, CommonMarkSettings settings)
         {
-            return HandleLeftSquareBracket(subj, false);
+            return HandleLeftSquareBracket(subj, false, settings);
         }
 
-        private static Inline HandleLeftSquareBracket(Subject subj, bool isImage)
+        private static Inline HandleLeftSquareBracket(Subject subj, bool isImage, CommonMarkSettings settings)
         {
             Inline inlText;
             
@@ -477,7 +480,7 @@ namespace CommonMark.Parser
             return inlText;
         }
 
-        internal static void MatchSquareBracketStack(InlineStack opener, Subject subj, Reference details)
+        internal static void MatchSquareBracketStack(InlineStack opener, Subject subj, Reference details, CommonMarkSettings settings)
         {
             if (details != null)
             {
@@ -510,7 +513,7 @@ namespace CommonMark.Parser
                     }
                 }
 
-                InlineStack.RemoveStackEntry(opener, subj, null);
+                InlineStack.RemoveStackEntry(opener, subj, null, settings);
 
                 subj.LastInline = inl;
             }
@@ -518,7 +521,7 @@ namespace CommonMark.Parser
             {
                 // this looked like a link, but was not.
                 // remove the opener stack entry but leave the inbetween intact
-                InlineStack.RemoveStackEntry(opener, subj, opener);
+                InlineStack.RemoveStackEntry(opener, subj, opener, settings);
 
                 var inl = new Inline("]", subj.Position - 1, subj.Position);
                 subj.LastInline.LastSibling.NextSibling = inl;
@@ -526,7 +529,7 @@ namespace CommonMark.Parser
             }
         }
 
-        private static Inline HandleRightSquareBracket(Subject subj)
+        private static Inline HandleRightSquareBracket(Subject subj, CommonMarkSettings settings)
         {
             // move past ']'
             subj.Position++;
@@ -539,14 +542,14 @@ namespace CommonMark.Parser
                 // if the opener is "inactive" then it means that there was a nested link
                 if (istack.DelimeterCount == -1)
                 {
-                    InlineStack.RemoveStackEntry(istack, subj, istack);
+                    InlineStack.RemoveStackEntry(istack, subj, istack, settings);
                     return new Inline("]", subj.Position - 1, subj.Position);
                 }
 
                 var endpos = subj.Position;
 
                 // try parsing details for '[foo](/url "title")' or '[foo][bar]'
-                var details = ParseLinkDetails(subj);
+                var details = ParseLinkDetails(subj, settings);
 
                 // try lookup of the brackets themselves
                 if (details == null || details == Reference.SelfReference)
@@ -554,13 +557,13 @@ namespace CommonMark.Parser
                     var startpos = istack.StartPosition;
                     var label = new StringPart(subj.Buffer, startpos, endpos - startpos - 1);
 
-                    details = LookupReference(subj.ReferenceMap, label);
+                    details = LookupReference(subj.ReferenceMap, label, settings);
                 }
 
                 if (details == Reference.InvalidReference)
                     details = null;
 
-                MatchSquareBracketStack(istack, subj, details);
+                MatchSquareBracketStack(istack, subj, details, settings);
                 return null;
             }
 
@@ -899,7 +902,7 @@ namespace CommonMark.Parser
         }
 
         // Parse a link or the link portion of an image, or return a fallback.
-        static Reference ParseLinkDetails(Subject subj)
+        static Reference ParseLinkDetails(Subject subj, CommonMarkSettings settings)
         {
             int n;
             int sps;
@@ -940,7 +943,7 @@ namespace CommonMark.Parser
                     if (label.Value.Length == 0)
                         return Reference.SelfReference;
 
-                    var details = LookupReference(subj.ReferenceMap, label.Value);
+                    var details = LookupReference(subj.ReferenceMap, label.Value, settings);
                     if (details != null)
                         return details;
 
@@ -979,7 +982,7 @@ namespace CommonMark.Parser
         /// <summary>
         /// Parse an inline element from the subject. The subject position is updated to after the element.
         /// </summary>
-        public static Inline ParseInline(Subject subj, Func<Subject, Inline>[] parsers, char[] specialCharacters)
+        public static Inline ParseInline(Subject subj, Func<Subject, Inline>[] parsers, char[] specialCharacters, CommonMarkSettings settings)
         {
             var c = subj.Buffer[subj.Position];
 
@@ -1007,20 +1010,20 @@ namespace CommonMark.Parser
             return new Inline(subj.Buffer, startpos, endpos - startpos, startpos, endpos, c);
         }
 
-        public static Inline parse_inlines(Subject subj, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters)
+        public static Inline parse_inlines(Subject subj, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters, CommonMarkSettings settings)
         {
             var len = subj.Length;
 
             if (len == 0)
                 return null;
 
-            var first = ParseInline(subj, parsers, specialCharacters);
+            var first = ParseInline(subj, parsers, specialCharacters, settings);
             subj.LastInline = first.LastSibling;
 
             Inline cur;
             while (subj.Position < len)
             {
-                cur = ParseInline(subj, parsers, specialCharacters);
+                cur = ParseInline(subj, parsers, specialCharacters, settings);
                 if (cur != null)
                 {
                     subj.LastInline.NextSibling = cur;
@@ -1028,7 +1031,7 @@ namespace CommonMark.Parser
                 }
             }
 
-            InlineStack.PostProcessInlineStack(subj, subj.FirstPendingInline, subj.LastPendingInline, InlineStack.InlineStackPriority.Maximum);
+            InlineStack.PostProcessInlineStack(subj, subj.FirstPendingInline, subj.LastPendingInline, InlineStack.InlineStackPriority.Maximum, settings);
 
             return first;
         }
@@ -1124,7 +1127,7 @@ namespace CommonMark.Parser
         // Modify refmap if a reference is encountered.
         // Return 0 if no reference found, otherwise position of subject
         // after reference is parsed.
-        public static int ParseReference(Subject subj)
+        public static int ParseReference(Subject subj, CommonMarkSettings settings)
         {
             string title;
             var startPos = subj.Position;
@@ -1196,7 +1199,7 @@ namespace CommonMark.Parser
             }
 
             // insert reference into refmap
-            AddReference(subj.ReferenceMap, lab.Value, url, title);
+            AddReference(subj.ReferenceMap, lab.Value, url, title, settings);
 
             return subj.Position;
 
