@@ -36,6 +36,16 @@ namespace CommonMark.Parser
             return p;
         }
 
+        /// <summary>
+        /// Initializes the array of delegates for inline emphasis parsing.
+        /// </summary>
+        /// <returns></returns>
+        internal static Func<Subject, Inline>[] InitializeEmphasisParsers(CommonMarkSettings settings)
+        {
+            var p = new Func<Subject, Inline>[96];
+            p['_'] = p['*'] = HandleEmphasis;
+            return p;
+        }
 
         /// <summary>
         /// Collapses internal whitespace to single space, removes leading/trailing whitespace, folds case.

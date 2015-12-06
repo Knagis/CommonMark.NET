@@ -21,6 +21,12 @@ namespace CommonMark
         StrikethroughTilde = 1,
 
         /// <summary>
+        /// The parser will recognize emphasis (text enclosed in single/double <c>*</c>/<c>_</c>) in indented code.
+        /// This is useful in rendering commands, e.g. <c>format **c:**</c>.
+        /// </summary>
+        EmphasisInIndentedCode = 32,
+
+        /// <summary>
         /// All additional features are enabled.
         /// </summary>
         All = 0x7FFFFFFF

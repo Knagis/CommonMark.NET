@@ -316,6 +316,19 @@ namespace CommonMark.Formatters
                         break;
 
                     case BlockTag.IndentedCode:
+                        writer.EnsureLine();
+                        writer.WriteConstant("<pre><code");
+                        if (trackPositions) PrintPosition(writer, block);
+
+                        writer.Write('>');
+                        if (0 == (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.EmphasisInIndentedCode))
+                            EscapeHtml(block.StringContent, writer);
+                        else
+                            InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
+
+                        writer.WriteLineConstant("</code></pre>");
+                        break;
+
                     case BlockTag.FencedCode:
                         writer.EnsureLine();
                         writer.WriteConstant("<pre><code");
