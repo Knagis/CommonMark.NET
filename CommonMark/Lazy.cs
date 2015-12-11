@@ -40,6 +40,11 @@
                 return value;
             }
         }
+
+        public bool IsValueCreated
+        {
+            get { return value != null; }
+        }
     }
 #endif
 }
