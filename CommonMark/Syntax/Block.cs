@@ -143,6 +143,11 @@ namespace CommonMark.Syntax
         public Block LastChild { get; set; }
 
         /// <summary>
+        /// Gets or sets the child element count.
+        /// </summary>
+        public int ChildCount { get; set; }
+
+        /// <summary>
         /// Gets or sets the parent element of this block.
         /// </summary>
         public Block Parent { get; set; }

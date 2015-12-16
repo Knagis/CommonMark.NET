@@ -231,6 +231,7 @@ namespace CommonMark.Parser
             }
 
             parent.LastChild = child;
+            parent.ChildCount++;
             return child;
         }
 
