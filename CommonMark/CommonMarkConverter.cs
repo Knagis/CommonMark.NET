@@ -180,7 +180,24 @@ namespace CommonMark
 
             try
             {
-                BlockMethods.ProcessInlines(document, document.ReferenceMap, settings);
+#if OptimizeFor45 || v4_0
+                var partitions = Partition(document);
+                if (partitions != null)
+                {
+                    Syntax.Block start = partitions[0];
+                    Syntax.Block stop;
+                    System.Threading.Tasks.Parallel.For(1, partitions.Length, i =>
+                    {
+                        stop = partitions[i];
+                        BlockMethods.ProcessInlines(start, document.ReferenceMap, settings, stop);
+                        start = stop;
+                    });
+                }
+                else
+#endif
+                {
+                    BlockMethods.ProcessInlines(document, document.ReferenceMap, settings);
+                }
             }
             catch(CommonMarkException)
             {
@@ -325,6 +342,36 @@ namespace CommonMark
 
                 return writer.ToString();
             }
+        }
+
+        private static Syntax.Block[] Partition(Syntax.Block document)
+        {
+            var procCount = Environment.ProcessorCount;
+            var childCount = document.ChildCount;
+            if (procCount == 1 || childCount < procCount)// * 0x100)
+            {
+                return null;
+            }
+
+            var partitions = new Syntax.Block[procCount + 1];
+            var counts = new int[procCount + 1];
+            counts[procCount] = childCount;
+            var currCount = 0;
+            var index = 0;
+            Syntax.Block child;
+            for (child = document.FirstChild; child != null; child = child.NextSibling)
+            {
+                currCount++;
+                if ((long)currCount >= (long)childCount * index / procCount)
+                {
+                    partitions[index] = child;
+                    counts[index] = currCount;
+                    if (++index == procCount)
+                        break;
+                }
+            }
+
+            return partitions;
         }
     }
 }

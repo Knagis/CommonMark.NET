@@ -274,7 +274,8 @@ namespace CommonMark.Parser
         /// <param name="block">The document level block from which to start the processing.</param>
         /// <param name="refmap">The reference mapping used when parsing links.</param>
         /// <param name="settings">The settings that influence how the inline parsing is performed.</param>
-        public static void ProcessInlines(Block block, Dictionary<string, Reference> refmap, CommonMarkSettings settings)
+        /// <param name="stop">The block at which to stop the processing.</param>
+        public static void ProcessInlines(Block block, Dictionary<string, Reference> refmap, CommonMarkSettings settings, Block stop = null)
         {
             Stack<Inline> inlineStack = null;
             var stack = new Stack<Block>();
@@ -285,7 +286,7 @@ namespace CommonMark.Parser
             StringContent sc;
             int delta;
 
-            while (block != null)
+            while (block != stop)
             {
                 var tag = block.Tag;
                 if (tag == BlockTag.Paragraph || tag == BlockTag.AtxHeader || tag == BlockTag.SETextHeader)
