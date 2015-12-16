@@ -85,9 +85,9 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonMark\CommonMark.Base.csproj">
-      <Project>{0fd4b1dd-45a8-4f02-beb0-5881cd512573}</Project>
-      <Name>CommonMark.Base</Name>
+    <ProjectReference Include="..\CommonMark\CommonMark.NET45.csproj">
+      <Project>{40ab0d9c-9464-45b2-ac79-72a566fa1371}</Project>
+      <Name>CommonMark.NET45</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
