@@ -128,13 +128,8 @@ namespace CommonMark
 
         private void Reset()
         {
-#if OptimizeFor45 || v4_0
             this._inlineParsers = GetLazy(this.InitializeParsers);
             this._inlineParserSpecialCharacters = GetLazy(this.InitializeSpecialCharacters);
-#else
-            this._inlineParsers = null;
-            this._inlineParserSpecialCharacters = null;
-#endif
         }
 
         internal Lazy<T> GetLazy<T>(Func<T> valueFactory)
@@ -144,11 +139,7 @@ namespace CommonMark
 
         #region [ Properties that cache structures used in the parsers ]
 
-#if OptimizeFor45 || v4_0
         private Lazy<Func<Parser.Subject, Syntax.Inline>[]> _inlineParsers;
-#else
-        private Func<Parser.Subject, Syntax.Inline>[] _inlineParsers;
-#endif
 
         /// <summary>
         /// Gets the delegates that parse inline elements according to these settings.
@@ -157,17 +148,7 @@ namespace CommonMark
         {
             get
             {
-#if OptimizeFor45 || v4_0
                 return _inlineParsers.Value;
-#else
-                var p = this._inlineParsers;
-                if (p == null)
-                {
-                    p = this._inlineParsers = InitializeParsers();
-                }
-
-                return p;
-#endif
             }
         }
 
@@ -176,11 +157,7 @@ namespace CommonMark
             return Parser.InlineMethods.InitializeParsers(this);
         }
 
-#if OptimizeFor45 || v4_0
         private Lazy<char[]> _inlineParserSpecialCharacters;
-#else
-        private char[] _inlineParserSpecialCharacters;
-#endif
 
         /// <summary>
         /// Gets the characters that have special meaning for inline element parsers according to these settings.
@@ -189,17 +166,7 @@ namespace CommonMark
         {
             get
             {
-#if OptimizeFor45 || v4_0
                 return _inlineParserSpecialCharacters.Value;
-#else
-                var v = this._inlineParserSpecialCharacters;
-                if (v == null)
-                {
-                    v = this._inlineParserSpecialCharacters = InitializeSpecialCharacters();
-                }
-
-                return v;
-#endif
             }
         }
 
