@@ -181,12 +181,11 @@ namespace CommonMark
             try
             {
 #if OptimizeFor45 || v4_0
-                var partitions = Partition.Create(document);
+                var partitions = Partition.Create(document, settings);
                 if (partitions != null)
                 {
                     System.Linq.ParallelEnumerable.ForAll(
-                        System.Linq.ParallelEnumerable.AsParallel(partitions), p =>
-                            BlockMethods.ProcessInlines(p.Start, p.ReferenceMap, settings, p.Stop));
+                        System.Linq.ParallelEnumerable.AsParallel(partitions), Process);
                 }
                 else
 #endif
@@ -202,6 +201,11 @@ namespace CommonMark
             {
                 throw new CommonMarkException("An error occurred during inline parsing.", ex);
             }
+        }
+
+        private static void Process(Partition partition)
+        {
+            BlockMethods.ProcessInlines(partition.Start, partition.ReferenceMap, partition.Settings, partition.Stop);
         }
 
         /// <summary>
@@ -342,7 +346,7 @@ namespace CommonMark
 
     internal struct Partition
     {
-        public static Partition[] Create(Syntax.Block document)
+        public static Partition[] Create(Syntax.Block document, CommonMarkSettings settings)
         {
             var procCount = Environment.ProcessorCount;
             var childCount = document.ChildCount;
@@ -362,22 +366,23 @@ namespace CommonMark
                 {
                     if (index > 0)
                     {
-                        partitions[index - 1] = new Partition(prev, curr, document, currCount);
+                        partitions[index - 1] = new Partition(prev, curr, document, settings, currCount);
                     }
                     ++index;
                 }
                 prev = curr;
             }
-            partitions[procCount - 1] = new Partition(prev, null, document, currCount);
+            partitions[procCount - 1] = new Partition(prev, null, document, settings, currCount);
 
             return partitions;
         }
 
-        private Partition(Syntax.Block start, Syntax.Block stop, Syntax.Block document, int count)
+        private Partition(Syntax.Block start, Syntax.Block stop, Syntax.Block document, CommonMarkSettings settings, int count)
         {
             Start = start;
             Stop = stop;
             ReferenceMap = new Dictionary<string, Syntax.Reference>(document.ReferenceMap);
+            Settings = settings.Clone();
             Count = count;
         }
 
@@ -386,6 +391,8 @@ namespace CommonMark
         public Syntax.Block Stop { get; }
 
         public Dictionary<string, Syntax.Reference> ReferenceMap { get; }
+
+        public CommonMarkSettings Settings { get; }
 
         public int Count { get; }
     }

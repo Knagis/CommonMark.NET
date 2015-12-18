@@ -128,8 +128,8 @@ namespace CommonMark
         private void Reset()
         {
 #if OptimizeFor45 || v4_0
-            this._inlineParsers = new System.Threading.ThreadLocal<Func<Parser.Subject, Syntax.Inline>[]>(this.InitializeParsers);
-            this._inlineParserSpecialCharacters = new System.Threading.ThreadLocal<char[]>(this.InitializeSpecialCharacters);
+            this._inlineParsers = new Lazy<Func<Parser.Subject, Syntax.Inline>[]>(this.InitializeParsers, System.Threading.LazyThreadSafetyMode.None);
+            this._inlineParserSpecialCharacters = new Lazy<char[]>(this.InitializeSpecialCharacters, System.Threading.LazyThreadSafetyMode.None);
 #else
             this._inlineParsers = null;
             this._inlineParserSpecialCharacters = null;
@@ -139,7 +139,7 @@ namespace CommonMark
         #region [ Properties that cache structures used in the parsers ]
 
 #if OptimizeFor45 || v4_0
-        private System.Threading.ThreadLocal<Func<Parser.Subject, Syntax.Inline>[]> _inlineParsers;
+        private Lazy<Func<Parser.Subject, Syntax.Inline>[]> _inlineParsers;
 #else
         private Func<Parser.Subject, Syntax.Inline>[] _inlineParsers;
 #endif
@@ -171,7 +171,7 @@ namespace CommonMark
         }
 
 #if OptimizeFor45 || v4_0
-        private System.Threading.ThreadLocal<char[]> _inlineParserSpecialCharacters;
+        private Lazy<char[]> _inlineParserSpecialCharacters;
 #else
         private char[] _inlineParserSpecialCharacters;
 #endif
