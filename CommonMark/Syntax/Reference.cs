@@ -27,6 +27,16 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
+        /// Creates a copy of this reference object.
+        /// </summary>
+        public Reference Clone()
+        {
+            return this.Label != null
+                ? new Reference(this.Label, this.Url, this.Title)
+                : this;
+        }
+
+        /// <summary>
         /// Represents the maximum allowed length of a reference definition (<c>foo</c> in <c>[foo]: /url</c>).
         /// </summary>
         public const int MaximumReferenceLabelLength = 1000;
