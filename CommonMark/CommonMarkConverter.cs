@@ -76,9 +76,9 @@ namespace CommonMark
         /// Gets the CommonMark assembly version number. Note that might differ from the actual release version
         /// since the assembly version is not always incremented to reduce possible reference errors when updating.
         /// </summary>
-        [Obsolete("Use Version property instead.", false)] 
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)] 
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)] 
+        [Obsolete("Use Version property instead.", false)]
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         public static Version AssemblyVersion
         {
             get
@@ -102,7 +102,7 @@ namespace CommonMark
         /// <exception cref="ArgumentNullException">when <paramref name="source"/> is <c>null</c></exception>
         /// <exception cref="CommonMarkException">when errors occur during block parsing.</exception>
         /// <exception cref="IOException">when error occur while reading the data.</exception>
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)] 
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
         public static Syntax.Block ProcessStage1(TextReader source, CommonMarkSettings settings = null)
         {
             if (source == null)
@@ -166,7 +166,7 @@ namespace CommonMark
         /// <exception cref="ArgumentException">when <paramref name="document"/> does not represent a top level document.</exception>
         /// <exception cref="ArgumentNullException">when <paramref name="document"/> is <c>null</c></exception>
         /// <exception cref="CommonMarkException">when errors occur during inline parsing.</exception>
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)] 
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
         public static void ProcessStage2(Syntax.Block document, CommonMarkSettings settings = null)
         {
             if (document == null)
@@ -181,17 +181,12 @@ namespace CommonMark
             try
             {
 #if OptimizeFor45 || v4_0
-                var partitions = Partition(document);
+                var partitions = Partition.Create(document);
                 if (partitions != null)
                 {
-                    Syntax.Block start = partitions[0];
-                    Syntax.Block stop;
-                    System.Threading.Tasks.Parallel.For(1, partitions.Length, i =>
-                    {
-                        stop = partitions[i];
-                        BlockMethods.ProcessInlines(start, document.ReferenceMap, settings, stop);
-                        start = stop;
-                    });
+                    System.Linq.ParallelEnumerable.ForAll(
+                        System.Linq.ParallelEnumerable.AsParallel(partitions), p =>
+                            BlockMethods.ProcessInlines(p.Start, p.ReferenceMap, settings, p.Stop));
                 }
                 else
 #endif
@@ -219,7 +214,7 @@ namespace CommonMark
         /// <exception cref="ArgumentNullException">when <paramref name="document"/> or <paramref name="target"/> is <c>null</c></exception>
         /// <exception cref="CommonMarkException">when errors occur during formatting.</exception>
         /// <exception cref="IOException">when error occur while writing the data to the target.</exception>
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)] 
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
         public static void ProcessStage3(Syntax.Block document, TextWriter target, CommonMarkSettings settings = null)
         {
             if (document == null)
@@ -343,8 +338,11 @@ namespace CommonMark
                 return writer.ToString();
             }
         }
+    }
 
-        private static Syntax.Block[] Partition(Syntax.Block document)
+    internal struct Partition
+    {
+        public static Partition[] Create(Syntax.Block document)
         {
             var procCount = Environment.ProcessorCount;
             var childCount = document.ChildCount;
@@ -353,25 +351,42 @@ namespace CommonMark
                 return null;
             }
 
-            var partitions = new Syntax.Block[procCount + 1];
-            var counts = new int[procCount + 1];
-            counts[procCount] = childCount;
+            var partitions = new Partition[procCount];
             var currCount = 0;
             var index = 0;
-            Syntax.Block child;
-            for (child = document.FirstChild; child != null; child = child.NextSibling)
+            Syntax.Block curr, prev = null;
+            for (curr = document.FirstChild; curr != null; curr = curr.NextSibling)
             {
                 currCount++;
                 if ((long)currCount >= (long)childCount * index / procCount)
                 {
-                    partitions[index] = child;
-                    counts[index] = currCount;
-                    if (++index == procCount)
-                        break;
+                    if (index > 0)
+                    {
+                        partitions[index - 1] = new Partition(prev, curr, document, currCount);
+                    }
+                    ++index;
                 }
+                prev = curr;
             }
+            partitions[procCount - 1] = new Partition(prev, null, document, currCount);
 
             return partitions;
         }
+
+        private Partition(Syntax.Block start, Syntax.Block stop, Syntax.Block document, int count)
+        {
+            Start = start;
+            Stop = stop;
+            ReferenceMap = new Dictionary<string, Syntax.Reference>(document.ReferenceMap);
+            Count = count;
+        }
+
+        public Syntax.Block Start { get; }
+
+        public Syntax.Block Stop { get; }
+
+        public Dictionary<string, Syntax.Reference> ReferenceMap { get; }
+
+        public int Count { get; }
     }
 }
