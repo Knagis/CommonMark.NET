@@ -18,6 +18,7 @@ namespace CommonMark
         public CommonMarkSettings()
         {
             Reset();
+            ParallelThreads = 1;
         }
 
         /// <summary>
@@ -105,6 +106,12 @@ namespace CommonMark
                 this._uriResolver = value;
             }
         }
+
+        /// <summary>
+        /// Gets or sets the number of parallel threads.
+        /// </summary>
+        /// <value>Threads per processor, or 0 to process sequentially. The default is 1.</value>
+        public int ParallelThreads { get; set; }
 
 #pragma warning disable 0618
         private static readonly CommonMarkSettings _default = new CommonMarkSettings();

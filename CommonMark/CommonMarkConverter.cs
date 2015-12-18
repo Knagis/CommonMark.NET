@@ -349,19 +349,25 @@ namespace CommonMark
         public static Partition[] Create(Syntax.Block document, CommonMarkSettings settings)
         {
             var procCount = Environment.ProcessorCount;
-            var childCount = document.ChildCount;
-            if (procCount == 1 || childCount < procCount)// * 0x100)
+            if (settings.ParallelThreads <= 0 || procCount == 1)
             {
                 return null;
             }
 
-            var partitions = new Partition[procCount];
+            var blockCount = document.ChildCount;
+            int partCount = procCount * settings.ParallelThreads;
+            if (blockCount < partCount)
+            {
+                return null;
+            }
+
+            var partitions = new Partition[partCount];
             var currCount = 0;
             var index = 0;
             Syntax.Block curr, prev = null;
             for (curr = document.FirstChild; curr != null; curr = curr.NextSibling)
             {
-                if ((long)currCount == (long)childCount * index / procCount)
+                if ((long)currCount == (long)blockCount * index / partCount)
                 {
                     if (index > 0)
                     {
@@ -372,7 +378,7 @@ namespace CommonMark
                 }
                 currCount++;
             }
-            partitions[procCount - 1] = new Partition(prev, null, document, settings, currCount);
+            partitions[partCount - 1] = new Partition(prev, null, document, settings, currCount);
 
             return partitions;
         }
