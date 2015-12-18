@@ -180,7 +180,7 @@ namespace CommonMark
 
             try
             {
-#if OptimizeFor45 || v4_0
+#if Parallelize
                 var partitions = Partition.Create(document, settings);
                 if (partitions != null)
                 {

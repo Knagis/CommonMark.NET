@@ -5,7 +5,8 @@
       "compilationOptions": {
         "define": [
           "NETCore",
-          "OptimizeFor45"
+          "OptimizeFor45",
+          "Parallelize"
         ]
       },
       "dependencies": {

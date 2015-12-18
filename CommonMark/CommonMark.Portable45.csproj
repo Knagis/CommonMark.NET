@@ -5,7 +5,7 @@
     <TargetFrameworkVersionEx>v4.5</TargetFrameworkVersionEx>
     <TargetFrameworkProfileEx>Profile111</TargetFrameworkProfileEx>
     <ProjectGuid>{B8459EC6-0233-4235-9D2C-469E55BF05F2}</ProjectGuid>
-    <DefineConstantsEx>OptimizeFor45</DefineConstantsEx>
+    <DefineConstantsEx>OptimizeFor45;Parallelize</DefineConstantsEx>
   </PropertyGroup>
   <Import Project="CommonMark.Base.csproj" />
 </Project>

@@ -5,6 +5,7 @@
     <TargetFrameworkVersionEx>v4.0</TargetFrameworkVersionEx>
     <TargetFrameworkProfileEx>Client</TargetFrameworkProfileEx>
     <ProjectGuid>{0176CB03-177C-464A-A155-089595E77520}</ProjectGuid>
+    <DefineConstantsEx>Parallelize</DefineConstantsEx>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
