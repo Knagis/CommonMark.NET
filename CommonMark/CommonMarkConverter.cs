@@ -361,16 +361,16 @@ namespace CommonMark
             Syntax.Block curr, prev = null;
             for (curr = document.FirstChild; curr != null; curr = curr.NextSibling)
             {
-                currCount++;
-                if ((long)currCount >= (long)childCount * index / procCount)
+                if ((long)currCount == (long)childCount * index / procCount)
                 {
                     if (index > 0)
                     {
                         partitions[index - 1] = new Partition(prev, curr, document, settings, currCount);
                     }
                     ++index;
+                    prev = curr;
                 }
-                prev = curr;
+                currCount++;
             }
             partitions[procCount - 1] = new Partition(prev, null, document, settings, currCount);
 
