@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace CommonMark
 {
@@ -128,12 +129,17 @@ namespace CommonMark
         private void Reset()
         {
 #if OptimizeFor45 || v4_0
-            this._inlineParsers = new Lazy<Func<Parser.Subject, Syntax.Inline>[]>(this.InitializeParsers, System.Threading.LazyThreadSafetyMode.None);
-            this._inlineParserSpecialCharacters = new Lazy<char[]>(this.InitializeSpecialCharacters, System.Threading.LazyThreadSafetyMode.None);
+            this._inlineParsers = GetLazy(this.InitializeParsers);
+            this._inlineParserSpecialCharacters = GetLazy(this.InitializeSpecialCharacters);
 #else
             this._inlineParsers = null;
             this._inlineParserSpecialCharacters = null;
 #endif
+        }
+
+        internal Lazy<T> GetLazy<T>(Func<T> valueFactory)
+        {
+            return new Lazy<T>(valueFactory, LazyThreadSafetyMode.None);
         }
 
         #region [ Properties that cache structures used in the parsers ]
