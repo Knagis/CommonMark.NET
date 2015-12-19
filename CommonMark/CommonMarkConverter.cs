@@ -387,8 +387,8 @@ namespace CommonMark
         {
             Start = start;
             Stop = stop;
-            ReferenceMap = new Dictionary<string, Syntax.Reference>(document.ReferenceMap);
-            Settings = settings.Clone();
+            ReferenceMap = document.ReferenceMap;
+            Settings = settings;
             Count = count;
         }
 
