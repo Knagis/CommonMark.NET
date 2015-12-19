@@ -325,7 +325,7 @@ namespace CommonMark.Parser
                 }
                 else
                 {
-                    block = null;
+                    block = stop;
                 }
             }
         }
