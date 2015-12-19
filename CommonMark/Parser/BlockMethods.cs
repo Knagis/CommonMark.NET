@@ -297,7 +297,7 @@ namespace CommonMark.Parser
                         sc.FillSubject(subj);
                         delta = subj.Position;
 
-                        block.InlineContent = InlineMethods.parse_inlines(subj, refmap, parsers, specialCharacters);
+                        block.InlineContent = InlineMethods.parse_inlines(subj, parsers, specialCharacters);
                         block.StringContent = null;
 
                         if (sc.PositionTracker != null)
