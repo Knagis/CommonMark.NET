@@ -180,12 +180,18 @@ namespace CommonMark
         private char[] InitializeSpecialCharacters()
         {
             var p = this.InlineParsers;
-            var vs = new List<char>(20);
+            var c = 0;
             for (var i = 0; i < p.Length; i++)
                 if (p[i] != null)
-                    vs.Add((char)i);
+                    c++;
 
-            return vs.ToArray();
+            var s = new char[c];
+            var m = 0;
+            for (var i = 0; i < p.Length; i++)
+                if (p[i] != null)
+                    s[m++] = (char)i;
+
+            return s;
         }
 
         #endregion
