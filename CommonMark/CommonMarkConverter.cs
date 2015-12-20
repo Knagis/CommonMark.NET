@@ -348,8 +348,13 @@ namespace CommonMark
     {
         public static Partition[] Create(Syntax.Block document, CommonMarkSettings settings)
         {
+            if (settings.ParallelThreads <= 0)
+            {
+                return null;
+            }
+
             var procCount = Environment.ProcessorCount;
-            if (settings.ParallelThreads <= 0 || procCount == 1)
+            if (procCount == 1)
             {
                 return null;
             }
