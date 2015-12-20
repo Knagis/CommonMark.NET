@@ -199,7 +199,10 @@ namespace CommonMark
 
         private static void Process(Partition partition)
         {
-            BlockMethods.ProcessInlines(partition.Start, partition.ReferenceMap, partition.Settings, partition.Stop);
+            if (partition != null)
+            {
+                BlockMethods.ProcessInlines(partition.Start, partition.ReferenceMap, partition.Settings, partition.Stop);
+            }
         }
 
         /// <summary>
@@ -338,7 +341,7 @@ namespace CommonMark
         }
     }
 
-    internal struct Partition
+    internal class Partition
     {
         public static Partition[] Create(Syntax.Block document, CommonMarkSettings settings)
         {
@@ -353,36 +356,85 @@ namespace CommonMark
                 return null;
             }
 
-            var blockCount = document.ChildCount;
-            int partCount = procCount * settings.ParallelThreads;
-            if (blockCount < partCount)
+            var topCount = document.ChildCount;
+            var partCount = procCount * settings.ParallelThreads;
+            if (topCount < partCount)
+            {
+                return null;
+            }
+
+            var depth = topCount < 0x100 ? 1 : 2;
+            long[] blockCounts;
+            var totalCount = GetBlockCounts(document, depth, out blockCounts);
+            if (totalCount < partCount)
             {
                 return null;
             }
 
             var partitions = new Partition[partCount];
-            var currCount = 0;
-            var index = 0;
+            var currCount = 0L;
+            var prevCount = 0L;
+            var partIndex = 0;
+            var blockIndex = 0;
             Syntax.Block curr, prev = null;
             for (curr = document.FirstChild; curr != null; curr = curr.NextSibling)
             {
-                if ((long)currCount == (long)blockCount * index / partCount)
+                while (currCount >= (long)totalCount * partIndex / totalCount && partIndex < partCount)
                 {
-                    if (index > 0)
+                    if (partIndex > 0)
                     {
-                        partitions[index - 1] = new Partition(prev, curr, document, settings, currCount);
+                        partitions[partIndex - 1] = new Partition(prev, curr, document, settings, currCount - prevCount);
                     }
-                    ++index;
+                    ++partIndex;
                     prev = curr;
+                    prevCount = currCount;
                 }
-                currCount++;
+                currCount += blockCounts[blockIndex++];
             }
-            partitions[partCount - 1] = new Partition(prev, null, document, settings, currCount);
+
+            partitions[partCount - 1] = new Partition(prev, null, document, settings, totalCount - prevCount);
 
             return partitions;
         }
 
-        private Partition(Syntax.Block start, Syntax.Block stop, Syntax.Block document, CommonMarkSettings settings, int count)
+        private static long GetBlockCounts(Syntax.Block document, int depth, out long[] blockCounts)
+        {
+            var totalCount = 0L;
+            var blockIndex = 0;
+
+            blockCounts = new long[document.ChildCount];
+            for (var child = document.FirstChild; child != null; child = child.NextSibling)
+            {
+                var count = GetBlockCount(child, depth);
+                blockCounts[blockIndex++] = count;
+                totalCount += count;
+            }
+
+            return totalCount;
+        }
+
+        private static long GetBlockCount(Syntax.Block block, int depth)
+        {
+            if (block == null)
+            {
+                return 0;
+            }
+
+            if (depth == 1)
+            {
+                return 1L + block.ChildCount;
+            }
+
+            var childCount = 1L;
+            for (var child = block.FirstChild; child != null; child = child.NextSibling)
+            {
+                childCount += GetBlockCount(child, depth - 1);
+            }
+
+            return childCount;
+        }
+
+        private Partition(Syntax.Block start, Syntax.Block stop, Syntax.Block document, CommonMarkSettings settings, long count)
         {
             Start = start;
             Stop = stop;
@@ -399,6 +451,6 @@ namespace CommonMark
 
         public CommonMarkSettings Settings { get; }
 
-        public int Count { get; }
+        public long Count { get; }
     }
 }
