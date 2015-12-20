@@ -22,7 +22,8 @@
     <file src="CommonMark\bin\v4.0\Release\CommonMark.*" target="lib\net40-client\" />
     <file src="CommonMark\bin\v4.5\Release\CommonMark.*" target="lib\net45\" />
     <file src="CommonMark\bin\portable\Release\CommonMark.*" target="lib\portable-net40+sl50+wp80+win+wpa81+MonoAndroid10+MonoTouch10\" />
-    <file src="CommonMark\bin\portable_v4.5\Release\CommonMark.*" target="lib\portable-net45+wp80+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\" />
+    <file src="CommonMark\bin\portable_111\Release\CommonMark.*" target="lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\" />
+    <file src="CommonMark\bin\portable_259\Release\CommonMark.*" target="lib\portable-net45+wp80+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\" />
     <file src="CommonMark\bin\core\Release\dnxcore50\CommonMark.*" target="lib\dnxcore50\" />
     <file src="CommonMark.Console\bin\Release\CommonMark.Console.exe" target="tools\cmark.exe" />
     <file src="CommonMark.Console\App.nuget.config" target="tools\cmark.exe.config" />
