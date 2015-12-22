@@ -17,5 +17,6 @@
         "System.Globalization.Extensions": "4.0.0"
       }
     }
-  }
+  },
+  "compile": "../CommonMark/**/*.cs"
 }

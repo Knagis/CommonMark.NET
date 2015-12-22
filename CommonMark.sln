@@ -26,7 +26,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.NET45", "CommonM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.Tests", "CommonMark.Tests\CommonMark.Tests.csproj", "{B3158916-F54D-4F00-B553-E86D4370FF96}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CommonMark.NETCore", "CommonMark\CommonMark.NETCore.xproj", "{47C48819-62B7-4BD3-89FF-BA9A0B16C8FB}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CommonMark.NETCore", "CommonMark.NETCore\CommonMark.NETCore.xproj", "{47C48819-62B7-4BD3-89FF-BA9A0B16C8FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.Portable45", "CommonMark\CommonMark.Portable45.csproj", "{B8459EC6-0233-4235-9D2C-469E55BF05F2}"
 EndProject
