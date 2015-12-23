@@ -1,0 +1,19 @@
+version: 1.0.{build}
+os: Visual Studio 2015
+configuration:
+- Release
+- Debug
+environment:
+  DNX_FEED: https://www.nuget.org/api/v2
+install:
+- cmd: >-
+    set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
+
+    dnvm install latest -r coreclr -a x86 -NoNative
+
+    dnvm install latest -r clr -a x86 -NoNative
+
+    dnu restore
+build:
+  parallel: true
+  verbosity: minimal
