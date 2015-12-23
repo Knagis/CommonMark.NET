@@ -41,11 +41,17 @@ The library uses no references except for `System` - it has no external dependen
     * Windows Phone Silverlight 8
     * Xamarin.Android
     * Xamarin.iOS
-* .NET Framework 4.5
+* .NET 4.5 Portable Class Library (Optimized)
+    * .NET Framework 4.5
+    * Windows 8
+    * Windows Phone 8.1
+    * Windows Phone Silverlight 8
+    * Xamarin.Android
+    * Xamarin.iOS
+* .NET Framework 4.5 (Optimized)
 * .NET Framework 5.0 Core (also known as ASP.NET vNext Core CLR)
 
-For working with the source code you will need Visual Studio 2013.3 or newer (Community edition is supported)
-except for the .NET Core project which requires Visual Studio 2015.
+For working with the source code you will need Visual Studio 2015 or newer (Community edition is supported).
 
 ## Performance
 
@@ -57,7 +63,7 @@ following results:
     CommonMarkSharp 0.3.2     30 ms   46%
        MarkdownSharp 1.13     55 ms   84%     (might not conform to CommonMark specification)
          MarkdownDeep 1.5      7 ms   11%     (might not conform to CommonMark specification)
-	  MoonShine (sundown)      3 ms    6%     (wrapper for a native x86 .dll)
+      MoonShine (sundown)      3 ms    6%     (wrapper for a native x86 .dll)
                  Baseline     65 ms   100%    (used to compare results on different machines)
 
 This benchmark is very simple and tests the processing of the CommonMark specification document itself (a 
