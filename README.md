@@ -2,7 +2,7 @@
 
 # CommonMark.NET
 
-Implementation of [CommonMark] [1] specification (passes tests from version 0.22) in C# for converting Markdown documents to HTML.
+Implementation of [CommonMark] [1] specification (passes tests from version 0.23) in C# for converting Markdown documents to HTML.
 
 The current version of the library is also [available on NuGet] [nuget].
 
