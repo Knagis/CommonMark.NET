@@ -62,6 +62,7 @@
     <Compile Include="Parser\TabTextReader.cs" />
     <Compile Include="Syntax\Block.cs" />
     <Compile Include="Parser\BlockMethods.cs" />
+    <Compile Include="Syntax\HeadingData.cs" />
     <Compile Include="Syntax\HtmlBlockType.cs" />
     <Compile Include="Syntax\BlockTag.cs" />
     <Compile Include="Syntax\Enumerable.cs" />

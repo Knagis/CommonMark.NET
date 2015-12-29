@@ -630,7 +630,7 @@ namespace CommonMark.Parser
 
                     AdvanceOffset(ln, first_nonspace + matched - offset, false, ref offset, ref column);
                     container = CreateChildBlock(container, line, BlockTag.AtxHeading, first_nonspace);
-                    container.HeaderLevel = i;
+                    container.Heading = new HeadingData(i);
 
                 }
                 else if (!indented && (curChar == '`' || curChar == '~') && 0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace, ln.Length)))
@@ -662,7 +662,7 @@ namespace CommonMark.Parser
                 {
 
                     container.Tag = BlockTag.SetextHeading;
-                    container.HeaderLevel = matched;
+                    container.Heading = new HeadingData(matched);
                     AdvanceOffset(ln, ln.Length - 1 - offset, false, ref offset, ref column);
 
                 }

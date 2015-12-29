@@ -1,7 +1,5 @@
-﻿using CommonMark.Syntax;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CommonMark.Syntax
 {
@@ -176,9 +174,19 @@ namespace CommonMark.Syntax
         public FencedCodeData FencedCodeData { get; set; }
 
         /// <summary>
+        /// Gets or sets the additional properties that apply to heading elements.
+        /// </summary>
+        public HeadingData Heading { get; set; }
+
+        /// <summary>
         /// Gets or sets the heading level (as in <c>&lt;h1&gt;</c> or <c>&lt;h2&gt;</c>).
         /// </summary>
-        public int HeaderLevel { get; set; }
+        [Obsolete("Use " + nameof(Heading) + " instead.")]
+        public int HeaderLevel
+        {
+            get { return Heading.Level; }
+            set { Heading = new HeadingData(value); }
+        }
 
         /// <summary>
         /// Gets or sets the dictionary containing resolved link references. Only set on the document node, <c>null</c>

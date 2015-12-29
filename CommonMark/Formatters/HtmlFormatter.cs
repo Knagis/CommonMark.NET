@@ -199,7 +199,7 @@ namespace CommonMark.Formatters
                 case BlockTag.AtxHeading:
                 case BlockTag.SetextHeading:
 
-                    x = block.HeaderLevel;
+                    x = block.Heading.Level;
                     if (isOpening)
                     {
                         EnsureNewLine();

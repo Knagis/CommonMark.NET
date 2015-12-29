@@ -296,7 +296,7 @@ namespace CommonMark.Formatters
                     case BlockTag.SetextHeading:
                         writer.EnsureLine();
 
-                        x = block.HeaderLevel;
+                        x = block.Heading.Level;
 
                         if (trackPositions)
                         {
