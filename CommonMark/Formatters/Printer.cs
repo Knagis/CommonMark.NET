@@ -243,7 +243,7 @@ namespace CommonMark.Formatters
                         break;
 
                     case InlineTag.RawHtml:
-                        writer.Write("html {0}", format_str(inline.LiteralContent, buffer));
+                        writer.Write("html_inline {0}", format_str(inline.LiteralContent, buffer));
                         writer.Write(' ');
                         writer.Write(format_str(inline.LiteralContent, buffer));
                         break;
