@@ -4,14 +4,15 @@
     <id>CommonMark.NET</id>
     <version>0.11.0</version>
     <title>CommonMark.NET</title>
-    <authors>Knagis</authors>
+    <authors>Kārlis Gaņģis</authors>
     <licenseUrl>https://raw.githubusercontent.com/Knagis/CommonMark.NET/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/Knagis/CommonMark.NET/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/dcurtis/markdown-mark/master/png/32x20.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Fastest .NET library for converting Markdown documents to HTML.</summary>
     <description>.NET library for converting Markdown documents to HTML according to the CommonMark specification. Optimized for maximum performance and targets every .NET version since 2.0, including PCL, Mono and .NET Core.</description>
-    <releaseNotes>Added optimized PCL targeting .NET 4.5.</releaseNotes>
+    <releaseNotes>Updated to specification 0.23
+Added optimized PCL targeting .NET 4.5.</releaseNotes>
     <copyright>Copyright © Kārlis Gaņģis 2014-2015</copyright>
     <tags>CommonMark Markdown</tags>
   </metadata>
