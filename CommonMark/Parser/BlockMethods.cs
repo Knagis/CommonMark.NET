@@ -26,7 +26,7 @@ namespace CommonMark.Parser
         private static bool AcceptsLines(BlockTag block_type)
         {
             return (block_type == BlockTag.Paragraph ||
-                    block_type == BlockTag.AtxHeader ||
+                    block_type == BlockTag.AtxHeading ||
                     block_type == BlockTag.IndentedCode ||
                     block_type == BlockTag.FencedCode);
         }
@@ -127,7 +127,7 @@ namespace CommonMark.Parser
                     if (!sc.StartsWith('['))
                         break;
 
-                    var subj = new Subject(b.Top.ReferenceMap);
+                    var subj = new Subject(b.Top.Document);
                     sc.FillSubject(subj);
                     var origPos = subj.Position;
                     while (subj.Position < subj.Buffer.Length 
@@ -271,15 +271,15 @@ namespace CommonMark.Parser
         /// Walk through the block, its children and siblings, parsing string content into inline content where appropriate.
         /// </summary>
         /// <param name="block">The document level block from which to start the processing.</param>
-        /// <param name="refmap">The reference mapping used when parsing links.</param>
+        /// <param name="data">Document data.</param>
         /// <param name="settings">The settings that influence how the inline parsing is performed.</param>
-        public static void ProcessInlines(Block block, Dictionary<string, Reference> refmap, CommonMarkSettings settings)
+        public static void ProcessInlines(Block block, DocumentData data, CommonMarkSettings settings)
         {
             Stack<Inline> inlineStack = null;
             var stack = new Stack<Block>();
             var parsers = settings.InlineParsers;
             var specialCharacters = settings.InlineParserSpecialCharacters;
-            var subj = new Subject(refmap);
+            var subj = new Subject(data);
 
             StringContent sc;
             int delta;
@@ -287,7 +287,7 @@ namespace CommonMark.Parser
             while (block != null)
             {
                 var tag = block.Tag;
-                if (tag == BlockTag.Paragraph || tag == BlockTag.AtxHeader || tag == BlockTag.SETextHeader)
+                if (tag == BlockTag.Paragraph || tag == BlockTag.AtxHeading || tag == BlockTag.SetextHeading)
                 {
                     sc = block.StringContent;
                     if (sc != null)
@@ -295,7 +295,7 @@ namespace CommonMark.Parser
                         sc.FillSubject(subj);
                         delta = subj.Position;
 
-                        block.InlineContent = InlineMethods.parse_inlines(subj, refmap, parsers, specialCharacters);
+                        block.InlineContent = InlineMethods.parse_inlines(subj, parsers, specialCharacters);
                         block.StringContent = null;
 
                         if (sc.PositionTracker != null)
@@ -344,7 +344,7 @@ namespace CommonMark.Parser
             startpos = pos;
             c = ln[pos];
 
-            if (c == '+' || c == '•' || ((c == '*' || c == '-') && 0 == Scanner.scan_hrule(ln, pos, len)))
+            if (c == '+' || c == '•' || ((c == '*' || c == '-') && 0 == Scanner.scan_thematic_break(ln, pos, len)))
             {
                 pos++;
                 if (pos == len || (ln[pos] != ' ' && ln[pos] != '\n'))
@@ -524,10 +524,10 @@ namespace CommonMark.Parser
                             break;
                         }
 
-                    case BlockTag.AtxHeader:
-                    case BlockTag.SETextHeader:
+                    case BlockTag.AtxHeading:
+                    case BlockTag.SetextHeading:
                         {
-                            // a header can never contain more than one line
+                            // a heading can never contain more than one line
                             all_matched = false;
                             if (blank)
                                 container.IsLastLineBlank = true;
@@ -625,12 +625,12 @@ namespace CommonMark.Parser
                     container = CreateChildBlock(container, line, BlockTag.BlockQuote, first_nonspace);
 
                 }
-                else if (!indented && curChar == '#' && 0 != (matched = Scanner.scan_atx_header_start(ln, first_nonspace, ln.Length, out i)))
+                else if (!indented && curChar == '#' && 0 != (matched = Scanner.scan_atx_heading_start(ln, first_nonspace, ln.Length, out i)))
                 {
 
                     AdvanceOffset(ln, first_nonspace + matched - offset, false, ref offset, ref column);
-                    container = CreateChildBlock(container, line, BlockTag.AtxHeader, first_nonspace);
-                    container.HeaderLevel = i;
+                    container = CreateChildBlock(container, line, BlockTag.AtxHeading, first_nonspace);
+                    container.Heading = new HeadingData(i);
 
                 }
                 else if (!indented && (curChar == '`' || curChar == '~') && 0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace, ln.Length)))
@@ -657,22 +657,22 @@ namespace CommonMark.Parser
 
                 }
                 else if (!indented && container.Tag == BlockTag.Paragraph && (curChar == '=' || curChar == '-')
-                        && 0 != (matched = Scanner.scan_setext_header_line(ln, first_nonspace, ln.Length))
+                        && 0 != (matched = Scanner.scan_setext_heading_line(ln, first_nonspace, ln.Length))
                         && ContainsSingleLine(container.StringContent))
                 {
 
-                    container.Tag = BlockTag.SETextHeader;
-                    container.HeaderLevel = matched;
+                    container.Tag = BlockTag.SetextHeading;
+                    container.Heading = new HeadingData(matched);
                     AdvanceOffset(ln, ln.Length - 1 - offset, false, ref offset, ref column);
 
                 }
                 else if (!indented 
                     && !(container.Tag == BlockTag.Paragraph && !all_matched) 
-                    && 0 != (Scanner.scan_hrule(ln, first_nonspace, ln.Length)))
+                    && 0 != (Scanner.scan_thematic_break(ln, first_nonspace, ln.Length)))
                 {
 
-                    // it's only now that we know the line is not part of a setext header:
-                    container = CreateChildBlock(container, line, BlockTag.HorizontalRuler, first_nonspace);
+                    // it's only now that we know the line is not part of a setext heading:
+                    container = CreateChildBlock(container, line, BlockTag.ThematicBreak, first_nonspace);
                     Finalize(container, line);
                     container = container.Parent;
                     AdvanceOffset(ln, ln.Length - 1 - offset, false, ref offset, ref column);
@@ -756,7 +756,7 @@ namespace CommonMark.Parser
             // on an empty list item.
             container.IsLastLineBlank = (blank &&
                                           container.Tag != BlockTag.BlockQuote &&
-                                          container.Tag != BlockTag.SETextHeader &&
+                                          container.Tag != BlockTag.SetextHeading &&
                                           container.Tag != BlockTag.FencedCode &&
                                           !(container.Tag == BlockTag.ListItem &&
                                             container.FirstChild == null &&
@@ -834,7 +834,7 @@ namespace CommonMark.Parser
                     // ??? do nothing
 
                 }
-                else if (container.Tag == BlockTag.AtxHeader)
+                else if (container.Tag == BlockTag.AtxHeading)
                 {
 
                     int p = ln.Length - 1;
@@ -862,7 +862,7 @@ namespace CommonMark.Parser
                     AddLine(container, line, ln, first_nonspace);
 
                 }
-                else if (container.Tag != BlockTag.HorizontalRuler && container.Tag != BlockTag.SETextHeader)
+                else if (container.Tag != BlockTag.ThematicBreak && container.Tag != BlockTag.SetextHeading)
                 {
 
                     // create paragraph container for line

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonMark.Tests
@@ -35,13 +33,13 @@ namespace CommonMark.Tests
 
         [TestMethod]
         [TestCategory("SourcePosition - Blocks")]
-        public void SourcePositionSETextHeader()
+        public void SourcePositionSETextHeading()
         {
             var data = "foo\n\nbaz\n===\n\nbar";
             var doc = Helpers.ParseDocument(data, Settings);
 
             var code = doc.AsEnumerable()
-                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.SETextHeader);
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.SetextHeading);
 
             Assert.IsNotNull(code);
             Assert.AreEqual("baz\n===\n",
@@ -50,13 +48,13 @@ namespace CommonMark.Tests
 
         [TestMethod]
         [TestCategory("SourcePosition - Blocks")]
-        public void SourcePositionAtxHeader()
+        public void SourcePositionAtxHeading()
         {
             var data = "foo\n\n## baz\n\nbar";
             var doc = Helpers.ParseDocument(data, Settings);
 
             var code = doc.AsEnumerable()
-                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.AtxHeader);
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.AtxHeading);
 
             Assert.IsNotNull(code);
             Assert.AreEqual("## baz\n",
@@ -65,13 +63,13 @@ namespace CommonMark.Tests
 
         [TestMethod]
         [TestCategory("SourcePosition - Blocks")]
-        public void SourcePositionHorizontalRuler()
+        public void SourcePositionThematicBreak()
         {
             var data = "foo\n\n----\n\nbar";
             var doc = Helpers.ParseDocument(data, Settings);
 
             var code = doc.AsEnumerable()
-                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.HorizontalRuler);
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.ThematicBreak);
 
             Assert.IsNotNull(code);
             Assert.AreEqual("----\n",

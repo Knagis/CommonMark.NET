@@ -14,7 +14,7 @@ namespace CommonMark.Tests
         {
             var md = "*foo*";
             var doc = Helpers.ParseDocument(md);
-            Assert.AreEqual('*', doc.FirstChild.InlineContent.DelimiterCharacter);
+            Assert.AreEqual('*', doc.FirstChild.InlineContent.Emphasis.DelimiterCharacter);
         }
 
         [TestMethod]
@@ -22,7 +22,7 @@ namespace CommonMark.Tests
         {
             var md = "_foo_";
             var doc = Helpers.ParseDocument(md);
-            Assert.AreEqual('_', doc.FirstChild.InlineContent.DelimiterCharacter);
+            Assert.AreEqual('_', doc.FirstChild.InlineContent.Emphasis.DelimiterCharacter);
         }
 
         [TestMethod]
@@ -30,7 +30,7 @@ namespace CommonMark.Tests
         {
             var md = "_foo[bar_";
             var doc = Helpers.ParseDocument(md);
-            Assert.AreEqual('_', doc.FirstChild.InlineContent.DelimiterCharacter);
+            Assert.AreEqual('_', doc.FirstChild.InlineContent.Emphasis.DelimiterCharacter);
         }
 
         [TestMethod]
@@ -38,7 +38,7 @@ namespace CommonMark.Tests
         {
             var md = "*foo[bar*";
             var doc = Helpers.ParseDocument(md);
-            Assert.AreEqual('*', doc.FirstChild.InlineContent.DelimiterCharacter);
+            Assert.AreEqual('*', doc.FirstChild.InlineContent.Emphasis.DelimiterCharacter);
         }
 
         [TestMethod]
@@ -46,7 +46,7 @@ namespace CommonMark.Tests
         {
             var md = "_*foo*_";
             var doc = Helpers.ParseDocument(md);
-            Assert.AreEqual('*', doc.FirstChild.InlineContent.FirstChild.DelimiterCharacter);
+            Assert.AreEqual('*', doc.FirstChild.InlineContent.FirstChild.Emphasis.DelimiterCharacter);
         }
 
         [TestMethod]
@@ -54,7 +54,7 @@ namespace CommonMark.Tests
         {
             var md = "*_foo_*";
             var doc = Helpers.ParseDocument(md);
-            Assert.AreEqual('_', doc.FirstChild.InlineContent.FirstChild.DelimiterCharacter);
+            Assert.AreEqual('_', doc.FirstChild.InlineContent.FirstChild.Emphasis.DelimiterCharacter);
         }
 
         [TestMethod]
@@ -62,7 +62,7 @@ namespace CommonMark.Tests
         {
             var md = "_*foo[bar*_";
             var doc = Helpers.ParseDocument(md);
-            Assert.AreEqual('*', doc.FirstChild.InlineContent.FirstChild.DelimiterCharacter);
+            Assert.AreEqual('*', doc.FirstChild.InlineContent.FirstChild.Emphasis.DelimiterCharacter);
         }
 
         [TestMethod]
@@ -70,7 +70,7 @@ namespace CommonMark.Tests
         {
             var md = "*_foo[bar_*";
             var doc = Helpers.ParseDocument(md);
-            Assert.AreEqual('_', doc.FirstChild.InlineContent.FirstChild.DelimiterCharacter);
+            Assert.AreEqual('_', doc.FirstChild.InlineContent.FirstChild.Emphasis.DelimiterCharacter);
         }
 
         [TestMethod]
@@ -78,7 +78,7 @@ namespace CommonMark.Tests
         {
             var md = "_*foo[bar*baz_";
             var doc = Helpers.ParseDocument(md);
-            Assert.AreEqual('*', doc.FirstChild.InlineContent.FirstChild.DelimiterCharacter);
+            Assert.AreEqual('*', doc.FirstChild.InlineContent.FirstChild.Emphasis.DelimiterCharacter);
         }
 
         [TestMethod]
@@ -86,7 +86,7 @@ namespace CommonMark.Tests
         {
             var md = "*_foo[bar_baz*";
             var doc = Helpers.ParseDocument(md);
-            Assert.AreEqual('_', doc.FirstChild.InlineContent.FirstChild.DelimiterCharacter);
+            Assert.AreEqual('_', doc.FirstChild.InlineContent.FirstChild.Emphasis.DelimiterCharacter);
         }
     }
 }

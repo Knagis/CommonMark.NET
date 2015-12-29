@@ -4,14 +4,15 @@
     <id>CommonMark.NET</id>
     <version>0.11.0</version>
     <title>CommonMark.NET</title>
-    <authors>Knagis</authors>
+    <authors>Kārlis Gaņģis</authors>
     <licenseUrl>https://raw.githubusercontent.com/Knagis/CommonMark.NET/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/Knagis/CommonMark.NET/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/dcurtis/markdown-mark/master/png/32x20.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Fastest .NET library for converting Markdown documents to HTML.</summary>
     <description>.NET library for converting Markdown documents to HTML according to the CommonMark specification. Optimized for maximum performance and targets every .NET version since 2.0, including PCL, Mono and .NET Core.</description>
-    <releaseNotes>Added optimized PCL targeting .NET 4.5.</releaseNotes>
+    <releaseNotes>Updated to specification 0.23
+Added optimized PCL targeting .NET 4.5.</releaseNotes>
     <copyright>Copyright © Kārlis Gaņģis 2014-2015</copyright>
     <tags>CommonMark Markdown</tags>
   </metadata>
@@ -22,7 +23,7 @@
     <file src="CommonMark\bin\v4.0\Release\CommonMark.*" target="lib\net40-client\" />
     <file src="CommonMark\bin\v4.5\Release\CommonMark.*" target="lib\net45\" />
     <file src="CommonMark\bin\portable\Release\CommonMark.*" target="lib\portable-net40+sl50+wp80+win+wpa81+MonoAndroid10+MonoTouch10\" />
-    <file src="CommonMark\bin\portable_v4.5\Release\CommonMark.*" target="lib\portable-net45+wp80+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\" />
+    <file src="CommonMark\bin\portable_259\Release\CommonMark.*" target="lib\portable-net45+wp80+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\" />
     <file src="CommonMark\bin\core\Release\dnxcore50\CommonMark.*" target="lib\dnxcore50\" />
     <file src="CommonMark.Console\bin\Release\CommonMark.Console.exe" target="tools\cmark.exe" />
     <file src="CommonMark.Console\App.nuget.config" target="tools\cmark.exe.config" />

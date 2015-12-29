@@ -124,16 +124,16 @@ namespace CommonMark.Formatters
                         }
                         break;
 
-                    case BlockTag.AtxHeader:
-                        writer.Write("atx_header");
+                    case BlockTag.AtxHeading:
+                        writer.Write("atx_heading");
                         PrintPosition(trackPositions, writer, block);
-                        writer.Write(" (level={0})", block.HeaderLevel);
+                        writer.Write(" (level={0})", block.Heading.Level);
                         break;
 
-                    case BlockTag.SETextHeader:
-                        writer.Write("setext_header");
+                    case BlockTag.SetextHeading:
+                        writer.Write("setext_heading");
                         PrintPosition(trackPositions, writer, block);
-                        writer.Write(" (level={0})", block.HeaderLevel);
+                        writer.Write(" (level={0})", block.Heading.Level);
                         break;
 
                     case BlockTag.Paragraph:
@@ -141,8 +141,8 @@ namespace CommonMark.Formatters
                         PrintPosition(trackPositions, writer, block);
                         break;
 
-                    case BlockTag.HorizontalRuler:
-                        writer.Write("hrule");
+                    case BlockTag.ThematicBreak:
+                        writer.Write("thematic_break");
                         PrintPosition(trackPositions, writer, block);
                         break;
 
@@ -243,7 +243,7 @@ namespace CommonMark.Formatters
                         break;
 
                     case InlineTag.RawHtml:
-                        writer.Write("html {0}", format_str(inline.LiteralContent, buffer));
+                        writer.Write("html_inline {0}", format_str(inline.LiteralContent, buffer));
                         writer.Write(' ');
                         writer.Write(format_str(inline.LiteralContent, buffer));
                         break;

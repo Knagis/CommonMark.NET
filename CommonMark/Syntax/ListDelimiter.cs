@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CommonMark.Syntax
+﻿namespace CommonMark.Syntax
 {
     /// <summary>
-    /// Defines the delimeter used in the source for ordered lists.
+    /// Defines the delimiter used in the source for ordered lists.
     /// </summary>
-    public enum ListDelimiter
+    public enum ListDelimiter : byte
     {
         /// <summary>
         /// The item numbering is followed with a period (<c>1. foo</c>).

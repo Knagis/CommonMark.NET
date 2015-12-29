@@ -50,6 +50,7 @@
     <Compile Include="CommonMarkSettings.cs" />
     <Compile Include="Formatters\HtmlFormatter.cs" />
     <Compile Include="Func.cs" />
+    <Compile Include="Lazy.cs" />
     <Compile Include="OutputFormat.cs" />
     <Compile Include="Parser\EntityDecoder.cs" />
     <Compile Include="Parser\InlineStack.cs" />
@@ -61,6 +62,9 @@
     <Compile Include="Parser\TabTextReader.cs" />
     <Compile Include="Syntax\Block.cs" />
     <Compile Include="Parser\BlockMethods.cs" />
+    <Compile Include="Syntax\DocumentData.cs" />
+    <Compile Include="Syntax\EmphasisData.cs" />
+    <Compile Include="Syntax\HeadingData.cs" />
     <Compile Include="Syntax\HtmlBlockType.cs" />
     <Compile Include="Syntax\BlockTag.cs" />
     <Compile Include="Syntax\Enumerable.cs" />
@@ -74,7 +78,7 @@
     <Compile Include="Syntax\InlineTag.cs" />
     <Compile Include="Syntax\ListData.cs" />
     <Compile Include="Formatters\Printer.cs" />
-    <Compile Include="Syntax\ListDelimeter.cs" />
+    <Compile Include="Syntax\ListDelimiter.cs" />
     <Compile Include="Syntax\ListType.cs" />
     <Compile Include="Syntax\Reference.cs" />
     <Compile Include="Parser\Scanner.cs" />

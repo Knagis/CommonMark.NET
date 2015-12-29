@@ -16,8 +16,8 @@ namespace CommonMark.Formatters
         private static readonly char[] EscapeHtmlAmpersand = "&amp;".ToCharArray();
         private static readonly char[] EscapeHtmlQuote = "&quot;".ToCharArray();
 
-        private static readonly string[] HeaderOpenerTags = { "<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<h6>" };
-        private static readonly string[] HeaderCloserTags = { "</h1>", "</h2>", "</h3>", "</h4>", "</h5>", "</h6>" };
+        private static readonly string[] HeadingOpenerTags = { "<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<h6>" };
+        private static readonly string[] HeadingCloserTags = { "</h1>", "</h2>", "</h3>", "</h4>", "</h5>", "</h6>" };
 
         private static readonly bool[] UrlSafeCharacters = {
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -292,11 +292,11 @@ namespace CommonMark.Formatters
                         visitChildren = true;
                         break;
 
-                    case BlockTag.AtxHeader:
-                    case BlockTag.SETextHeader:
+                    case BlockTag.AtxHeading:
+                    case BlockTag.SetextHeading:
                         writer.EnsureLine();
 
-                        x = block.HeaderLevel;
+                        x = block.Heading.Level;
 
                         if (trackPositions)
                         {
@@ -304,13 +304,13 @@ namespace CommonMark.Formatters
                             PrintPosition(writer, block);
                             writer.Write('>');
                             InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
-                            writer.WriteLineConstant(x > 0 && x < 7 ? HeaderCloserTags[x - 1] : "</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
+                            writer.WriteLineConstant(x > 0 && x < 7 ? HeadingCloserTags[x - 1] : "</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
                         }
                         else
                         {
-                            writer.WriteConstant(x > 0 && x < 7 ? HeaderOpenerTags[x - 1] : "<h" + x.ToString(CultureInfo.InvariantCulture) + ">");
+                            writer.WriteConstant(x > 0 && x < 7 ? HeadingOpenerTags[x - 1] : "<h" + x.ToString(CultureInfo.InvariantCulture) + ">");
                             InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
-                            writer.WriteLineConstant(x > 0 && x < 7 ? HeaderCloserTags[x - 1] : "</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
+                            writer.WriteLineConstant(x > 0 && x < 7 ? HeadingCloserTags[x - 1] : "</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
                         }
 
                         break;
@@ -343,7 +343,7 @@ namespace CommonMark.Formatters
 
                         break;
 
-                    case BlockTag.HorizontalRuler:
+                    case BlockTag.ThematicBreak:
                         if (trackPositions)
                         {
                             writer.WriteConstant("<hr");

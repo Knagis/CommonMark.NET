@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CommonMark.Syntax
 {
     /// <summary>
     /// Specifies the element type of a <see cref="Block"/> instance.
     /// </summary>
-    public enum BlockTag
+    public enum BlockTag : byte
     {
         /// <summary>
         /// The root element that represents the document itself. There should only be one in the tree.
@@ -50,19 +48,37 @@ namespace CommonMark.Syntax
         Paragraph,
 
         /// <summary>
-        /// A header element that was parsed from an ATX style markup (<c>## heading 2</c>).
+        /// A heading element that was parsed from an ATX style markup (<c>## heading 2</c>).
         /// </summary>
-        AtxHeader,
+        AtxHeading,
 
         /// <summary>
-        /// A header element that was parsed from a Setext style markup (<c>heading\n========</c>).
+        /// Obsolete. Use <see cref="AtxHeading"/> instead.
         /// </summary>
-        SETextHeader,
+        [Obsolete("Use " + nameof(AtxHeading) + " instead.")]
+        AtxHeader = AtxHeading,
 
         /// <summary>
-        /// A horizontal ruler element.
+        /// A heading element that was parsed from a Setext style markup (<c>heading\n========</c>).
         /// </summary>
-        HorizontalRuler,
+        SetextHeading,
+
+        /// <summary>
+        /// Obsolete. Use <see cref="SetextHeading"/> instead.
+        /// </summary>
+        [Obsolete("Use " + nameof(SetextHeading) + " instead.")]
+        SETextHeader = SetextHeading,
+
+        /// <summary>
+        /// A thematic break element.
+        /// </summary>
+        ThematicBreak,
+
+        /// <summary>
+        /// Obsolete. Use <see cref="ThematicBreak"/> instead.
+        /// </summary>
+        [Obsolete("Use " + nameof(ThematicBreak) + " instead.")]
+        HorizontalRuler = ThematicBreak,
 
         /// <summary>
         /// A text block that contains only link reference definitions.

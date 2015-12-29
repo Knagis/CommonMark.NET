@@ -196,10 +196,10 @@ namespace CommonMark.Formatters
 
                     break;
 
-                case BlockTag.AtxHeader:
-                case BlockTag.SETextHeader:
+                case BlockTag.AtxHeading:
+                case BlockTag.SetextHeading:
 
-                    x = block.HeaderLevel;
+                    x = block.Heading.Level;
                     if (isOpening)
                     {
                         EnsureNewLine();
@@ -248,7 +248,7 @@ namespace CommonMark.Formatters
 
                     break;
 
-                case BlockTag.HorizontalRuler:
+                case BlockTag.ThematicBreak:
                     ignoreChildNodes = true;
                     if (Settings.TrackSourcePosition)
                     {

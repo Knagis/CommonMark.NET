@@ -5,11 +5,11 @@
     <BaseIntermediateOutputPath>obj\$(BuildMode)\</BaseIntermediateOutputPath>
     <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersionEx)' != '' ">$(TargetFrameworkVersionEx)</TargetFrameworkVersion>
     <TargetFrameworkProfile Condition=" '$(TargetFrameworkProfileEx)' != '' ">$(TargetFrameworkProfileEx)</TargetFrameworkProfile>
-    <TargetFrameworkProfile Condition=" '$(BuildMode)' != 'portable' And '$(BuildMode)' != 'portable_v4.5' "></TargetFrameworkProfile>
+    <TargetFrameworkProfile Condition=" !$(BuildMode.StartsWith('portable')) "></TargetFrameworkProfile>
     <DocumentationFile Condition=" '$(DocumentationFile)' != ''">$(OutputPath)\CommonMark.xml</DocumentationFile>
     <DefineConstants>$(DefineConstants);$(BuildMode.Replace('.', '_'));$(DefineConstantsEx)</DefineConstants>
   </PropertyGroup>
 
-  <Import Condition=" '$(BuildMode)' == 'portable' Or  '$(BuildMode)' == 'portable_v4.5' " Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <Import Condition=" '$(BuildMode)' != 'portable' And '$(BuildMode)' != 'portable_v4.5' " Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Condition=" $(BuildMode.StartsWith('portable')) " Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <Import Condition=" !$(BuildMode.StartsWith('portable')) " Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
