@@ -77,7 +77,7 @@ cannot be caught and will bring down the entire process.
 
 ## References
 
-This library is based on a port of the reference implementation in C, available on [jgm/stdm repo] [2]. 
+This library is based on a port of the reference implementation in C, available on [jgm/cmark repo] [2]. 
 It follows the same approach - the source is parsed into a syntax tree that can be used to add custom 
 processing if the application needs it and then formatted into HTML.
 
@@ -90,7 +90,7 @@ implementation. Use `CommonMark.Console.exe --perltest` as the argument to `runt
 application can correctly handle input from the Perl script.
 
 [1]: http://spec.commonmark.org/
-[2]: https://github.com/jgm/stmd/commit/2cf0750a7a507eded4cf3c9a48fd1f924d0ce538
+[2]: https://github.com/jgm/cmark
 [3]: https://github.com/Knagis/CommonMarkBenchmark
 [extensibility]: https://github.com/Knagis/CommonMark.NET/wiki
 [XSS]: http://talk.commonmark.org/t/cross-site-scripting-issue-in-standard-markdown-example-at-try-standardmarkdown-com/55
