@@ -127,7 +127,7 @@ namespace CommonMark.Parser
                     if (!sc.StartsWith('['))
                         break;
 
-                    var subj = new Subject(b.Top.ReferenceMap);
+                    var subj = new Subject(b.Top.Document);
                     sc.FillSubject(subj);
                     var origPos = subj.Position;
                     while (subj.Position < subj.Buffer.Length 
@@ -271,15 +271,15 @@ namespace CommonMark.Parser
         /// Walk through the block, its children and siblings, parsing string content into inline content where appropriate.
         /// </summary>
         /// <param name="block">The document level block from which to start the processing.</param>
-        /// <param name="refmap">The reference mapping used when parsing links.</param>
+        /// <param name="data">Document data.</param>
         /// <param name="settings">The settings that influence how the inline parsing is performed.</param>
-        public static void ProcessInlines(Block block, Dictionary<string, Reference> refmap, CommonMarkSettings settings)
+        public static void ProcessInlines(Block block, DocumentData data, CommonMarkSettings settings)
         {
             Stack<Inline> inlineStack = null;
             var stack = new Stack<Block>();
             var parsers = settings.InlineParsers;
             var specialCharacters = settings.InlineParserSpecialCharacters;
-            var subj = new Subject(refmap);
+            var subj = new Subject(data);
 
             StringContent sc;
             int delta;
@@ -295,7 +295,7 @@ namespace CommonMark.Parser
                         sc.FillSubject(subj);
                         delta = subj.Position;
 
-                        block.InlineContent = InlineMethods.parse_inlines(subj, refmap, parsers, specialCharacters);
+                        block.InlineContent = InlineMethods.parse_inlines(subj, parsers, specialCharacters);
                         block.StringContent = null;
 
                         if (sc.PositionTracker != null)

@@ -53,9 +53,9 @@ namespace CommonMark.Parser
         /// otherwise returns <c>null</c>.
         /// Returns <see cref="Reference.InvalidReference"/> if the reference label is not valid.
         /// </summary>
-        private static Reference LookupReference(Dictionary<string, Reference> refmap, StringPart lab)
+        private static Reference LookupReference(DocumentData data, StringPart lab)
         {
-            if (refmap == null)
+            if (data?.ReferenceMap == null)
                 return null;
 
             if (lab.Length > Reference.MaximumReferenceLabelLength)
@@ -64,7 +64,7 @@ namespace CommonMark.Parser
             string label = NormalizeReference(lab);
 
             Reference r;
-            if (refmap.TryGetValue(label, out r))
+            if (data.ReferenceMap.TryGetValue(label, out r))
                 return r;
 
             return null;
@@ -554,7 +554,7 @@ namespace CommonMark.Parser
                     var startpos = istack.StartPosition;
                     var label = new StringPart(subj.Buffer, startpos, endpos - startpos - 1);
 
-                    details = LookupReference(subj.ReferenceMap, label);
+                    details = LookupReference(subj.DocumentData, label);
                 }
 
                 if (details == Reference.InvalidReference)
@@ -940,7 +940,7 @@ namespace CommonMark.Parser
                     if (label.Value.Length == 0)
                         return Reference.SelfReference;
 
-                    var details = LookupReference(subj.ReferenceMap, label.Value);
+                    var details = LookupReference(subj.DocumentData, label.Value);
                     if (details != null)
                         return details;
 
@@ -1007,7 +1007,7 @@ namespace CommonMark.Parser
             return new Inline(subj.Buffer, startpos, endpos - startpos, startpos, endpos, c);
         }
 
-        public static Inline parse_inlines(Subject subj, Dictionary<string, Reference> refmap, Func<Subject, Inline>[] parsers, char[] specialCharacters)
+        public static Inline parse_inlines(Subject subj, Func<Subject, Inline>[] parsers, char[] specialCharacters)
         {
             var len = subj.Length;
 
@@ -1176,7 +1176,7 @@ namespace CommonMark.Parser
             }
 
             // insert reference into refmap
-            AddReference(subj.ReferenceMap, lab.Value, url, title);
+            AddReference(subj.DocumentData.ReferenceMap, lab.Value, url, title);
 
             return subj.Position;
 

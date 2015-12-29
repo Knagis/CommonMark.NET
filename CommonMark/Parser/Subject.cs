@@ -1,5 +1,4 @@
 ﻿using CommonMark.Syntax;
-using System.Collections.Generic;
 using System.Text;
 
 namespace CommonMark.Parser
@@ -7,16 +6,25 @@ namespace CommonMark.Parser
     [System.Diagnostics.DebuggerDisplay("{DebugToString()}")]
     internal sealed class Subject
     {
-        public Subject(Dictionary<string, Reference> referenceMap)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Subject"/> class.
+        /// </summary>
+        /// <param name="documentData">Document data.</param>
+        public Subject(DocumentData documentData)
         {
-            this.ReferenceMap = referenceMap;
+            this.DocumentData = documentData;
         }
 
-        public Subject(string buffer, Dictionary<string, Reference> referenceMap)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Subject"/> class.
+        /// </summary>
+        /// <param name="buffer">String buffer.</param>
+        /// <param name="documentData">Document data.</param>
+        public Subject(string buffer, DocumentData documentData)
         {
             this.Buffer = buffer;
             this.Length = buffer.Length;
-            this.ReferenceMap = referenceMap;
+            this.DocumentData = documentData;
         }
 
 #if DEBUG
@@ -59,7 +67,10 @@ namespace CommonMark.Parser
         /// </summary>
         public StringBuilder ReusableStringBuilder = new StringBuilder();
 
-        public readonly Dictionary<string, Reference> ReferenceMap;
+        /// <summary>
+        /// Additional properties that apply to document nodes.
+        /// </summary>
+        public readonly DocumentData DocumentData;
 
 #if !NETCore
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by [DebuggerDisplay]")]
