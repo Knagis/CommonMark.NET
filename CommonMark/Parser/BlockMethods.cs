@@ -344,7 +344,7 @@ namespace CommonMark.Parser
             startpos = pos;
             c = ln[pos];
 
-            if (c == '+' || c == '•' || ((c == '*' || c == '-') && 0 == Scanner.scan_hrule(ln, pos, len)))
+            if (c == '+' || c == '•' || ((c == '*' || c == '-') && 0 == Scanner.scan_thematic_break(ln, pos, len)))
             {
                 pos++;
                 if (pos == len || (ln[pos] != ' ' && ln[pos] != '\n'))
@@ -668,11 +668,11 @@ namespace CommonMark.Parser
                 }
                 else if (!indented 
                     && !(container.Tag == BlockTag.Paragraph && !all_matched) 
-                    && 0 != (Scanner.scan_hrule(ln, first_nonspace, ln.Length)))
+                    && 0 != (Scanner.scan_thematic_break(ln, first_nonspace, ln.Length)))
                 {
 
                     // it's only now that we know the line is not part of a setext heading:
-                    container = CreateChildBlock(container, line, BlockTag.HorizontalRuler, first_nonspace);
+                    container = CreateChildBlock(container, line, BlockTag.ThematicBreak, first_nonspace);
                     Finalize(container, line);
                     container = container.Parent;
                     AdvanceOffset(ln, ln.Length - 1 - offset, false, ref offset, ref column);
@@ -862,7 +862,7 @@ namespace CommonMark.Parser
                     AddLine(container, line, ln, first_nonspace);
 
                 }
-                else if (container.Tag != BlockTag.HorizontalRuler && container.Tag != BlockTag.SetextHeading)
+                else if (container.Tag != BlockTag.ThematicBreak && container.Tag != BlockTag.SetextHeading)
                 {
 
                     // create paragraph container for line

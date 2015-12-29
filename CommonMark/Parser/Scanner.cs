@@ -332,11 +332,11 @@ namespace CommonMark.Parser
         }
 
         /// <summary>
-        /// Scan a horizontal rule line: "...three or more hyphens, asterisks,
+        /// Scan a thematic break line: "...three or more hyphens, asterisks,
         /// or underscores on a line by themselves. If you wish, you may use
         /// spaces between the hyphens or asterisks."
         /// </summary>
-        public static int scan_hrule(string s, int pos, int sourceLength)
+        public static int scan_thematic_break(string s, int pos, int sourceLength)
         {
             // @"^([\*][ ]*){3,}[\s]*$",
             // @"^([_][ ]*){3,}[\s]*$",

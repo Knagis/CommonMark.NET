@@ -63,13 +63,13 @@ namespace CommonMark.Tests
 
         [TestMethod]
         [TestCategory("SourcePosition - Blocks")]
-        public void SourcePositionHorizontalRuler()
+        public void SourcePositionThematicBreak()
         {
             var data = "foo\n\n----\n\nbar";
             var doc = Helpers.ParseDocument(data, Settings);
 
             var code = doc.AsEnumerable()
-                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.HorizontalRuler);
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.ThematicBreak);
 
             Assert.IsNotNull(code);
             Assert.AreEqual("----\n",

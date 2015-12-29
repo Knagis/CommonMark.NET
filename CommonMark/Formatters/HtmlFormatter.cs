@@ -248,7 +248,7 @@ namespace CommonMark.Formatters
 
                     break;
 
-                case BlockTag.HorizontalRuler:
+                case BlockTag.ThematicBreak:
                     ignoreChildNodes = true;
                     if (Settings.TrackSourcePosition)
                     {

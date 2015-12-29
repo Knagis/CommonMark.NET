@@ -72,9 +72,15 @@ namespace CommonMark.Syntax
         SETextHeader = SetextHeading,
 
         /// <summary>
-        /// A horizontal ruler element.
+        /// A thematic break element.
         /// </summary>
-        HorizontalRuler,
+        ThematicBreak,
+
+        /// <summary>
+        /// Obsolete. Use <see cref="ThematicBreak"/> instead.
+        /// </summary>
+        [Obsolete("Use " + nameof(ThematicBreak) + " instead.")]
+        HorizontalRuler = ThematicBreak,
 
         /// <summary>
         /// A text block that contains only link reference definitions.
