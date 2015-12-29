@@ -1,9 +1,8 @@
 ﻿using CommonMark.Formatters;
 using CommonMark.Parser;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace CommonMark
@@ -13,6 +12,12 @@ namespace CommonMark
     /// </summary>
     public static class CommonMarkConverter
     {
+#if NETCore || portable_259
+        private static Assembly _assembly = typeof(CommonMarkConverter).GetTypeInfo().Assembly;
+#else
+        private static Assembly _assembly = typeof(CommonMarkConverter).Assembly;
+#endif
+
         private static Version _version = new Version(0, 0);
 
 #if NETCore
@@ -25,8 +30,7 @@ namespace CommonMark
             {
                 if (_version.Major != 0 || _version.Minor != 0)
                     return _version;
-                var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(CommonMarkConverter)).Assembly;
-				_version = new System.Reflection.AssemblyName(assembly.FullName).Version;
+				_version = new AssemblyName(_assembly.FullName).Version;
                 return _version;
             }
         }
@@ -45,14 +49,8 @@ namespace CommonMark
                 if (_version.Major != 0 || _version.Minor != 0)
                     return _version;
 
-#if portable_v4_5
-                var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(CommonMarkConverter)).Assembly;
-#else
-                var assembly = typeof(CommonMarkConverter).Assembly;
-#endif
-
                 // System.Xml is not available so resort to string parsing.
-                using (var stream = assembly.GetManifestResourceStream("CommonMark.Properties.CommonMark.NET.nuspec"))
+                using (var stream = _assembly.GetManifestResourceStream("CommonMark.Properties.CommonMark.NET.nuspec"))
                 using (var reader = new System.IO.StreamReader(stream, Encoding.UTF8))
                 {
                     string line;
@@ -83,13 +81,7 @@ namespace CommonMark
         {
             get
             {
-#if NETCore || portable_v4_5
-                var assembly = System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(CommonMarkConverter)).Assembly;
-#else
-                var assembly = typeof(CommonMarkConverter).Assembly;
-#endif
-                var aName = new System.Reflection.AssemblyName(assembly.FullName);
-                return aName.Version;
+                return new AssemblyName(_assembly.FullName).Version;
             }
         }
 

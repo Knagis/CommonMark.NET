@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <BuildMode>portable_v4.5</BuildMode>
+    <BuildMode>portable_259</BuildMode>
     <TargetFrameworkVersionEx>v4.5</TargetFrameworkVersionEx>
     <TargetFrameworkProfileEx>Profile259</TargetFrameworkProfileEx>
-    <ProjectGuid>{B8459EC6-0233-4235-9D2C-469E55BF05F2}</ProjectGuid>
+    <ProjectGuid>{E42ABBF6-884C-4D2C-B21D-B96D8B42F8FE}</ProjectGuid>
     <DefineConstantsEx>OptimizeFor45</DefineConstantsEx>
   </PropertyGroup>
   <Import Project="CommonMark.Base.csproj" />
