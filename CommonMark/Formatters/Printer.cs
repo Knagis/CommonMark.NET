@@ -124,14 +124,14 @@ namespace CommonMark.Formatters
                         }
                         break;
 
-                    case BlockTag.AtxHeader:
-                        writer.Write("atx_header");
+                    case BlockTag.AtxHeading:
+                        writer.Write("atx_heading");
                         PrintPosition(trackPositions, writer, block);
                         writer.Write(" (level={0})", block.HeaderLevel);
                         break;
 
-                    case BlockTag.SETextHeader:
-                        writer.Write("setext_header");
+                    case BlockTag.SetextHeading:
+                        writer.Write("setext_heading");
                         PrintPosition(trackPositions, writer, block);
                         writer.Write(" (level={0})", block.HeaderLevel);
                         break;

@@ -240,16 +240,16 @@ namespace CommonMark.Parser
         }
 
         /// <summary>
-        /// Match ATX header start.
+        /// Match ATX heading start.
         /// </summary>
-        public static int scan_atx_header_start(string s, int pos, int sourceLength, out int headerLevel)
+        public static int scan_atx_heading_start(string s, int pos, int sourceLength, out int headingLevel)
         {
             /*!re2c
               [#]{1,6} ([ ]+|[\n])  { return (p - start); }
               .? { return 0; }
             */
 
-            headerLevel = 1;
+            headingLevel = 1;
             if (pos + 1 >= sourceLength)
                 return 0;
 
@@ -263,13 +263,13 @@ namespace CommonMark.Parser
 
                 if (c == '#')
                 {
-                    if (headerLevel == 6)
+                    if (headingLevel == 6)
                         return 0;
 
                     if (spaceExists)
                         return i - pos;
                     else
-                        headerLevel++;
+                        headingLevel++;
                 }
                 else if (c == ' ')
                 {
@@ -292,10 +292,10 @@ namespace CommonMark.Parser
         }
 
         /// <summary>
-        /// Match sexext header line.  Return 1 for level-1 header,
+        /// Match sexext heading line.  Return 1 for level-1 heading,
         /// 2 for level-2, 0 for no match.
         /// </summary>
-        public static int scan_setext_header_line(string s, int pos, int sourceLength)
+        public static int scan_setext_heading_line(string s, int pos, int sourceLength)
         {
             /*!re2c
               [=]+ [ ]* [\n] { return 1; }

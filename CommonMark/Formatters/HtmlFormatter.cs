@@ -196,8 +196,8 @@ namespace CommonMark.Formatters
 
                     break;
 
-                case BlockTag.AtxHeader:
-                case BlockTag.SETextHeader:
+                case BlockTag.AtxHeading:
+                case BlockTag.SetextHeading:
 
                     x = block.HeaderLevel;
                     if (isOpening)

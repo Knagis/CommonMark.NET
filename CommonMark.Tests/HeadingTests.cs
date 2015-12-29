@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonMark.Tests
 {
@@ -11,7 +6,7 @@ namespace CommonMark.Tests
     public class HeadingTests
     {
         [TestMethod]
-        [TestCategory("Leaf blocks - ATX headers")]
+        [TestCategory("Leaf blocks - ATX headings")]
         public void HeadingsAndHorizontalRulers()
         {
             // see https://github.com/Knagis/CommonMark.NET/issues/60
