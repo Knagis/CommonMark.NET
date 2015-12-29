@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CommonMark.Syntax
 {
     /// <summary>
     /// Specifies the element type of a <see cref="Block"/> instance.
     /// </summary>
-    public enum BlockTag
+    public enum BlockTag : byte
     {
         /// <summary>
         /// The root element that represents the document itself. There should only be one in the tree.

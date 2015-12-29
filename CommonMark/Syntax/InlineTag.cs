@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CommonMark.Syntax
 {
     /// <summary>
     /// Specifies the element type of an <see cref="Inline"/> instance.
     /// </summary>
-    public enum InlineTag
+    public enum InlineTag : byte
     {
         /// <summary>
         /// Represents a simple literal string content. Uses <see cref="Inline.LiteralContent"/> to specify the data.
