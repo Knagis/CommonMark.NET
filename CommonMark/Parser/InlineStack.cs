@@ -29,14 +29,14 @@ namespace CommonMark.Parser
         public Inline StartingInline;
 
         /// <summary>
-        /// The number of delimeter characters found for this opener.
+        /// The number of delimiter characters found for this opener.
         /// </summary>
-        public int DelimeterCount;
+        public int DelimiterCount;
 
         /// <summary>
         /// The character that was used in the opener.
         /// </summary>
-        public char Delimeter;
+        public char Delimiter;
 
         /// <summary>
         /// The position in the <see cref="Subject.Buffer"/> where this inline element was found.
@@ -65,7 +65,7 @@ namespace CommonMark.Parser
             Maximum = Links
         }
 
-        public static InlineStack FindMatchingOpener(InlineStack seachBackwardsFrom, InlineStackPriority priority, char delimeter, out bool canClose)
+        public static InlineStack FindMatchingOpener(InlineStack seachBackwardsFrom, InlineStackPriority priority, char delimiter, out bool canClose)
         {
             canClose = true;
             var istack = seachBackwardsFrom;
@@ -79,7 +79,7 @@ namespace CommonMark.Parser
                 }
 
                 if (istack.Priority > priority ||
-                    (istack.Delimeter == delimeter && 0 != (istack.Flags & InlineStackFlags.Closer)))
+                    (istack.Delimiter == delimiter && 0 != (istack.Flags & InlineStackFlags.Closer)))
                 {
                     // there might be a closer further back but we cannot go there yet because a higher priority element is blocking
                     // the other option is that the stack entry could be a closer for the same char - this means
@@ -87,7 +87,7 @@ namespace CommonMark.Parser
                     return null;
                 }
 
-                if (istack.Delimeter == delimeter)
+                if (istack.Delimiter == delimiter)
                     return istack;
 
                 istack = istack.Previous;
@@ -179,20 +179,20 @@ namespace CommonMark.Parser
                     else if (0 != (istack.Flags & InlineStackFlags.Closer))
                     {
                         bool canClose;
-                        var iopener = FindMatchingOpener(istack.Previous, istack.Priority, istack.Delimeter, out canClose);
+                        var iopener = FindMatchingOpener(istack.Previous, istack.Priority, istack.Delimiter, out canClose);
                         if (iopener != null)
                         {
                             bool retry = false;
-                            if (iopener.Delimeter == '~')
+                            if (iopener.Delimiter == '~')
                             {
-                                InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, (InlineTag)0, InlineTag.Strikethrough);
-                                if (istack.DelimeterCount > 1)
+                                InlineMethods.MatchInlineStack(iopener, subj, istack.DelimiterCount, istack, (InlineTag)0, InlineTag.Strikethrough);
+                                if (istack.DelimiterCount > 1)
                                     retry = true;
                             }
                             else
                             {
-                                var useDelims = InlineMethods.MatchInlineStack(iopener, subj, istack.DelimeterCount, istack, InlineTag.Emphasis, InlineTag.Strong);
-                                if (istack.DelimeterCount > 0)
+                                var useDelims = InlineMethods.MatchInlineStack(iopener, subj, istack.DelimiterCount, istack, InlineTag.Emphasis, InlineTag.Strong);
+                                if (istack.DelimiterCount > 0)
                                     retry = true;
                             }
 

@@ -78,7 +78,7 @@
     <Compile Include="Syntax\InlineTag.cs" />
     <Compile Include="Syntax\ListData.cs" />
     <Compile Include="Formatters\Printer.cs" />
-    <Compile Include="Syntax\ListDelimeter.cs" />
+    <Compile Include="Syntax\ListDelimiter.cs" />
     <Compile Include="Syntax\ListType.cs" />
     <Compile Include="Syntax\Reference.cs" />
     <Compile Include="Parser\Scanner.cs" />
