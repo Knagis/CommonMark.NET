@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 
 namespace CommonMark
 {
@@ -12,31 +13,24 @@ namespace CommonMark
     /// </summary>
     public static class CommonMarkConverter
     {
-#if NETCore || portable_259
-        private static Assembly _assembly = typeof(CommonMarkConverter).GetTypeInfo().Assembly;
-#else
-        private static Assembly _assembly = typeof(CommonMarkConverter).Assembly;
-#endif
+        private static Lazy<Assembly> _assembly = new Lazy<Assembly>(InitializeAssembly, LazyThreadSafetyMode.None);
 
-        private static Version _version = new Version(0, 0);
-
-#if NETCore
-        /// <summary>
-        /// Gets the CommonMark package version number.
-        /// </summary>
-        public static Version Version
+        private static Assembly Assembly
         {
-            get
-            {
-                if (_version.Major != 0 || _version.Minor != 0)
-                    return _version;
-				_version = new AssemblyName(_assembly.FullName).Version;
-                return _version;
-            }
+            get { return _assembly.Value; }
         }
-#endif
 
-#if !NETCore
+        private static Assembly InitializeAssembly()
+        {
+#if NETCore || portable_259
+            return typeof(CommonMarkConverter).GetTypeInfo().Assembly;
+#else
+            return typeof(CommonMarkConverter).Assembly;
+#endif
+        }
+
+        private static Lazy<Version> _version = new Lazy<Version>(InitializeVersion, LazyThreadSafetyMode.None);
+
         /// <summary>
         /// Gets the CommonMark package version number.
         /// Note that this might differ from the actual assembly version which is updated less often to
@@ -46,29 +40,33 @@ namespace CommonMark
         {
             get
             {
-                if (_version.Major != 0 || _version.Minor != 0)
-                    return _version;
-
-                // System.Xml is not available so resort to string parsing.
-                using (var stream = _assembly.GetManifestResourceStream("CommonMark.Properties.CommonMark.NET.nuspec"))
-                using (var reader = new System.IO.StreamReader(stream, Encoding.UTF8))
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        var i = line.IndexOf("<version>", StringComparison.Ordinal);
-                        if (i == -1)
-                            continue;
-
-                        i += 9;
-                        return _version = new Version(line.Substring(i, line.IndexOf("</version>", StringComparison.Ordinal) - i));
-                    }
-                }
-
-                return _version;
+                return _version.Value;
             }
         }
+
+        private static Version InitializeVersion()
+        {
+#if NETCore
+            return new AssemblyName(Assembly.FullName).Version;
+#else
+            // System.Xml is not available so resort to string parsing.
+            using (var stream = Assembly.GetManifestResourceStream("CommonMark.Properties.CommonMark.NET.nuspec"))
+            using (var reader = new System.IO.StreamReader(stream, Encoding.UTF8))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    var i = line.IndexOf("<version>", StringComparison.Ordinal);
+                    if (i == -1)
+                        continue;
+
+                    i += 9;
+                    return new Version(line.Substring(i, line.IndexOf("</version>", StringComparison.Ordinal) - i));
+                }
+            }
+            return null;
 #endif
+        }
 
         /// <summary>
         /// Gets the CommonMark assembly version number. Note that might differ from the actual release version
@@ -81,7 +79,7 @@ namespace CommonMark
         {
             get
             {
-                return new AssemblyName(_assembly.FullName).Version;
+                return new AssemblyName(Assembly.FullName).Version;
             }
         }
 
