@@ -932,7 +932,7 @@ namespace CommonMark.Parser
                     return new Reference() { Title = title, Url = url };
                 }
             }
-            else if (c == '[' || c == ' ' || c == '\n')
+            else if (c == '[')
             {
                 var label = ParseReferenceLabel(subj);
                 if (label != null)
@@ -1053,7 +1053,7 @@ namespace CommonMark.Parser
         /// reference definition labels for use with the reference dictionary because 
         /// it does not properly parse nested inlines.
         /// 
-        /// Assumes the source starts with '[' character or spaces before '['.
+        /// Assumes the source starts with '[' character.
         /// Returns null and does not advance if no matching ] is found.
         /// Note the precedence:  code backticks have precedence over label bracket
         /// markers, which have precedence over *, _, and other inline formatting
@@ -1066,27 +1066,7 @@ namespace CommonMark.Parser
             var source = subj.Buffer;
             var len = subj.Length;
 
-            while (subj.Position < len)
-            {
-                var c = subj.Buffer[subj.Position];
-                if (c == ' ' || c == '\n')
-                {
-                    subj.Position++;
-                    continue;
-                }
-                else if (c == '[')
-                {
-                    subj.Position++;
-                    break;
-                }
-                else
-                {
-                    subj.Position = startPos;
-                    return null;
-                }
-            }
-
-            var labelStartPos = subj.Position;
+            var labelStartPos = ++subj.Position;
 
             len = subj.Position + Reference.MaximumReferenceLabelLength;
             if (len > source.Length)
