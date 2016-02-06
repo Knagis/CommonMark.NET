@@ -84,7 +84,7 @@ namespace CommonMark
         }
 
         /// <summary>
-        /// Performs the first stage of the conversion - parses block elements from the source and created the syntax tree.
+        /// Performs the first stage of the conversion - parses block elements from the source and creates the syntax tree.
         /// </summary>
         /// <param name="source">The reader that contains the source data.</param>
         /// <param name="settings">The object containing settings for the parsing process.</param>

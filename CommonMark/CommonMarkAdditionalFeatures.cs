@@ -21,6 +21,11 @@ namespace CommonMark
         StrikethroughTilde = 1,
 
         /// <summary>
+        /// The parser will auto-generate IDs for headings in the same way as Github does.
+        /// </summary>
+        GithubStyleHeaderIds = 2,
+
+        /// <summary>
         /// All additional features are enabled.
         /// </summary>
         All = 0x7FFFFFFF
