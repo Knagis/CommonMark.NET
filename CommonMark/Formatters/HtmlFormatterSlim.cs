@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using CommonMark.Syntax;
 
 namespace CommonMark.Formatters
@@ -29,6 +30,8 @@ namespace CommonMark.Formatters
             false, true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true, 
             true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  false, false, false, false, false
         };
+
+        private static readonly Dictionary<string, uint> GitHubHeaderIdCounts = new Dictionary<string, uint>();
 
         /// <summary>
         /// Escapes special URL characters.
@@ -220,6 +223,7 @@ namespace CommonMark.Formatters
             string stackLiteral = null;
             bool stackTight = false;
             bool tight = false;
+            bool doGitHubHeadings = (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.GitHubStyleHeadingIds) > 0;
             bool trackPositions = settings.TrackSourcePosition;
             int x;
 
@@ -303,12 +307,16 @@ namespace CommonMark.Formatters
                             writer.WriteConstant("<h" + x.ToString(CultureInfo.InvariantCulture));
                             PrintPosition(writer, block);
                             writer.Write('>');
+                            if (doGitHubHeadings)
+                                WriteGitHubHeadingIds(writer, block.InlineContent, settings, inlineStack);
                             InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
                             writer.WriteLineConstant(x > 0 && x < 7 ? HeadingCloserTags[x - 1] : "</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
                         }
                         else
                         {
                             writer.WriteConstant(x > 0 && x < 7 ? HeadingOpenerTags[x - 1] : "<h" + x.ToString(CultureInfo.InvariantCulture) + ">");
+                            if (doGitHubHeadings)
+                                WriteGitHubHeadingIds(writer, block.InlineContent, settings, inlineStack);
                             InlinesToHtml(writer, block.InlineContent, settings, inlineStack);
                             writer.WriteLineConstant(x > 0 && x < 7 ? HeadingCloserTags[x - 1] : "</h" + x.ToString(CultureInfo.InvariantCulture) + ">");
                         }
@@ -648,6 +656,33 @@ namespace CommonMark.Formatters
                     inline = entry.Target;
                     withinLink = entry.IsWithinLink;
                 }
+            }
+        }
+
+        private static void WriteGitHubHeadingIds(HtmlTextWriter writer, Inline inline, CommonMarkSettings settings, Stack<InlineStackEntry> stack) {
+            using (var tempWriter = new System.IO.StringWriter()) {
+                var tempWrapper = new HtmlTextWriter(tempWriter);
+                var tempStringBuilder = new StringBuilder();
+                InlinesToPlainText(tempWrapper, inline, stack);
+                string plaintextContent = tempWriter.ToString();
+
+                // Normalize plaintext content according to GitHub ID rules
+                plaintextContent = new Regex(@"[^\w\-\ ]").Replace(plaintextContent, "").Replace(" ", "-");
+                for (int c = 0; c < plaintextContent.Length; c++) {
+                    if (plaintextContent[c] >= 'A' && plaintextContent[c] <= 'Z')
+                        tempStringBuilder.Append((char)(plaintextContent[c] + 32));
+                    else
+                        tempStringBuilder.Append(plaintextContent[c]);
+                }
+                plaintextContent = tempStringBuilder.ToString();
+                string unique = "";
+                if (GitHubHeaderIdCounts.ContainsKey(plaintextContent))
+                    unique = "-" + ++GitHubHeaderIdCounts[plaintextContent];
+                else
+                    GitHubHeaderIdCounts[plaintextContent] = 0;
+
+                writer.WriteConstant(string.Format(@"<a id=""user-content-{0}{1}"" class=""anchor"" href=""#user-content-{0}{1}"" aria-hidden=""true""><svg class=""octicon octicon-link"" aria-hidden=""true"" height=""16"" role=""img"" version=""1.1"" viewBox=""0 0 16 16"" width=""16""><path d=""M4 9h1v1h-1c-1.5 0-3-1.69-3-3.5s1.55-3.5 3-3.5h4c1.45 0 3 1.69 3 3.5 0 1.41-0.91 2.72-2 3.25v-1.16c0.58-0.45 1-1.27 1-2.09 0-1.28-1.02-2.5-2-2.5H4c-0.98 0-2 1.22-2 2.5s1 2.5 2 2.5z m9-3h-1v1h1c1 0 2 1.22 2 2.5s-1.02 2.5-2 2.5H9c-0.98 0-2-1.22-2-2.5 0-0.83 0.42-1.64 1-2.09v-1.16c-1.09 0.53-2 1.84-2 3.25 0 1.81 1.55 3.5 3 3.5h4c1.45 0 3-1.69 3-3.5s-1.5-3.5-3-3.5z""></path></svg></a>",
+                    plaintextContent, unique));
             }
         }
 
