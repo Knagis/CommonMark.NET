@@ -165,7 +165,7 @@ private IEnumerable<object> ReadSpecs(string fileName)
         while (!endOfTests && (line = reader.ReadLine()) != null)
         {
             lineNum += 1;
-            if (line == ".")
+            if (line.StartsWith("````````````````````````````````") || line == ".")
             {
                 stage = (stage + 1) % 3;
                 if (stage == 1)
