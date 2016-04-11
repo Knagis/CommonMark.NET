@@ -144,7 +144,7 @@ namespace CommonMark.Parser
                 c = s[++i];
                 while (i <= lastPos)
                 {
-                    if (c == '\n') return 0;
+                    if (c == '\n' || c == ' ') return 0;
                     if (c == '<' && !nextEscaped) return 0;
                     if (c == '>' && !nextEscaped) return i - pos + 1;
                     if (i == lastPos) return 0;
