@@ -391,14 +391,6 @@ namespace CommonMark.Parser
             return (pos - startpos);
         }
 
-        private static bool ContainsSingleLine(StringContent content)
-        {
-            if (content == null)
-                return true;
-            var i = content.IndexOf('\n');
-            return (i == -1 || i == content.Length - 1);
-        }
-
         private static bool ListsMatch(ListData listData, ListData itemData)
         {
             return (listData.ListType == itemData.ListType &&
@@ -657,8 +649,7 @@ namespace CommonMark.Parser
 
                 }
                 else if (!indented && container.Tag == BlockTag.Paragraph && (curChar == '=' || curChar == '-')
-                        && 0 != (matched = Scanner.scan_setext_heading_line(ln, first_nonspace, ln.Length))
-                        && ContainsSingleLine(container.StringContent))
+                        && 0 != (matched = Scanner.scan_setext_heading_line(ln, first_nonspace, ln.Length)))
                 {
 
                     container.Tag = BlockTag.SetextHeading;
