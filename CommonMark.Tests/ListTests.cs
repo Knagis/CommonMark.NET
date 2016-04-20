@@ -34,6 +34,13 @@ namespace CommonMark.Tests
 
         [TestMethod]
         [TestCategory("Container blocks - List items")]
+        public void ListWithTabs()
+        {
+            Helpers.ExecuteTest("*\tbar", "<ul>\n<li>bar</li>\n</ul>");
+        }
+
+        [TestMethod]
+        [TestCategory("Container blocks - List items")]
         public void UnicodeBulletEscape()
         {
             Helpers.ExecuteTest("\\• foo\n\n\\* bar", "<p>• foo</p>\n<p>* bar</p>");
