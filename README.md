@@ -26,6 +26,10 @@ See [wiki] [extensibility] for an example how the parser can be extended with ad
 
 **Important:** The converter [does not include any HTML sanitizing][XSS].
 
+## Installation via NuGet
+
+`Install-Package CommonMark.NET`
+
 ## Compatibility
 
 The library uses no references except for `System` - it has no external dependencies. It is cross compiled to:
