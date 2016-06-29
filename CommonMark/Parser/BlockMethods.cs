@@ -891,16 +891,22 @@ namespace CommonMark.Parser
                     int p = ln.Length - 1;
 
                     // trim trailing spaces
-                    while (p >= 0 && (ln[p] == ' ' || ln[p] == '\n'))
+                    while (p >= 0 && (ln[p] == ' ' || ln[p] == '\t' || ln[p] == '\n'))
                         p--;
+
+                    int px = p;
 
                     // if string ends in #s, remove these:
                     while (p >= 0 && ln[p] == '#')
                         p--;
 
                     // there must be a space before the last hashtag
-                    if (p < 0 || ln[p] != ' ')
-                        p = ln.Length - 1;
+                    if (p < 0 || (ln[p] != ' ' && ln[p] != '\t'))
+                        p = px;
+
+                    // trim trailing spaces that are before the closing #s
+                    while (p >= first_nonspace && (ln[p] == ' ' || ln[p] == '\t'))
+                        p--;
 
                     AddLine(container, line, ln, first_nonspace, remainingSpaces, p - first_nonspace + 1);
                     Finalize(container, line);

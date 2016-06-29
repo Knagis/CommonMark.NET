@@ -266,7 +266,7 @@ namespace CommonMark.Parser
                     else
                         headingLevel++;
                 }
-                else if (c == ' ')
+                else if (c == ' ' || c == '\t')
                 {
                     spaceExists = true;
                 }
@@ -344,7 +344,7 @@ namespace CommonMark.Parser
             {
                 var c = s[ipos++];
 
-                if (c == ' ' || c == '\n')
+                if (c == ' ' || c == '\t' || c == '\n')
                     continue;
                 if (count == 0)
                 {
