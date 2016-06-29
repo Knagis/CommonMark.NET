@@ -35,6 +35,16 @@ namespace CommonMark.Tests
                 "<p>foo <a href=\"http://foo.baz\">asd</a> bar</p>");
         }
 
+        [TestMethod]
+        [TestCategory("Inlines - Raw HTML")]
+        public void HtmlSingleOpenBrace()
+        {
+            // https://github.com/Knagis/CommonMark.NET/issues/85
+            Helpers.ExecuteTest(
+                "\r\nfoo<",
+                "<p>foo&lt;</p>");
+        }
+
         /// <summary>
         /// Tests HTML block tag names of various lengths (see https://github.com/Knagis/CommonMark.NET/issues/16)
         /// </summary>
