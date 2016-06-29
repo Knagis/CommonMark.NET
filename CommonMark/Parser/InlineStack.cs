@@ -65,10 +65,10 @@ namespace CommonMark.Parser
             Maximum = Links
         }
 
-        public static InlineStack FindMatchingOpener(InlineStack seachBackwardsFrom, InlineStackPriority priority, char delimiter, out bool canClose)
+        public static InlineStack FindMatchingOpener(InlineStack searchBackwardsFrom, InlineStackPriority priority, char delimiter, out bool canClose)
         {
             canClose = true;
-            var istack = seachBackwardsFrom;
+            var istack = searchBackwardsFrom;
             while (true)
             {
                 if (istack == null)
