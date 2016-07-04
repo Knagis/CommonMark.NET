@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
     <id>CommonMark.NET</id>
-    <version>0.12.0</version>
+    <version>0.13.0</version>
     <title>CommonMark.NET</title>
     <authors>Kārlis Gaņģis</authors>
     <licenseUrl>https://raw.githubusercontent.com/Knagis/CommonMark.NET/master/LICENSE.md</licenseUrl>
@@ -11,8 +11,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>Fastest .NET library for converting Markdown documents to HTML.</summary>
     <description>.NET library for converting Markdown documents to HTML according to the CommonMark specification. Optimized for maximum performance and targets every .NET version since 2.0, including PCL, Mono and .NET Core.</description>
-    <releaseNotes>Updated to specification 0.25</releaseNotes>
-    <copyright>Copyright © Kārlis Gaņģis 2014-2015</copyright>
+    <releaseNotes>Improved tab handling in headings. Fix unhandled exception.</releaseNotes>
+    <copyright>Copyright © Kārlis Gaņģis 2014-2016</copyright>
     <tags>CommonMark Markdown</tags>
   </metadata>
   <files>
