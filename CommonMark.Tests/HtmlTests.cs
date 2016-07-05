@@ -41,8 +41,8 @@ namespace CommonMark.Tests
         {
             // https://github.com/Knagis/CommonMark.NET/issues/85
             Helpers.ExecuteTest(
-                "\r\nfoo<",
-                "<p>foo&lt;</p>");
+                "bar\r\nfoo<",
+                "<p>bar\r\nfoo&lt;</p>");
         }
 
         /// <summary>

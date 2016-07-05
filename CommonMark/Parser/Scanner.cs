@@ -12,7 +12,7 @@ namespace CommonMark.Parser
         /// </summary>
         public static int scan_autolink_uri(string s, int pos, int sourceLength)
         {
-            //if (pos >= sourceLength) return 0;
+            if (pos >= sourceLength) return 0;
 
             var i = pos;
             var schemeLength = 0;
