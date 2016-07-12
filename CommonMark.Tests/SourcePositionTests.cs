@@ -655,5 +655,65 @@ third";
             Assert.IsNotNull(inline);
             Assert.AreEqual("*asd*", data.Substring(inline.Inline.SourcePosition, inline.Inline.SourceLength));
         }
+
+        [TestMethod]
+        [TestCategory("SourcePosition - HTML Blocks")]
+        public void SourcePositionHtmlBlock1()
+        {
+            var data = "<pre>\n</pre>\nfoo";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var block = doc.AsEnumerable()
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.HtmlBlock);
+
+            Assert.IsNotNull(block);
+            Assert.AreEqual("<pre>\n</pre>\n",
+                data.Substring(block.Block.SourcePosition, block.Block.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition - HTML Blocks")]
+        public void SourcePositionHtmlBlock2()
+        {
+            var data = "<!--\n-->\nfoo";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var block = doc.AsEnumerable()
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.HtmlBlock);
+
+            Assert.IsNotNull(block);
+            Assert.AreEqual("<!--\n-->\n",
+                data.Substring(block.Block.SourcePosition, block.Block.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition - HTML Blocks")]
+        public void SourcePositionHtmlBlock6()
+        {
+            var data = "<div id='foo'>\r\nbar\r\n</div>\r\n\r\n";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var block = doc.AsEnumerable()
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.HtmlBlock);
+
+            Assert.IsNotNull(block);
+            Assert.AreEqual("<div id='foo'>\r\nbar\r\n</div>\r\n",
+                data.Substring(block.Block.SourcePosition, block.Block.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition - HTML Blocks")]
+        public void SourcePositionHtmlBlock7()
+        {
+            var data = "<fooobar>\r\nbar\r\n\r\nbar";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var block = doc.AsEnumerable()
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.HtmlBlock);
+
+            Assert.IsNotNull(block);
+            Assert.AreEqual("<fooobar>\r\nbar\r\n",
+                data.Substring(block.Block.SourcePosition, block.Block.SourceLength));
+        }
     }
 }

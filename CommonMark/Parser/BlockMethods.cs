@@ -111,8 +111,14 @@ namespace CommonMark.Parser
 
             if (line.IsTrackingPositions)
             {
+                // HTML Blocks other than type 7 call Finalize when the last line is encountered.
+                // Block types 6 and 7 calls Finalize once it finds the next empty row but that empty row is no longer considered to be part of the block.
+                var includesThisLine = b.HtmlBlockType != HtmlBlockType.None && b.HtmlBlockType != HtmlBlockType.InterruptingBlock && b.HtmlBlockType != HtmlBlockType.NonInterruptingBlock;
+
                 // (b.SourcePosition >= line.LineOffset) determines if the block started on this line.
-                if (b.SourcePosition >= line.LineOffset && line.Line != null)
+                includesThisLine = includesThisLine || b.SourcePosition >= line.LineOffset && line.Line != null;
+
+                if (includesThisLine)
                     b.SourceLastPosition = line.CalculateOrigin(line.Line.Length, false);
                 else
                     b.SourceLastPosition = line.CalculateOrigin(0, false);
