@@ -116,9 +116,9 @@ namespace CommonMark.Parser
                 var includesThisLine = b.HtmlBlockType != HtmlBlockType.None && b.HtmlBlockType != HtmlBlockType.InterruptingBlock && b.HtmlBlockType != HtmlBlockType.NonInterruptingBlock;
 
                 // (b.SourcePosition >= line.LineOffset) determines if the block started on this line.
-                includesThisLine = includesThisLine || b.SourcePosition >= line.LineOffset && line.Line != null;
+                includesThisLine = includesThisLine || b.SourcePosition >= line.LineOffset;
 
-                if (includesThisLine)
+                if (includesThisLine && line.Line != null)
                     b.SourceLastPosition = line.CalculateOrigin(line.Line.Length, false);
                 else
                     b.SourceLastPosition = line.CalculateOrigin(0, false);

@@ -673,6 +673,21 @@ third";
 
         [TestMethod]
         [TestCategory("SourcePosition - HTML Blocks")]
+        public void SourcePositionHtmlBlock1a()
+        {
+            var data = "<pre>\n</pre\n\n\nfoo";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+            var block = doc.AsEnumerable()
+                .FirstOrDefault(o => o.Block != null && o.Block.Tag == Syntax.BlockTag.HtmlBlock);
+
+            Assert.IsNotNull(block);
+            Assert.AreEqual("<pre>\n</pre\n\n\nfoo",
+                data.Substring(block.Block.SourcePosition, block.Block.SourceLength));
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition - HTML Blocks")]
         public void SourcePositionHtmlBlock2()
         {
             var data = "<!--\n-->\nfoo";
