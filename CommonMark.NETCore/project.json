@@ -2,12 +2,6 @@
   "version": "0.13.4",
   "frameworks": {
     "dnxcore50": {
-      "compilationOptions": {
-        "define": [
-          "NETCore",
-          "OptimizeFor45"
-        ]
-      },
       "dependencies": {
         "System.IO": "4.0.10",
         "System.Runtime": "4.0.20",
@@ -18,5 +12,15 @@
       }
     }
   },
-  "compile": "../CommonMark/**/*.cs"
+  "buildOptions": {
+    "compile": {
+      "include": [
+        "../CommonMark/**/*.cs"
+      ]
+    },
+    "define": [
+      "NETCore",
+      "OptimizeFor45"
+    ]
+  }
 }
