@@ -111,7 +111,7 @@ namespace CommonMark
                 reader.ReadLine(line);
                 while (line.Line != null)
                 {
-                    BlockMethods.IncorporateLine(line, ref cur);
+                    BlockMethods.IncorporateLine(line, ref cur, settings);
                     reader.ReadLine(line);
                 }
             }
@@ -132,7 +132,7 @@ namespace CommonMark
             {
                 do
                 {
-                    BlockMethods.Finalize(cur, line);
+                    BlockMethods.Finalize(cur, line, settings);
                     cur = cur.Parent;
                 } while (cur != null);
             }

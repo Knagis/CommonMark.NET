@@ -212,6 +212,101 @@ namespace CommonMark.Formatters
             writer.WriteConstant("\"");
         }
 
+        static void WriteTable(Block table, HtmlTextWriter writer, CommonMarkSettings settings, Stack<InlineStackEntry> stack)
+        {
+            if ((settings.AdditionalFeatures & CommonMarkAdditionalFeatures.GithubStyleTables) == 0)
+            {
+                throw new CommonMarkException("Table encountered in AST, but GithubStyleTables are not enabled");
+            }
+
+            var header = table.FirstChild;
+            var firstRow = table.FirstChild.NextSibling;
+
+            writer.WriteConstant("<table>");
+            writer.WriteConstant("<thead>");
+            writer.WriteConstant("<tr>");
+
+            var numHeadings = 0;
+
+            var curHeaderCell = header.FirstChild;
+            while (curHeaderCell != null)
+            {
+                var alignment = table.TableHeaderAlignments[numHeadings];
+
+                numHeadings++;
+
+                if (alignment == TableHeaderAlignment.None)
+                {
+                    writer.WriteConstant("<th>");
+                }
+                else
+                {
+                    switch (alignment)
+                    {
+                        case TableHeaderAlignment.Center: writer.WriteConstant("<th align=\"center\">"); break;
+                        case TableHeaderAlignment.Left: writer.WriteConstant("<th align=\"left\">"); break;
+                        case TableHeaderAlignment.Right: writer.WriteConstant("<th align=\"right\">"); break;
+                        default: throw new CommonMarkException("Unexpected TableHeaderAlignment [" + alignment + "]");
+                    }
+                }
+                InlinesToHtml(writer, curHeaderCell.InlineContent, settings, stack);
+                writer.WriteConstant("</th>");
+
+                curHeaderCell = curHeaderCell.NextSibling;
+            }
+
+            writer.WriteConstant("</tr>");
+            writer.WriteConstant("</thead>");
+
+            writer.WriteConstant("<tbody>");
+            var curRow = firstRow;
+            while (curRow != null)
+            {
+                writer.WriteConstant("<tr>");
+                var curRowCell = curRow.FirstChild;
+
+                var numCells = 0;
+
+                while (curRowCell != null && numCells < numHeadings)
+                {
+                    var alignment = table.TableHeaderAlignments[numCells];
+
+                    numCells++;
+
+                    if (alignment == TableHeaderAlignment.None)
+                    {
+                        writer.WriteConstant("<td>");
+                    }
+                    else
+                    {
+                        switch (alignment)
+                        {
+                            case TableHeaderAlignment.Center: writer.WriteConstant("<td align=\"center\">"); break;
+                            case TableHeaderAlignment.Left: writer.WriteConstant("<td align=\"left\">"); break;
+                            case TableHeaderAlignment.Right: writer.WriteConstant("<td align=\"right\">"); break;
+                            default: throw new CommonMarkException("Unexpected TableHeaderAlignment [" + alignment + "]");
+                        }
+                    }
+                    InlinesToHtml(writer, curRowCell.InlineContent, settings, stack);
+                    writer.WriteConstant("</td>");
+
+                    curRowCell = curRowCell.NextSibling;
+                }
+
+                while (numCells < numHeadings)
+                {
+                    numCells++;
+                    writer.WriteConstant("<td></td>");
+                }
+
+                writer.WriteConstant("</tr>");
+
+                curRow = curRow.NextSibling;
+            }
+            writer.WriteConstant("</tbody>");
+            writer.WriteConstant("</table>");
+        }
+
         private static void BlocksToHtmlInner(HtmlTextWriter writer, Block block, CommonMarkSettings settings)
         {
             var stack = new Stack<BlockStackEntry>();
@@ -355,6 +450,10 @@ namespace CommonMark.Formatters
                             writer.WriteLineConstant("<hr />");
                         }
 
+                        break;
+
+                    case BlockTag.Table:
+                        WriteTable(block, writer, settings, inlineStack);
                         break;
 
                     case BlockTag.ReferenceDefinition:

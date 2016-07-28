@@ -83,6 +83,21 @@ namespace CommonMark.Syntax
         /// <summary>
         /// A text block that contains only link reference definitions.
         /// </summary>
-        ReferenceDefinition
+        ReferenceDefinition,
+ 
+         /// <summary>
+         /// A table block
+         /// </summary>
+         Table,
+ 
+         /// <summary>
+         /// A table row block
+         /// </summary>
+         TableRow,
+ 
+         /// <summary>
+         /// A table cell block
+         /// </summary>
+         TableCell,
     }
 }
