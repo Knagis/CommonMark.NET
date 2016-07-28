@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 using CommonMark.Syntax;
 
 namespace CommonMark.Parser
@@ -79,7 +80,7 @@ namespace CommonMark.Parser
         /// <summary>
         /// Break out of all containing lists
         /// </summary>
-        private static void BreakOutOfLists(ref Block blockRef, LineInfo line)
+        private static void BreakOutOfLists(ref Block blockRef, LineInfo line, CommonMarkSettings settings)
         {
             Block container = blockRef;
             Block b = container.Top;
@@ -92,16 +93,355 @@ namespace CommonMark.Parser
             {
                 while (container != null && container != b)
                 {
-                    Finalize(container, line);
+                    Finalize(container, line, settings);
                     container = container.Parent;
                 }
 
-                Finalize(b, line);
+                Finalize(b, line, settings);
                 blockRef = b.Parent;
             }
         }
 
-        public static void Finalize(Block b, LineInfo line)
+        static List<string> ParseTableLine(string line, StringBuilder sb)
+        {
+            var ret = new List<string>();
+
+            var i = 0;
+
+            if (i < line.Length && line[i] == '|') i++;
+
+            while (i < line.Length && char.IsWhiteSpace(line[i])) i++;
+
+            for (; i < line.Length; i++)
+            {
+                var c = line[i];
+                if (c == '\\')
+                {
+                    i++;
+                    continue;
+                }
+
+                if (c == '|')
+                {
+                    ret.Add(sb.ToString());
+                    sb.Clear();
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+
+            if (sb.Length != 0)
+            {
+                ret.Add(sb.ToString());
+                sb.Clear();
+            }
+
+            return ret;
+        }
+
+        static void MakeTableCells(Block row, StringBuilder sb)
+        {
+            var asStr = row.StringContent.ToString();
+
+            var offset = 0;
+
+            for (var i = 0; i < asStr.Length; i++)
+            {
+                var c = asStr[i];
+
+                if (c == '|')
+                {
+                    var text = sb.ToString();
+                    sb.Clear();
+
+                    if (text.Length > 0)
+                    {
+                        var leadingWhiteSpace = 0;
+                        while (leadingWhiteSpace < text.Length && char.IsWhiteSpace(text[leadingWhiteSpace])) leadingWhiteSpace++;
+                        var trailingWhiteSpace = 0;
+                        while (trailingWhiteSpace < text.Length && char.IsWhiteSpace(text[text.Length - trailingWhiteSpace - 1])) trailingWhiteSpace++;
+
+                        var cell = new Block(BlockTag.TableCell, row.SourcePosition + offset + leadingWhiteSpace);
+                        cell.SourceLastPosition = cell.SourcePosition + text.Length - trailingWhiteSpace - leadingWhiteSpace;
+                        cell.StringContent = new StringContent();
+                        cell.StringContent.Append(text, leadingWhiteSpace, text.Length - leadingWhiteSpace - trailingWhiteSpace);
+
+                        if (row.LastChild == null)
+                        {
+                            row.FirstChild = row.LastChild = cell;
+                        }
+                        else
+                        {
+                            row.LastChild.NextSibling = cell;
+                            row.LastChild = cell;
+                        }
+
+                        cell.IsOpen = false;
+                    }
+
+                    offset += text.Length;
+
+                    // skip the |
+                    offset++;
+                    continue;
+                }
+
+                if (c == '\\')
+                {
+                    sb.Append(c);
+                    if (i + 1 < asStr.Length)
+                    {
+                        sb.Append(asStr[i + 1]);
+                    }
+                    i++;
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+
+            if (sb.Length > 0)
+            {
+                var text = sb.ToString();
+                sb.Clear();
+
+                if (text.Length > 0)
+                {
+                    var leadingWhiteSpace = 0;
+                    while (leadingWhiteSpace < text.Length && char.IsWhiteSpace(text[leadingWhiteSpace])) leadingWhiteSpace++;
+                    var trailingWhiteSpace = 0;
+                    while (trailingWhiteSpace < text.Length && char.IsWhiteSpace(text[text.Length - trailingWhiteSpace - 1])) trailingWhiteSpace++;
+
+                    if (text.Length - leadingWhiteSpace - trailingWhiteSpace > 0)
+                    {
+                        var cell = new Block(BlockTag.TableCell, row.SourcePosition + offset + leadingWhiteSpace);
+                        cell.SourceLastPosition = cell.SourcePosition + text.Length - trailingWhiteSpace - leadingWhiteSpace;
+                        cell.StringContent = new StringContent();
+                        cell.StringContent.Append(text, leadingWhiteSpace, text.Length - leadingWhiteSpace - trailingWhiteSpace);
+
+                        if (row.LastChild == null)
+                        {
+                            row.FirstChild = row.LastChild = cell;
+                        }
+                        else
+                        {
+                            row.LastChild.NextSibling = cell;
+                            row.LastChild = cell;
+                        }
+
+                        cell.IsOpen = false;
+                    }
+                }
+            }
+        }
+
+        static void MakeTableRows(Block table, StringBuilder sb)
+        {
+            var asStr = table.StringContent.ToString();
+            var lines = asStr.Split('\n');
+
+            var offset = 0;
+
+            for (var i = 0; i < lines.Length; i++)
+            {
+                var line = lines[i];
+
+                var lineLength = line.Length;
+                var hasLineBreak = offset + lineLength < asStr.Length && asStr[offset + lineLength] == '\n';
+                if (hasLineBreak) lineLength++;
+
+                // skip the header row
+                if (i != 1 && !string.IsNullOrWhiteSpace(line))
+                {
+                    var rowStartsInDocument = table.SourcePosition + offset;
+                    var row = new Block(BlockTag.TableRow, rowStartsInDocument);
+                    row.SourceLastPosition = rowStartsInDocument + lineLength;
+
+                    row.StringContent = new StringContent();
+                    row.StringContent.Append(asStr, offset, row.SourceLength);
+
+                    if (table.LastChild == null)
+                    {
+                        table.FirstChild = row;
+                        table.LastChild = row;
+                    }
+                    else
+                    {
+                        table.LastChild.NextSibling = row;
+                        table.LastChild = row;
+                    }
+
+                    MakeTableCells(row, sb);
+                    row.IsOpen = false;
+                }
+
+                offset += lineLength;
+            }
+        }
+
+        static bool TryMakeTable(Block b, LineInfo line, CommonMarkSettings settings)
+        {
+            if ((settings.AdditionalFeatures & CommonMarkAdditionalFeatures.GithubStyleTables) == 0) return false;
+
+            var asStr = b.StringContent.ToString();
+            var lines = asStr.Split('\n');
+
+            if (lines.Length < 2) return false;
+
+            var sb = new StringBuilder();
+
+            var columnsLine = ParseTableLine(lines[0], sb);
+            if (columnsLine.Count == 1) return false;
+
+            var headerLine = ParseTableLine(lines[1], sb);
+            if (headerLine.Count == 1) return false;
+
+            var headerAlignment = new List<TableHeaderAlignment>();
+
+            foreach (var headerPart in headerLine)
+            {
+                var trimmed = headerPart.Trim();
+                if (trimmed.Length < 3) return false;
+
+                var validateFrom = 0;
+                var startsWithColon = trimmed[validateFrom] == ':';
+                if (startsWithColon) validateFrom++;
+
+                var validateTo = trimmed.Length - 1;
+                var endsWithColon = trimmed[validateTo] == ':';
+                if (endsWithColon) validateTo--;
+
+                for (var i = validateFrom; i <= validateTo; i++)
+                {
+                    // don't check for escapes, they don't count in header
+                    if (trimmed[i] != '-') return false;
+                }
+
+                if (!startsWithColon && !endsWithColon)
+                {
+                    headerAlignment.Add(TableHeaderAlignment.None);
+                    continue;
+                }
+
+                if (startsWithColon && endsWithColon)
+                {
+                    headerAlignment.Add(TableHeaderAlignment.Center);
+                    continue;
+                }
+
+                if (startsWithColon)
+                {
+                    headerAlignment.Add(TableHeaderAlignment.Left);
+                }
+
+                if (endsWithColon)
+                {
+                    headerAlignment.Add(TableHeaderAlignment.Right);
+                }
+            }
+
+            while (columnsLine.Count > 0 && string.IsNullOrWhiteSpace(columnsLine[0])) columnsLine.RemoveAt(0);
+            while (columnsLine.Count > 0 && string.IsNullOrWhiteSpace(columnsLine[columnsLine.Count - 1])) columnsLine.RemoveAt(columnsLine.Count - 1);
+            while (headerLine.Count > 0 && string.IsNullOrWhiteSpace(headerLine[0])) headerLine.RemoveAt(0);
+            while (headerLine.Count > 0 && string.IsNullOrWhiteSpace(headerLine[headerLine.Count - 1])) headerLine.RemoveAt(headerLine.Count - 1);
+
+            if (columnsLine.Count < 2) return false;
+            if (headerLine.Count < columnsLine.Count) return false;
+
+            var lastTableLine = 1;
+
+            // it's a table!
+            for (var i = 2; i < lines.Length; i++)
+            {
+                var hasPipe = false;
+                for (var j = 0; j < lines[i].Length; j++)
+                {
+                    var c = lines[i][j];
+                    if (c == '\\')
+                    {
+                        j++;
+                        continue;
+                    }
+
+                    if (c == '|')
+                    {
+                        hasPipe = true;
+                        break;
+                    }
+                }
+                if (!hasPipe) break;
+
+                lastTableLine = i;
+            }
+
+            if (lastTableLine + 1 < lines.Length && string.IsNullOrWhiteSpace(lines[lastTableLine + 1]))
+            {
+                lastTableLine++;
+            }
+
+            var wholeBlockIsTable = lastTableLine == (lines.Length - 1);
+
+            // No need to break, the whole block is a table now
+            if (wholeBlockIsTable)
+            {
+                b.Tag = BlockTag.Table;
+                b.TableHeaderAlignments = headerAlignment;
+
+                // create table rows
+                MakeTableRows(b, sb);
+                return true;
+            }
+
+            var takingCharsForTable = 0;
+            for (var i = 0; i <= lastTableLine; i++)
+            {
+                takingCharsForTable += lines[i].Length;
+                var hasFollowingLineBreak = takingCharsForTable < asStr.Length && asStr[takingCharsForTable] == '\n';
+                if (hasFollowingLineBreak)
+                {
+                    takingCharsForTable++;
+                }
+            }
+
+            // get the text of the table separate
+            var tableBlockString = b.StringContent.TakeFromStart(takingCharsForTable, trim: true);
+            var newBlock = new Block(BlockTag.Paragraph, b.SourcePosition + tableBlockString.Length);
+
+            // create the trailing paragraph, and set it's text and source positions
+            var newParagraph = b.Clone();
+            newParagraph.StringContent = b.StringContent;
+            if (settings.TrackSourcePosition)
+            {
+                newParagraph.SourcePosition = b.SourcePosition + tableBlockString.Length;
+                newParagraph.SourceLastPosition = newParagraph.SourcePosition + (asStr.Length - tableBlockString.Length);
+            }
+
+            // update the text of the table block
+            b.Tag = BlockTag.Table;
+            b.TableHeaderAlignments = headerAlignment;
+            b.StringContent = new StringContent();
+            b.StringContent.Append(tableBlockString, 0, tableBlockString.Length);
+            if (settings.TrackSourcePosition)
+            {
+                b.SourceLastPosition = b.SourcePosition + tableBlockString.Length;
+            }
+
+            // create table rows
+            MakeTableRows(b, sb);
+
+            // put the new paragraph after the table
+            newParagraph.NextSibling = b.NextSibling;
+            b.NextSibling = newParagraph;
+
+            Finalize(newParagraph, line, settings);
+
+            return true;
+        }
+
+        public static void Finalize(Block b, LineInfo line, CommonMarkSettings settings)
         {
             // don't do anything if the block is already closed
             if (!b.IsOpen)
@@ -124,22 +464,24 @@ namespace CommonMark.Parser
                     b.SourceLastPosition = line.CalculateOrigin(0, false);
             }
 
-#pragma warning disable 0618
-            b.EndLine = (line.LineNumber > b.StartLine) ? line.LineNumber - 1 : line.LineNumber;
-#pragma warning restore 0618
-
             switch (b.Tag)
             {
                 case BlockTag.Paragraph:
                     var sc = b.StringContent;
+
+                    if (TryMakeTable(b, line, settings))
+                    {
+                        break;
+                    }
+
                     if (!sc.StartsWith('['))
                         break;
 
                     var subj = new Subject(b.Top.Document);
                     sc.FillSubject(subj);
                     var origPos = subj.Position;
-                    while (subj.Position < subj.Buffer.Length 
-                        && subj.Buffer[subj.Position] == '[' 
+                    while (subj.Position < subj.Buffer.Length
+                        && subj.Buffer[subj.Position] == '['
                         && 0 != InlineMethods.ParseReference(subj))
                     {
                     }
@@ -208,13 +550,13 @@ namespace CommonMark.Parser
         /// Adds a new block as child of another. Return the child.
         /// </summary>
         /// <remarks>Original: add_child</remarks>
-        public static Block CreateChildBlock(Block parent, LineInfo line, BlockTag blockType, int startColumn)
+        public static Block CreateChildBlock(Block parent, LineInfo line, CommonMarkSettings settings, BlockTag blockType, int startColumn)
         {
             // if 'parent' isn't the kind of block that can accept this child,
             // then back up til we hit a block that can.
             while (!CanContain(parent.Tag, blockType))
             {
-                Finalize(parent, line);
+                Finalize(parent, line, settings);
                 parent = parent.Parent;
             }
 
@@ -229,9 +571,6 @@ namespace CommonMark.Parser
             if (lastChild != null)
             {
                 lastChild.NextSibling = child;
-#pragma warning disable 0618
-                child.Previous = lastChild;
-#pragma warning restore 0618
             }
             else
             {
@@ -295,7 +634,7 @@ namespace CommonMark.Parser
             while (block != null)
             {
                 var tag = block.Tag;
-                if (tag == BlockTag.Paragraph || tag == BlockTag.AtxHeading || tag == BlockTag.SetextHeading)
+                if (tag == BlockTag.Paragraph || tag == BlockTag.AtxHeading || tag == BlockTag.SetextHeading || tag == BlockTag.TableCell)
                 {
                     sc = block.StringContent;
                     if (sc != null)
@@ -403,7 +742,7 @@ namespace CommonMark.Parser
         {
             return (listData.ListType == itemData.ListType &&
                     listData.Delimiter == itemData.Delimiter &&
-                // list_data.marker_offset == item_data.marker_offset &&
+                    // list_data.marker_offset == item_data.marker_offset &&
                     listData.BulletChar == itemData.BulletChar);
         }
 
@@ -481,12 +820,12 @@ namespace CommonMark.Parser
         // Process one line at a time, modifying a block.
         // Returns 0 if successful.  curptr is changed to point to
         // the currently open block.
-        public static void IncorporateLine(LineInfo line, ref Block curptr)
+        public static void IncorporateLine(LineInfo line, ref Block curptr, CommonMarkSettings settings)
         {
             var ln = line.Line;
 
             Block last_matched_container;
-            
+
             // offset is the char position in the line
             var offset = 0;
 
@@ -646,7 +985,7 @@ namespace CommonMark.Parser
 
             // check to see if we've hit 2nd blank line, break out of list:
             if (blank && container.IsLastLineBlank)
-                BreakOutOfLists(ref container, line);
+                BreakOutOfLists(ref container, line, settings);
 
             var maybeLazy = cur.Tag == BlockTag.Paragraph;
 
@@ -669,21 +1008,21 @@ namespace CommonMark.Parser
                     AdvanceOffset(ln, first_nonspace + 1 - offset, false, ref offset, ref column, ref remainingSpaces);
                     AdvanceOptionalSpace(ln, ref offset, ref column, ref remainingSpaces);
 
-                    container = CreateChildBlock(container, line, BlockTag.BlockQuote, first_nonspace);
+                    container = CreateChildBlock(container, line, settings, BlockTag.BlockQuote, first_nonspace);
 
                 }
                 else if (!indented && curChar == '#' && 0 != (matched = Scanner.scan_atx_heading_start(ln, first_nonspace, ln.Length, out i)))
                 {
 
                     AdvanceOffset(ln, first_nonspace + matched - offset, false, ref offset, ref column, ref remainingSpaces);
-                    container = CreateChildBlock(container, line, BlockTag.AtxHeading, first_nonspace);
+                    container = CreateChildBlock(container, line, settings, BlockTag.AtxHeading, first_nonspace);
                     container.Heading = new HeadingData(i);
 
                 }
                 else if (!indented && (curChar == '`' || curChar == '~') && 0 != (matched = Scanner.scan_open_code_fence(ln, first_nonspace, ln.Length)))
                 {
 
-                    container = CreateChildBlock(container, line, BlockTag.FencedCode, first_nonspace);
+                    container = CreateChildBlock(container, line, settings, BlockTag.FencedCode, first_nonspace);
                     container.FencedCodeData = new FencedCodeData();
                     container.FencedCodeData.FenceChar = curChar;
                     container.FencedCodeData.FenceLength = matched;
@@ -692,13 +1031,13 @@ namespace CommonMark.Parser
                     AdvanceOffset(ln, first_nonspace + matched - offset, false, ref offset, ref column, ref remainingSpaces);
 
                 }
-                else if (!indented && curChar == '<' && 
+                else if (!indented && curChar == '<' &&
                     (0 != (matched = (int)Scanner.scan_html_block_start(ln, first_nonspace, ln.Length))
                     || (container.Tag != BlockTag.Paragraph && 0 != (matched = (int)Scanner.scan_html_block_start_7(ln, first_nonspace, ln.Length)))
                     ))
                 {
 
-                    container = CreateChildBlock(container, line, BlockTag.HtmlBlock, first_nonspace);
+                    container = CreateChildBlock(container, line, settings, BlockTag.HtmlBlock, first_nonspace);
                     container.HtmlBlockType = (HtmlBlockType)matched;
                     // note, we don't adjust offset because the tag is part of the text
 
@@ -712,19 +1051,19 @@ namespace CommonMark.Parser
                     AdvanceOffset(ln, ln.Length - 1 - offset, false, ref offset, ref column, ref remainingSpaces);
 
                 }
-                else if (!indented 
-                    && !(container.Tag == BlockTag.Paragraph && !all_matched) 
+                else if (!indented
+                    && !(container.Tag == BlockTag.Paragraph && !all_matched)
                     && 0 != (Scanner.scan_thematic_break(ln, first_nonspace, ln.Length)))
                 {
 
                     // it's only now that we know the line is not part of a setext heading:
-                    container = CreateChildBlock(container, line, BlockTag.ThematicBreak, first_nonspace);
-                    Finalize(container, line);
+                    container = CreateChildBlock(container, line, settings, BlockTag.ThematicBreak, first_nonspace);
+                    Finalize(container, line, settings);
                     container = container.Parent;
                     AdvanceOffset(ln, ln.Length - 1 - offset, false, ref offset, ref column, ref remainingSpaces);
 
                 }
-                else if ((!indented || container.Tag == BlockTag.List) 
+                else if ((!indented || container.Tag == BlockTag.List)
                     && 0 != (matched = ParseListMarker(ln, first_nonspace, out data)))
                 {
 
@@ -769,18 +1108,18 @@ namespace CommonMark.Parser
 
                     if (container.Tag != BlockTag.List || !ListsMatch(container.ListData, data))
                     {
-                        container = CreateChildBlock(container, line, BlockTag.List, first_nonspace);
+                        container = CreateChildBlock(container, line, settings, BlockTag.List, first_nonspace);
                         container.ListData = data;
                     }
 
                     // add the list item
-                    container = CreateChildBlock(container, line, BlockTag.ListItem, first_nonspace);
+                    container = CreateChildBlock(container, line, settings, BlockTag.ListItem, first_nonspace);
                     container.ListData = data;
                 }
                 else if (indented && !maybeLazy && !blank)
                 {
                     AdvanceOffset(ln, CODE_INDENT, true, ref offset, ref column, ref remainingSpaces);
-                    container = CreateChildBlock(container, line, BlockTag.IndentedCode, offset);
+                    container = CreateChildBlock(container, line, settings, BlockTag.IndentedCode, offset);
                 }
                 else
                 {
@@ -844,7 +1183,7 @@ namespace CommonMark.Parser
                 while (cur != last_matched_container)
                 {
 
-                    Finalize(cur, line);
+                    Finalize(cur, line, settings);
                     cur = cur.Parent;
 
                     if (cur == null)
@@ -880,7 +1219,7 @@ namespace CommonMark.Parser
 
                     if (Scanner.scan_html_block_end(container.HtmlBlockType, ln, first_nonspace, ln.Length))
                     {
-                        Finalize(container, line);
+                        Finalize(container, line, settings);
                         container = container.Parent;
                     }
 
@@ -915,7 +1254,7 @@ namespace CommonMark.Parser
                         p--;
 
                     AddLine(container, line, ln, first_nonspace, remainingSpaces, p - first_nonspace + 1);
-                    Finalize(container, line);
+                    Finalize(container, line, settings);
                     container = container.Parent;
 
                 }
@@ -929,7 +1268,7 @@ namespace CommonMark.Parser
                 {
 
                     // create paragraph container for line
-                    container = CreateChildBlock(container, line, BlockTag.Paragraph,  first_nonspace);
+                    container = CreateChildBlock(container, line, settings, BlockTag.Paragraph, first_nonspace);
                     AddLine(container, line, ln, first_nonspace, remainingSpaces);
 
                 }
@@ -944,7 +1283,7 @@ namespace CommonMark.Parser
             }
         }
 
-        private static void FindFirstNonspace(string ln, int offset, int column, out int first_nonspace, 
+        private static void FindFirstNonspace(string ln, int offset, int column, out int first_nonspace,
             out int first_nonspace_column, out char curChar)
         {
             var chars_to_tab = TabSize - (column % TabSize);

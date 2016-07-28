@@ -21,6 +21,20 @@ namespace CommonMark
         StrikethroughTilde = 1,
 
         /// <summary>
+        /// The parser will recognize
+        /// 
+        /// First Header  | Second Header
+        /// ------------- | -------------
+        /// Content Cell  | Content Cell
+        /// Content Cell  | Content Cell
+        /// 
+        /// style tables.
+        /// 
+        /// Refer to https://help.github.com/articles/organizing-information-with-tables/ for more examples
+        /// </summary>
+        GithubStyleTables = 2,
+
+        /// <summary>
         /// All additional features are enabled.
         /// </summary>
         All = 0x7FFFFFFF
