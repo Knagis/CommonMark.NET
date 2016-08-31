@@ -17,6 +17,7 @@ namespace CommonMark.Parser
         internal static Func<Subject, Inline>[] InitializeParsers(CommonMarkSettings settings)
         {
             var strikethroughTilde = 0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.StrikethroughTilde);
+            var placeholderBracket = 0 != (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.PlaceholderBracket);
 
             var p = new Func<Subject, Inline>[strikethroughTilde ? 127 : 97];
             p['\n'] = handle_newline;
@@ -27,7 +28,7 @@ namespace CommonMark.Parser
             p['_'] = HandleEmphasis;
             p['*'] = HandleEmphasis;
             p['['] = HandleLeftSquareBracket;
-            p[']'] = HandleRightSquareBracket;
+            p[']'] = subj => HandleRightSquareBracket(subj, placeholderBracket);
             p['!'] = HandleExclamation;
 
             if (strikethroughTilde)
@@ -483,15 +484,15 @@ namespace CommonMark.Parser
             {
                 var inl = opener.StartingInline;
                 var isImage = 0 != (opener.Flags & InlineStack.InlineStackFlags.ImageLink);
-                inl.Tag = isImage ? InlineTag.Image : InlineTag.Link;
+                inl.Tag = isImage ? InlineTag.Image : (details.IsPlaceholder ? InlineTag.Placeholder : InlineTag.Link);
                 inl.FirstChild = inl.NextSibling;
                 inl.NextSibling = null;
                 inl.SourceLastPosition = subj.Position;
 
-                inl.TargetUrl = details.Url;
+                inl.TargetUrl = details.IsPlaceholder ? subj.Buffer.Substring(opener.StartPosition, subj.Position - opener.StartPosition - 1) : details.Url;
                 inl.LiteralContent = details.Title;
 
-                if (!isImage)
+                if (!isImage && !details.IsPlaceholder)
                 {
                     // since there cannot be nested links, remove any other link openers before this
                     var temp = opener.Previous;
@@ -526,7 +527,7 @@ namespace CommonMark.Parser
             }
         }
 
-        private static Inline HandleRightSquareBracket(Subject subj)
+        private static Inline HandleRightSquareBracket(Subject subj, bool supportPlaceholderBrackets)
         {
             // move past ']'
             subj.Position++;
@@ -546,7 +547,8 @@ namespace CommonMark.Parser
                 var endpos = subj.Position;
 
                 // try parsing details for '[foo](/url "title")' or '[foo][bar]'
-                var details = ParseLinkDetails(subj);
+                //var details = ParseLinkDetails(subj);
+                var details = ParseLinkDetails(subj, supportPlaceholderBrackets);
 
                 // try lookup of the brackets themselves
                 if (details == null || details == Reference.SelfReference)
@@ -899,7 +901,7 @@ namespace CommonMark.Parser
         }
 
         // Parse a link or the link portion of an image, or return a fallback.
-        static Reference ParseLinkDetails(Subject subj)
+        static Reference ParseLinkDetails(Subject subj, bool supportPlaceholderBrackets)
         {
             int n;
             int sps;
@@ -953,7 +955,14 @@ namespace CommonMark.Parser
 
             // rollback the subject position because didn't match anything.
             subj.Position = endlabel;
-            return null;
+            if (supportPlaceholderBrackets)
+            {
+                return new Reference() { IsPlaceholder = true };
+            }
+            else
+            {
+                return null;
+            }
         }
 
         // Parse a hard or soft linebreak, returning an inline.

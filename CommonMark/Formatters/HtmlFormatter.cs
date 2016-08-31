@@ -320,6 +320,7 @@ namespace CommonMark.Formatters
                     case InlineTag.Strong:
                     case InlineTag.Emphasis:
                     case InlineTag.Strikethrough:
+                    case InlineTag.Placeholder:
                         break;
 
                     default:
@@ -495,6 +496,37 @@ namespace CommonMark.Formatters
                     }
                     break;
 
+                case InlineTag.Placeholder:
+                    {
+                        string placeholderSubstitute = (_placeholderResolver != null) ? _placeholderResolver(inline.TargetUrl) : null;
+
+                        if (placeholderSubstitute != null)
+                        {
+                            ignoreChildNodes = true;
+
+                            if (isOpening)
+                            {
+                                if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
+                                Write(placeholderSubstitute);
+                            }
+                        }
+                        else
+                        {
+                            ignoreChildNodes = false;
+
+                            if (isOpening)
+                            {
+                                Write("[");
+                            }
+
+                            if (isClosing)
+                            {
+                                Write("]");
+                            }
+                        }
+                    }
+                    break;
+
                 default:
                     throw new CommonMarkException("Inline type " + inline.Tag + " is not supported.", inline);
             }
@@ -615,6 +647,26 @@ namespace CommonMark.Formatters
         protected void WritePositionAttribute(Inline inline)
         {
             HtmlFormatterSlim.PrintPosition(_target, inline);
+        }
+
+        private Func<string, string> _placeholderResolver;
+
+        /// <summary>
+        /// Provides an optional function that can provide substitute strings for placeholders.
+        /// The argument contains the placeholder text. If the function returns <see langword="null"/>,
+        /// the placeholder was not resolved and will be rendered as a literal, otherwise, the
+        /// returned string will be output instead of the placeholder.
+        /// </summary>
+        public Func<string, string> PlaceholderResolver
+        {
+            get
+            {
+                return _placeholderResolver;
+            }
+            set
+            {
+                _placeholderResolver = value;
+            }
         }
     }
 }
