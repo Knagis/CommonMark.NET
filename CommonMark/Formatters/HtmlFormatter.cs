@@ -15,6 +15,7 @@ namespace CommonMark.Formatters
         private readonly CommonMarkSettings _settings;
         private readonly Stack<bool> _renderTightParagraphs = new Stack<bool>(new[] { false });
         private readonly Stack<bool> _renderPlainTextInlines = new Stack<bool>(new[] { false });
+        private readonly Stack<char?> _endPlaceholders = new Stack<char?>();
 
         /// <summary>
         /// Gets a stack of values indicating whether the paragraph tags should be ommitted.
@@ -497,6 +498,9 @@ namespace CommonMark.Formatters
                     break;
 
                 case InlineTag.Placeholder:
+                    ignoreChildNodes = false;
+
+                    if (isOpening)
                     {
                         string placeholderSubstitute = (_placeholderResolver != null) ? _placeholderResolver(inline.TargetUrl) : null;
 
@@ -504,25 +508,25 @@ namespace CommonMark.Formatters
                         {
                             ignoreChildNodes = true;
 
-                            if (isOpening)
-                            {
-                                if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
-                                Write(placeholderSubstitute);
-                            }
+                            if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
+                            Write(placeholderSubstitute);
+                            _endPlaceholders.Push(null);
                         }
                         else
                         {
                             ignoreChildNodes = false;
+                            Write("[");
+                            _endPlaceholders.Push(']');
+                        }
+                    }
+                    if (isClosing)
+                    {
+                        var closingChar = _endPlaceholders.Pop();
 
-                            if (isOpening)
-                            {
-                                Write("[");
-                            }
-
-                            if (isClosing)
-                            {
-                                Write("]");
-                            }
+                        ignoreChildNodes = !closingChar.HasValue;
+                        if (closingChar.HasValue)
+                        {
+                            Write(closingChar.Value);
                         }
                     }
                     break;
