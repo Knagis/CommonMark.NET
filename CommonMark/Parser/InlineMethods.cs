@@ -28,7 +28,12 @@ namespace CommonMark.Parser
             p['_'] = HandleEmphasis;
             p['*'] = HandleEmphasis;
             p['['] = HandleLeftSquareBracket;
-            p[']'] = subj => HandleRightSquareBracket(subj, placeholderBracket);
+
+            if (placeholderBracket)
+                p[']'] = subj => HandleRightSquareBracket(subj, true);
+            else
+                p[']'] = subj => HandleRightSquareBracket(subj, false);
+            
             p['!'] = HandleExclamation;
 
             if (strikethroughTilde)
@@ -489,7 +494,7 @@ namespace CommonMark.Parser
                 inl.NextSibling = null;
                 inl.SourceLastPosition = subj.Position;
 
-                inl.TargetUrl = details.IsPlaceholder ? subj.Buffer.Substring(opener.StartPosition, subj.Position - opener.StartPosition - 1) : details.Url;
+                inl.TargetUrl = details.Url;
                 inl.LiteralContent = details.Title;
 
                 if (!isImage && !details.IsPlaceholder)
@@ -957,7 +962,11 @@ namespace CommonMark.Parser
             subj.Position = endlabel;
             if (supportPlaceholderBrackets)
             {
-                return new Reference() { IsPlaceholder = true };
+                return new Reference()
+                {
+                    Url = subj.Buffer.Substring(subj.LastPendingInline.StartPosition, subj.Position - subj.LastPendingInline.StartPosition - 1),
+                    IsPlaceholder = true
+                };
             }
             else
             {

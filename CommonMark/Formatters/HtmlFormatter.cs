@@ -15,7 +15,7 @@ namespace CommonMark.Formatters
         private readonly CommonMarkSettings _settings;
         private readonly Stack<bool> _renderTightParagraphs = new Stack<bool>(new[] { false });
         private readonly Stack<bool> _renderPlainTextInlines = new Stack<bool>(new[] { false });
-        private readonly Stack<char?> _endPlaceholders = new Stack<char?>();
+        private readonly Stack<char> _endPlaceholders = new Stack<char>();
 
         /// <summary>
         /// Gets a stack of values indicating whether the paragraph tags should be ommitted.
@@ -502,7 +502,16 @@ namespace CommonMark.Formatters
 
                     if (isOpening)
                     {
-                        string placeholderSubstitute = (_placeholderResolver != null) ? _placeholderResolver(inline.TargetUrl) : null;
+                        string placeholderSubstitute = null;
+
+                        try
+                        {
+                            placeholderSubstitute = (_placeholderResolver != null) ? _placeholderResolver(inline.TargetUrl) : null;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new CommonMarkException("An error occurred while resolving a placeholder.", ex);
+                        }
 
                         if (placeholderSubstitute != null)
                         {
@@ -510,7 +519,7 @@ namespace CommonMark.Formatters
 
                             if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
                             Write(placeholderSubstitute);
-                            _endPlaceholders.Push(null);
+                            _endPlaceholders.Push('\0');
                         }
                         else
                         {
@@ -523,10 +532,9 @@ namespace CommonMark.Formatters
                     {
                         var closingChar = _endPlaceholders.Pop();
 
-                        ignoreChildNodes = !closingChar.HasValue;
-                        if (closingChar.HasValue)
+                        if (closingChar != '\0')
                         {
-                            Write(closingChar.Value);
+                            Write(closingChar);
                         }
                     }
                     break;

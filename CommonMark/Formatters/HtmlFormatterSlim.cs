@@ -630,7 +630,7 @@ namespace CommonMark.Formatters
 
                     case InlineTag.Placeholder:
                         // the slim formatter will treat placeholders like literals, without applying any further processing
-                        writer.WriteConstant("[");
+                        writer.Write('[');
                         if (trackPositions) PrintPosition(writer, inline);
                         stackLiteral = "]";
                         stackWithinLink = withinLink;
