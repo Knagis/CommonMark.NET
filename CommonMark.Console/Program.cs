@@ -1,8 +1,6 @@
-﻿using CommonMark.Syntax;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 
 namespace CommonMark
 {
@@ -20,6 +18,7 @@ namespace CommonMark
             Console.WriteLine("Usage:   " + fname + " [FILE*] [--out FILE]");
             Console.WriteLine("Options: --help, -h    Print usage information");
             Console.WriteLine("         --ast         Print AST instead of HTML");
+            Console.WriteLine("         --fat         Do not use the slim HTML converter");
             Console.WriteLine("         --extended    Enable all additional parser features");
             Console.WriteLine("         --sourcepos   Enable source position tracking and output");
             Console.WriteLine("         --bench 20    Execute a benchmark on the given input, optionally");
@@ -61,6 +60,15 @@ namespace CommonMark
                     else if (string.Equals(args[i], "--ast", StringComparison.OrdinalIgnoreCase))
                     {
                         settings.OutputFormat = OutputFormat.SyntaxTree;
+                    }
+                    else if (string.Equals(args[i], "--fat", StringComparison.OrdinalIgnoreCase))
+                    {
+                        settings.OutputFormat = OutputFormat.CustomDelegate;
+                        settings.OutputDelegate = (block, writer, cmSettings) =>
+                        {
+                            var formatter = new Formatters.HtmlFormatter(writer, cmSettings);
+                            formatter.WriteDocument(block);
+                        };
                     }
                     else if (string.Equals(args[i], "--extended", StringComparison.OrdinalIgnoreCase))
                     {
