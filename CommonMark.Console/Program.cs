@@ -20,6 +20,7 @@ namespace CommonMark
             Console.WriteLine("Usage:   " + fname + " [FILE*] [--out FILE]");
             Console.WriteLine("Options: --help, -h    Print usage information");
             Console.WriteLine("         --ast         Print AST instead of HTML");
+            Console.WriteLine("         --extended    Enable all additional parser features");
             Console.WriteLine("         --sourcepos   Enable source position tracking and output");
             Console.WriteLine("         --bench 20    Execute a benchmark on the given input, optionally");
             Console.WriteLine("                       specify the number of iterations, default is 20");
@@ -60,6 +61,10 @@ namespace CommonMark
                     else if (string.Equals(args[i], "--ast", StringComparison.OrdinalIgnoreCase))
                     {
                         settings.OutputFormat = OutputFormat.SyntaxTree;
+                    }
+                    else if (string.Equals(args[i], "--extended", StringComparison.OrdinalIgnoreCase))
+                    {
+                        settings.AdditionalFeatures = CommonMarkAdditionalFeatures.All;
                     }
                     else if (string.Equals(args[i], "--sourcepos", StringComparison.OrdinalIgnoreCase))
                     {
