@@ -15,6 +15,7 @@ namespace CommonMark.Formatters
         private readonly CommonMarkSettings _settings;
         private readonly Stack<bool> _renderTightParagraphs = new Stack<bool>(new[] { false });
         private readonly Stack<bool> _renderPlainTextInlines = new Stack<bool>(new[] { false });
+        private readonly Stack<char> _endPlaceholders = new Stack<char>();
 
         /// <summary>
         /// Gets a stack of values indicating whether the paragraph tags should be ommitted.
@@ -320,6 +321,7 @@ namespace CommonMark.Formatters
                     case InlineTag.Strong:
                     case InlineTag.Emphasis:
                     case InlineTag.Strikethrough:
+                    case InlineTag.Placeholder:
                         break;
 
                     default:
@@ -495,6 +497,48 @@ namespace CommonMark.Formatters
                     }
                     break;
 
+                case InlineTag.Placeholder:
+                    ignoreChildNodes = false;
+
+                    if (isOpening)
+                    {
+                        string placeholderSubstitute = null;
+
+                        try
+                        {
+                            placeholderSubstitute = (_placeholderResolver != null) ? _placeholderResolver(inline.TargetUrl) : null;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new CommonMarkException("An error occurred while resolving a placeholder.", ex);
+                        }
+
+                        if (placeholderSubstitute != null)
+                        {
+                            ignoreChildNodes = true;
+
+                            if (Settings.TrackSourcePosition) WritePositionAttribute(inline);
+                            Write(placeholderSubstitute);
+                            _endPlaceholders.Push('\0');
+                        }
+                        else
+                        {
+                            ignoreChildNodes = false;
+                            Write("[");
+                            _endPlaceholders.Push(']');
+                        }
+                    }
+                    if (isClosing)
+                    {
+                        var closingChar = _endPlaceholders.Pop();
+
+                        if (closingChar != '\0')
+                        {
+                            Write(closingChar);
+                        }
+                    }
+                    break;
+
                 default:
                     throw new CommonMarkException("Inline type " + inline.Tag + " is not supported.", inline);
             }
@@ -615,6 +659,26 @@ namespace CommonMark.Formatters
         protected void WritePositionAttribute(Inline inline)
         {
             HtmlFormatterSlim.PrintPosition(_target, inline);
+        }
+
+        private Func<string, string> _placeholderResolver;
+
+        /// <summary>
+        /// Provides an optional function that can provide substitute strings for placeholders.
+        /// The argument contains the placeholder text. If the function returns <see langword="null"/>,
+        /// the placeholder was not resolved and will be rendered as a literal, otherwise, the
+        /// returned string will be output instead of the placeholder.
+        /// </summary>
+        public Func<string, string> PlaceholderResolver
+        {
+            get
+            {
+                return _placeholderResolver;
+            }
+            set
+            {
+                _placeholderResolver = value;
+            }
         }
     }
 }

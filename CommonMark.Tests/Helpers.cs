@@ -16,7 +16,7 @@ namespace CommonMark.Tests
             }
         }
 
-        public static void ExecuteTest(string commonMark, string html, CommonMarkSettings settings = null)
+        public static void ExecuteTest(string commonMark, string html, CommonMarkSettings settings = null, Func<System.IO.TextWriter, CommonMarkSettings, Formatters.HtmlFormatter> htmlFormatterFactory = null)
         {
             if (settings == null)
                 settings = CommonMarkSettings.Default.Clone();
@@ -35,6 +35,13 @@ namespace CommonMark.Tests
             using (var reader = new System.IO.StringReader(commonMark))
             using (var writer = new System.IO.StringWriter())
             {
+                if (htmlFormatterFactory != null)
+                {
+                    settings = settings.Clone();
+                    settings.OutputFormat = OutputFormat.CustomDelegate;
+                    settings.OutputDelegate = (doc, target, stngs) => htmlFormatterFactory(target, stngs).WriteDocument(doc);
+                }
+
                 document = CommonMarkConverter.ProcessStage1(reader, settings);
                 CommonMarkConverter.ProcessStage2(document, settings);
                 CommonMarkConverter.ProcessStage3(document, writer, settings);
@@ -46,11 +53,17 @@ namespace CommonMark.Tests
             actual = Helpers.Tidy(actual);
             Assert.AreEqual(Helpers.Tidy(html), actual);
 
-            // Verify that the extendable HTML formatter returns the same result
-            var settingsHtmlFormatter = settings.Clone();
-            settingsHtmlFormatter.OutputDelegate = (doc, target, stngs) => new Formatters.HtmlFormatter(target, stngs).WriteDocument(doc);
-            var actual2 = CommonMarkConverter.Convert(commonMark, settingsHtmlFormatter);
-            Assert.AreEqual(actual, Helpers.Tidy(actual2), "HtmlFormatter returned a different result than HtmlFormatterSlim.");
+            if (htmlFormatterFactory == null)
+            {
+                // Verify that the extendable HTML formatter returns the same result, unless
+                // the test was run with a custom extendable HTML formatter factory. In the
+                // latter case, only the output of the custom extendable HTML formatter is
+                // verified.
+                var settingsHtmlFormatter = settings.Clone();
+                settingsHtmlFormatter.OutputDelegate = (doc, target, stngs) => new Formatters.HtmlFormatter(target, stngs).WriteDocument(doc);
+                var actual2 = CommonMarkConverter.Convert(commonMark, settingsHtmlFormatter);
+                Assert.AreEqual(actual, Helpers.Tidy(actual2), "HtmlFormatter returned a different result than HtmlFormatterSlim.");
+            }
 
             // Additionally verify that the parser included source position information.
             // This is done here to catch cases during specification tests that might not be 
