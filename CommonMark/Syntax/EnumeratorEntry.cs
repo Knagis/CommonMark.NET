@@ -49,7 +49,7 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Gets the value indicating whether this instance represents the closing of the element (returned by the
         /// enumerator after the children have been enumerated). Both <see name="IsOpening"/> and <see name="IsClosing"/>
-        /// can be <c>true</c> at the same time if there are no children for the given element.
+        /// can be <see langword="true"/> at the same time if there are no children for the given element.
         /// </summary>
         public bool IsClosing { get; private set; }
 
