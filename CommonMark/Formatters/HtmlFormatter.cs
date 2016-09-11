@@ -36,7 +36,7 @@ namespace CommonMark.Formatters
         /// <summary>Initializes a new instance of the <see cref="HtmlFormatter" /> class.</summary>
         /// <param name="target">The target text writer.</param>
         /// <param name="settings">The settings used when formatting the data.</param>
-        /// <exception cref="ArgumentNullException">when <paramref name="target"/> is <c>null</c></exception>
+        /// <exception cref="ArgumentNullException">when <paramref name="target"/> is <see langword="null"/></exception>
         public HtmlFormatter(TextWriter target, CommonMarkSettings settings)
         {
             if (target == null)

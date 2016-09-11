@@ -56,7 +56,7 @@ namespace CommonMark.Parser
 
         /// <summary>
         /// Checks if the reference dictionary contains a reference with the given label and returns it,
-        /// otherwise returns <c>null</c>.
+        /// otherwise returns <see langword="null"/>.
         /// Returns <see cref="Reference.InvalidReference"/> if the reference label is not valid.
         /// </summary>
         private static Reference LookupReference(DocumentData data, StringPart lab)

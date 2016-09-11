@@ -14,12 +14,12 @@ namespace CommonMark
     public class CommonMarkException : Exception
     {
         /// <summary>
-        /// Gets the block that caused the exception. Can be <c>null</c>.
+        /// Gets the block that caused the exception. Can be <see langword="null"/>.
         /// </summary>
         public Block BlockElement { get; private set; }
 
         /// <summary>
-        /// Gets the inline element that caused the exception. Can be <c>null</c>.
+        /// Gets the inline element that caused the exception. Can be <see langword="null"/>.
         /// </summary>
         public Inline InlineElement { get; private set; }
 
@@ -32,13 +32,13 @@ namespace CommonMark
 
         /// <summary>Initializes a new instance of the <see cref="CommonMarkException" /> class with a specified error message and a reference to the inner exception that is the cause of this exception.</summary>
         /// <param name="message">The error message that explains the reason for the exception.</param>
-        /// <param name="innerException">The exception that is the cause of the current exception, or a <c>null</c> reference (<c>Nothing</c> in Visual Basic) if no inner exception is specified.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception, or <see langword="null"/> if no inner exception is specified.</param>
         public CommonMarkException(string message, Exception innerException) : base(message, innerException) { }
 
         /// <summary>Initializes a new instance of the <see cref="CommonMarkException" /> class with a specified error message, a reference to the element that caused it and a reference to the inner exception that is the cause of this exception.</summary>
         /// <param name="message">The error message that explains the reason for the exception.</param>
         /// <param name="inline">The inline element that is related to the exception cause.</param>
-        /// <param name="innerException">The exception that is the cause of the current exception, or a <c>null</c> reference (<c>Nothing</c> in Visual Basic) if no inner exception is specified.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception, or <see langword="null"/> if no inner exception is specified.</param>
         public CommonMarkException(string message, Inline inline, Exception innerException = null)
             : base(message, innerException)
         {
@@ -48,7 +48,7 @@ namespace CommonMark
         /// <summary>Initializes a new instance of the <see cref="CommonMarkException" /> class with a specified error message, a reference to the element that caused it and a reference to the inner exception that is the cause of this exception.</summary>
         /// <param name="message">The error message that explains the reason for the exception.</param>
         /// <param name="block">The block element that is related to the exception cause.</param>
-        /// <param name="innerException">The exception that is the cause of the current exception, or a <c>null</c> reference (<c>Nothing</c> in Visual Basic) if no inner exception is specified.</param>
+        /// <param name="innerException">The exception that is the cause of the current exception, or <see langword="null"/> if no inner exception is specified.</param>
         public CommonMarkException(string message, Block block, Exception innerException = null)
             : base(message, innerException) 
         {
@@ -74,7 +74,7 @@ namespace CommonMark
         /// <summary>Sets the <see cref="System.Runtime.Serialization.SerializationInfo" /> with information about the exception.</summary>
         /// <param name="info">The <see cref="System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data about the exception being thrown.</param>
         /// <param name="context">The <see cref="System.Runtime.Serialization.StreamingContext" /> that contains contextual information about the source or destination.</param>
-        /// <exception cref="System.ArgumentNullException">The <paramref name="info" /> parameter is a <c>null</c> reference (<c>Nothing</c> in Visual Basic).</exception>
+        /// <exception cref="System.ArgumentNullException">The <paramref name="info" /> parameter is <see langword="null"/>.</exception>
         [System.Security.SecurityCritical]
         public override void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
         {

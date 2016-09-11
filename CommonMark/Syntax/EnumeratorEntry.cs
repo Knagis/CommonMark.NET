@@ -54,12 +54,12 @@ namespace CommonMark.Syntax
         public bool IsClosing { get; private set; }
 
         /// <summary>
-        /// Gets the inline element. Can be <c>null</c> if <see cref="Block"/> is set.
+        /// Gets the inline element. Can be <see langword="null"/> if <see cref="Block"/> is set.
         /// </summary>
         public Inline Inline { get; private set; }
 
         /// <summary>
-        /// Gets the block element. Can be <c>null</c> if <see cref="Inline"/> is set.
+        /// Gets the block element. Can be <see langword="null"/> if <see cref="Inline"/> is set.
         /// </summary>
         public Block Block { get; private set; }
 
