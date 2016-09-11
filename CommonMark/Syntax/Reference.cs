@@ -55,5 +55,10 @@ namespace CommonMark.Syntax
         /// Gets or sets the title of the reference (used in <c>&lt;a title="..."&gt;</c>).
         /// </summary>
         public string Title { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value that indicates whether the current reference is a placeholder: [foo]
+        /// </summary>
+        public bool IsPlaceholder { get; set; }
     }
 }

@@ -59,7 +59,7 @@ namespace CommonMark.Syntax
         public Inline Inline { get; private set; }
 
         /// <summary>
-        /// Gets the inline element. Can be <c>null</c> if <see cref="Inline"/> is set.
+        /// Gets the block element. Can be <c>null</c> if <see cref="Inline"/> is set.
         /// </summary>
         public Block Block { get; private set; }
 
