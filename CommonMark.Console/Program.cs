@@ -186,28 +186,20 @@ namespace CommonMark
                 {
                     settings.OutputFormat = OutputFormat.CustomDelegate;
 
-                    if (placeholderSubstitutionTable == null)
+                    settings.OutputDelegate = (block, writer, cmSettings) =>
                     {
-                        settings.OutputDelegate = (block, writer, cmSettings) =>
+                        var formatter = new Formatters.HtmlFormatter(writer, cmSettings);
+                        if (placeholderSubstitutionTable != null)
                         {
-                            var formatter = new Formatters.HtmlFormatter(writer, cmSettings);
-                            formatter.WriteDocument(block);
-                        };
-                    }
-                    else
-                    {
-                        settings.OutputDelegate = (block, writer, cmSettings) =>
-                        {
-                            var formatter = new Formatters.HtmlFormatter(writer, cmSettings);
                             formatter.PlaceholderResolver = placeholderText =>
                             {
                                 string result;
                                 placeholderSubstitutionTable.TryGetValue(placeholderText, out result);
                                 return result;
                             };
-                            formatter.WriteDocument(block);
-                        };
-                    }
+                        }
+                        formatter.WriteDocument(block);
+                    };
                 }
 
                 if (benchmark)
