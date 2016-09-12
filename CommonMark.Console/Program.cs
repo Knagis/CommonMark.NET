@@ -19,6 +19,10 @@ namespace CommonMark
             Console.WriteLine("Options: --help, -h    Print usage information");
             Console.WriteLine("         --ast         Print AST instead of HTML");
             Console.WriteLine("         --extended    Enable all additional parser features");
+            Console.WriteLine("         --subst       The following argument is interpreted as a list of");
+            Console.WriteLine("                       tokens delimited by colons. Placeholders (enable");
+            Console.WriteLine("                       with --extended) matching the even tokens will be");
+            Console.WriteLine("                       replaced with the odd tokens in HTML output.");
             Console.WriteLine("         --sourcepos   Enable source position tracking and output");
             Console.WriteLine("         --bench 20    Execute a benchmark on the given input, optionally");
             Console.WriteLine("                       specify the number of iterations, default is 20");
@@ -36,6 +40,7 @@ namespace CommonMark
             var runPerlTests = false;
             var settings = CommonMarkSettings.Default.Clone();
             var useFatHtmlFormatter = false;
+            Dictionary<string, string> placeholderSubstitutionTable = null;
 
             try
             {
@@ -65,6 +70,27 @@ namespace CommonMark
                     {
                         settings.AdditionalFeatures = CommonMarkAdditionalFeatures.All;
                         useFatHtmlFormatter = true;
+                    }
+                    else if (string.Equals(args[i], "--subst", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (i != args.Length - 1)
+                        {
+                            var tokens = args[i + 1].Split(':');
+
+                            if (tokens.Length % 2 == 0)
+                            {
+                                if (placeholderSubstitutionTable == null)
+                                {
+                                    placeholderSubstitutionTable = new Dictionary<string, string>();
+                                }
+
+                                for (int tokenIndex = 0; tokenIndex < tokens.Length; tokenIndex += 2)
+                                {
+                                    placeholderSubstitutionTable[tokens[tokenIndex]] = tokens[tokenIndex + 1];
+                                }
+                                i++;
+                            }
+                        }
                     }
                     else if (string.Equals(args[i], "--sourcepos", StringComparison.OrdinalIgnoreCase))
                     {
@@ -148,11 +174,29 @@ namespace CommonMark
                 if (useFatHtmlFormatter)
                 {
                     settings.OutputFormat = OutputFormat.CustomDelegate;
-                    settings.OutputDelegate = (block, writer, cmSettings) =>
+
+                    if (placeholderSubstitutionTable == null)
                     {
-                        var formatter = new Formatters.HtmlFormatter(writer, cmSettings);
-                        formatter.WriteDocument(block);
-                    };
+                        settings.OutputDelegate = (block, writer, cmSettings) =>
+                        {
+                            var formatter = new Formatters.HtmlFormatter(writer, cmSettings);
+                            formatter.WriteDocument(block);
+                        };
+                    }
+                    else
+                    {
+                        settings.OutputDelegate = (block, writer, cmSettings) =>
+                        {
+                            var formatter = new Formatters.HtmlFormatter(writer, cmSettings);
+                            formatter.PlaceholderResolver = placeholderText =>
+                            {
+                                string result;
+                                placeholderSubstitutionTable.TryGetValue(placeholderText, out result);
+                                return result;
+                            };
+                            formatter.WriteDocument(block);
+                        };
+                    }
                 }
 
                 if (benchmark)
