@@ -18,7 +18,6 @@ namespace CommonMark
             Console.WriteLine("Usage:   " + fname + " [FILE*] [--out FILE]");
             Console.WriteLine("Options: --help, -h    Print usage information");
             Console.WriteLine("         --ast         Print AST instead of HTML");
-            Console.WriteLine("         --fat         Do not use the slim HTML converter");
             Console.WriteLine("         --extended    Enable all additional parser features");
             Console.WriteLine("         --sourcepos   Enable source position tracking and output");
             Console.WriteLine("         --bench 20    Execute a benchmark on the given input, optionally");
@@ -36,6 +35,7 @@ namespace CommonMark
             var target = Console.Out;
             var runPerlTests = false;
             var settings = CommonMarkSettings.Default.Clone();
+            var useFatHtmlFormatter = false;
 
             try
             {
@@ -61,18 +61,10 @@ namespace CommonMark
                     {
                         settings.OutputFormat = OutputFormat.SyntaxTree;
                     }
-                    else if (string.Equals(args[i], "--fat", StringComparison.OrdinalIgnoreCase))
-                    {
-                        settings.OutputFormat = OutputFormat.CustomDelegate;
-                        settings.OutputDelegate = (block, writer, cmSettings) =>
-                        {
-                            var formatter = new Formatters.HtmlFormatter(writer, cmSettings);
-                            formatter.WriteDocument(block);
-                        };
-                    }
                     else if (string.Equals(args[i], "--extended", StringComparison.OrdinalIgnoreCase))
                     {
                         settings.AdditionalFeatures = CommonMarkAdditionalFeatures.All;
+                        useFatHtmlFormatter = true;
                     }
                     else if (string.Equals(args[i], "--sourcepos", StringComparison.OrdinalIgnoreCase))
                     {
@@ -151,6 +143,16 @@ namespace CommonMark
 
                         sources.Add(Console.In);
                     }
+                }
+
+                if (useFatHtmlFormatter)
+                {
+                    settings.OutputFormat = OutputFormat.CustomDelegate;
+                    settings.OutputDelegate = (block, writer, cmSettings) =>
+                    {
+                        var formatter = new Formatters.HtmlFormatter(writer, cmSettings);
+                        formatter.WriteDocument(block);
+                    };
                 }
 
                 if (benchmark)
