@@ -36,7 +36,7 @@ namespace CommonMark.Formatters
         /// <summary>Initializes a new instance of the <see cref="HtmlFormatter" /> class.</summary>
         /// <param name="target">The target text writer.</param>
         /// <param name="settings">The settings used when formatting the data.</param>
-        /// <exception cref="ArgumentNullException">when <paramref name="target"/> is <c>null</c></exception>
+        /// <exception cref="ArgumentNullException">when <paramref name="target"/> is <see langword="null"/></exception>
         public HtmlFormatter(TextWriter target, CommonMarkSettings settings)
         {
             if (target == null)
@@ -108,7 +108,7 @@ namespace CommonMark.Formatters
         /// <param name="isOpening">Specifies whether the block element is being opened (or started).</param>
         /// <param name="isClosing">Specifies whether the block element is being closed. If the block does not
         /// have child nodes, then both <paramref name="isClosing"/> and <paramref name="isOpening"/> can be
-        /// <c>true</c> at the same time.</param>
+        /// <see langword="true"/> at the same time.</param>
         /// <param name="ignoreChildNodes">Instructs the caller whether to skip processing of child nodes or not.</param>
         protected virtual void WriteBlock(Block block, bool isOpening, bool isClosing, out bool ignoreChildNodes)
         {
@@ -284,7 +284,7 @@ namespace CommonMark.Formatters
         /// <param name="isOpening">Specifies whether the inline element is being opened (or started).</param>
         /// <param name="isClosing">Specifies whether the inline element is being closed. If the inline does not
         /// have child nodes, then both <paramref name="isClosing"/> and <paramref name="isOpening"/> can be
-        /// <c>true</c> at the same time.</param>
+        /// <see langword="true"/> at the same time.</param>
         /// <param name="ignoreChildNodes">Instructs the caller whether to skip processing of child nodes or not.</param>
         protected virtual void WriteInline(Inline inline, bool isOpening, bool isClosing, out bool ignoreChildNodes)
         {
@@ -643,7 +643,7 @@ namespace CommonMark.Formatters
 
         /// <summary>
         /// Writes a <c>data-sourcepos="start-end"</c> attribute to the target writer. 
-        /// This method should only be called if <see cref="CommonMarkSettings.TrackSourcePosition"/> is set to <c>true</c>.
+        /// This method should only be called if <see cref="CommonMarkSettings.TrackSourcePosition"/> is set to <see langword="true"/>.
         /// Note that the attribute is preceded (but not succeeded) by a single space.
         /// </summary>
         protected void WritePositionAttribute(Block block)
@@ -653,7 +653,7 @@ namespace CommonMark.Formatters
 
         /// <summary>
         /// Writes a <c>data-sourcepos="start-end"</c> attribute to the target writer. 
-        /// This method should only be called if <see cref="CommonMarkSettings.TrackSourcePosition"/> is set to <c>true</c>.
+        /// This method should only be called if <see cref="CommonMarkSettings.TrackSourcePosition"/> is set to <see langword="true"/>.
         /// Note that the attribute is preceded (but not succeeded) by a single space.
         /// </summary>
         protected void WritePositionAttribute(Inline inline)

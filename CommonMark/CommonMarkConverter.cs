@@ -89,7 +89,7 @@ namespace CommonMark
         /// <param name="source">The reader that contains the source data.</param>
         /// <param name="settings">The object containing settings for the parsing process.</param>
         /// <returns>The block element that represents the document.</returns>
-        /// <exception cref="ArgumentNullException">when <paramref name="source"/> is <c>null</c></exception>
+        /// <exception cref="ArgumentNullException">when <paramref name="source"/> is <see langword="null"/></exception>
         /// <exception cref="CommonMarkException">when errors occur during block parsing.</exception>
         /// <exception cref="IOException">when error occur while reading the data.</exception>
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)] 
@@ -154,7 +154,7 @@ namespace CommonMark
         /// <param name="document">The top level document element.</param>
         /// <param name="settings">The object containing settings for the parsing process.</param>
         /// <exception cref="ArgumentException">when <paramref name="document"/> does not represent a top level document.</exception>
-        /// <exception cref="ArgumentNullException">when <paramref name="document"/> is <c>null</c></exception>
+        /// <exception cref="ArgumentNullException">when <paramref name="document"/> is <see langword="null"/></exception>
         /// <exception cref="CommonMarkException">when errors occur during inline parsing.</exception>
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)] 
         public static void ProcessStage2(Syntax.Block document, CommonMarkSettings settings = null)
@@ -189,7 +189,7 @@ namespace CommonMark
         /// <param name="target">The target text writer where the result will be written to.</param>
         /// <param name="settings">The object containing settings for the formatting process.</param>
         /// <exception cref="ArgumentException">when <paramref name="document"/> does not represent a top level document.</exception>
-        /// <exception cref="ArgumentNullException">when <paramref name="document"/> or <paramref name="target"/> is <c>null</c></exception>
+        /// <exception cref="ArgumentNullException">when <paramref name="document"/> or <paramref name="target"/> is <see langword="null"/></exception>
         /// <exception cref="CommonMarkException">when errors occur during formatting.</exception>
         /// <exception cref="IOException">when error occur while writing the data to the target.</exception>
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)] 
@@ -246,7 +246,7 @@ namespace CommonMark
         /// </summary>
         /// <param name="source">The reader that contains the source data.</param>
         /// <param name="settings">The object containing settings for the parsing and formatting process.</param>
-        /// <exception cref="ArgumentNullException">when <paramref name="source"/> is <c>null</c></exception>
+        /// <exception cref="ArgumentNullException">when <paramref name="source"/> is <see langword="null"/></exception>
         /// <exception cref="CommonMarkException">when errors occur during parsing.</exception>
         /// <exception cref="IOException">when error occur while reading or writing the data.</exception>
         public static Syntax.Block Parse(TextReader source, CommonMarkSettings settings = null)
@@ -265,7 +265,7 @@ namespace CommonMark
         /// </summary>
         /// <param name="source">The source data.</param>
         /// <param name="settings">The object containing settings for the parsing and formatting process.</param>
-        /// <exception cref="ArgumentNullException">when <paramref name="source"/> is <c>null</c></exception>
+        /// <exception cref="ArgumentNullException">when <paramref name="source"/> is <see langword="null"/></exception>
         /// <exception cref="CommonMarkException">when errors occur during parsing.</exception>
         /// <exception cref="IOException">when error occur while reading or writing the data.</exception>
         public static Syntax.Block Parse(string source, CommonMarkSettings settings = null)
@@ -283,7 +283,7 @@ namespace CommonMark
         /// <param name="source">The reader that contains the source data.</param>
         /// <param name="target">The target text writer where the result will be written to.</param>
         /// <param name="settings">The object containing settings for the parsing and formatting process.</param>
-        /// <exception cref="ArgumentNullException">when <paramref name="source"/> or <paramref name="target"/> is <c>null</c></exception>
+        /// <exception cref="ArgumentNullException">when <paramref name="source"/> or <paramref name="target"/> is <see langword="null"/></exception>
         /// <exception cref="CommonMarkException">when errors occur during parsing or formatting.</exception>
         /// <exception cref="IOException">when error occur while reading or writing the data.</exception>
         public static void Convert(TextReader source, TextWriter target, CommonMarkSettings settings = null)

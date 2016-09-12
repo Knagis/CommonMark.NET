@@ -131,13 +131,13 @@ namespace CommonMark.Syntax
         public bool IsLastLineBlank { get; set; }
 
         /// <summary>
-        /// Gets or sets the first child element of this instance. <c>null</c> if there are no children.
+        /// Gets or sets the first child element of this instance, or <see langword="null"/> if there are no children.
         /// </summary>
         public Block FirstChild { get; set; }
 
         /// <summary>
         /// Gets or sets the last child element (the last sibling of <see cref="FirstChild"/>) of this instance. 
-        /// <c>null</c> if there are no children.
+        /// <see langword="null"/> if there are no children.
         /// </summary>
         public Block LastChild { get; set; }
 
@@ -160,7 +160,7 @@ namespace CommonMark.Syntax
 
         /// <summary>
         /// Gets or sets the first inline element that was parsed from <see cref="StringContent"/> property.
-        /// Note that once the inlines are parsed, <see cref="StringContent"/> will be set to <c>null</c>.
+        /// Note that once the inlines are parsed, <see cref="StringContent"/> will be set to <see langword="null"/>.
         /// </summary>
         public Inline InlineContent { get; set; }
 
@@ -216,12 +216,12 @@ namespace CommonMark.Syntax
         }
 
         /// <summary>
-        /// Gets or sets the next sibling of this block element. <c>null</c> if this is the last element.
+        /// Gets or sets the next sibling of this block element; <see langword="null"/> if this is the last element.
         /// </summary>
         public Block NextSibling { get; set; }
 
         /// <summary>
-        /// Gets or sets the previous sibling of this block element. <c>null</c> if this is the first element.
+        /// Gets or sets the previous sibling of this block element; <see langword="null"/> if this is the first element.
         /// </summary>
         [Obsolete("This property will be removed in future. If you have a use case where this property is required, please log an issue at https://github.com/Knagis/CommonMark.NET", false)]
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]

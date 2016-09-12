@@ -10,7 +10,7 @@ namespace CommonMark.Parser
         /// Decodes the given HTML entity to the matching Unicode characters.
         /// </summary>
         /// <param name="entity">The entity without <c>&amp;</c> and <c>;</c> symbols, for example, <c>copy</c>.</param>
-        /// <returns>The unicode character set or <c>null</c> if the entity was not recognized.</returns>
+        /// <returns>The unicode character set or <see langword="null"/> if the entity was not recognized.</returns>
         public static string DecodeEntity(string entity)
         {
             string result;
@@ -23,7 +23,7 @@ namespace CommonMark.Parser
         /// <summary>
         /// Decodes the given UTF-32 character code to the matching set of UTF-16 characters.
         /// </summary>
-        /// <returns>The unicode character set or <c>null</c> if the entity was not recognized.</returns>
+        /// <returns>The unicode character set or <see langword="null"/> if the entity was not recognized.</returns>
         public static string DecodeEntity(int utf32)
         {
             if (utf32 < 0 || utf32 > 1114111 || (utf32 >= 55296 && utf32 <= 57343))

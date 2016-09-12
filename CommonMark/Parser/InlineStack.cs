@@ -14,12 +14,12 @@ namespace CommonMark.Parser
         public InlineStackPriority Priority;
 
         /// <summary>
-        /// Previous entry in the stack. <c>null</c> if this is the last one.
+        /// Previous entry in the stack; <see langword="null"/> if this is the last one.
         /// </summary>
         public InlineStack Previous;
 
         /// <summary>
-        /// Next entry in the stack. <c>null</c> if this is the last one.
+        /// Next entry in the stack; <see langword="null"/> if this is the last one.
         /// </summary>
         public InlineStack Next;
 
@@ -112,8 +112,8 @@ namespace CommonMark.Parser
         /// Removes a subset of the stack.
         /// </summary>
         /// <param name="first">The first entry to be removed.</param>
-        /// <param name="subj">The subject associated with this stack. Can be <c>null</c> if the pointers in the subject should not be updated.</param>
-        /// <param name="last">The last entry to be removed. Can be <c>null</c> if everything starting from <paramref name="first"/> has to be removed.</param>
+        /// <param name="subj">The subject associated with this stack. Can be <see langword="null"/> if the pointers in the subject should not be updated.</param>
+        /// <param name="last">The last entry to be removed. Can be <see langword="null"/> if everything starting from <paramref name="first"/> has to be removed.</param>
         public static void RemoveStackEntry(InlineStack first, Subject subj, InlineStack last)
         {
             var curPriority = first.Priority;
