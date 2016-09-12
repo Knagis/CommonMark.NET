@@ -90,6 +90,17 @@ namespace CommonMark
                                 }
                                 i++;
                             }
+                            else
+                            {
+                                Console.WriteLine("Substitution strings were not provided in pairs.");
+                                PrintUsage("--subst");
+                                return 1;
+                            }
+                        }
+                        else
+                        {
+                            PrintUsage("--subst");
+                            return 1;
                         }
                     }
                     else if (string.Equals(args[i], "--sourcepos", StringComparison.OrdinalIgnoreCase))
