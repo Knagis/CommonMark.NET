@@ -1,4 +1,8 @@
+<!--
+appveyor build is currently not working because the the .NET Core project.
+
 [![Build status](https://ci.appveyor.com/api/projects/status/9jo20450utqy1p0o/branch/master?svg=true)](https://ci.appveyor.com/project/Knagis/commonmark-net/branch/master)
+-->
 
 # CommonMark.NET
 
