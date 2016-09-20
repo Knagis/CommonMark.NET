@@ -409,17 +409,21 @@ namespace CommonMark.Parser
                 {
                     var useDelims = MatchInlineStack(istack, subj, numdelims, null, singleCharTag, doubleCharTag);
 
-                    // if the closer was not fully used, move back a char or two and try again.
-                    if (useDelims < numdelims)
+                    if (useDelims > 0)
                     {
-                        subj.Position = subj.Position - numdelims + useDelims;
+                        // if the closer was not fully used, move back a char or two and try again.
+                        if (useDelims < numdelims)
+                        {
+                            subj.Position = subj.Position - numdelims + useDelims;
 
-                        // use recursion only if it will not be very deep.
-                        if (numdelims < 10)
-                            return HandleOpenerCloser(subj, singleCharTag, doubleCharTag);
+                            // use recursion only if it will not be very deep.
+                            // however it cannot be used if the single char will not be parsed.
+                            if (numdelims < 10)
+                                return HandleOpenerCloser(subj, singleCharTag, doubleCharTag);
+                        }
+
+                        return null;
                     }
-
-                    return null;
                 }
             }
 

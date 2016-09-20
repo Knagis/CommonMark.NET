@@ -35,6 +35,13 @@ namespace CommonMark.Tests
 
         [TestMethod]
         [TestCategory("Inlines - Strikethrough")]
+        public void StrikethroughInvalid1()
+        {
+            Helpers.ExecuteTest("foo ~bar~", "<p>foo ~bar~</p>", Settings);
+        }
+
+        [TestMethod]
+        [TestCategory("Inlines - Strikethrough")]
         public void StrikethroughExample1()
         {
             Helpers.ExecuteTest("foo ~~bar~~", "<p>foo <del>bar</del></p>", Settings);
