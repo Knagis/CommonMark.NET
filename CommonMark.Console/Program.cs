@@ -49,7 +49,7 @@ namespace CommonMark
                     if (string.Equals(args[i], "--version", StringComparison.OrdinalIgnoreCase))
                     {
                         Console.WriteLine("CommonMark.NET {0}", CommonMarkConverter.Version);
-                        Console.WriteLine(" - (c) 2014-2015 Kārlis Gaņģis");
+                        Console.WriteLine(" - (c) 2014-2016 Kārlis Gaņģis");
                         return 0;
                     }
                     else if ((string.Equals(args[i], "--help", StringComparison.OrdinalIgnoreCase)) ||

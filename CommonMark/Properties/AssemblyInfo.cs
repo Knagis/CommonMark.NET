@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("CommonMark.NET")]
-[assembly: AssemblyCopyright("Copyright © Kārlis Gaņģis 2014-2015")]
+[assembly: AssemblyCopyright("Copyright © Kārlis Gaņģis 2014-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
