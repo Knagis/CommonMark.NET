@@ -53,7 +53,7 @@ The library uses no references except for `System` - it has no external dependen
     * Xamarin.Android
     * Xamarin.iOS
 * .NET Framework 4.5 (Optimized)
-* .NET Framework 5.0 Core (also known as ASP.NET vNext Core CLR)
+* .NET Core 1.0 (.NET Standard 1.0)
 
 For working with the source code you will need Visual Studio 2015 or newer (Community edition is supported).
 
