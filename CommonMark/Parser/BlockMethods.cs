@@ -76,31 +76,6 @@ namespace CommonMark.Parser
             }
         }
 
-        /// <summary>
-        /// Break out of all containing lists
-        /// </summary>
-        private static void BreakOutOfLists(ref Block blockRef, LineInfo line)
-        {
-            Block container = blockRef;
-            Block b = container.Top;
-
-            // find first containing list:
-            while (b != null && b.Tag != BlockTag.List)
-                b = b.LastChild;
-
-            if (b != null)
-            {
-                while (container != null && container != b)
-                {
-                    Finalize(container, line);
-                    container = container.Parent;
-                }
-
-                Finalize(b, line);
-                blockRef = b.Parent;
-            }
-        }
-
         public static void Finalize(Block b, LineInfo line)
         {
             // don't do anything if the block is already closed
@@ -643,10 +618,6 @@ namespace CommonMark.Parser
             }
 
             last_matched_container = container;
-
-            // check to see if we've hit 2nd blank line, break out of list:
-            if (blank && container.IsLastLineBlank)
-                BreakOutOfLists(ref container, line);
 
             var maybeLazy = cur.Tag == BlockTag.Paragraph;
 
