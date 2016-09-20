@@ -404,7 +404,7 @@ namespace CommonMark.Parser
             if (canClose)
             {
                 // walk the stack and find a matching opener, if there is one
-                var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, c, out canClose);
+                var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Emphasis, c, numdelims, canOpen, out canClose);
                 if (istack != null)
                 {
                     var useDelims = MatchInlineStack(istack, subj, numdelims, null, singleCharTag, doubleCharTag);
@@ -437,7 +437,7 @@ namespace CommonMark.Parser
                 istack.StartingInline = inlText;
                 istack.Priority = InlineStack.InlineStackPriority.Emphasis;
                 istack.Flags = (canOpen ? InlineStack.InlineStackFlags.Opener : 0)
-                             | (canClose ? InlineStack.InlineStackFlags.Closer : 0);
+                             | (canClose ? (InlineStack.InlineStackFlags.Closer | InlineStack.InlineStackFlags.CloserOriginally) : 0);
 
                 InlineStack.AppendStackEntry(istack, subj);
             }
@@ -542,7 +542,7 @@ namespace CommonMark.Parser
             subj.Position++;
 
             bool canClose;
-            var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Links, '[', out canClose);
+            var istack = InlineStack.FindMatchingOpener(subj.LastPendingInline, InlineStack.InlineStackPriority.Links, '[', 1, false, out canClose);
 
             if (istack != null)
             {

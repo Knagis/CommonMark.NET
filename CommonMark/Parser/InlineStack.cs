@@ -55,7 +55,12 @@ namespace CommonMark.Parser
             None = 0,
             Opener = 1,
             Closer = 2,
-            ImageLink = 4
+            ImageLink = 4,
+            /// <summary>
+            /// The <c>Closer</c> flag will be removed during incremental processing. However some parts of the parser
+            /// requires knowledge if the delimiter was ever considered to be a closer so this flag would then be used.
+            /// </summary>
+            CloserOriginally = 8
         }
 
         public enum InlineStackPriority : byte
@@ -65,7 +70,8 @@ namespace CommonMark.Parser
             Maximum = Links
         }
 
-        public static InlineStack FindMatchingOpener(InlineStack searchBackwardsFrom, InlineStackPriority priority, char delimiter, out bool canClose)
+        public static InlineStack FindMatchingOpener(InlineStack searchBackwardsFrom, InlineStackPriority priority, 
+            char delimiter, int closerDelimiterCount, bool closerCanOpen, out bool canClose)
         {
             canClose = true;
             var istack = searchBackwardsFrom;
@@ -87,8 +93,17 @@ namespace CommonMark.Parser
                     return null;
                 }
 
-                if (istack.Delimiter == delimiter)
-                    return istack;
+                if (istack.Delimiter == delimiter) {
+
+                    // interior closer of size 2 does not match opener of size 1 and vice versa.
+                    // for more details, see https://github.com/jgm/cmark/commit/c50197bab81d7105c9c790548821b61bcb97a62a
+                    var oddMatch = (closerCanOpen || (istack.Flags & InlineStackFlags.CloserOriginally) > 0)
+                        && istack.DelimiterCount != closerDelimiterCount
+                        && ((istack.DelimiterCount + closerDelimiterCount) % 3 == 0);
+
+                    if (!oddMatch)
+                        return istack;
+                }
 
                 istack = istack.Previous;
             }
@@ -179,7 +194,7 @@ namespace CommonMark.Parser
                     else if (0 != (istack.Flags & InlineStackFlags.Closer))
                     {
                         bool canClose;
-                        var iopener = FindMatchingOpener(istack.Previous, istack.Priority, istack.Delimiter, out canClose);
+                        var iopener = FindMatchingOpener(istack.Previous, istack.Priority, istack.Delimiter, istack.DelimiterCount, (istack.Flags & InlineStackFlags.Opener) > 0, out canClose);
                         if (iopener != null)
                         {
                             bool retry = false;
