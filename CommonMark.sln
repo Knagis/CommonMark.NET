@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.Console", "Commo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{EC5FFA77-658F-4D2F-A5CE-5F1BD44F3FC0}"
 	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
 		CommonMark.NET.nuspec = CommonMark.NET.nuspec
 		global.json = global.json
 		LICENSE.md = LICENSE.md
