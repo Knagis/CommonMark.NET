@@ -317,7 +317,7 @@ namespace CommonMark.Parser
         /// data with the details.  On failure, returns 0.
         /// </summary>
         /// <remarks>Original: int parse_list_marker(string ln, int pos, ref ListData dataptr)</remarks>
-        private static int ParseListMarker(string ln, int pos, out ListData data)
+        private static int ParseListMarker(string ln, int pos, bool interruptsParagraph, out ListData data)
         {
             char c;
             int startpos;
@@ -330,7 +330,11 @@ namespace CommonMark.Parser
             if (c == '+' || c == '•' || ((c == '*' || c == '-') && 0 == Scanner.scan_thematic_break(ln, pos, len)))
             {
                 pos++;
+
                 if (pos == len || !Utilities.IsWhitespace(ln[pos]))
+                    return 0;
+
+                if (interruptsParagraph && Scanner.scan_spacechars(ln, pos + 1, ln.Length) == ln.Length - pos - 1)
                     return 0;
 
                 data = new ListData();
@@ -357,6 +361,10 @@ namespace CommonMark.Parser
 
                 pos++;
                 if (pos == len || !Utilities.IsWhitespace(ln[pos]))
+                    return 0;
+
+                if (interruptsParagraph &&
+                    (start != 1 || Scanner.scan_spacechars(ln, pos + 1, ln.Length) == ln.Length - pos - 1))
                     return 0;
 
                 data = new ListData();
@@ -696,7 +704,7 @@ namespace CommonMark.Parser
 
                 }
                 else if ((!indented || container.Tag == BlockTag.List) 
-                    && 0 != (matched = ParseListMarker(ln, first_nonspace, out data)))
+                    && 0 != (matched = ParseListMarker(ln, first_nonspace, container.Tag == BlockTag.Paragraph, out data)))
                 {
 
                     // compute padding:
