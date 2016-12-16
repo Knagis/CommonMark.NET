@@ -83,6 +83,14 @@ namespace CommonMark.Syntax
         /// <summary>
         /// A text block that contains only link reference definitions.
         /// </summary>
-        ReferenceDefinition
+        ReferenceDefinition,
+
+        /// <summary>
+        /// A YAML metadta block (for example, <c>---\nyaml: metadata\n...</c>).
+        /// Only present if <see cref="CommonMarkAdditionalFeatures.YamlBlocks"/> or
+        /// <see cref="CommonMarkAdditionalFeatures.YamlFrontMatterOnly"/> are enabled
+        /// The block is structured like a <see cref="FencedCode"/> block.
+        /// </summary>
+        YamlBlock
     }
 }

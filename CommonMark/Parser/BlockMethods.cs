@@ -29,7 +29,8 @@ namespace CommonMark.Parser
             return (block_type == BlockTag.Paragraph ||
                     block_type == BlockTag.AtxHeading ||
                     block_type == BlockTag.IndentedCode ||
-                    block_type == BlockTag.FencedCode);
+                    block_type == BlockTag.FencedCode ||
+                    block_type == BlockTag.YamlBlock);
         }
 
         private static void AddLine(Block block, LineInfo lineInfo, string ln, int offset, int remainingSpaces, int length = -1, bool isAddOffsetRequired = true)
@@ -137,9 +138,12 @@ namespace CommonMark.Parser
                     break;
 
                 case BlockTag.FencedCode:
+                case BlockTag.YamlBlock:
                     // first line of contents becomes info
                     var firstlinelen = b.StringContent.IndexOf('\n') + 1;
-                    b.FencedCodeData.Info = InlineMethods.Unescape(b.StringContent.TakeFromStart(firstlinelen, true).Trim());
+                    var firstline = b.StringContent.TakeFromStart(firstlinelen, true);
+                    if (b.Tag == BlockTag.FencedCode)
+                        b.FencedCodeData.Info = InlineMethods.Unescape(firstline.Trim());
                     break;
 
                 case BlockTag.List: // determine tight/loose status
@@ -464,7 +468,7 @@ namespace CommonMark.Parser
         // Process one line at a time, modifying a block.
         // Returns 0 if successful.  curptr is changed to point to
         // the currently open block.
-        public static void IncorporateLine(LineInfo line, ref Block curptr)
+        public static void IncorporateLine(LineInfo line, ref Block curptr, CommonMarkSettings settings)
         {
             var ln = line.Line;
 
@@ -571,6 +575,7 @@ namespace CommonMark.Parser
                         }
 
                     case BlockTag.FencedCode:
+                    case BlockTag.YamlBlock:
                         {
                             // -1 means we've seen closer 
                             if (container.FencedCodeData.FenceLength == -1)
@@ -632,6 +637,7 @@ namespace CommonMark.Parser
             // unless last matched container is code block, try new container starts:
             while (container.Tag != BlockTag.FencedCode &&
                    container.Tag != BlockTag.IndentedCode &&
+                   container.Tag != BlockTag.YamlBlock &&
                    container.Tag != BlockTag.HtmlBlock)
             {
 
@@ -669,6 +675,20 @@ namespace CommonMark.Parser
                     container.FencedCodeData.FenceOffset = first_nonspace - offset;
 
                     AdvanceOffset(ln, first_nonspace + matched - offset, false, ref offset, ref column, ref remainingSpaces);
+
+                }
+                else if (!indented &&
+                         ((container.IsLastLineBlank && (settings.AdditionalFeatures & CommonMarkAdditionalFeatures.YamlBlocks) != 0)
+                         || (line.LineNumber == 1 && (settings.AdditionalFeatures & (CommonMarkAdditionalFeatures.YamlFrontMatterOnly | CommonMarkAdditionalFeatures.YamlBlocks)) != 0))
+                         && ln == "---\n")
+                {
+
+                    container = CreateChildBlock(container, line, BlockTag.YamlBlock, first_nonspace);
+                    container.FencedCodeData = new FencedCodeData();
+                    container.FencedCodeData.FenceChar = '-';
+                    container.FencedCodeData.FenceLength = 3;
+
+                    AdvanceOffset(ln, 3, false, ref offset, ref column, ref remainingSpaces);
 
                 }
                 else if (!indented && curChar == '<' && 
@@ -795,6 +815,7 @@ namespace CommonMark.Parser
                                           container.Tag != BlockTag.BlockQuote &&
                                           container.Tag != BlockTag.SetextHeading &&
                                           container.Tag != BlockTag.FencedCode &&
+                                          container.Tag != BlockTag.YamlBlock &&
                                           !(container.Tag == BlockTag.ListItem &&
                                             container.FirstChild == null &&
                                             container.SourcePosition >= line.LineOffset));
@@ -845,6 +866,20 @@ namespace CommonMark.Parser
                     {
                         // if closing fence, set fence length to -1. it will be closed when the next line is processed. 
                         container.FencedCodeData.FenceLength = -1;
+                    }
+                    else
+                    {
+                        AddLine(container, line, ln, offset, remainingSpaces);
+                    }
+
+                }
+                else if (container.Tag == BlockTag.YamlBlock)
+                {
+
+                    if ((curChar == '-' && ln == "---\n") || (curChar == '.' && ln == "...\n"))
+                    {
+                        container.FencedCodeData.FenceLength = -1;
+                        container.FencedCodeData.FenceChar = ln[0];
                     }
                     else
                     {
