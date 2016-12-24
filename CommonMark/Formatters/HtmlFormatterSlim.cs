@@ -385,7 +385,9 @@ namespace CommonMark.Formatters
                 {
                     var entry = stack.Pop();
 
-                    writer.WriteLineConstant(entry.Literal);
+                    if (entry.Literal != null)
+                        writer.WriteLineConstant(entry.Literal);
+
                     tight = entry.IsTight;
                     block = entry.Target;
                 }

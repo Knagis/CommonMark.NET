@@ -27,6 +27,14 @@ namespace CommonMark.Tests
             Helpers.ExecuteTest("", "");
         }
 
+        [TestMethod]
+        [TestCategory("Other")]
+        public void TrailingNewline()
+        {
+            var result = CommonMarkConverter.Convert("foo");
+            Assert.AreEqual("<p>foo</p>" + Environment.NewLine, result);
+        }
+
         /// <summary>
         /// Verifies that the U+0000 characters are removed from the source data.
         /// </summary>
