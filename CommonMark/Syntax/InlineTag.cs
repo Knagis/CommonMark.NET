@@ -70,6 +70,14 @@ namespace CommonMark.Syntax
         /// Represents an inline element that has been "removed" (visually represented as strikethrough).
         /// Only present if the <see cref="CommonMarkAdditionalFeatures.StrikethroughTilde"/> is enabled.
         /// </summary>
-        Strikethrough
+        Strikethrough,
+
+        /// <summary>
+        /// Represents a placeholder for context-specific features (substituted by the host application).
+        /// If the host application does not process the placeholder, or the formatter does not support processing
+        /// of placeholders, the placeholder will be rendered as text, including its delimiters.
+        /// Only present if the <see cref="CommonMarkAdditionalFeatures.PlaceholderBracket"/> is enabled.
+        /// </summary>
+        Placeholder
     }
 }

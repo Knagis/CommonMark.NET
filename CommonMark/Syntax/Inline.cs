@@ -179,7 +179,7 @@ namespace CommonMark.Syntax
         private Inline _next;
 
         /// <summary>
-        /// Gets the next sibling inline element. Returns <c>null</c> if this is the last element.
+        /// Gets the next sibling inline element. Returns <see langword="null"/> if this is the last element.
         /// </summary>
         public Inline NextSibling
         {

@@ -71,7 +71,7 @@ namespace CommonMark.Tests
         [TestCategory("Inlines - Emphasis and strong emphasis")]
         public void DelayedEmphasisMatch5()
         {
-            Helpers.ExecuteTest("[a*b**c*]", "<p>[a<em>b</em><em>c</em>]</p>");
+            Helpers.ExecuteTest("[a*b**c*]", "<p>[a<em>b**c</em>]</p>");
         }
     }
 }

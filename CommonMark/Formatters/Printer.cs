@@ -256,6 +256,13 @@ namespace CommonMark.Formatters
                                format_str(inline.LiteralContent, buffer));
                         break;
 
+                    case InlineTag.Placeholder:
+                        writer.Write("placeholder");
+                        PrintPosition(trackPositions, writer, inline);
+                        writer.Write(" url={0}",
+                               format_str(inline.TargetUrl, buffer));
+                        break;
+
                     case InlineTag.Image:
                         writer.Write("image");
                         PrintPosition(trackPositions, writer, inline);

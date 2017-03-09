@@ -19,13 +19,9 @@ namespace CommonMark
         /// The parser will recognize syntax <c>~~foo~~</c> that will be rendered as <c>&lt;del&gt;foo&lt;/del&gt;</c>.
         /// </summary>
         StrikethroughTilde = 1,
-		
-		/// <summary>
-		/// The parser will recognize syntax <c>[foo]</c>, which will be encoded in a separate AST node that the host application may evaluate as desired.
-        /// </summary>
-        PlaceholderBracket = 2,
-		
+
         /// <summary>
+<<<<<<< HEAD
         /// The parser will recognize
         /// 
         /// First Header  | Second Header
@@ -37,9 +33,14 @@ namespace CommonMark
         /// 
         /// Refer to https://help.github.com/articles/organizing-information-with-tables/ for more examples
         /// </summary>
-        GithubStyleTables = 3,
-        
-		/// <summary>
+        GithubStyleTables = 2,
+=======
+        /// The parser will recognize syntax <c>[foo]</c>, which will be encoded in a separate AST node that the host application may evaluate as desired.
+        /// </summary>
+        PlaceholderBracket = 2,
+>>>>>>> upstream/master
+
+        /// <summary>
         /// All additional features are enabled.
         /// </summary>
         All = 0x7FFFFFFF

@@ -49,17 +49,17 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Gets the value indicating whether this instance represents the closing of the element (returned by the
         /// enumerator after the children have been enumerated). Both <see name="IsOpening"/> and <see name="IsClosing"/>
-        /// can be <c>true</c> at the same time if there are no children for the given element.
+        /// can be <see langword="true"/> at the same time if there are no children for the given element.
         /// </summary>
         public bool IsClosing { get; private set; }
 
         /// <summary>
-        /// Gets the inline element. Can be <c>null</c> if <see cref="Block"/> is set.
+        /// Gets the inline element. Can be <see langword="null"/> if <see cref="Block"/> is set.
         /// </summary>
         public Inline Inline { get; private set; }
 
         /// <summary>
-        /// Gets the inline element. Can be <c>null</c> if <see cref="Inline"/> is set.
+        /// Gets the block element. Can be <see langword="null"/> if <see cref="Inline"/> is set.
         /// </summary>
         public Block Block { get; private set; }
 

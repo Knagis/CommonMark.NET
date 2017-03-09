@@ -53,12 +53,12 @@ namespace CommonMark.Parser
         public Inline LastInline;
 
         /// <summary>
-        /// The last entry of the current stack of possible emphasis openers. Can be <c>null</c>.
+        /// The last entry of the current stack of possible emphasis openers. Can be <see langword="null"/>.
         /// </summary>
         public InlineStack LastPendingInline;
 
         /// <summary>
-        /// The first entry of the current stack of possible emphasis openers. Can be <c>null</c>.
+        /// The first entry of the current stack of possible emphasis openers. Can be <see langword="null"/>.
         /// </summary>
         public InlineStack FirstPendingInline;
 

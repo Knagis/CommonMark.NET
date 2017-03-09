@@ -77,6 +77,7 @@ namespace CommonMark.Parser
             }
         }
 
+<<<<<<< HEAD
         /// <summary>
         /// Break out of all containing lists
         /// </summary>
@@ -442,6 +443,9 @@ namespace CommonMark.Parser
         }
 
         public static void Finalize(Block b, LineInfo line, CommonMarkSettings settings)
+=======
+        public static void Finalize(Block b, LineInfo line)
+>>>>>>> upstream/master
         {
             // don't do anything if the block is already closed
             if (!b.IsOpen)
@@ -463,10 +467,6 @@ namespace CommonMark.Parser
                 else
                     b.SourceLastPosition = line.CalculateOrigin(0, false);
             }
-
-#pragma warning disable 0618
-            b.EndLine = (line.LineNumber > b.StartLine) ? line.LineNumber - 1 : line.LineNumber;
-#pragma warning restore 0618
 
             switch (b.Tag)
             {
@@ -995,10 +995,13 @@ namespace CommonMark.Parser
 
             last_matched_container = container;
 
+<<<<<<< HEAD
             // check to see if we've hit 2nd blank line, break out of list:
             if (blank && container.IsLastLineBlank)
                 BreakOutOfLists(ref container, line, settings);
 
+=======
+>>>>>>> upstream/master
             var maybeLazy = cur.Tag == BlockTag.Paragraph;
 
             // unless last matched container is code block, try new container starts:
@@ -1075,8 +1078,13 @@ namespace CommonMark.Parser
                     AdvanceOffset(ln, ln.Length - 1 - offset, false, ref offset, ref column, ref remainingSpaces);
 
                 }
+<<<<<<< HEAD
                 else if ((!indented || container.Tag == BlockTag.List)
+                    && 0 != (matched = ParseListMarker(ln, first_nonspace, out data)))
+=======
+                else if ((!indented || container.Tag == BlockTag.List) 
                     && 0 != (matched = ParseListMarker(ln, first_nonspace, container.Tag == BlockTag.Paragraph, out data)))
+>>>>>>> upstream/master
                 {
 
                     // compute padding:

@@ -1,8 +1,6 @@
-﻿using CommonMark.Syntax;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
 
 namespace CommonMark
 {
@@ -20,6 +18,11 @@ namespace CommonMark
             Console.WriteLine("Usage:   " + fname + " [FILE*] [--out FILE]");
             Console.WriteLine("Options: --help, -h    Print usage information");
             Console.WriteLine("         --ast         Print AST instead of HTML");
+            Console.WriteLine("         --extended    Enable all additional parser features");
+            Console.WriteLine("         --subst       The following argument is interpreted as a list of");
+            Console.WriteLine("                       tokens delimited by colons. Placeholders (enable");
+            Console.WriteLine("                       with --extended) matching the even tokens will be");
+            Console.WriteLine("                       replaced with the odd tokens in HTML output.");
             Console.WriteLine("         --sourcepos   Enable source position tracking and output");
             Console.WriteLine("         --bench 20    Execute a benchmark on the given input, optionally");
             Console.WriteLine("                       specify the number of iterations, default is 20");
@@ -36,6 +39,8 @@ namespace CommonMark
             var target = Console.Out;
             var runPerlTests = false;
             var settings = CommonMarkSettings.Default.Clone();
+            var useFatHtmlFormatter = false;
+            Dictionary<string, string> placeholderSubstitutionTable = null;
 
             try
             {
@@ -44,7 +49,7 @@ namespace CommonMark
                     if (string.Equals(args[i], "--version", StringComparison.OrdinalIgnoreCase))
                     {
                         Console.WriteLine("CommonMark.NET {0}", CommonMarkConverter.Version);
-                        Console.WriteLine(" - (c) 2014-2015 Kārlis Gaņģis");
+                        Console.WriteLine(" - (c) 2014-2016 Kārlis Gaņģis");
                         return 0;
                     }
                     else if ((string.Equals(args[i], "--help", StringComparison.OrdinalIgnoreCase)) ||
@@ -60,6 +65,43 @@ namespace CommonMark
                     else if (string.Equals(args[i], "--ast", StringComparison.OrdinalIgnoreCase))
                     {
                         settings.OutputFormat = OutputFormat.SyntaxTree;
+                    }
+                    else if (string.Equals(args[i], "--extended", StringComparison.OrdinalIgnoreCase))
+                    {
+                        settings.AdditionalFeatures = CommonMarkAdditionalFeatures.All;
+                        useFatHtmlFormatter = true;
+                    }
+                    else if (string.Equals(args[i], "--subst", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (i != args.Length - 1)
+                        {
+                            var tokens = args[i + 1].Split(':');
+
+                            if (tokens.Length % 2 == 0)
+                            {
+                                if (placeholderSubstitutionTable == null)
+                                {
+                                    placeholderSubstitutionTable = new Dictionary<string, string>();
+                                }
+
+                                for (int tokenIndex = 0; tokenIndex < tokens.Length; tokenIndex += 2)
+                                {
+                                    placeholderSubstitutionTable[tokens[tokenIndex]] = tokens[tokenIndex + 1];
+                                }
+                                i++;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Substitution strings were not provided in pairs.");
+                                PrintUsage("--subst");
+                                return 1;
+                            }
+                        }
+                        else
+                        {
+                            PrintUsage("--subst");
+                            return 1;
+                        }
                     }
                     else if (string.Equals(args[i], "--sourcepos", StringComparison.OrdinalIgnoreCase))
                     {
@@ -138,6 +180,26 @@ namespace CommonMark
 
                         sources.Add(Console.In);
                     }
+                }
+
+                if (useFatHtmlFormatter)
+                {
+                    settings.OutputFormat = OutputFormat.CustomDelegate;
+
+                    settings.OutputDelegate = (block, writer, cmSettings) =>
+                    {
+                        var formatter = new Formatters.HtmlFormatter(writer, cmSettings);
+                        if (placeholderSubstitutionTable != null)
+                        {
+                            formatter.PlaceholderResolver = placeholderText =>
+                            {
+                                string result;
+                                placeholderSubstitutionTable.TryGetValue(placeholderText, out result);
+                                return result;
+                            };
+                        }
+                        formatter.WriteDocument(block);
+                    };
                 }
 
                 if (benchmark)

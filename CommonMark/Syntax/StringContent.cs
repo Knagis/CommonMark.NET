@@ -214,7 +214,7 @@ namespace CommonMark.Syntax
         /// Optionally the returned characters are removed from this instance.
         /// </summary>
         /// <param name="length">The number of characters to return.</param>
-        /// <param name="trim">If set to <c>true</c>, the characters are removed from this instance.</param>
+        /// <param name="trim">If set to <see langword="true"/>, the characters are removed from this instance.</param>
         public string TakeFromStart(int length, bool trim = false)
         {
             // does not use StringBuilder because in most cases the substring will be taken from just the first part

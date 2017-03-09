@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -483,7 +484,9 @@ namespace CommonMark.Formatters
                 {
                     var entry = stack.Pop();
 
-                    writer.WriteLineConstant(entry.Literal);
+                    if (entry.Literal != null)
+                        writer.WriteLineConstant(entry.Literal);
+
                     tight = entry.IsTight;
                     block = entry.Target;
                 }
@@ -547,6 +550,12 @@ namespace CommonMark.Formatters
                         stackLiteral = string.Empty;
                         stackWithinLink = withinLink;
                         visitChildren = true;
+                        break;
+
+                    case InlineTag.Placeholder:
+                        visitChildren = true;
+                        writer.Write('[');
+                        stackLiteral = "]";
                         break;
 
                     default:
@@ -718,6 +727,15 @@ namespace CommonMark.Formatters
                         stackLiteral = "</del>";
                         visitChildren = true;
                         stackWithinLink = withinLink;
+                        break;
+
+                    case InlineTag.Placeholder:
+                        // the slim formatter will treat placeholders like literals, without applying any further processing
+                        writer.Write('[');
+                        if (trackPositions) PrintPosition(writer, inline);
+                        stackLiteral = "]";
+                        stackWithinLink = withinLink;
+                        visitChildren = true;
                         break;
 
                     default:
