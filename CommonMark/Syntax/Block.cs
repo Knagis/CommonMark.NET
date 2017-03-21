@@ -97,7 +97,7 @@ namespace CommonMark.Syntax
         public int EndLine { get; set; }
 
         /// <summary>
-        /// Gets or sets the position of the block element within the source data. This position is before 
+        /// Gets or sets the position of the block element within the source data. This position is before
         /// any opening characters. <see cref="CommonMarkSettings.TrackSourcePosition"/> must be enabled
         /// for this value to be defined.
         /// </summary>
@@ -136,7 +136,7 @@ namespace CommonMark.Syntax
         public Block FirstChild { get; set; }
 
         /// <summary>
-        /// Gets or sets the last child element (the last sibling of <see cref="FirstChild"/>) of this instance. 
+        /// Gets or sets the last child element (the last sibling of <see cref="FirstChild"/>) of this instance.
         /// <see langword="null"/> if there are no children.
         /// </summary>
         public Block LastChild { get; set; }
@@ -177,7 +177,7 @@ namespace CommonMark.Syntax
         /// <summary>
         /// Gets or sets the alignment specified as part of a table heading in a GithubStyleTables.
         /// </summary>
-        public List<TableHeaderAlignment> TableHeaderAlignments { get; set; }
+        public TableHeaderAlignment[] TableHeaderAlignments { get; set; }
 
         /// <summary>
         /// Gets or sets the additional properties that apply to heading elements.

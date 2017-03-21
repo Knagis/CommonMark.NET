@@ -37,13 +37,13 @@ namespace CommonMark.Tests
                 CommonMarkConverter.ProcessStage3(ast, str, WriteSettings);
                 html = str.ToString();
             }
-            Assert.AreEqual("<table><thead><tr><th>First Header</th><th>Second Header</th></tr></thead><tbody><tr><td>Content Cell</td><td>Content Cell</td></tr><tr><td>Content Cell</td><td>Content Cell</td></tr></tbody></table>\r\n", html);
+            Assert.AreEqual("<table><thead><tr><th>First Header</th><th>Second Header</th></tr></thead><tbody><tr><td>Content Cell</td><td>Content Cell</td></tr><tr><td>Content Cell</td><td>Content Cell</td></tr></tbody></table>", html);
 
             var firstChild = ast.FirstChild;
             Assert.AreEqual(BlockTag.Table, firstChild.Tag);
             Assert.AreEqual(markdown, markdown.Substring(firstChild.SourcePosition, firstChild.SourceLength));
             Assert.IsNotNull(firstChild.TableHeaderAlignments);
-            Assert.AreEqual(2, firstChild.TableHeaderAlignments.Count);
+            Assert.AreEqual(2, firstChild.TableHeaderAlignments.Length);
             Assert.AreEqual(TableHeaderAlignment.None, firstChild.TableHeaderAlignments[0]);
             Assert.AreEqual(TableHeaderAlignment.None, firstChild.TableHeaderAlignments[1]);
 
@@ -112,7 +112,7 @@ Hello world
                 CommonMarkConverter.ProcessStage3(ast, str, WriteSettings);
                 html = str.ToString();
             }
-            Assert.AreEqual("<table><thead><tr><th>First Header</th><th>Second Header</th></tr></thead><tbody><tr><td>Content Cell1</td><td>Content Cell2</td></tr><tr><td>Content Cell3</td><td>Content Cell4</td></tr></tbody></table>\r\n<p>Hello world</p>\r\n\r\n", html);
+            Assert.AreEqual("<table><thead><tr><th>First Header</th><th>Second Header</th></tr></thead><tbody><tr><td>Content Cell1</td><td>Content Cell2</td></tr><tr><td>Content Cell3</td><td>Content Cell4</td></tr></tbody></table>\r\n<p>Hello world</p>\r\n", html);
 
             var firstChild = ast.FirstChild;
             var secondChild = firstChild.NextSibling;
@@ -127,7 +127,7 @@ Content Cell3  | Content Cell4
 
             Assert.AreEqual(shouldMatch, firstMarkdown);
             Assert.IsNotNull(firstChild.TableHeaderAlignments);
-            Assert.AreEqual(2, firstChild.TableHeaderAlignments.Count);
+            Assert.AreEqual(2, firstChild.TableHeaderAlignments.Length);
             Assert.AreEqual(TableHeaderAlignment.None, firstChild.TableHeaderAlignments[0]);
             Assert.AreEqual(TableHeaderAlignment.None, firstChild.TableHeaderAlignments[1]);
 
@@ -201,7 +201,7 @@ Hello world
                 CommonMarkConverter.ProcessStage3(ast, str, WriteSettings);
                 html = str.ToString();
             }
-            Assert.AreEqual("<p>Nope nope.</p>\r\n<table><thead><tr><th>First Header</th><th>Second Header</th></tr></thead><tbody><tr><td>Content Cell</td><td>Content Cell</td></tr><tr><td>Content Cell</td><td>Content Cell</td></tr></tbody></table>\r\n<p>Hello world</p>\r\n\r\n", html);
+            Assert.AreEqual("<p>Nope nope.</p>\r\n<table><thead><tr><th>First Header</th><th>Second Header</th></tr></thead><tbody><tr><td>Content Cell</td><td>Content Cell</td></tr><tr><td>Content Cell</td><td>Content Cell</td></tr></tbody></table>\r\n<p>Hello world</p>\r\n", html);
 
             Assert.AreEqual(BlockTag.Paragraph, ast.FirstChild.Tag);
             Assert.AreEqual(BlockTag.Table, ast.FirstChild.NextSibling.Tag);
@@ -228,7 +228,7 @@ Hello world
                 CommonMarkConverter.ProcessStage3(ast, str, WriteSettings);
                 html = str.ToString();
             }
-            Assert.AreEqual("<table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody><tr><td>Help</td><td><strong>Display the</strong> <a href=\"/help\">help</a> window.</td></tr><tr><td>Close</td><td><em>Closes</em> a window</td></tr></tbody></table>\r\n", html);
+            Assert.AreEqual("<table><thead><tr><th>Name</th><th>Description</th></tr></thead><tbody><tr><td>Help</td><td><strong>Display the</strong> <a href=\"/help\">help</a> window.</td></tr><tr><td>Close</td><td><em>Closes</em> a window</td></tr></tbody></table>", html);
         }
 
         [TestMethod]
@@ -304,7 +304,7 @@ Hello world
                 CommonMarkConverter.ProcessStage3(ast, str, WriteSettings);
                 html = str.ToString();
             }
-            Assert.AreEqual("<table><thead><tr><th>First Header</th><th>Second Header</th></tr></thead><tbody><tr><td>11</td><td></td></tr><tr><td>21</td><td>22</td></tr></tbody></table>\r\n", html);
+            Assert.AreEqual("<table><thead><tr><th>First Header</th><th>Second Header</th></tr></thead><tbody><tr><td>11</td><td></td></tr><tr><td>21</td><td>22</td></tr></tbody></table>", html);
         }
 
         [TestMethod]
@@ -319,7 +319,7 @@ Hello world
             var ast = CommonMarkConverter.Parse(markdown, ReadSettings);
             var table = ast.FirstChild;
             Assert.AreEqual(BlockTag.Table, table.Tag);
-            Assert.AreEqual(4, table.TableHeaderAlignments.Count);
+            Assert.AreEqual(4, table.TableHeaderAlignments.Length);
             Assert.AreEqual(TableHeaderAlignment.None, table.TableHeaderAlignments[0]);
             Assert.AreEqual(TableHeaderAlignment.Left, table.TableHeaderAlignments[1]);
             Assert.AreEqual(TableHeaderAlignment.Right, table.TableHeaderAlignments[2]);
@@ -330,7 +330,7 @@ Hello world
                 CommonMarkConverter.ProcessStage3(ast, str, WriteSettings);
                 html = str.ToString();
             }
-            Assert.AreEqual("<table><thead><tr><th>H1</th><th align=\"left\">H2</th><th align=\"right\">H3</th><th align=\"center\">H4</th></tr></thead><tbody><tr><td>1</td><td align=\"left\">2</td><td align=\"right\">3</td><td align=\"center\">4</td></tr></tbody></table>\r\n", html);
+            Assert.AreEqual("<table><thead><tr><th>H1</th><th align=\"left\">H2</th><th align=\"right\">H3</th><th align=\"center\">H4</th></tr></thead><tbody><tr><td>1</td><td align=\"left\">2</td><td align=\"right\">3</td><td align=\"center\">4</td></tr></tbody></table>", html);
         }
     }
 }
