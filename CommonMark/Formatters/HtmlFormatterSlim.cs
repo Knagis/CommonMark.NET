@@ -232,6 +232,9 @@ namespace CommonMark.Formatters
             var curHeaderCell = header.FirstChild;
             while (curHeaderCell != null)
             {
+				if (numHeadings >= table.TableHeaderAlignments.Length)
+					break;
+
                 var alignment = table.TableHeaderAlignments[numHeadings];
 
                 numHeadings++;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using CommonMark.Syntax;
 
@@ -8,6 +9,9 @@ namespace CommonMark.Parser
 	{
 		static List<string> ParseTableLine(StringPart part, StringBuilder sb)
 		{
+			if (part.Source == null)
+				return null;
+
 			string line = part.Source.Substring(part.StartIndex, part.Length);
 			line = line.TrimEnd('\n');
 
@@ -69,36 +73,13 @@ namespace CommonMark.Parser
 				{
 					var c = asStr[i];
 
-					if (c == '|')
+					if (c == '|' && (i == 0 || !Utilities.IsInlineSpanSymbol(asStr[i - 1])))
 					{
 						var text = sb.ToString();
 						Utilities.ClearStringBuilder(sb);
 
 						if (text.Length > 0)
-						{
-							int length = text.Length;
-							string trimmedText = text.TrimStart();
-							var leadingWhiteSpace = length - trimmedText.Length;
-							trimmedText = trimmedText.TrimEnd();
-							var trailingWhiteSpace = length - leadingWhiteSpace - text.Length;
-
-							var cell = new Block(BlockTag.TableCell, row.SourcePosition + offset + leadingWhiteSpace);
-							cell.SourceLastPosition = cell.SourcePosition + trimmedText.Length;
-							cell.StringContent = new StringContent();
-							cell.StringContent.Append(trimmedText, 0, trimmedText.Length);
-
-							if (row.LastChild == null)
-							{
-								row.FirstChild = row.LastChild = cell;
-							}
-							else
-							{
-								row.LastChild.NextSibling = cell;
-								row.LastChild = cell;
-							}
-
-							cell.IsOpen = false;
-						}
+							MakeCell(text, row, ref offset);
 
 						offset += text.Length;
 
@@ -130,33 +111,34 @@ namespace CommonMark.Parser
 				Utilities.ClearStringBuilder(sb);
 
 				if (text.Length > 0)
-				{
-					var leadingWhiteSpace = 0;
-					while (leadingWhiteSpace < text.Length && char.IsWhiteSpace(text[leadingWhiteSpace])) leadingWhiteSpace++;
-					var trailingWhiteSpace = 0;
-					while (trailingWhiteSpace < text.Length && char.IsWhiteSpace(text[text.Length - trailingWhiteSpace - 1])) trailingWhiteSpace++;
-
-					if (text.Length - leadingWhiteSpace - trailingWhiteSpace > 0)
-					{
-						var cell = new Block(BlockTag.TableCell, row.SourcePosition + offset + leadingWhiteSpace);
-						cell.SourceLastPosition = cell.SourcePosition + text.Length - trailingWhiteSpace - leadingWhiteSpace;
-						cell.StringContent = new StringContent();
-						cell.StringContent.Append(text, leadingWhiteSpace, text.Length - leadingWhiteSpace - trailingWhiteSpace);
-
-						if (row.LastChild == null)
-						{
-							row.FirstChild = row.LastChild = cell;
-						}
-						else
-						{
-							row.LastChild.NextSibling = cell;
-							row.LastChild = cell;
-						}
-
-						cell.IsOpen = false;
-					}
-				}
+					MakeCell(text, row, ref offset);
 			}
+		}
+
+		private static void MakeCell(string text, Block row, ref int offset)
+		{
+			int length = text.Length;
+			string trimmedText = text.TrimStart();
+			var leadingWhiteSpace = length - trimmedText.Length;
+			trimmedText = trimmedText.TrimEnd();
+			var trailingWhiteSpace = length - leadingWhiteSpace - text.Length;
+
+			var cell = new Block(BlockTag.TableCell, row.SourcePosition + offset + leadingWhiteSpace);
+			cell.SourceLastPosition = cell.SourcePosition + trimmedText.Length;
+			cell.StringContent = new StringContent();
+			cell.StringContent.Append(trimmedText, 0, trimmedText.Length);
+
+			if (row.LastChild == null)
+			{
+				row.FirstChild = row.LastChild = cell;
+			}
+			else
+			{
+				row.LastChild.NextSibling = cell;
+				row.LastChild = cell;
+			}
+
+			cell.IsOpen = false;
 		}
 
 		static void MakeTableRows(Block table, StringBuilder sb)
@@ -214,11 +196,13 @@ namespace CommonMark.Parser
 
 			var columnsPart = parts[0];
 			var columnsLine = ParseTableLine(columnsPart, sb);
-			if (columnsLine.Count == 1) return false;
+			if (columnsLine == null || columnsLine.Count == 0) return false;
 
 			var headersPart = parts[1];
 			var headerLine = ParseTableLine(headersPart, sb);
-			if (headerLine.Count == 1) return false;
+			if (headerLine == null || headerLine.Count == 0) return false;
+
+			if (headerLine.Count != columnsLine.Count) return false;
 
 			TableHeaderAlignment[] headerAlignment = new TableHeaderAlignment[headerLine.Count];
 
@@ -265,14 +249,12 @@ namespace CommonMark.Parser
 				}
 			}
 
-			if (columnsLine.Count < 2) return false;
-			if (headerLine.Count < columnsLine.Count) return false;
-
 			var lastTableLine = 1;
 
 			// it's a table!
 			List<StringPart> tableParts = new List<StringPart> { columnsPart, headersPart };
 			var takingCharsForTable = columnsPart.Length + headersPart.Length;
+			bool prevWasTableRow = false;
 			for (var i = 2; i < parts.Length; i++)
 			{
 				var hasPipe = false;
@@ -303,7 +285,17 @@ namespace CommonMark.Parser
 					}
 				}
 
-				if (!hasPipe) break;
+				if (!hasPipe)
+				{
+					if(!prevWasTableRow)
+						break;
+
+					prevWasTableRow = false;
+				}
+				else
+				{
+					prevWasTableRow = true;
+				}
 
 				tableParts.Add(part);
 				takingCharsForTable += part.Length;

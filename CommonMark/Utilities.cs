@@ -56,6 +56,14 @@ namespace CommonMark
 			return c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\f';
 		}
 
+#if OptimizeFor45
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
+		public static bool IsInlineSpanSymbol(char c)
+		{
+			return c == '*' || c == '`' || c == '_' || c == '~' || c == '<' || c == '[';
+		}
+
 		/// <summary>
 		/// Checks if the given character is an Unicode space or punctuation character.
 		/// </summary>
