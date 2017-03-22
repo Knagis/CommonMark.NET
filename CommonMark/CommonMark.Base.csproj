@@ -59,6 +59,7 @@
     <Compile Include="Parser\PositionTracker.cs" />
     <Compile Include="Parser\ScannerCharacterMatcher.cs" />
     <Compile Include="Parser\ScannerHtmlTag.cs" />
+    <Compile Include="Parser\TableMethods.cs" />
     <Compile Include="Parser\TabTextReader.cs" />
     <Compile Include="Syntax\Block.cs" />
     <Compile Include="Parser\BlockMethods.cs" />
