@@ -5,6 +5,7 @@
     <ProjectGuid>{61829669-5091-4F2A-A0B1-7348D7CED840}</ProjectGuid>
     <TargetFrameworkVersionEx>v3.5</TargetFrameworkVersionEx>
     <TargetFrameworkProfileEx>Client</TargetFrameworkProfileEx>
+    <DefineConstantsEx>OptimizeFor35</DefineConstantsEx>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

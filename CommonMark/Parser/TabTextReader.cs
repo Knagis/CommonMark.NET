@@ -57,6 +57,7 @@ namespace CommonMark.Parser
                     if (c == '\r' || c == '\n')
                         goto IL_4A;
 
+
                     if (c == '\0')
                         this._buffer[num] = '\uFFFD';
 
