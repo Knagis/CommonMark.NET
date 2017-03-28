@@ -330,7 +330,7 @@ namespace CommonMark.Parser
                 inl.FirstChild = inl.NextSibling;
                 inl.NextSibling = null;
 
-                InlineStack.RemoveStackEntry(opener, subj, closer?.Previous);
+                InlineStack.RemoveStackEntry(opener, subj, closer != null ? closer.Previous : null);
             }
             else
             {

@@ -255,7 +255,7 @@ namespace CommonMark.Syntax
                 }
             }
 
-            throw new ArgumentOutOfRangeException(nameof(length), "The length of the substring cannot be greater than the length of the string.");
+            throw new ArgumentOutOfRangeException("length", "The length of the substring cannot be greater than the length of the string.");
         }
 
         /// <summary>

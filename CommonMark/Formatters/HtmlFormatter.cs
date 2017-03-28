@@ -40,7 +40,7 @@ namespace CommonMark.Formatters
         public HtmlFormatter(TextWriter target, CommonMarkSettings settings)
         {
             if (target == null)
-                throw new ArgumentNullException(nameof(target));
+                throw new ArgumentNullException("target");
 
             if (settings == null)
                 settings = CommonMarkSettings.Default;
@@ -60,7 +60,7 @@ namespace CommonMark.Formatters
         public void WriteDocument(Block document)
         {
             if (document == null)
-                throw new ArgumentNullException(nameof(document));
+                throw new ArgumentNullException("document");
 
             bool ignoreChildNodes;
             Block ignoreUntilBlockCloses = null;
