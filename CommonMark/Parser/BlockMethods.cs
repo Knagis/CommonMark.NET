@@ -32,7 +32,7 @@ namespace CommonMark.Parser
                     block_type == BlockTag.FencedCode);
         }
 
-        private static void AddLine(Block block, LineInfo lineInfo, string ln, int offset, int remainingSpaces, int length = -1)
+        private static void AddLine(Block block, LineInfo lineInfo, string ln, int offset, int remainingSpaces, int length = -1, bool isAddOffsetRequired = true)
         {
             if (!block.IsOpen)
                 throw new CommonMarkException(string.Format(CultureInfo.InvariantCulture, "Attempted to add line '{0}' to closed container ({1}).", ln, block.Tag));
@@ -49,7 +49,7 @@ namespace CommonMark.Parser
                     curSC.PositionTracker = new PositionTracker(lineInfo.LineOffset);
             }
 
-            if (lineInfo.IsTrackingPositions)
+            if (lineInfo.IsTrackingPositions && isAddOffsetRequired)
                 curSC.PositionTracker.AddOffset(lineInfo, offset, len);
 
             curSC.Append(Spaces, 0, remainingSpaces);
@@ -901,7 +901,7 @@ namespace CommonMark.Parser
                 else if (AcceptsLines(container.Tag))
                 {
 
-                    AddLine(container, line, ln, first_nonspace, remainingSpaces);
+                    AddLine(container, line, ln, first_nonspace, remainingSpaces, isAddOffsetRequired: container.Parent == null || container.Parent.Tag == BlockTag.Document);
 
                 }
                 else if (container.Tag != BlockTag.ThematicBreak && container.Tag != BlockTag.SetextHeading)

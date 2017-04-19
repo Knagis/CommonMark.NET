@@ -148,6 +148,60 @@ is it?
 
         [TestMethod]
         [TestCategory("SourcePosition")]
+        public void SourcePositionComplexWithNestedBlocks() {
+            var data = "1. One\n\t11. OneOne";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+
+            var inlinesQ = doc.AsEnumerable()
+                .Where(o => o.Inline != null && o.IsOpening)
+                .Select(o => o.Inline.SourceLength < 0 ? null : data.Substring(o.Inline.SourcePosition, o.Inline.SourceLength));
+
+            var inlines = new HashSet<string>(inlinesQ, StringComparer.Ordinal);
+
+            var expectedInlines = new[]
+            {
+                "One",
+                "11. OneOne"
+            };
+
+            foreach (var ei in expectedInlines) {
+                if (!inlines.Contains(ei))
+                    Assert.Fail("Inline '{0}' was not parsed with correct source positions.", ei);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
+        public void SourcePositionComplexWithNestedBlocks2() {
+            var data = "1. One\n\t11. OneOne\n\t12. OneTwo\n\t13. OneThree\n2. Two\n\nSimpleText";
+            var doc = Helpers.ParseDocument(data, Settings);
+
+
+            var inlinesQ = doc.AsEnumerable()
+                .Where(o => o.Inline != null && o.IsOpening)
+                .Select(o => o.Inline.SourceLength < 0 ? null : data.Substring(o.Inline.SourcePosition, o.Inline.SourceLength));
+
+            var inlines = new HashSet<string>(inlinesQ, StringComparer.Ordinal);
+
+            var expectedInlines = new[]
+            {
+                "One",
+                "11. OneOne",
+                "12. OneTwo",
+                "13. OneThree",
+                "Two",
+                "SimpleText"
+            };
+
+            foreach (var ei in expectedInlines) {
+                if (!inlines.Contains(ei))
+                    Assert.Fail("Inline '{0}' was not parsed with correct source positions.", ei);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory("SourcePosition")]
         public void SourcePositionComplex()
         {
             var data = "\0\0   **foo**\r\n\t\0bar \n\n> *quoting **is nice***, `right`?";
