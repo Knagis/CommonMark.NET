@@ -2,9 +2,9 @@
 
 # CommonMark.NET
 
-Implementation of [CommonMark] [1] specification (passes tests from version 0.27) in C# for converting Markdown documents to HTML.
+Implementation of [CommonMark][1] specification (passes tests from version 0.27) in C# for converting Markdown documents to HTML.
 
-The current version of the library is also [available on NuGet] [nuget].
+The current version of the library is also [available on NuGet][nuget].
 
 ## Usage
 
@@ -22,7 +22,7 @@ To convert data stored in a string:
 var result = CommonMark.CommonMarkConverter.Convert("**Hello world!**");
 ```
 
-See [wiki] [extensibility] for an example how the parser can be extended with additional logic.
+See the [wiki][extensibility] for an example how the parser can be extended with additional logic.
 
 **Important:** The converter [does not include any HTML sanitizing][XSS].
 
@@ -81,7 +81,7 @@ cannot be caught and will bring down the entire process.
 
 ## References
 
-This library is based on a port of the reference implementation in C, available on [jgm/cmark repo] [2]. 
+This library is based on a port of the reference implementation in C, available on [jgm/cmark repo][2]. 
 It follows the same approach - the source is parsed into a syntax tree that can be used to add custom 
 processing if the application needs it and then formatted into HTML.
 
