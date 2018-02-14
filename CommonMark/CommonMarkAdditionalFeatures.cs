@@ -26,6 +26,19 @@ namespace CommonMark
         PlaceholderBracket = 2,
 
         /// <summary>
+        /// Allow YAML blocks (delimited by a line starting with exactly <c>---</c> and a line ending
+        /// with exactly <c>---</c> or <c>...</c>. YAML blocks will take precedence over a <c>---</c>
+        /// that might otherwise yield a thematic break.
+        /// </summary>
+        YamlBlocks = 4,
+
+        /// <summary>
+        /// Like <see cref="YamlBlocks"/> but will yield a maximum of one block, and only if the first
+        /// line is exactly <c>---</c>.
+        /// </summary>
+        YamlFrontMatterOnly = 8,
+
+        /// <summary>
         /// All additional features are enabled.
         /// </summary>
         All = 0x7FFFFFFF

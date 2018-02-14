@@ -318,6 +318,7 @@ namespace CommonMark.Formatters
 
                     case BlockTag.IndentedCode:
                     case BlockTag.FencedCode:
+                    case BlockTag.YamlBlock:
                         writer.EnsureLine();
                         writer.WriteConstant("<pre><code");
                         if (trackPositions) PrintPosition(writer, block);
@@ -333,6 +334,11 @@ namespace CommonMark.Formatters
                             EscapeHtml(new StringPart(info, 0, x), writer);
                             writer.Write('\"');
                         }
+                        else if (block.Tag == BlockTag.YamlBlock)
+                        {
+                            writer.WriteConstant(" class=\"language-yaml\"");
+                        }
+
                         writer.Write('>');
                         EscapeHtml(block.StringContent, writer);
                         writer.WriteLineConstant("</code></pre>");

@@ -219,6 +219,7 @@ namespace CommonMark.Formatters
 
                 case BlockTag.IndentedCode:
                 case BlockTag.FencedCode:
+                case BlockTag.YamlBlock:
 
                     ignoreChildNodes = true;
 
@@ -237,6 +238,11 @@ namespace CommonMark.Formatters
                         WriteEncodedHtml(new StringPart(info, 0, x));
                         Write('\"');
                     }
+                    else if (block.Tag == BlockTag.YamlBlock)
+                    {
+                        Write(" class=\"language-yaml\"");
+                    }
+
                     Write('>');
                     WriteEncodedHtml(block.StringContent);
                     WriteLine("</code></pre>");

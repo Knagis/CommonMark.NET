@@ -75,6 +75,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Specs.tt</DependentUpon>
     </Compile>
+    <Compile Include="YamlBlockTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Specification\Specs.tt">
