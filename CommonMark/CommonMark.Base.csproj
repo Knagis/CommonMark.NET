@@ -1,98 +1,78 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="MSBuild.Sdk.Extras">
+
   <PropertyGroup>
-    <BuildMode Condition=" '$(BuildMode)' == '' ">portable</BuildMode>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}</ProjectGuid>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <_Profile328>portable-net4+sl5+win+wpa+wp8</_Profile328>
+    <_Profile259>portable-net45+win+wpa+wp8</_Profile259>
+    <TargetFrameworks>net45;$(_Profile328);$(_Profile259);net40-client;net35-client;net20</TargetFrameworks>
+
     <RootNamespace>CommonMark</RootNamespace>
     <AssemblyName>CommonMark</AssemblyName>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile328</TargetFrameworkProfile>
-    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\CommonMark.XML</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <AssemblyTitle>CommonMark.NET</AssemblyTitle>
+    <Company>CommonMark.NET</Company>
+    <Product>CommonMark.NET</Product>
+    <Description>https://github.com/Knagis/CommonMark.NET</Description>
+    <Copyright>Copyright © Kārlis Gaņģis 2014-2016</Copyright>
+
+    <Version>0.1.0.0</Version>
+    <FileVersion>0.1.0.0</FileVersion>
+
+    <!-- Cannot generate package on all builds because it currently packages an executable built by a downstream project -->
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <NuspecFile>..\CommonMark.NET.nuspec</NuspecFile>
+    <NuspecProperties>configuration=$(Configuration)</NuspecProperties>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyCultureAttribute">
+      <_Parameter1></_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyTrademarkAttribute">
+      <_Parameter1></_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>pdbonly</DebugType>
+  </PropertyGroup>
+
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Properties\public.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="CommonMarkAdditionalFeatures.cs" />
-    <Compile Include="CommonMarkConverter.cs" />
-    <Compile Include="CommonMarkException.cs" />
-    <Compile Include="CommonMarkSettings.cs" />
-    <Compile Include="Formatters\HtmlFormatter.cs" />
-    <Compile Include="Func.cs" />
-    <Compile Include="Lazy.cs" />
-    <Compile Include="OutputFormat.cs" />
-    <Compile Include="Parser\EntityDecoder.cs" />
-    <Compile Include="Parser\InlineStack.cs" />
-    <Compile Include="Parser\LineInfo.cs" />
-    <Compile Include="Parser\PositionOffset.cs" />
-    <Compile Include="Parser\PositionTracker.cs" />
-    <Compile Include="Parser\ScannerCharacterMatcher.cs" />
-    <Compile Include="Parser\ScannerHtmlTag.cs" />
-    <Compile Include="Parser\TabTextReader.cs" />
-    <Compile Include="Syntax\Block.cs" />
-    <Compile Include="Parser\BlockMethods.cs" />
-    <Compile Include="Syntax\DocumentData.cs" />
-    <Compile Include="Syntax\EmphasisData.cs" />
-    <Compile Include="Syntax\HeadingData.cs" />
-    <Compile Include="Syntax\HtmlBlockType.cs" />
-    <Compile Include="Syntax\BlockTag.cs" />
-    <Compile Include="Syntax\Enumerable.cs" />
-    <Compile Include="Syntax\EnumeratorEntry.cs" />
-    <Compile Include="Syntax\FencedCodeData.cs" />
-    <Compile Include="Formatters\HtmlFormatterSlim.cs" />
-    <Compile Include="Formatters\HtmlTextWriter.cs" />
-    <Compile Include="Syntax\Inline.cs" />
-    <Compile Include="Parser\InlineMethods.cs" />
-    <Compile Include="Syntax\InlineContentLinkable.cs" />
-    <Compile Include="Syntax\InlineTag.cs" />
-    <Compile Include="Syntax\ListData.cs" />
-    <Compile Include="Formatters\Printer.cs" />
-    <Compile Include="Syntax\ListDelimiter.cs" />
-    <Compile Include="Syntax\ListType.cs" />
-    <Compile Include="Syntax\Reference.cs" />
-    <Compile Include="Parser\Scanner.cs" />
-    <Compile Include="Parser\Subject.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Syntax\StringContent.cs" />
-    <Compile Include="Syntax\StringContentPart.cs" />
-    <Compile Include="Utilities.cs" />
-  </ItemGroup>
+
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net20'">
+      <ItemGroup>
+        <Reference Include="System" />
+      </ItemGroup>
+    </When>
+    <When Condition="'$(TargetFramework)' == 'net45'">
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants),OptimizeFor45</DefineConstants>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(TargetFramework)' == '$(_Profile259)'">
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants),portable_259,OptimizeFor45</DefineConstants>
+      </PropertyGroup>
+    </When>
+  </Choose>
+
   <ItemGroup>
     <EmbeddedResource Include="..\CommonMark.NET.nuspec">
       <Link>Properties\CommonMark.NET.nuspec</Link>
     </EmbeddedResource>
-    <None Include="Properties\public.snk" />
   </ItemGroup>
-  <Import Project="CommonMark.Targets.csproj" />
+
 </Project>

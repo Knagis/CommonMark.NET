@@ -2,7 +2,7 @@
 
 namespace CommonMark
 {
-#if v2_0 || v3_5
+#if NET20 || NET35_CLIENT
     enum LazyThreadSafetyMode
     {
         None,

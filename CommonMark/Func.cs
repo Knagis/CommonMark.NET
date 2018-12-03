@@ -2,7 +2,7 @@
 
 namespace CommonMark
 {
-#if v2_0
+#if NET20
     /// <summary>An alternative to <c>System.Func</c> which is not present in .NET 2.0.</summary>
     public delegate TResult Func<out TResult>();
 

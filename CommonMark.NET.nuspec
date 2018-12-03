@@ -17,14 +17,14 @@
   </metadata>
   <files>
     <file src="LICENSE.md" target="\" />
-    <file src="CommonMark\bin\v2.0\Release\CommonMark.*" target="lib\net20\" />
-    <file src="CommonMark\bin\v3.5\Release\CommonMark.*" target="lib\net35-client\" />
-    <file src="CommonMark\bin\v4.0\Release\CommonMark.*" target="lib\net40-client\" />
-    <file src="CommonMark\bin\v4.5\Release\CommonMark.*" target="lib\net45\" />
-    <file src="CommonMark\bin\portable\Release\CommonMark.*" target="lib\portable-net40+sl50+wp80+win+wpa81+MonoAndroid10+MonoTouch10\" />
-    <file src="CommonMark\bin\portable_259\Release\CommonMark.*" target="lib\portable-net45+wp80+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\" />
-    <file src="CommonMark\bin\portable_259\Release\CommonMark.*" target="lib\netstandard1.0\" />
-    <file src="CommonMark.Console\bin\Release\CommonMark.Console.exe" target="tools\cmark.exe" />
+    <file src="CommonMark\bin\$configuration$\net20\CommonMark.*" target="lib\net20\" />
+    <file src="CommonMark\bin\$configuration$\net35-client\CommonMark.*" target="lib\net35-client\" />
+    <file src="CommonMark\bin\$configuration$\net40-client\CommonMark.*" target="lib\net40-client\" />
+    <file src="CommonMark\bin\$configuration$\net45\CommonMark.*" target="lib\net45\" />
+    <file src="CommonMark\bin\$configuration$\portable-net4+sl5+win+wpa+wp8\CommonMark.*" target="lib\portable-net40+sl50+wp80+win+wpa81+MonoAndroid10+MonoTouch10\" />
+    <file src="CommonMark\bin\$configuration$\portable-net45+win+wpa+wp8\CommonMark.*" target="lib\portable-net45+wp80+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\" />
+    <file src="CommonMark\bin\$configuration$\portable-net45+win+wpa+wp8\CommonMark.*" target="lib\netstandard1.0\" />
+    <file src="CommonMark.Console\bin\$configuration$\net45\CommonMark.Console.exe" target="tools\cmark.exe" />
     <file src="CommonMark.Console\App.nuget.config" target="tools\cmark.exe.config" />
   </files>
 </package>
