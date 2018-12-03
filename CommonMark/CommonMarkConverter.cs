@@ -22,7 +22,7 @@ namespace CommonMark
 
         private static Assembly InitializeAssembly()
         {
-#if NETCore || portable_259
+#if portable_259 || NETSTANDARD1_0
             return typeof(CommonMarkConverter).GetTypeInfo().Assembly;
 #else
             return typeof(CommonMarkConverter).Assembly;
@@ -46,9 +46,6 @@ namespace CommonMark
 
         private static Version InitializeVersion()
         {
-#if NETCore
-            return new AssemblyName(Assembly.FullName).Version;
-#else
             // System.Xml is not available so resort to string parsing.
             using (var stream = Assembly.GetManifestResourceStream("CommonMark.Properties.CommonMark.NET.nuspec"))
             using (var reader = new System.IO.StreamReader(stream, Encoding.UTF8))
@@ -65,7 +62,6 @@ namespace CommonMark
                 }
             }
             return null;
-#endif
         }
 
         /// <summary>

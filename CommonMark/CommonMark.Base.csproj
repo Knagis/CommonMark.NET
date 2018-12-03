@@ -4,7 +4,7 @@
   <PropertyGroup>
     <_Profile328>portable-net4+sl5+win+wpa+wp8</_Profile328>
     <_Profile259>portable-net45+win+wpa+wp8</_Profile259>
-    <TargetFrameworks>net45;$(_Profile328);$(_Profile259);net40-client;net35-client;net20</TargetFrameworks>
+    <TargetFrameworks>net45;$(_Profile328);$(_Profile259);netstandard1.0;net40-client;net35-client;net20</TargetFrameworks>
 
     <RootNamespace>CommonMark</RootNamespace>
     <AssemblyName>CommonMark</AssemblyName>
@@ -57,7 +57,7 @@
         <Reference Include="System" />
       </ItemGroup>
     </When>
-    <When Condition="'$(TargetFramework)' == 'net45'">
+    <When Condition="'$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'netstandard1.0'">
       <PropertyGroup>
         <DefineConstants>$(DefineConstants),OptimizeFor45</DefineConstants>
       </PropertyGroup>

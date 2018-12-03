@@ -72,9 +72,7 @@ namespace CommonMark.Parser
         /// </summary>
         public readonly DocumentData DocumentData;
 
-#if !NETCore
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Used by [DebuggerDisplay]")]
-#endif
         // ReSharper disable once UnusedMethodReturnValue.Local
         private string DebugToString()
         {
