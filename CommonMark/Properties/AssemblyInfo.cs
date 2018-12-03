@@ -1,21 +1,5 @@
 ﻿using System;
-using System.Reflection;
 using System.Runtime.CompilerServices;
-
-[assembly: AssemblyTitle("CommonMark.NET")]
-[assembly: AssemblyDescription("https://github.com/Knagis/CommonMark.NET")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CommonMark.NET")]
-[assembly: AssemblyCopyright("Copyright © Kārlis Gaņģis 2014-2016")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
-// NETCore project gets the assembly version from project.json file.
-#if !NETCore
-[assembly: AssemblyVersion("0.1.0.0")]
-[assembly: AssemblyFileVersion("0.1.0.0")]
-#endif
 
 [assembly: CLSCompliant(true)]
 
