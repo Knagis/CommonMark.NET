@@ -4,6 +4,8 @@
   <PropertyGroup>
     <TargetFrameworks>net45</TargetFrameworks>
     <OutputType>Exe</OutputType>
+
+    <AssemblyName>cmark</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup>
