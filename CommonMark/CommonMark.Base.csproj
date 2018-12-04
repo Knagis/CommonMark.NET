@@ -31,6 +31,8 @@
     <PackageTags>CommonMark Markdown</PackageTags>
 
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource>
   </PropertyGroup>
 
   <ItemGroup>
