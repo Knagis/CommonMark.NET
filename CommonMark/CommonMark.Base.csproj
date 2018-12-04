@@ -52,11 +52,6 @@
   </PropertyGroup>
 
   <Choose>
-    <When Condition="'$(TargetFramework)' == 'net20'">
-      <ItemGroup>
-        <Reference Include="System" />
-      </ItemGroup>
-    </When>
     <When Condition="'$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'netstandard1.0'">
       <PropertyGroup>
         <DefineConstants>$(DefineConstants),OptimizeFor45</DefineConstants>
