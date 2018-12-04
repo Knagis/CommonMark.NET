@@ -19,9 +19,6 @@
     <Description>https://github.com/Knagis/CommonMark.NET</Description>
     <Copyright>Copyright © Kārlis Gaņģis 2014-2016</Copyright>
 
-    <Version>0.1.0.0</Version>
-    <FileVersion>0.1.0.0</FileVersion>
-
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <NuspecFile>..\CommonMark.NET.nuspec</NuspecFile>
     <NuspecProperties>configuration=$(Configuration)</NuspecProperties>
@@ -69,9 +66,7 @@
   </Choose>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\CommonMark.NET.nuspec">
-      <Link>Properties\CommonMark.NET.nuspec</Link>
-    </EmbeddedResource>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
