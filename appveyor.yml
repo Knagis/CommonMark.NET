@@ -9,3 +9,6 @@ before_build:
 build:
   parallel: true
   verbosity: minimal
+artifacts:
+- path: 'CommonMark\bin\*\*.nupkg'
+- path: 'CommonMark.Console\bin\*\*.nupkg'
