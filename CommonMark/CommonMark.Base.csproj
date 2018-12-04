@@ -22,7 +22,6 @@
     <Version>0.1.0.0</Version>
     <FileVersion>0.1.0.0</FileVersion>
 
-    <!-- Cannot generate package on all builds because it currently packages an executable built by a downstream project -->
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <NuspecFile>..\CommonMark.NET.nuspec</NuspecFile>
     <NuspecProperties>configuration=$(Configuration)</NuspecProperties>
