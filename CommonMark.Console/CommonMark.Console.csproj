@@ -15,9 +15,20 @@
     <Description>https://github.com/Knagis/CommonMark.NET</Description>
     <Copyright>Copyright © Kārlis Gaņģis 2014</Copyright>
 
+    <PackageId>CommonMark.NET.Console</PackageId>
+    <Title>CommonMark.NET.Console</Title>
+    <Authors>Kārlis Gaņģis</Authors>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Knagis/CommonMark.NET/master/LICENSE.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Knagis/CommonMark.NET/</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/dcurtis/markdown-mark/master/png/32x20.png</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageDescription>.NET library for converting Markdown documents to HTML according to the CommonMark specification. Optimized for maximum performance and targets every .NET version since 2.0, including PCL, Mono and .NET Core.</PackageDescription>
+    <PackageReleaseNotes>Fixed lists with tab characters and double trailing newlines.</PackageReleaseNotes>
+    <PackageTags>CommonMark Markdown</PackageTags>
+
+    <IsTool>true</IsTool>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <NuspecFile>..\CommonMark.NET.Console.nuspec</NuspecFile>
-    <NuspecProperties>configuration=$(Configuration)</NuspecProperties>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,5 +56,17 @@
   <ItemGroup>
     <ProjectReference Include="..\CommonMark\CommonMark.Base.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\LICENSE.md" PackagePath="/" />
+    <Content Include="App.config" PackagePath="$(BuildOutputTargetFolder)/cmark.exe.config" />
+  </ItemGroup>
+
+  <Target Name="_GetAdditionalPackAssemblyFiles" BeforeTargets="_GetBuildOutputFilesWithTfm">
+    <ItemGroup>
+      <BuildOutputInPackage Include="$(OutputPath)CommonMark.dll" />
+      <BuildOutputInPackage Include="$(OutputPath)CommonMark.xml" />
+    </ItemGroup>
+  </Target>
 
 </Project>
