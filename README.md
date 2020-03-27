@@ -1,3 +1,7 @@
+CommonMark.NET is no longer maintained. If you find it does not meet your needs, you might want to check out [Markdig](https://github.com/lunet-io/markdig).
+
+---
+
 [![Build status](https://ci.appveyor.com/api/projects/status/9jo20450utqy1p0o/branch/master?svg=true)](https://ci.appveyor.com/project/Knagis/commonmark-net/branch/master)
 
 # CommonMark.NET
