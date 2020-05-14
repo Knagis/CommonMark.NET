@@ -3,7 +3,6 @@ using CommonMark.Parser;
 using System;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 
 namespace CommonMark
@@ -46,22 +45,7 @@ namespace CommonMark
 
         private static Version InitializeVersion()
         {
-            // System.Xml is not available so resort to string parsing.
-            using (var stream = Assembly.GetManifestResourceStream("CommonMark.Properties.CommonMark.NET.nuspec"))
-            using (var reader = new System.IO.StreamReader(stream, Encoding.UTF8))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    var i = line.IndexOf("<version>", StringComparison.Ordinal);
-                    if (i == -1)
-                        continue;
-
-                    i += 9;
-                    return new Version(line.Substring(i, line.IndexOf("</version>", StringComparison.Ordinal) - i));
-                }
-            }
-            return null;
+            return new Version(ThisAssembly.AssemblyFileVersion);
         }
 
         /// <summary>

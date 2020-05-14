@@ -19,13 +19,20 @@
     <Description>https://github.com/Knagis/CommonMark.NET</Description>
     <Copyright>Copyright © Kārlis Gaņģis 2014-2016</Copyright>
 
-    <Version>0.1.0.0</Version>
-    <FileVersion>0.1.0.0</FileVersion>
+    <PackageId>CommonMark.NET</PackageId>
+    <Title>CommonMark.NET</Title>
+    <Authors>Kārlis Gaņģis</Authors>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Knagis/CommonMark.NET/master/LICENSE.md</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/Knagis/CommonMark.NET/</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/dcurtis/markdown-mark/master/png/32x20.png</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageDescription>.NET library for converting Markdown documents to HTML according to the CommonMark specification. Optimized for maximum performance and targets every .NET version since 2.0, including PCL, Mono and .NET Core.</PackageDescription>
+    <PackageReleaseNotes>Fixed lists with tab characters and double trailing newlines.</PackageReleaseNotes>
+    <PackageTags>CommonMark Markdown</PackageTags>
 
-    <!-- Cannot generate package on all builds because it currently packages an executable built by a downstream project -->
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <NuspecFile>..\CommonMark.NET.nuspec</NuspecFile>
-    <NuspecProperties>configuration=$(Configuration)</NuspecProperties>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource>
   </PropertyGroup>
 
   <ItemGroup>
@@ -70,9 +77,11 @@
   </Choose>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\CommonMark.NET.nuspec">
-      <Link>Properties\CommonMark.NET.nuspec</Link>
-    </EmbeddedResource>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\LICENSE.md" PackagePath="/" />
   </ItemGroup>
 
 </Project>

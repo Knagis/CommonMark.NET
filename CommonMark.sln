@@ -10,7 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{EC5FFA77-658F-4D2F-A5CE-5F1BD44F3FC0}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
-		CommonMark.NET.nuspec = CommonMark.NET.nuspec
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 		runtests.pl = runtests.pl
